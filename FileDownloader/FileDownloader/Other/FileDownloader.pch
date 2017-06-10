@@ -1,0 +1,18 @@
+//
+//  FileDownloader.pch
+//  FileDownloader
+//
+//  Created by Ossey on 2017/6/10.
+//  Copyright © 2017年 Ossey. All rights reserved.
+//
+
+#ifndef FileDownloader_pch
+#define FileDownloader_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#import "UIImage+XYImage.h"
+#import "Masonry.h"
+
+#endif /* FileDownloader_pch */
