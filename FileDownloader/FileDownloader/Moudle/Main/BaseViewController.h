@@ -10,6 +10,11 @@
 
 @interface BaseViewController : UIViewController
 
+
 - (BOOL)shouldShowNoDataPlaceholder;
 
+- (UIImage *)noDataPlaceholderImageWithIsLoading:(BOOL)isLoading;
+- (NSAttributedString *)reloadbuttonTitleAttributedStringForNoDataPlaceholder;
+- (NSAttributedString *)detailAttributedStringForNoDataPlaceholder;
+- (NSAttributedString *)titleAttributedStringForNoDataPlaceholder;
 @end

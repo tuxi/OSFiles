@@ -70,6 +70,8 @@
     return YES;
 }
 
+
+
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ UITableViewDataSource ~~~~~~~~~~~~~~~~~~~~~~~
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -133,11 +135,14 @@
     self.tableView.noDataPlaceholderTitleAttributedString = [self titleAttributedStringForNoDataPlaceholder];
     self.tableView.noDataPlaceholderDetailAttributedString = [self detailAttributedStringForNoDataPlaceholder];
     self.tableView.noDataPlaceholderReloadbuttonAttributedString = [self reloadbuttonTitleAttributedStringForNoDataPlaceholder];
+    self.tableView.noDataPlaceholderLoadingImage = [self noDataPlaceholderImageWithIsLoading:YES];
+    self.tableView.noDataPlaceholderNotLoadingImage = [self noDataPlaceholderImageWithIsLoading:NO];
 }
 
 - (NSAttributedString *)titleAttributedStringForNoDataPlaceholder {
     
     NSString *text = @"没有数据";
+    
     UIFont *font = nil;
     if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_8_4) {
         font = [UIFont monospacedDigitSystemFontOfSize:18.0 weight:UIFontWeightRegular];
@@ -171,12 +176,11 @@
     NSMutableParagraphStyle *style = [NSMutableParagraphStyle new];
     style.lineBreakMode = NSLineBreakByWordWrapping;
     style.alignment = NSTextAlignmentCenter;
-    
     NSString *text = @"快输入URL下载你喜欢的大片!";
     if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_8_4) {
         font = [UIFont monospacedDigitSystemFontOfSize:16.0 weight:UIFontWeightRegular];
     } else {
-        font = [UIFont boldSystemFontOfSize:18.0];
+        font = [UIFont boldSystemFontOfSize:16.0];
     }
     
     textColor = [UIColor blueColor];
@@ -207,6 +211,15 @@
     if (textColor) [attributes setObject:textColor forKey:NSForegroundColorAttributeName];
     
     return [[NSAttributedString alloc] initWithString:text attributes:attributes];
+}
+
+- (UIImage *)noDataPlaceholderImageWithIsLoading:(BOOL)isLoading {
+    if (isLoading) {
+        return [UIImage imageNamed:@"loading_imgBlue_78x78" inBundle:[NSBundle bundleForClass:[self class]] compatibleWithTraitCollection:nil];
+    } else {
+        UIImage *image = [UIImage imageNamed:@"placeholder_instagram"];
+        return image;
+    }
 }
 
 #pragma mark - <UIAlertViewDelegate>

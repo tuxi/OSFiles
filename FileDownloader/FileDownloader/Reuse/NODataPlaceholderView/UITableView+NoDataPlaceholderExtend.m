@@ -46,11 +46,9 @@
 
 - (UIImage *)imageForNoDataPlaceholder:(UIScrollView *)scrollView {
     if (self.loading) {
-        return [UIImage imageNamed:@"loading_imgBlue_78x78" inBundle:[NSBundle bundleForClass:[self class]] compatibleWithTraitCollection:nil];
+        return self.noDataPlaceholderLoadingImage;
     } else {
-        
-        UIImage *image = [UIImage imageNamed:@"placeholder_instagram"];
-        return image;
+        return self.noDataPlaceholderNotLoadingImage;
     }
 }
 
@@ -114,6 +112,8 @@
     return YES;
 }
 
+
+
 #pragma mark - set \ get 
 
 - (void)setLoading:(BOOL)loading {
@@ -163,6 +163,22 @@
 }
 
 - (NSAttributedString *)noDataPlaceholderReloadbuttonAttributedString {
+    return objc_getAssociatedObject(self, _cmd);
+}
+
+- (void)setNoDataPlaceholderLoadingImage:(UIImage *)noDataPlaceholderLoadingImage {
+    objc_setAssociatedObject(self, @selector(noDataPlaceholderLoadingImage), noDataPlaceholderLoadingImage, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (UIImage *)noDataPlaceholderLoadingImage {
+    return objc_getAssociatedObject(self, _cmd);
+}
+
+- (void)setNoDataPlaceholderNotLoadingImage:(UIImage *)noDataPlaceholderNotLoadingImage {
+    objc_setAssociatedObject(self, @selector(noDataPlaceholderNotLoadingImage), noDataPlaceholderNotLoadingImage, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (UIImage *)noDataPlaceholderNotLoadingImage {
     return objc_getAssociatedObject(self, _cmd);
 }
 

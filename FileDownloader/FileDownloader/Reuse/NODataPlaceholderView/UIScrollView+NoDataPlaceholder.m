@@ -1027,7 +1027,7 @@ customView = _customView;
             [subviewsNames addObject:@"detailLabel"];
             views[[subviewsNames lastObject]] = _detailLabel;
             
-            [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(horizontalSpace@750)-[detailLabel(>=0)]-(horizontalSpace@750)-|"
+            [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(horizontalSpace@750)-[detailLabel(>=0)]-(horizontalSpace@750)-|"
                                                                                      options:0
                                                                                      metrics:metrics
                                                                                        views:views]];
@@ -1042,7 +1042,7 @@ customView = _customView;
             [subviewsNames addObject:@"reloadButton"];
             views[[subviewsNames lastObject]] = _reloadButton;
             
-            [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(horizontalSpace@750)-[reloadButton(>=0)]-(horizontalSpace@750)-|"
+            [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(horizontalSpace@750)-[reloadButton(>=0)]-(horizontalSpace@750)-|"
                                                                                      options:0
                                                                                      metrics:metrics
                                                                                        views:views]];

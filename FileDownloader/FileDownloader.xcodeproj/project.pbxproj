@@ -736,6 +736,7 @@
 				18517BDC1EEBC86600B148C8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -14,8 +14,11 @@
 @property (nonatomic, strong) NSAttributedString *noDataPlaceholderDetailAttributedString;
 @property (nonatomic, strong) NSAttributedString *noDataPlaceholderReloadbuttonAttributedString;
 @property (nonatomic, copy) void (^reloadButtonClickBlock)();
+@property (nonatomic, strong) UIImage *noDataPlaceholderLoadingImage;
+@property (nonatomic, strong) UIImage *noDataPlaceholderNotLoadingImage;
 
 /// 使用NoDataPlaceholder
 - (void)usingNoDataPlaceholder;
+
 
 @end
