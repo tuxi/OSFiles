@@ -167,30 +167,31 @@
 
 - (NSAttributedString *)detailAttributedStringForNoDataPlaceholder {
     
-    UIFont *font = nil;
-    UIColor *textColor = nil;
-    
-    NSMutableDictionary *attributeDict = [NSMutableDictionary new];
-    
-    NSMutableParagraphStyle *style = [NSMutableParagraphStyle new];
-    style.lineBreakMode = NSLineBreakByWordWrapping;
-    style.alignment = NSTextAlignmentCenter;
-    NSString *text = @"快输入URL下载你喜欢的大片!";
-    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_8_4) {
-        font = [UIFont monospacedDigitSystemFontOfSize:16.0 weight:UIFontWeightRegular];
-    } else {
-        font = [UIFont boldSystemFontOfSize:16.0];
-    }
-    
-    textColor = [UIColor blueColor];
-    style.lineSpacing = 4.0;
-    [attributeDict setObject:font forKey:NSFontAttributeName];
-    [attributeDict setObject:textColor forKey:NSForegroundColorAttributeName];
-    [attributeDict setObject:style forKey:NSParagraphStyleAttributeName];
-    
-    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:text attributes:attributeDict];
-    
-    return attributedString;
+    return nil;
+//    UIFont *font = nil;
+//    UIColor *textColor = nil;
+//    
+//    NSMutableDictionary *attributeDict = [NSMutableDictionary new];
+//    
+//    NSMutableParagraphStyle *style = [NSMutableParagraphStyle new];
+//    style.lineBreakMode = NSLineBreakByWordWrapping;
+//    style.alignment = NSTextAlignmentCenter;
+//    NSString *text = @"快输入URL下载你喜欢的大片!";
+//    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_8_4) {
+//        font = [UIFont monospacedDigitSystemFontOfSize:16.0 weight:UIFontWeightRegular];
+//    } else {
+//        font = [UIFont boldSystemFontOfSize:16.0];
+//    }
+//    
+//    textColor = [UIColor blueColor];
+//    style.lineSpacing = 4.0;
+//    [attributeDict setObject:font forKey:NSFontAttributeName];
+//    [attributeDict setObject:textColor forKey:NSForegroundColorAttributeName];
+//    [attributeDict setObject:style forKey:NSParagraphStyleAttributeName];
+//    
+//    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:text attributes:attributeDict];
+//    
+//    return attributedString;
     
 }
 

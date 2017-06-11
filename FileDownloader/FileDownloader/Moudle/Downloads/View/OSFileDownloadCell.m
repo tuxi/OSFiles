@@ -82,31 +82,21 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
 
 - (void)setup {
     
-//    self.iconView.image = [UIImage imageNamed:@"TabBrowser"];
+    self.iconView.image = [UIImage imageNamed:@"TabBrowser"];
     self.fileNameLabel.text = @"fileName";
     self.downloadStatusLabel.text = @"0.0KB of 0.0KB";
     [self.moreBtn setTitle:@"•••" forState:UIControlStateNormal];
     [self.moreBtn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
     [self.cycleView startSpinProgressBackgroundLayer];
     [self.cycleView setProgress:1.0];
-    self.bottomLine.backgroundColor = [UIColor colorWithWhite:0.6 alpha:0.8];
+    self.bottomLine.backgroundColor = [UIColor colorWithWhite:0.8 alpha:0.8];
     [self.speedLabel setText:@"0.0KB/s"];
     [self.remainTimeLabel setText:@"0s"];
     
     [self _makeConstraints];
-    __weak typeof(self) weakSelf = self;
-    [self setLongPressGestureRecognizer:^(UILongPressGestureRecognizer *longPres) {
-        if (longPres.state == UIGestureRecognizerStateBegan) {
-            [[[UIAlertView alloc] initWithTitle:@"是否删除下载项" message:nil delegate:weakSelf cancelButtonTitle:@"否" otherButtonTitles:@"是", nil] show];
-        }
-    }];
+   
 }
 
-//- (void)layoutSubviews {
-//    
-//    [super layoutSubviews];
-//    [self _makeConstraints];
-//}
 
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~ update subviews ~~~~~~~~~~~~~~~~~~~~~~
 - (void)setDownloadItem:(OSFileDownloadItem *)downloadItem {
@@ -128,6 +118,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
     self.remainTimeLabel.hidden = NO;
     self.cycleView.hidden = NO;
     self.fileSizeLabel.hidden = YES;
+    self.iconView.hidden = YES;
     
     switch (aStatus) {
             
@@ -160,6 +151,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
             self.remainTimeLabel.hidden = YES;
             self.cycleView.hidden = YES;
             self.fileSizeLabel.hidden = NO;
+            self.iconView.hidden = NO;
             NSString *expectedFileTotalSize = [NSString transformedFileSizeValue:@(self.downloadItem.progressObj.expectedFileTotalSize)];
             [self.fileSizeLabel setText:expectedFileTotalSize];
         }
@@ -266,16 +258,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
     
 }
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ <UIAlertViewDelegate> ~~~~~~~~~~~~~~~~~~~~~~~
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    
-    if (buttonIndex == 1) {
-        // 取消下载，并删除
-        AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-        [delegate.downloadModule cancel:self.downloadItem.urlPath];
-    }
-}
 
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ Layout ~~~~~~~~~~~~~~~~~~~~~~~
 

@@ -11,6 +11,7 @@
 #import "AppDelegate.h"
 #import "NetworkTypeUtils.h"
 #import "NSObject+XYHUD.h"
+#import "OSFileDownloadItem.h"
 
 static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
 
@@ -43,7 +44,7 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
 
 - (void)setup {
     
-    self.navigationItem.title = NSStringFromClass([self class]);
+    self.navigationItem.title = @"Downloads";
     
     AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     delegate.downloadModule.delegate = self;
@@ -70,15 +71,35 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    return delegate.downloadModule.downloadItems.count;
+   
+    return [delegate.downloadModule getDownloadingItems].count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     OSFileDownloadCell *cell = [tableView dequeueReusableCellWithIdentifier:DownloadCellIdentifierKey forIndexPath:indexPath];
     AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    cell.downloadItem = delegate.downloadModule.downloadItems[indexPath.row];
-    
+    OSFileDownloadItem *downloadItem = [delegate.downloadModule getDownloadingItems][indexPath.row];
+    cell.downloadItem = downloadItem;
+    __weak typeof(self) weakSelf = self;
+    [cell setLongPressGestureRecognizer:^(UILongPressGestureRecognizer *longPres) {
+        if (longPres.state == UIGestureRecognizerStateBegan) {
+            UIAlertController *alVc = [UIAlertController alertControllerWithTitle:@"是否删除下载项" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"ok" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                // 取消下载，并删除
+                AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+                [delegate.downloadModule cancel:downloadItem.urlPath];
+                [weakSelf.tableView reloadData];
+
+            }];
+            [alVc addAction:okAction];
+            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+                
+            }];
+            [alVc addAction:cancelAction];
+            [weakSelf presentViewController:alVc animated:YES completion:nil];
+        }
+    }];
     return cell;
 }
 
@@ -221,8 +242,6 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
         return image;
     }
 }
-
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ Other ~~~~~~~~~~~~~~~~~~~~~~~
 
 
 @end

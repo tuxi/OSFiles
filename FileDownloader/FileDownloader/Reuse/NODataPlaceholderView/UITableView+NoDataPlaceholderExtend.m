@@ -53,15 +53,15 @@
 }
 
 - (UIColor *)reloadButtonBackgroundColorForNoDataPlaceholder:(UIScrollView *)scrollView {
-    return [UIColor orangeColor];
+    return [UIColor grayColor];
 }
 
 - (CGFloat)contentOffsetYForNoDataPlaceholder:(UIScrollView *)scrollView {
-    return -20;
+    return -50;
 }
 
 - (CGFloat)contentSubviewsVerticalSpaceFoNoDataPlaceholder:(UIScrollView *)scrollView {
-    return 30;
+    return 80;
 }
 
 

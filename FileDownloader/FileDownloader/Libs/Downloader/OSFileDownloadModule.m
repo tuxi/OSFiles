@@ -201,6 +201,35 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
     [self storedDownloadItems];
 }
 
+- (NSArray<OSFileDownloadItem *> *)getAllSuccessItems {
+    if (!self.downloadItems.count) {
+        return nil;
+    }
+    
+    NSMutableArray *allSuccessItems = [NSMutableArray array];
+    [self.downloadItems enumerateObjectsUsingBlock:^(OSFileDownloadItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (obj.status == OSFileDownloadStatusSuccess) {
+            [allSuccessItems addObject:obj];
+        }
+    }];
+    return allSuccessItems;
+}
+
+- (NSArray<OSFileDownloadItem *> *)getDownloadingItems {
+    if (!self.downloadItems.count) {
+        return nil;
+    }
+    
+    NSMutableArray *downloadingItems = [NSMutableArray array];
+    [self.downloadItems enumerateObjectsUsingBlock:^(OSFileDownloadItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (obj.status != OSFileDownloadStatusSuccess) {
+            [downloadingItems addObject:obj];
+        }
+    }];
+    return downloadingItems;
+
+}
+
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ <OSDownloadProtocol> ~~~~~~~~~~~~~~~~~~~~~~~
 
 

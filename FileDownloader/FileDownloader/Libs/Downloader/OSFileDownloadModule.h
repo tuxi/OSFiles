@@ -54,5 +54,7 @@ FOUNDATION_EXTERN NSString * const OSFileDownloadCanceldNotification;
 - (void)pause:(NSString *)url;
 + (OSDownloaderManager *)getDownloadManager;
 - (void)clearAllDownloadTask;
+- (NSArray<OSFileDownloadItem *> *)getAllSuccessItems;
+- (NSArray<OSFileDownloadItem *> *)getDownloadingItems;
 
 @end
