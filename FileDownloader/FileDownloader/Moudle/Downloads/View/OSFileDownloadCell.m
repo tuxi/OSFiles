@@ -11,6 +11,7 @@
 #import "AppDelegate.h"
 #import "OSDownloaderManager.h"
 #import "FFCircularProgressView.h"
+#import "NSString+DateExtension.h"
 
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
@@ -458,7 +459,6 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
 
 @implementation NSString (DownloadUtils)
 
-// 转换文件的字节数
 + (NSString *)transformedFileSizeValue:(NSNumber *)value {
     
     double convertedValue = [value doubleValue];
@@ -481,6 +481,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
     [aNumberFormatter setMaximumFractionDigits:1];
     [aNumberFormatter setDecimalSeparator:@"."];
     return [NSString stringWithFormat:@"%@ s", [aNumberFormatter stringFromNumber:@(remainingTime)]];
+    
 }
 
 
