@@ -92,7 +92,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
     return self;
 }
 
-- (void)setTasksWithCompletionHandler:(void (^)())completionHandler {
+- (void)setupTasksWithCompletionHandler:(void (^)())completionHandler {
     
     __weak typeof(self) weakSelf = self;
     // 获取下载的任务

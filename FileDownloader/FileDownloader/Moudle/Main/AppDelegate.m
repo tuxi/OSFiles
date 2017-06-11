@@ -61,7 +61,7 @@
     
     self.downloadModule = [OSFileDownloadModule new];
     self.downloadManager = [[OSDownloaderManager alloc] initWithDelegate:(id<OSDownloadProtocol>)self.downloadModule maxConcurrentDownloads:-1];
-    [self.downloadManager setTasksWithCompletionHandler:nil];
+    [self.downloadManager setupTasksWithCompletionHandler:nil];
 }
 
 @end

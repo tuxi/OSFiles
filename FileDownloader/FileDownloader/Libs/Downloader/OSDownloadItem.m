@@ -80,6 +80,18 @@
     }
 }
 
+@synthesize bytesPerSecondSpeed = _bytesPerSecondSpeed;
+
+- (void)setBytesPerSecondSpeed:(NSUInteger)bytesPerSecondSpeed {
+    _bytesPerSecondSpeed = bytesPerSecondSpeed;
+}
+
+- (NSUInteger)bytesPerSecondSpeed {
+    return _bytesPerSecondSpeed;
+}
+- (void)setDownloadStartDate:(NSDate *)downloadStartDate {
+    _downloadStartDate = downloadStartDate;
+}
 
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ description ~~~~~~~~~~~~~~~~~~~~~~~
 

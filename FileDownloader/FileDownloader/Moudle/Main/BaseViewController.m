@@ -11,8 +11,8 @@
 
 @interface BaseViewController () <UITableViewDataSource, UITableViewDelegate>
 
-@property (nonatomic, strong) NSMutableArray *dataSource;
-@property (nonatomic, assign) NSInteger currentClickRow;
+//@property (nonatomic, strong) NSMutableArray *dataSource;
+//@property (nonatomic, assign) NSInteger currentClickRow;
 
 @end
 
@@ -75,7 +75,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    return _dataSource.count;
+    return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -103,8 +103,8 @@
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ UITableViewDelegate ~~~~~~~~~~~~~~~~~~~~~~~
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    _currentClickRow = indexPath.row;
-    [[[UIAlertView alloc] initWithTitle:@"请选择" message:nil delegate:self cancelButtonTitle:@"不" otherButtonTitles:@"好的", nil] show];
+//    _currentClickRow = indexPath.row;
+//    [[[UIAlertView alloc] initWithTitle:@"请选择" message:nil delegate:self cancelButtonTitle:@"不" otherButtonTitles:@"好的", nil] show];
 }
 
 - (UITableView *)tableView {
@@ -123,10 +123,10 @@
 - (void)usingNoDataPlaceholder {
     [self.tableView usingNoDataPlaceholder];
     [self setupNoDataPlaceholder];
-    __weak typeof(self) weakSelf = self;
-    self.tableView.reloadButtonClickBlock = ^{
-        [weakSelf getDataFromNetwork];
-    };
+//    __weak typeof(self) weakSelf = self;
+//    self.tableView.reloadButtonClickBlock = ^{
+//        [weakSelf getDataFromNetwork];
+//    };
     
 }
 
@@ -220,59 +220,59 @@
         return image;
     }
 }
-
-#pragma mark - <UIAlertViewDelegate>
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 1) {
-        
-        if (_currentClickRow == 0) {
-            [self addData];
-        } else if (_currentClickRow == 1) {
-            [_dataSource removeAllObjects];
-        } else {
-            if (_currentClickRow < _dataSource.count) {
-                [_dataSource removeObjectAtIndex:_currentClickRow];
-            } else {
-                NSAssert(_currentClickRow < _dataSource.count, @"要删除的数据索引超出了数组的长度");
-            }
-        }
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
-        });
-    }
-}
-
-
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ other ~~~~~~~~~~~~~~~~~~~~~~~
-
-- (NSMutableArray *)dataSource {
-    if (!_dataSource) {
-        _dataSource = [NSMutableArray array];
-    }
-    return _dataSource;
-}
-
-- (void)getDataFromNetwork {
-    
-    self.tableView.loading = YES;
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self addData];
-        self.tableView.loading = NO;
-        [self.tableView reloadData];
-    });
-}
-
-- (void)addData {
-    int i = 0;
-    while (i < 10) {
-        
-        [[self dataSource] addObject:[NSString stringWithFormat:@"%d", i]];
-        
-        i++;
-    }
-    
-}
+//
+//#pragma mark - <UIAlertViewDelegate>
+//
+//- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+//    if (buttonIndex == 1) {
+//        
+//        if (_currentClickRow == 0) {
+//            [self addData];
+//        } else if (_currentClickRow == 1) {
+//            [_dataSource removeAllObjects];
+//        } else {
+//            if (_currentClickRow < _dataSource.count) {
+//                [_dataSource removeObjectAtIndex:_currentClickRow];
+//            } else {
+//                NSAssert(_currentClickRow < _dataSource.count, @"要删除的数据索引超出了数组的长度");
+//            }
+//        }
+//        
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//            [self.tableView reloadData];
+//        });
+//    }
+//}
+//
+//
+//#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ other ~~~~~~~~~~~~~~~~~~~~~~~
+//
+//- (NSMutableArray *)dataSource {
+//    if (!_dataSource) {
+//        _dataSource = [NSMutableArray array];
+//    }
+//    return _dataSource;
+//}
+//
+//- (void)getDataFromNetwork {
+//    
+//    self.tableView.loading = YES;
+//    
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        [self addData];
+//        self.tableView.loading = NO;
+//        [self.tableView reloadData];
+//    });
+//}
+//
+//- (void)addData {
+//    int i = 0;
+//    while (i < 10) {
+//        
+//        [[self dataSource] addObject:[NSString stringWithFormat:@"%d", i]];
+//        
+//        i++;
+//    }
+//    
+//}
 @end

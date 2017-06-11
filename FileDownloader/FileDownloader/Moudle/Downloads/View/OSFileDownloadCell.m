@@ -82,7 +82,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
 
 - (void)setup {
     
-    self.iconView.image = [UIImage imageNamed:@"TabBrowser"];
+//    self.iconView.image = [UIImage imageNamed:@"TabBrowser"];
     self.fileNameLabel.text = @"fileName";
     self.downloadStatusLabel.text = @"0.0KB of 0.0KB";
     [self.moreBtn setTitle:@"•••" forState:UIControlStateNormal];
@@ -287,23 +287,23 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
     }];
     
     [_fileNameLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
-        if (_iconView.hidden == NO) {
+        if (_iconView && _iconView.hidden == NO) {
             make.left.equalTo(_iconView.mas_right).mas_offset(OSFileDownloadCellGloabMargin);
         } else {
             make.left.equalTo(self.contentView).mas_offset(OSFileDownloadCellGloabMargin);
         }
-        make.top.equalTo(self.contentView).mas_offset(5);
+        make.top.equalTo(self.contentView).mas_offset(8.8);
         make.right.equalTo(self.contentView).mas_offset(-100);
-        if (_downloadStatusLabel.hidden == NO) {
+        if (_downloadStatusLabel && _downloadStatusLabel.hidden == NO) {
             make.bottom.lessThanOrEqualTo(_downloadStatusLabel.mas_top).mas_offset(-3);
         } else {
-            make.bottom.equalTo(self.contentView.mas_bottom).mas_offset(-5);
+            make.bottom.equalTo(self.contentView.mas_bottom).mas_offset(-8.8);
         }
     }];
 
     [_downloadStatusLabel mas_updateConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(_fileNameLabel);
-        make.bottom.equalTo(self.contentView).mas_offset(-5);
+        make.bottom.equalTo(self.contentView).mas_offset(-8.8);
     }];
     
     [_moreBtn mas_updateConstraints:^(MASConstraintMaker *make) {
@@ -312,7 +312,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
     }];
     
     [_cycleView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        if (_moreBtn.hidden == NO) {
+        if (_moreBtn && _moreBtn.hidden == NO) {
             make.right.equalTo(_moreBtn.mas_left).mas_offset(-5);
         }
         make.centerY.equalTo(self.contentView);
@@ -332,12 +332,12 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
         }];
         
         [_remainTimeLabel mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(_speedLabel.mas_right).mas_offset(5.0);
+            make.left.equalTo(_speedLabel.mas_right).mas_offset(OSFileDownloadCellGloabMargin);
             make.top.bottom.equalTo(_downloadStatusLabel);
         }];
     }
     
-    if (_fileSizeLabel.hidden == NO) {
+    if (_fileSizeLabel && _fileSizeLabel.hidden == NO) {
         [_fileSizeLabel mas_updateConstraints:^(MASConstraintMaker *make) {
             if (_moreBtn.hidden == NO) {
                 make.right.equalTo(_moreBtn.mas_left).mas_offset(-5);
@@ -414,7 +414,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
         _fileSizeLabel = label;
         [self.contentView addSubview:label];
         if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_8_4) {
-            [label setFont:[UIFont monospacedDigitSystemFontOfSize:10.0 weight:UIFontWeightRegular]];
+            [label setFont:[UIFont monospacedDigitSystemFontOfSize:11.0 weight:UIFontWeightRegular]];
         } else {
             [label setFont:[UIFont systemFontOfSize:11.0]];
         }
@@ -446,6 +446,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
 - (UIButton *)moreBtn {
     if (!_moreBtn) {
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+        [btn.titleLabel setFont:[UIFont systemFontOfSize:12]];
         _moreBtn = btn;
         [self.contentView addSubview:btn];
     }

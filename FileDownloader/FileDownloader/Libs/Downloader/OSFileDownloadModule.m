@@ -48,7 +48,7 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
                         forKeyPath:NSStringFromSelector(@selector(fractionCompleted))
                            options:NSKeyValueObservingOptionInitial
                            context:ProgressObserverContext];
-        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate) name:UIApplicationWillTerminateNotification object:nil];
         // 本地获取
         self.downloadItems = [self restoredDownloadItems];
     }
@@ -449,6 +449,9 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
 
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ other ~~~~~~~~~~~~~~~~~~~~~~~
 
+- (void)applicationWillTerminate {
+    [self storedDownloadItems];
+}
 
 + (OSDownloaderManager *)getDownloadManager {
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
@@ -461,7 +464,7 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
 }
 
 // 查找数组中第一个符合条件的对象（代码块过滤），返回对应索引
-// 查找downloadToken在downloadItems中对应的OSDownloadItem的索引
+// 查找urlPath在downloadItems中对应的OSDownloadItem的索引
 - (NSUInteger)foundItemIndxInDownloadItemsByURL:(NSString *)urlPath {
     if (!urlPath.length) {
         return NSNotFound;

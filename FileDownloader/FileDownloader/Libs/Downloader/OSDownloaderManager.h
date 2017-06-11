@@ -36,7 +36,7 @@ FOUNDATION_EXTERN NSString * const OS_Downloader_Folder;
           maxConcurrentDownloads:(NSInteger)maxConcurrentDownloads NS_DESIGNATED_INITIALIZER;
 
 /// 设置任务下载完成的回调
-- (void)setTasksWithCompletionHandler:(void (^)())completionHandler;
+- (void)setupTasksWithCompletionHandler:(void (^)())completionHandler;
 
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ download operation ~~~~~~~~~~~~~~~~~~~~~~~
 
