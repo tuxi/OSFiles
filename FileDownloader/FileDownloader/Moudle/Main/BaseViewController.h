@@ -10,6 +10,7 @@
 
 @interface BaseViewController : UIViewController
 
+@property (nonatomic, strong) UITableView *tableView;
 
 - (BOOL)shouldShowNoDataPlaceholder;
 

@@ -8,8 +8,13 @@
 
 #import "AppDelegate.h"
 #import "MainTabBarController.h"
+#import "OSDownloaderManager.h"
+#import "OSFileDownloadModule.h"
 
-@interface AppDelegate ()
+@interface AppDelegate () 
+
+@property (nonatomic, strong) OSDownloaderManager *downloadManager;
+@property (nonatomic, strong) OSFileDownloadModule *downloadModule;
 
 @end
 
@@ -21,7 +26,7 @@
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.rootViewController = [MainTabBarController new];
     [self.window makeKeyAndVisible];
-    
+    [self configBackgroundSession];
     return YES;
 }
 
@@ -52,5 +57,11 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+- (void)configBackgroundSession {
+    
+    self.downloadModule = [OSFileDownloadModule new];
+    self.downloadManager = [[OSDownloaderManager alloc] initWithDelegate:(id<OSDownloadProtocol>)self.downloadModule maxConcurrentDownloads:-1];
+    [self.downloadManager setTasksWithCompletionHandler:nil];
+}
 
 @end
