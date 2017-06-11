@@ -34,6 +34,10 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
     // Dispose of any resources that can be recreated.
 }
 
+- (void)dealloc {
+    NSLog(@"%s", __func__);
+}
+
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ initialize ~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -217,6 +221,8 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
         return image;
     }
 }
+
+#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ Other ~~~~~~~~~~~~~~~~~~~~~~~
 
 
 @end
