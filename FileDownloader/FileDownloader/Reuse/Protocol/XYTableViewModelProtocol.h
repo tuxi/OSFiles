@@ -2,8 +2,8 @@
 //  XYTableViewModelProtocol.h
 //  MVVMDemo
 //
-//  Created by Ossey on 17/2/12.
-//  Copyright © 2017年 Ossey. All rights reserved.
+//  Created by mofeini on 17/2/12.
+//  Copyright © 2017年 com.test.demo. All rights reserved.
 //  此协议 制定了处理tableView的代理和数据的协议
 
 #import <UIKit/UIKit.h>

@@ -9,8 +9,8 @@
 #import "FilesViewController.h"
 #import "AppDelegate.h"
 #import "OSFileDownloadCell.h"
+#import "FilesTableViewModel.h"
 
-static NSString * const FilesViewControllerViewCellID = @"FilesViewController";
 
 @interface FilesViewController ()
 
@@ -35,14 +35,11 @@ static NSString * const FilesViewControllerViewCellID = @"FilesViewController";
 - (void)setup {
     
     self.navigationItem.title = @"Files";
-    [self initTableView];
+    self.tableViewModel = [FilesTableViewModel new];
+    [self.tableViewModel prepareTableView:self.tableView];
     [self addObservers];
 }
 
-- (void)initTableView {
-    
-    [self.tableView registerClass:[OSFileDownloadCell class] forCellReuseIdentifier:FilesViewControllerViewCellID];
-}
 
 - (void)addObservers {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadSuccess:) name:OSFileDownloadSussessNotification object:nil];
@@ -54,27 +51,6 @@ static NSString * const FilesViewControllerViewCellID = @"FilesViewController";
     [self.tableView reloadData];
 }
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ Table view data source ~~~~~~~~~~~~~~~~~~~~~~~
-
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    return [delegate.downloadModule getAllSuccessItems].count;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    OSFileDownloadCell *cell = [tableView dequeueReusableCellWithIdentifier:FilesViewControllerViewCellID forIndexPath:indexPath];
-    AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    cell.downloadItem = [delegate.downloadModule getAllSuccessItems][indexPath.row];
-    
-    return cell;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    return 60;
-}
 
 
 

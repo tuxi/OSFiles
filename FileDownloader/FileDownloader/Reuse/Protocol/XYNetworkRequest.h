@@ -2,8 +2,8 @@
 //  XYNetworkRequest.h
 //  MVVMDemo
 //
-//  Created by Ossey on 17/2/10.
-//  Copyright © 2017年 Ossey. All rights reserved.
+//  Created by mofeini on 17/2/10.
+//  Copyright © 2017年 com.test.demo. All rights reserved.
 //  封装的网络请求工具类
 
 #import <Foundation/Foundation.h>

@@ -7,15 +7,14 @@
 //
 
 #import "DownloadsViewController.h"
-#import "OSFileDownloadCell.h"
 #import "AppDelegate.h"
 #import "NetworkTypeUtils.h"
 #import "NSObject+XYHUD.h"
-#import "OSFileItem.h"
-
-static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
+#import "DownloadsTableViewModel.h"
+#import "OSFileDownloadModule.h"
 
 @interface DownloadsViewController () <OSFileDownloaderDelegate, OSFileDownloaderDataSource>
+
 
 @end
 
@@ -45,18 +44,15 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
 - (void)setup {
     
     self.navigationItem.title = @"Downloads";
-    
+    self.tableViewModel = [DownloadsTableViewModel new];
+    [self.tableViewModel prepareTableView:self.tableView];
     AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     delegate.downloadModule.delegate = self;
     delegate.downloadModule.dataSource = self;
-    [self initTableView];
     [self addObservers];
 }
 
-- (void)initTableView {
-    
-    [self.tableView registerClass:[OSFileDownloadCell class] forCellReuseIdentifier:DownloadCellIdentifierKey];
-}
+
 
 - (void)addObservers {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadSuccess:) name:OSFileDownloadSussessNotification object:nil];
@@ -66,47 +62,7 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
 }
 
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ Table view data source ~~~~~~~~~~~~~~~~~~~~~~~
 
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-   
-    return [delegate.downloadModule getDownloadingItems].count;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    OSFileDownloadCell *cell = [tableView dequeueReusableCellWithIdentifier:DownloadCellIdentifierKey forIndexPath:indexPath];
-    AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    OSFileItem *downloadItem = [delegate.downloadModule getDownloadingItems][indexPath.row];
-    cell.downloadItem = downloadItem;
-    __weak typeof(self) weakSelf = self;
-    [cell setLongPressGestureRecognizer:^(UILongPressGestureRecognizer *longPres) {
-        if (longPres.state == UIGestureRecognizerStateBegan) {
-            UIAlertController *alVc = [UIAlertController alertControllerWithTitle:@"是否删除下载项" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"ok" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                // 取消下载，并删除
-                AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-                [delegate.downloadModule cancel:downloadItem.urlPath];
-                [weakSelf.tableView reloadData];
-
-            }];
-            [alVc addAction:okAction];
-            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-                
-            }];
-            [alVc addAction:cancelAction];
-            [weakSelf presentViewController:alVc animated:YES completion:nil];
-        }
-    }];
-    return cell;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    return 60;
-}
 
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ notifiy events ~~~~~~~~~~~~~~~~~~~~~~~
 

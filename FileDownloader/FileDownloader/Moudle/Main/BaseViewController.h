@@ -6,9 +6,13 @@
 //  Copyright © 2017年 Ossey. All rights reserved.
 //
 
+#import <UIKit/UIKit.h>
 #import "UITableView+NoDataPlaceholderExtend.h"
+#import "XYTableViewModelProtocol.h"
 
 @interface BaseViewController : UIViewController
+
+@property (nonatomic, strong) id<XYTableViewModelProtocol> tableViewModel;
 
 @property (nonatomic, strong) UITableView *tableView;
 

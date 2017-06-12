@@ -2,8 +2,8 @@
 //  NSObject+XYProperties.m
 //  MVVMDemo
 //
-//  Created by Ossey on 17/2/9.
-//  Copyright © 2017年 Ossey. All rights reserved.
+//  Created by mofeini on 17/2/9.
+//  Copyright © 2017年 com.test.demo. All rights reserved.
 //
 
 #import "NSObject+XYProperties.h"
@@ -19,13 +19,6 @@
     objc_setAssociatedObject(self, @selector(viewModelDelegate), viewModelDelegate, OBJC_ASSOCIATION_ASSIGN);
 }
 
-- (id<XYViewManagerProtocol>)viewMangerDelegate {
-    return objc_getAssociatedObject(self, _cmd);
-}
-
-- (void)setViewMangerDelegate:(id<XYViewManagerProtocol>)viewMangerDelegate {
-    objc_setAssociatedObject(self, @selector(viewMangerDelegate), viewMangerDelegate, OBJC_ASSOCIATION_ASSIGN);
-}
 
 - (ViewMangerInfosBlock)viewMangerInfosBlock {
     return objc_getAssociatedObject(self, @selector(viewMangerInfosBlock));

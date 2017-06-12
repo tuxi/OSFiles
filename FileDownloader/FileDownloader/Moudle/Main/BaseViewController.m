@@ -7,7 +7,7 @@
 //
 
 #import "BaseViewController.h"
-
+#import "BaseTableViewModel.h"
 
 @interface BaseViewController () <UITableViewDataSource, UITableViewDelegate>
 
@@ -47,7 +47,7 @@
     self.view.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.tableView];
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
-
+    [self.tableViewModel prepareTableView:self.tableView];
 }
 
 
@@ -105,17 +105,6 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 //    _currentClickRow = indexPath.row;
 //    [[[UIAlertView alloc] initWithTitle:@"请选择" message:nil delegate:self cancelButtonTitle:@"不" otherButtonTitles:@"好的", nil] show];
-}
-
-- (UITableView *)tableView {
-    if (!_tableView) {
-        _tableView = [[UITableView alloc] init];
-        _tableView.accessibilityIdentifier = [NSString stringWithFormat:@"%@-tableView", NSStringFromClass([self class])];
-        _tableView.dataSource = self;
-        _tableView.delegate = self;
-        _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    }
-    return _tableView;
 }
 
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ Config NoDataPlaceholderExtend ~~~~~~~~~~~~~~~~~~~~~~~
@@ -276,4 +265,25 @@
 //    }
 //    
 //}
+
+#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ Lazy ~~~~~~~~~~~~~~~~~~~~~~~
+
+- (UITableView *)tableView {
+    if (!_tableView) {
+        _tableView = [[UITableView alloc] init];
+        _tableView.accessibilityIdentifier = [NSString stringWithFormat:@"%@-tableView", NSStringFromClass([self class])];
+        _tableView.dataSource = self;
+        _tableView.delegate = self;
+        _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    }
+    return _tableView;
+}
+
+- (id<XYTableViewModelProtocol>)tableViewModel {
+    if (!_tableViewModel) {
+        _tableViewModel = [BaseTableViewModel new];
+    }
+    return _tableViewModel;
+}
+
 @end

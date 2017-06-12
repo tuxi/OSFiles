@@ -2,8 +2,8 @@
 //  UIView+XYConfigure.h
 //  MVVMDemo
 //
-//  Created by Ossey on 17/2/10.
-//  Copyright © 2017年 Ossey. All rights reserved.
+//  Created by mofeini on 17/2/10.
+//  Copyright © 2017年 com.test.demo. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

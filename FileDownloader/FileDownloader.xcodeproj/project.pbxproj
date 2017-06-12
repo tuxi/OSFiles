@@ -33,13 +33,6 @@
 		18517BD31EEBC86600B148C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18517BD21EEBC86600B148C8 /* Assets.xcassets */; };
 		18517BD61EEBC86600B148C8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18517BD41EEBC86600B148C8 /* LaunchScreen.storyboard */; };
 		18517BF51EEBCB2C00B148C8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 18517BF11EEBCB2C00B148C8 /* AppDelegate.m */; };
-		18517C0D1EEBD5FB00B148C8 /* NSObject+XYProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 18517BFB1EEBD5FB00B148C8 /* NSObject+XYProperties.m */; };
-		18517C0E1EEBD5FB00B148C8 /* NSObject+XYRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 18517BFD1EEBD5FB00B148C8 /* NSObject+XYRequest.m */; };
-		18517C0F1EEBD5FB00B148C8 /* UICollectionViewCell+XYConfigure.m in Sources */ = {isa = PBXBuildFile; fileRef = 18517BFF1EEBD5FB00B148C8 /* UICollectionViewCell+XYConfigure.m */; };
-		18517C101EEBD5FB00B148C8 /* UITableViewCell+XYConfigure.m in Sources */ = {isa = PBXBuildFile; fileRef = 18517C011EEBD5FB00B148C8 /* UITableViewCell+XYConfigure.m */; };
-		18517C111EEBD5FB00B148C8 /* UIView+XYConfigure.m in Sources */ = {isa = PBXBuildFile; fileRef = 18517C031EEBD5FB00B148C8 /* UIView+XYConfigure.m */; };
-		18517C121EEBD5FB00B148C8 /* XYDBUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 18517C061EEBD5FB00B148C8 /* XYDBUtil.m */; };
-		18517C131EEBD5FB00B148C8 /* XYNetworkRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 18517C081EEBD5FB00B148C8 /* XYNetworkRequest.m */; };
 		18517C221EEBD64800B148C8 /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 18517C161EEBD64800B148C8 /* AFHTTPSessionManager.m */; };
 		18517C231EEBD64800B148C8 /* AFNetworkReachabilityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 18517C191EEBD64800B148C8 /* AFNetworkReachabilityManager.m */; };
 		18517C241EEBD64800B148C8 /* AFSecurityPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = 18517C1B1EEBD64800B148C8 /* AFSecurityPolicy.m */; };
@@ -66,6 +59,17 @@
 		18517C751EEBE08700B148C8 /* UITableView+NoDataPlaceholderExtend.m in Sources */ = {isa = PBXBuildFile; fileRef = 18517C731EEBE08700B148C8 /* UITableView+NoDataPlaceholderExtend.m */; };
 		1871ACDA1EEEE2D900ABC452 /* NSString+FileDownloadsExtend.m in Sources */ = {isa = PBXBuildFile; fileRef = 1871ACD91EEEE2D900ABC452 /* NSString+FileDownloadsExtend.m */; };
 		1871ACDD1EEEE55700ABC452 /* NSDate+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 1871ACDC1EEEE55700ABC452 /* NSDate+Utilities.m */; };
+		1871ACF21EEEECBE00ABC452 /* FilesTableViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1871ACF11EEEECBE00ABC452 /* FilesTableViewModel.m */; };
+		1871ACF51EEEEE8C00ABC452 /* DownloadsTableViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1871ACF41EEEEE8C00ABC452 /* DownloadsTableViewModel.m */; };
+		1871ACF81EEEEFEF00ABC452 /* AppUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 1871ACF71EEEEFEF00ABC452 /* AppUtils.m */; };
+		1871AD0D1EEEF15100ABC452 /* BaseTableViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1871AD0C1EEEF15100ABC452 /* BaseTableViewModel.m */; };
+		1871AD211EEEF76E00ABC452 /* NSObject+XYProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 1871AD101EEEF76E00ABC452 /* NSObject+XYProperties.m */; };
+		1871AD221EEEF76E00ABC452 /* NSObject+XYRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1871AD121EEEF76E00ABC452 /* NSObject+XYRequest.m */; };
+		1871AD231EEEF76E00ABC452 /* UICollectionViewCell+XYConfigure.m in Sources */ = {isa = PBXBuildFile; fileRef = 1871AD141EEEF76E00ABC452 /* UICollectionViewCell+XYConfigure.m */; };
+		1871AD241EEEF76E00ABC452 /* UITableViewCell+XYConfigure.m in Sources */ = {isa = PBXBuildFile; fileRef = 1871AD161EEEF76E00ABC452 /* UITableViewCell+XYConfigure.m */; };
+		1871AD251EEEF76E00ABC452 /* UIView+XYConfigure.m in Sources */ = {isa = PBXBuildFile; fileRef = 1871AD181EEEF76E00ABC452 /* UIView+XYConfigure.m */; };
+		1871AD261EEEF76E00ABC452 /* XYDBUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 1871AD1B1EEEF76E00ABC452 /* XYDBUtil.m */; };
+		1871AD271EEEF76E00ABC452 /* XYNetworkRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1871AD1D1EEEF76E00ABC452 /* XYNetworkRequest.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -126,25 +130,6 @@
 		18517BD71EEBC86600B148C8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		18517BF01EEBCB2C00B148C8 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		18517BF11EEBCB2C00B148C8 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		18517BFA1EEBD5FB00B148C8 /* NSObject+XYProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+XYProperties.h"; sourceTree = "<group>"; };
-		18517BFB1EEBD5FB00B148C8 /* NSObject+XYProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+XYProperties.m"; sourceTree = "<group>"; };
-		18517BFC1EEBD5FB00B148C8 /* NSObject+XYRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+XYRequest.h"; sourceTree = "<group>"; };
-		18517BFD1EEBD5FB00B148C8 /* NSObject+XYRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+XYRequest.m"; sourceTree = "<group>"; };
-		18517BFE1EEBD5FB00B148C8 /* UICollectionViewCell+XYConfigure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UICollectionViewCell+XYConfigure.h"; sourceTree = "<group>"; };
-		18517BFF1EEBD5FB00B148C8 /* UICollectionViewCell+XYConfigure.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UICollectionViewCell+XYConfigure.m"; sourceTree = "<group>"; };
-		18517C001EEBD5FB00B148C8 /* UITableViewCell+XYConfigure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableViewCell+XYConfigure.h"; sourceTree = "<group>"; };
-		18517C011EEBD5FB00B148C8 /* UITableViewCell+XYConfigure.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableViewCell+XYConfigure.m"; sourceTree = "<group>"; };
-		18517C021EEBD5FB00B148C8 /* UIView+XYConfigure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+XYConfigure.h"; sourceTree = "<group>"; };
-		18517C031EEBD5FB00B148C8 /* UIView+XYConfigure.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+XYConfigure.m"; sourceTree = "<group>"; };
-		18517C041EEBD5FB00B148C8 /* XYCollectionViewModelProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYCollectionViewModelProtocol.h; sourceTree = "<group>"; };
-		18517C051EEBD5FB00B148C8 /* XYDBUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYDBUtil.h; sourceTree = "<group>"; };
-		18517C061EEBD5FB00B148C8 /* XYDBUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XYDBUtil.m; sourceTree = "<group>"; };
-		18517C071EEBD5FB00B148C8 /* XYNetworkRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYNetworkRequest.h; sourceTree = "<group>"; };
-		18517C081EEBD5FB00B148C8 /* XYNetworkRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XYNetworkRequest.m; sourceTree = "<group>"; };
-		18517C091EEBD5FB00B148C8 /* XYRequestProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYRequestProtocol.h; sourceTree = "<group>"; };
-		18517C0A1EEBD5FB00B148C8 /* XYTableViewModelProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYTableViewModelProtocol.h; sourceTree = "<group>"; };
-		18517C0B1EEBD5FB00B148C8 /* XYViewManagerProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYViewManagerProtocol.h; sourceTree = "<group>"; };
-		18517C0C1EEBD5FB00B148C8 /* XYViewModelProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYViewModelProtocol.h; sourceTree = "<group>"; };
 		18517C151EEBD64800B148C8 /* AFHTTPSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPSessionManager.h; sourceTree = "<group>"; };
 		18517C161EEBD64800B148C8 /* AFHTTPSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPSessionManager.m; sourceTree = "<group>"; };
 		18517C171EEBD64800B148C8 /* AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworking.h; sourceTree = "<group>"; };
@@ -197,6 +182,32 @@
 		1871ACD91EEEE2D900ABC452 /* NSString+FileDownloadsExtend.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+FileDownloadsExtend.m"; sourceTree = "<group>"; };
 		1871ACDB1EEEE55700ABC452 /* NSDate+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Utilities.h"; sourceTree = "<group>"; };
 		1871ACDC1EEEE55700ABC452 /* NSDate+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Utilities.m"; sourceTree = "<group>"; };
+		1871ACF01EEEECBE00ABC452 /* FilesTableViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilesTableViewModel.h; sourceTree = "<group>"; };
+		1871ACF11EEEECBE00ABC452 /* FilesTableViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FilesTableViewModel.m; sourceTree = "<group>"; };
+		1871ACF31EEEEE8C00ABC452 /* DownloadsTableViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadsTableViewModel.h; sourceTree = "<group>"; };
+		1871ACF41EEEEE8C00ABC452 /* DownloadsTableViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownloadsTableViewModel.m; sourceTree = "<group>"; };
+		1871ACF61EEEEFEF00ABC452 /* AppUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppUtils.h; sourceTree = "<group>"; };
+		1871ACF71EEEEFEF00ABC452 /* AppUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppUtils.m; sourceTree = "<group>"; };
+		1871AD0B1EEEF15100ABC452 /* BaseTableViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseTableViewModel.h; sourceTree = "<group>"; };
+		1871AD0C1EEEF15100ABC452 /* BaseTableViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseTableViewModel.m; sourceTree = "<group>"; };
+		1871AD0F1EEEF76E00ABC452 /* NSObject+XYProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+XYProperties.h"; sourceTree = "<group>"; };
+		1871AD101EEEF76E00ABC452 /* NSObject+XYProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+XYProperties.m"; sourceTree = "<group>"; };
+		1871AD111EEEF76E00ABC452 /* NSObject+XYRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+XYRequest.h"; sourceTree = "<group>"; };
+		1871AD121EEEF76E00ABC452 /* NSObject+XYRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+XYRequest.m"; sourceTree = "<group>"; };
+		1871AD131EEEF76E00ABC452 /* UICollectionViewCell+XYConfigure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UICollectionViewCell+XYConfigure.h"; sourceTree = "<group>"; };
+		1871AD141EEEF76E00ABC452 /* UICollectionViewCell+XYConfigure.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UICollectionViewCell+XYConfigure.m"; sourceTree = "<group>"; };
+		1871AD151EEEF76E00ABC452 /* UITableViewCell+XYConfigure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableViewCell+XYConfigure.h"; sourceTree = "<group>"; };
+		1871AD161EEEF76E00ABC452 /* UITableViewCell+XYConfigure.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableViewCell+XYConfigure.m"; sourceTree = "<group>"; };
+		1871AD171EEEF76E00ABC452 /* UIView+XYConfigure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+XYConfigure.h"; sourceTree = "<group>"; };
+		1871AD181EEEF76E00ABC452 /* UIView+XYConfigure.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+XYConfigure.m"; sourceTree = "<group>"; };
+		1871AD191EEEF76E00ABC452 /* XYCollectionViewModelProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYCollectionViewModelProtocol.h; sourceTree = "<group>"; };
+		1871AD1A1EEEF76E00ABC452 /* XYDBUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYDBUtil.h; sourceTree = "<group>"; };
+		1871AD1B1EEEF76E00ABC452 /* XYDBUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XYDBUtil.m; sourceTree = "<group>"; };
+		1871AD1C1EEEF76E00ABC452 /* XYNetworkRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYNetworkRequest.h; sourceTree = "<group>"; };
+		1871AD1D1EEEF76E00ABC452 /* XYNetworkRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XYNetworkRequest.m; sourceTree = "<group>"; };
+		1871AD1E1EEEF76E00ABC452 /* XYRequestProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYRequestProtocol.h; sourceTree = "<group>"; };
+		1871AD1F1EEEF76E00ABC452 /* XYTableViewModelProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYTableViewModelProtocol.h; sourceTree = "<group>"; };
+		1871AD201EEEF76E00ABC452 /* XYViewModelProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYViewModelProtocol.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -341,6 +352,8 @@
 				18300F711EEC57280035D6EE /* HUD */,
 				18300F781EEC57280035D6EE /* Network */,
 				18517C611EEBDB3600B148C8 /* Category */,
+				1871ACF61EEEEFEF00ABC452 /* AppUtils.h */,
+				1871ACF71EEEEFEF00ABC452 /* AppUtils.m */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -387,6 +400,8 @@
 				18517C451EEBD81D00B148C8 /* MainTabBarController.m */,
 				18517C651EEBDDDB00B148C8 /* BaseViewController.h */,
 				18517C661EEBDDDB00B148C8 /* BaseViewController.m */,
+				1871AD0B1EEEF15100ABC452 /* BaseTableViewModel.h */,
+				1871AD0C1EEEF15100ABC452 /* BaseTableViewModel.m */,
 				18517BF01EEBCB2C00B148C8 /* AppDelegate.h */,
 				18517BF11EEBCB2C00B148C8 /* AppDelegate.m */,
 			);
@@ -441,26 +456,8 @@
 		18517BF91EEBD5FB00B148C8 /* Reuse */ = {
 			isa = PBXGroup;
 			children = (
+				1871AD0E1EEEF74900ABC452 /* Protocol */,
 				18517C6F1EEBE08700B148C8 /* NODataPlaceholderView */,
-				18517BFA1EEBD5FB00B148C8 /* NSObject+XYProperties.h */,
-				18517BFB1EEBD5FB00B148C8 /* NSObject+XYProperties.m */,
-				18517BFC1EEBD5FB00B148C8 /* NSObject+XYRequest.h */,
-				18517BFD1EEBD5FB00B148C8 /* NSObject+XYRequest.m */,
-				18517BFE1EEBD5FB00B148C8 /* UICollectionViewCell+XYConfigure.h */,
-				18517BFF1EEBD5FB00B148C8 /* UICollectionViewCell+XYConfigure.m */,
-				18517C001EEBD5FB00B148C8 /* UITableViewCell+XYConfigure.h */,
-				18517C011EEBD5FB00B148C8 /* UITableViewCell+XYConfigure.m */,
-				18517C021EEBD5FB00B148C8 /* UIView+XYConfigure.h */,
-				18517C031EEBD5FB00B148C8 /* UIView+XYConfigure.m */,
-				18517C041EEBD5FB00B148C8 /* XYCollectionViewModelProtocol.h */,
-				18517C051EEBD5FB00B148C8 /* XYDBUtil.h */,
-				18517C061EEBD5FB00B148C8 /* XYDBUtil.m */,
-				18517C071EEBD5FB00B148C8 /* XYNetworkRequest.h */,
-				18517C081EEBD5FB00B148C8 /* XYNetworkRequest.m */,
-				18517C091EEBD5FB00B148C8 /* XYRequestProtocol.h */,
-				18517C0A1EEBD5FB00B148C8 /* XYTableViewModelProtocol.h */,
-				18517C0B1EEBD5FB00B148C8 /* XYViewManagerProtocol.h */,
-				18517C0C1EEBD5FB00B148C8 /* XYViewModelProtocol.h */,
 			);
 			path = Reuse;
 			sourceTree = "<group>";
@@ -575,6 +572,8 @@
 		18517C4D1EEBD8D400B148C8 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				1871ACF31EEEEE8C00ABC452 /* DownloadsTableViewModel.h */,
+				1871ACF41EEEEE8C00ABC452 /* DownloadsTableViewModel.m */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -598,6 +597,8 @@
 		18517C501EEBD8DC00B148C8 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				1871ACF01EEEECBE00ABC452 /* FilesTableViewModel.h */,
+				1871ACF11EEEECBE00ABC452 /* FilesTableViewModel.m */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -647,6 +648,31 @@
 				18517C731EEBE08700B148C8 /* UITableView+NoDataPlaceholderExtend.m */,
 			);
 			path = NODataPlaceholderView;
+			sourceTree = "<group>";
+		};
+		1871AD0E1EEEF74900ABC452 /* Protocol */ = {
+			isa = PBXGroup;
+			children = (
+				1871AD0F1EEEF76E00ABC452 /* NSObject+XYProperties.h */,
+				1871AD101EEEF76E00ABC452 /* NSObject+XYProperties.m */,
+				1871AD111EEEF76E00ABC452 /* NSObject+XYRequest.h */,
+				1871AD121EEEF76E00ABC452 /* NSObject+XYRequest.m */,
+				1871AD131EEEF76E00ABC452 /* UICollectionViewCell+XYConfigure.h */,
+				1871AD141EEEF76E00ABC452 /* UICollectionViewCell+XYConfigure.m */,
+				1871AD151EEEF76E00ABC452 /* UITableViewCell+XYConfigure.h */,
+				1871AD161EEEF76E00ABC452 /* UITableViewCell+XYConfigure.m */,
+				1871AD171EEEF76E00ABC452 /* UIView+XYConfigure.h */,
+				1871AD181EEEF76E00ABC452 /* UIView+XYConfigure.m */,
+				1871AD191EEEF76E00ABC452 /* XYCollectionViewModelProtocol.h */,
+				1871AD1A1EEEF76E00ABC452 /* XYDBUtil.h */,
+				1871AD1B1EEEF76E00ABC452 /* XYDBUtil.m */,
+				1871AD1C1EEEF76E00ABC452 /* XYNetworkRequest.h */,
+				1871AD1D1EEEF76E00ABC452 /* XYNetworkRequest.m */,
+				1871AD1E1EEEF76E00ABC452 /* XYRequestProtocol.h */,
+				1871AD1F1EEEF76E00ABC452 /* XYTableViewModelProtocol.h */,
+				1871AD201EEEF76E00ABC452 /* XYViewModelProtocol.h */,
+			);
+			path = Protocol;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -723,21 +749,22 @@
 			files = (
 				18300FCA1EED38820035D6EE /* FFCircularProgressView.m in Sources */,
 				18517C271EEBD64800B148C8 /* AFURLSessionManager.m in Sources */,
-				18517C131EEBD5FB00B148C8 /* XYNetworkRequest.m in Sources */,
 				18300FAE1EECE79F0035D6EE /* NSLayoutConstraint+MASDebugAdditions.m in Sources */,
 				18300F661EEC54570035D6EE /* OSDownloadProgress.m in Sources */,
 				18517C641EEBDB3E00B148C8 /* UIImage+XYImage.m in Sources */,
 				18517C3C1EEBD66A00B148C8 /* FMDatabasePool.m in Sources */,
 				18300FAB1EECE79F0035D6EE /* MASViewAttribute.m in Sources */,
-				18517C0E1EEBD5FB00B148C8 /* NSObject+XYRequest.m in Sources */,
+				1871AD241EEEF76E00ABC452 /* UITableViewCell+XYConfigure.m in Sources */,
 				18300FAF1EECE79F0035D6EE /* View+MASAdditions.m in Sources */,
 				18517C671EEBDDDB00B148C8 /* BaseViewController.m in Sources */,
 				18300FAA1EECE79F0035D6EE /* MASLayoutConstraint.m in Sources */,
 				18517C741EEBE08700B148C8 /* UIScrollView+NoDataPlaceholder.m in Sources */,
 				18517C5F1EEBD98200B148C8 /* MoreViewController.m in Sources */,
 				18300FA91EECE79F0035D6EE /* MASConstraintMaker.m in Sources */,
-				18517C101EEBD5FB00B148C8 /* UITableViewCell+XYConfigure.m in Sources */,
+				1871ACF51EEEEE8C00ABC452 /* DownloadsTableViewModel.m in Sources */,
+				1871ACF81EEEEFEF00ABC452 /* AppUtils.m in Sources */,
 				18300FCB1EED38820035D6EE /* UIColor+iOS7.m in Sources */,
+				1871AD211EEEF76E00ABC452 /* NSObject+XYProperties.m in Sources */,
 				18300FA81EECE79F0035D6EE /* MASConstraint.m in Sources */,
 				18300FA71EECE79F0035D6EE /* MASCompositeConstraint.m in Sources */,
 				18300FAC1EECE79F0035D6EE /* MASViewConstraint.m in Sources */,
@@ -747,26 +774,29 @@
 				18517C3B1EEBD66A00B148C8 /* FMDatabaseAdditions.m in Sources */,
 				18517C461EEBD81D00B148C8 /* MainNavigationController.m in Sources */,
 				18517C751EEBE08700B148C8 /* UITableView+NoDataPlaceholderExtend.m in Sources */,
-				18517C121EEBD5FB00B148C8 /* XYDBUtil.m in Sources */,
+				1871AD231EEEF76E00ABC452 /* UICollectionViewCell+XYConfigure.m in Sources */,
+				1871AD261EEEF76E00ABC452 /* XYDBUtil.m in Sources */,
+				1871ACF21EEEECBE00ABC452 /* FilesTableViewModel.m in Sources */,
+				1871AD0D1EEEF15100ABC452 /* BaseTableViewModel.m in Sources */,
 				1871ACDD1EEEE55700ABC452 /* NSDate+Utilities.m in Sources */,
 				18517C471EEBD81D00B148C8 /* MainTabBarController.m in Sources */,
+				1871AD251EEEF76E00ABC452 /* UIView+XYConfigure.m in Sources */,
 				18300F651EEC54570035D6EE /* OSDownloadItem.m in Sources */,
 				18517C3E1EEBD66A00B148C8 /* FMResultSet.m in Sources */,
+				1871AD271EEEF76E00ABC452 /* XYNetworkRequest.m in Sources */,
 				18300F851EEC57920035D6EE /* OSFileDownloadCell.m in Sources */,
 				18517C591EEBD95C00B148C8 /* FilesViewController.m in Sources */,
+				1871AD221EEEF76E00ABC452 /* NSObject+XYRequest.m in Sources */,
 				18300F7D1EEC57280035D6EE /* MBProgressHUD.m in Sources */,
 				18300FB01EECE79F0035D6EE /* ViewController+MASAdditions.m in Sources */,
 				18517C241EEBD64800B148C8 /* AFSecurityPolicy.m in Sources */,
 				18300F811EEC57280035D6EE /* NetworkTypeUtils.m in Sources */,
 				18300F7E1EEC57280035D6EE /* NSObject+XYHUD.m in Sources */,
-				18517C0F1EEBD5FB00B148C8 /* UICollectionViewCell+XYConfigure.m in Sources */,
 				18517C251EEBD64800B148C8 /* AFURLRequestSerialization.m in Sources */,
-				18517C111EEBD5FB00B148C8 /* UIView+XYConfigure.m in Sources */,
 				18517BF51EEBCB2C00B148C8 /* AppDelegate.m in Sources */,
 				18517C221EEBD64800B148C8 /* AFHTTPSessionManager.m in Sources */,
 				18517C5C1EEBD97500B148C8 /* DownloadsViewController.m in Sources */,
 				18300F6F1EEC55390035D6EE /* OSFileDownloadModule.m in Sources */,
-				18517C0D1EEBD5FB00B148C8 /* NSObject+XYProperties.m in Sources */,
 				18517C231EEBD64800B148C8 /* AFNetworkReachabilityManager.m in Sources */,
 				18300F7F1EEC57280035D6EE /* UIViewController+XYHUD.m in Sources */,
 				18300F641EEC54570035D6EE /* OSDownloaderManager.m in Sources */,
