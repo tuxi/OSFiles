@@ -18,9 +18,3 @@
 - (void)setLongPressGestureRecognizer:(void (^)(UILongPressGestureRecognizer *longPres))block;
 
 @end
-
-@interface NSString (DownloadUtils)
-
-+ (NSString *)transformedFileSizeValue:(NSNumber *)value;
-+ (NSString *)stringWithRemainingTime:(NSTimeInterval)remainingTime;
-@end

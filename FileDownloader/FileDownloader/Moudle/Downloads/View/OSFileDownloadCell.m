@@ -11,7 +11,7 @@
 #import "AppDelegate.h"
 #import "OSDownloaderManager.h"
 #import "FFCircularProgressView.h"
-#import "NSString+DateExtension.h"
+#import "NSString+FileDownloadsExtend.h"
 
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
@@ -473,61 +473,4 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
 
 @end
 
-@implementation NSString (DownloadUtils)
 
-+ (NSString *)transformedFileSizeValue:(NSNumber *)value {
-    
-    double convertedValue = [value doubleValue];
-    int multiplyFactor = 0;
-    
-    NSArray *tokens = [NSArray arrayWithObjects:@"B",@"KB",@"MB",@"GB",@"TB",@"PB", @"EB", @"ZB", @"YB",nil];
-    
-    while (convertedValue > 1024) {
-        convertedValue /= 1024;
-        multiplyFactor++;
-    }
-    
-    return [NSString stringWithFormat:@"%4.2f %@",convertedValue, [tokens objectAtIndex:multiplyFactor]];
-}
-
-+ (NSString *)stringWithRemainingTime:(NSTimeInterval)remainingTime {
-    NSNumberFormatter *aNumberFormatter = [[NSNumberFormatter alloc] init];
-    [aNumberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
-    [aNumberFormatter setMinimumFractionDigits:1];
-    [aNumberFormatter setMaximumFractionDigits:1];
-    [aNumberFormatter setDecimalSeparator:@"."];
-    return [NSString stringWithFormat:@"%@ s", [aNumberFormatter stringFromNumber:@(remainingTime)]];
-    
-}
-
-+ (NSString *)contentTypeForImageData:(NSData *)data {
-    uint8_t c;
-    [data getBytes:&c length:1];
-    switch (c) {
-        case 0xFF:
-            return @"image/jpeg";
-        case 0x89:
-            return @"image/png";
-        case 0x47:
-            return @"image/gif";
-        case 0x49:
-        case 0x4D:
-            return @"image/tiff";
-        case 0x52:
-            // R as RIFF for WEBP
-            if ([data length] < 12) {
-                return nil;
-            }
-            
-            NSString *testString = [[NSString alloc] initWithData:[data subdataWithRange:NSMakeRange(0, 12)] encoding:NSASCIIStringEncoding];
-            if ([testString hasPrefix:@"RIFF"] && [testString hasSuffix:@"WEBP"]) {
-                return @"image/webp";
-            }
-            
-            return nil;
-    }
-    return nil;
-}
-
-
-@end
