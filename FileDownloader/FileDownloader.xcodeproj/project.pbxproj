@@ -28,7 +28,7 @@
 		18300FB01EECE79F0035D6EE /* ViewController+MASAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300FA61EECE79F0035D6EE /* ViewController+MASAdditions.m */; };
 		18300FCA1EED38820035D6EE /* FFCircularProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300FC71EED38820035D6EE /* FFCircularProgressView.m */; };
 		18300FCB1EED38820035D6EE /* UIColor+iOS7.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300FC91EED38820035D6EE /* UIColor+iOS7.m */; };
-		18300FCE1EED3DF50035D6EE /* OSFileDownloadItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300FCD1EED3DF50035D6EE /* OSFileDownloadItem.m */; };
+		18300FCE1EED3DF50035D6EE /* OSFileItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300FCD1EED3DF50035D6EE /* OSFileItem.m */; };
 		18300FD11EEDABF90035D6EE /* NSString+DateExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300FD01EEDABF90035D6EE /* NSString+DateExtension.m */; };
 		18517BC81EEBC86600B148C8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 18517BC71EEBC86600B148C8 /* main.m */; };
 		18517BD31EEBC86600B148C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18517BD21EEBC86600B148C8 /* Assets.xcassets */; };
@@ -116,8 +116,8 @@
 		18300FC71EED38820035D6EE /* FFCircularProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFCircularProgressView.m; sourceTree = "<group>"; };
 		18300FC81EED38820035D6EE /* UIColor+iOS7.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+iOS7.h"; sourceTree = "<group>"; };
 		18300FC91EED38820035D6EE /* UIColor+iOS7.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+iOS7.m"; sourceTree = "<group>"; };
-		18300FCC1EED3DF50035D6EE /* OSFileDownloadItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSFileDownloadItem.h; sourceTree = "<group>"; };
-		18300FCD1EED3DF50035D6EE /* OSFileDownloadItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSFileDownloadItem.m; sourceTree = "<group>"; };
+		18300FCC1EED3DF50035D6EE /* OSFileItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSFileItem.h; sourceTree = "<group>"; };
+		18300FCD1EED3DF50035D6EE /* OSFileItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSFileItem.m; sourceTree = "<group>"; };
 		18300FCF1EEDABF90035D6EE /* NSString+DateExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+DateExtension.h"; sourceTree = "<group>"; };
 		18300FD01EEDABF90035D6EE /* NSString+DateExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+DateExtension.m"; sourceTree = "<group>"; };
 		18517BC31EEBC86600B148C8 /* FileDownloader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FileDownloader.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -552,8 +552,8 @@
 		18517C4B1EEBD8D400B148C8 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				18300FCC1EED3DF50035D6EE /* OSFileDownloadItem.h */,
-				18300FCD1EED3DF50035D6EE /* OSFileDownloadItem.m */,
+				18300FCC1EED3DF50035D6EE /* OSFileItem.h */,
+				18300FCD1EED3DF50035D6EE /* OSFileItem.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -769,7 +769,7 @@
 				18517C391EEBD66A00B148C8 /* README.markdown in Sources */,
 				18300FD11EEDABF90035D6EE /* NSString+DateExtension.m in Sources */,
 				18517BC81EEBC86600B148C8 /* main.m in Sources */,
-				18300FCE1EED3DF50035D6EE /* OSFileDownloadItem.m in Sources */,
+				18300FCE1EED3DF50035D6EE /* OSFileItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

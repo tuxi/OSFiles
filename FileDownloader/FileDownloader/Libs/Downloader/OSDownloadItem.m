@@ -10,9 +10,30 @@
 
 @interface OSDownloadItem ()
 
-@property (nonatomic, copy) NSString *urlPath;
-@property (nonatomic, strong) NSURLSessionDownloadTask *sessionDownloadTask;
+/** 开始下载时的时间 */
+@property (nonatomic, strong) NSDate *downloadStartDate;
+/** 预计文件的总大小字节数 */
+@property (nonatomic, assign) int64_t expectedFileTotalSize;
+/** 已下载文件的大小字节数 */
+@property (nonatomic, assign) int64_t receivedFileSize;
+/** 恢复下载时所在文件的字节数 */
+@property (nonatomic, assign) ino64_t resumedFileSizeInBytes;
+/** 每秒下载的字节数 */
+@property (nonatomic, assign) NSUInteger bytesPerSecondSpeed;
+/** 下载进度 */
 @property (nonatomic, strong) NSProgress *naviteProgress;
+/** 下载的url */
+@property (nonatomic, copy) NSString *urlPath;
+/** 下载会话对象 NSURLSessionDownloadTask */
+@property (nonatomic, strong) NSURLSessionDownloadTask *sessionDownloadTask;
+/** 下载时发送的错误信息栈 */
+@property (nonatomic, strong) NSArray<NSString *> *errorMessagesStack;
+/** 最后的HTTP状态码 */
+@property (nonatomic, assign) NSInteger lastHttpStatusCode;
+/** 最终文件存储的本地路径 */
+@property (nonatomic, strong) NSURL *finalLocalFileURL;
+/** 文件的类型 */
+@property (nonatomic, copy) NSString *MIMEType;
 
 @end
 
@@ -95,6 +116,9 @@
     [dict setObject:self.naviteProgress forKey:@"naviteProgress"];
     if (self.sessionDownloadTask) {
         [dict setObject:@(YES) forKey:@"hasSessionDownloadTask"];
+    }
+    if (self.MIMEType) {
+        [dict setObject:self.MIMEType forKey:@"MIMEType"];
     }
     NSString *description = [NSString stringWithFormat:@"%@", dict];
     

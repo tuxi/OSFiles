@@ -9,11 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "OSFileDownloadModule.h"
 
-@class OSFileDownloadItem;
+@class OSFileItem;
 
 @interface OSFileDownloadCell : UITableViewCell
 
-@property (nonatomic, strong) OSFileDownloadItem *downloadItem;
+@property (nonatomic, strong) OSFileItem *downloadItem;
 
 - (void)setLongPressGestureRecognizer:(void (^)(UILongPressGestureRecognizer *longPres))block;
 

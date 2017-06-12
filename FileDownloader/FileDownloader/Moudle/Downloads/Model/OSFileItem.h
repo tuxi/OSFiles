@@ -1,5 +1,5 @@
 //
-//  OSFileDownloadItem.h
+//  OSFileItem.h
 //  DownloaderManager
 //
 //  Created by Ossey on 2017/6/5.
@@ -21,7 +21,7 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
     OSFileDownloadStatusFailure
 };
 
-@interface OSFileDownloadItem : NSObject
+@interface OSFileItem : NSObject
 
 
 @property (nonatomic, strong, readonly) NSString *urlPath;
@@ -33,6 +33,7 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 @property (nonatomic, strong) NSArray<NSString *> *downloadErrorMessagesStack;
 @property (nonatomic, assign) NSInteger lastHttpStatusCode;
 @property (nonatomic, copy) NSString *fileName;
+@property (nonatomic, copy) NSString *MIMEType;
 
 - (instancetype)initWithURL:(NSString *)urlPath NS_DESIGNATED_INITIALIZER;
 

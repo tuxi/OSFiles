@@ -11,7 +11,7 @@
 #import "AppDelegate.h"
 #import "NetworkTypeUtils.h"
 #import "NSObject+XYHUD.h"
-#import "OSFileDownloadItem.h"
+#import "OSFileItem.h"
 
 static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
 
@@ -79,7 +79,7 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
     
     OSFileDownloadCell *cell = [tableView dequeueReusableCellWithIdentifier:DownloadCellIdentifierKey forIndexPath:indexPath];
     AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    OSFileDownloadItem *downloadItem = [delegate.downloadModule getDownloadingItems][indexPath.row];
+    OSFileItem *downloadItem = [delegate.downloadModule getDownloadingItems][indexPath.row];
     cell.downloadItem = downloadItem;
     __weak typeof(self) weakSelf = self;
     [cell setLongPressGestureRecognizer:^(UILongPressGestureRecognizer *longPres) {

@@ -7,7 +7,7 @@
 //
 
 #import "OSFileDownloadCell.h"
-#import "OSFileDownloadItem.h"
+#import "OSFileItem.h"
 #import "AppDelegate.h"
 #import "OSDownloaderManager.h"
 #import "FFCircularProgressView.h"
@@ -100,7 +100,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
 
 
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~ update subviews ~~~~~~~~~~~~~~~~~~~~~~
-- (void)setDownloadItem:(OSFileDownloadItem *)downloadItem {
+- (void)setDownloadItem:(OSFileItem *)downloadItem {
     _downloadItem = downloadItem;
     
     [self setDownloadViewByStatus:downloadItem.status];
@@ -120,29 +120,39 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
     self.cycleView.hidden = NO;
     self.fileSizeLabel.hidden = YES;
     self.iconView.hidden = YES;
+    self.iconView.image = [UIImage imageNamed:@"TabBrowser"];
+    
+    NSString *receivedFileSize = [NSString transformedFileSizeValue:@(self.downloadItem.progressObj.receivedFileSize)];
+    NSString *expectedFileTotalSize = [NSString transformedFileSizeValue:@(self.downloadItem.progressObj.expectedFileTotalSize)];
+    
+    NSString *downloadFileSizeStr = [NSString stringWithFormat:@"%@ of %@", receivedFileSize, expectedFileTotalSize];
+    [self.downloadStatusLabel setText:downloadFileSizeStr];
+    
+    
+    [self.remainTimeLabel setText:[NSString stringWithRemainingTime:self.downloadItem.progressObj.estimatedRemainingTime]];
+    [self.speedLabel setText:[NSString stringWithFormat:@"%@/s", [NSString transformedFileSizeValue:@(self.downloadItem.progressObj.bytesPerSecondSpeed)]]];
+    
+    self.cycleView.circularState = FFCircularStateIcon;
+    
+    NSData *data = [NSData dataWithContentsOfURL:self.downloadItem.localFileURL];
+    if (data) {
+        
+    }
     
     switch (aStatus) {
             
         case OSFileDownloadStatusNotStarted:
-
+            self.cycleView.circularState = FFCircularStateIcon;
 
             break;
             
         case OSFileDownloadStatusStarted:
         {
-            NSString *receivedFileSize = [NSString transformedFileSizeValue:@(self.downloadItem.progressObj.receivedFileSize)];
-            NSString *expectedFileTotalSize = [NSString transformedFileSizeValue:@(self.downloadItem.progressObj.expectedFileTotalSize)];
-            
-            NSString *downloadFileSizeStr = [NSString stringWithFormat:@"%@ of %@", receivedFileSize, expectedFileTotalSize];
-            [self.downloadStatusLabel setText:downloadFileSizeStr];
-            
-            
-            [self.remainTimeLabel setText:[NSString stringWithRemainingTime:self.downloadItem.progressObj.estimatedRemainingTime]];
-            [self.speedLabel setText:[NSString stringWithFormat:@"%@/s", [NSString transformedFileSizeValue:@(self.downloadItem.progressObj.bytesPerSecondSpeed)]]];
+           self.cycleView.circularState = FFCircularStateStopProgress;
         }
             break;
         case OSFileDownloadStatusPaused:
-            
+            self.cycleView.circularState = FFCircularStateIcon;
             break;
             
         case OSFileDownloadStatusSuccess:
@@ -155,6 +165,12 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
             self.iconView.hidden = NO;
             NSString *expectedFileTotalSize = [NSString transformedFileSizeValue:@(self.downloadItem.progressObj.expectedFileTotalSize)];
             [self.fileSizeLabel setText:expectedFileTotalSize];
+            self.cycleView.circularState = FFCircularStateCompleted;
+            NSLog(@"MIMEType:(%@) (%@, %d)", self.downloadItem.MIMEType, [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__);
+            if ([self.downloadItem.MIMEType isEqualToString:@"image/jpeg"] || [self.downloadItem.MIMEType isEqualToString:@"image/png"]) {
+                NSData *data = [NSData dataWithContentsOfURL:self.downloadItem.localFileURL];
+                self.iconView.image = [UIImage imageWithData:data];
+            }
         }
             break;
             
@@ -163,10 +179,10 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
             break;
             
         case OSFileDownloadStatusFailure:
-          
+          self.cycleView.circularState = FFCircularStateStopSpinning;
             break;
         case OSFileDownloadStatusInterrupted:
-          
+          self.cycleView.circularState = FFCircularStateStopSpinning;
             break;
             
         default:
@@ -208,7 +224,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
     [delegate.downloadModule resume:urlPath];
 }
 
-- (void)start:(OSFileDownloadItem *)downloadItem {
+- (void)start:(OSFileItem *)downloadItem {
     AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     [delegate.downloadModule start:downloadItem];
 }
@@ -482,6 +498,35 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
     [aNumberFormatter setDecimalSeparator:@"."];
     return [NSString stringWithFormat:@"%@ s", [aNumberFormatter stringFromNumber:@(remainingTime)]];
     
+}
+
++ (NSString *)contentTypeForImageData:(NSData *)data {
+    uint8_t c;
+    [data getBytes:&c length:1];
+    switch (c) {
+        case 0xFF:
+            return @"image/jpeg";
+        case 0x89:
+            return @"image/png";
+        case 0x47:
+            return @"image/gif";
+        case 0x49:
+        case 0x4D:
+            return @"image/tiff";
+        case 0x52:
+            // R as RIFF for WEBP
+            if ([data length] < 12) {
+                return nil;
+            }
+            
+            NSString *testString = [[NSString alloc] initWithData:[data subdataWithRange:NSMakeRange(0, 12)] encoding:NSASCIIStringEncoding];
+            if ([testString hasPrefix:@"RIFF"] && [testString hasSuffix:@"WEBP"]) {
+                return @"image/webp";
+            }
+            
+            return nil;
+    }
+    return nil;
 }
 
 

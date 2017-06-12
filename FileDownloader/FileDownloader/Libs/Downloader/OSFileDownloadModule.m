@@ -7,11 +7,11 @@
 //
 
 #import "OSFileDownloadModule.h"
-#import "OSFileDownloadItem.h"
+#import "OSFileItem.h"
 #import "AppDelegate.h"
 #import "OSDownloaderManager.h"
 
-static NSString * OSFileDownloadItemsKey = @"downloadItems";
+static NSString * OSFileItemsKey = @"downloadItems";
 static void *ProgressObserverContext = &ProgressObserverContext;
 NSString * const OSFileDownloadProgressChangeNotification = @"OSFileDownloadProgressChangeNotification";
 NSString * const OSFileDownloadSussessNotification = @"OSFileDownloadSussessNotification";
@@ -21,7 +21,7 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
 @interface OSFileDownloadModule()
 
 @property (nonatomic, assign) NSUInteger networkActivityIndicatorCount;
-@property (nonatomic, strong) NSMutableArray<OSFileDownloadItem *> *downloadItems;;
+@property (nonatomic, strong) NSMutableArray<OSFileItem *> *downloadItems;;
 @property (nonatomic, strong) NSProgress *progress;
 
 @end
@@ -67,17 +67,17 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
     if (self.dataSource && [self.dataSource respondsToSelector:@selector(addDownloadTaskFromRemoteURLs)]) {
         NSArray *urls = [self.dataSource addDownloadTaskFromRemoteURLs];
         
-        /// 设置所有要下载的url,根据url创建OSFileDownloadItem
+        /// 设置所有要下载的url,根据url创建OSFileItem
         [urls enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             // 下载之前先去downloadItems中查找有没有相同的downloadToken，如果有就是已经添加过的
             NSInteger downloadItemIdx = [self foundItemIndxInDownloadItemsByURL:obj];
             if (downloadItemIdx == NSNotFound) {
                 // 之前没下载过
-                OSFileDownloadItem *downloadItem = [[OSFileDownloadItem alloc] initWithURL:obj];
+                OSFileItem *downloadItem = [[OSFileItem alloc] initWithURL:obj];
                 [self.downloadItems addObject:downloadItem];
             } else {
                 // 之前下载过
-                OSFileDownloadItem *downloadItem = [self.downloadItems objectAtIndex:downloadItemIdx];
+                OSFileItem *downloadItem = [self.downloadItems objectAtIndex:downloadItemIdx];
                 if (downloadItem.status == OSFileDownloadStatusStarted) {
                     BOOL isDownloading = [[[self class] getDownloadManager] isDownloadingByURL:downloadItem.urlPath];
                     if (isDownloading == NO) {
@@ -97,7 +97,7 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
 
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ Public ~~~~~~~~~~~~~~~~~~~~~~~
 
-- (void)start:(OSFileDownloadItem *)downloadItem {
+- (void)start:(OSFileItem *)downloadItem {
     
     [self checkAllowedToDownloadTasksInTheCurrentNetworkWithCompletionHandler:^(BOOL shouldDownload) {
         if (!shouldDownload) {
@@ -133,8 +133,8 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
     /// 根据downloadIdentifier 在self.downloadItems中找到对应的item
     NSUInteger itemIdx = [self foundItemIndxInDownloadItemsByURL:urlPath];
     if (itemIdx != NSNotFound) {
-        // 根据索引在self.downloadItems中取出OSFileDownloadItem，修改状态，并进行归档
-        OSFileDownloadItem *downloadItem = [self.downloadItems objectAtIndex:itemIdx];
+        // 根据索引在self.downloadItems中取出OSFileItem，修改状态，并进行归档
+        OSFileItem *downloadItem = [self.downloadItems objectAtIndex:itemIdx];
         downloadItem.status = OSFileDownloadStatusCancelled;
         // 将其从downloadItem中移除，并重新归档
         [self.downloadItems removeObject:downloadItem];
@@ -158,7 +158,7 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
         
         NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:urlPath];
         if (foundItemIdx != NSNotFound) {
-            OSFileDownloadItem *downloadItem = [self.downloadItems objectAtIndex:foundItemIdx];
+            OSFileItem *downloadItem = [self.downloadItems objectAtIndex:foundItemIdx];
             if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_8_4) {
                 // iOS9以上执行NSProgress 的 resume，resumingHandler会得到回调
                 // OSDownloaderManager中已经对其回调时使用了执行了恢复任务
@@ -181,7 +181,7 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
     
     NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:urlPath];
     if (foundItemIdx != NSNotFound) {
-        OSFileDownloadItem *downloadItem = [self.downloadItems objectAtIndex:foundItemIdx];
+        OSFileItem *downloadItem = [self.downloadItems objectAtIndex:foundItemIdx];
         BOOL isDownloading = [[[self class] getDownloadManager] isDownloadingByURL:downloadItem.urlPath];
         if (isDownloading) {
             downloadItem.status = OSFileDownloadStatusPaused;
@@ -201,13 +201,13 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
     [self storedDownloadItems];
 }
 
-- (NSArray<OSFileDownloadItem *> *)getAllSuccessItems {
+- (NSArray<OSFileItem *> *)getAllSuccessItems {
     if (!self.downloadItems.count) {
         return nil;
     }
     
     NSMutableArray *allSuccessItems = [NSMutableArray array];
-    [self.downloadItems enumerateObjectsUsingBlock:^(OSFileDownloadItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self.downloadItems enumerateObjectsUsingBlock:^(OSFileItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if (obj.status == OSFileDownloadStatusSuccess) {
             [allSuccessItems addObject:obj];
         }
@@ -215,13 +215,13 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
     return allSuccessItems;
 }
 
-- (NSArray<OSFileDownloadItem *> *)getDownloadingItems {
+- (NSArray<OSFileItem *> *)getDownloadingItems {
     if (!self.downloadItems.count) {
         return nil;
     }
     
     NSMutableArray *downloadingItems = [NSMutableArray array];
-    [self.downloadItems enumerateObjectsUsingBlock:^(OSFileDownloadItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self.downloadItems enumerateObjectsUsingBlock:^(OSFileItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if (obj.status != OSFileDownloadStatusSuccess) {
             [downloadingItems addObject:obj];
         }
@@ -234,47 +234,49 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
 
 
 
-- (void)downloadSuccessnWithURL:(NSString *)url finalLocalFileURL:(NSURL *)aFileURL; {
+- (void)downloadSuccessnWithDownloadItem:(id<OSDownloadItem>)downloadItem {
     
     // 根据aIdentifier在downloadItems中查找对应的DownloadItem，更改其下载状态，发送通知
-    NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:url];    OSFileDownloadItem *downloadItem = nil;
+    NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:downloadItem.urlPath];
+    OSFileItem *fileItem = nil;
     if (foundItemIdx != NSNotFound) {
-        NSLog(@"INFO: Download success (id: %@) (%@, %d)", url, [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__);
+        NSLog(@"INFO: Download success (id: %@) (%@, %d)", downloadItem.urlPath, [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__);
         
-        downloadItem = [self.downloadItems objectAtIndex:foundItemIdx];
-        downloadItem.status = OSFileDownloadStatusSuccess;
-        downloadItem.localFileURL = aFileURL;
+        fileItem = [self.downloadItems objectAtIndex:foundItemIdx];
+        fileItem.status = OSFileDownloadStatusSuccess;
+        fileItem.localFileURL = downloadItem.finalLocalFileURL;
+        fileItem.MIMEType = downloadItem.MIMEType;
         [self storedDownloadItems];
     } else {
-        NSLog(@"Error: Completed download item not found (id: %@) (%@, %d)", url, [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__);
+        NSLog(@"Error: Completed download item not found (id: %@) (%@, %d)", downloadItem.urlPath, [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__);
     }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:OSFileDownloadSussessNotification object:downloadItem];
 }
 
-- (void)downloadFailureWithURL:(NSString *)url error:(NSError *)anError httpStatusCode:(NSInteger)aHttpStatusCode errorMessagesStack:(NSArray<NSString *> *)anErrorMessagesStack resumeData:(NSData *)aResumeData {
+- (void)downloadFailureWithDownloadItem:(id<OSDownloadItem>)downloadItem resumeData:(NSData *)resumeData error:(NSError *)error {
     
     // 根据aIdentifier在downloadItems中查找对应的DownloadItem
-    NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:url];
-    OSFileDownloadItem *downloadItem = nil;
+    NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:downloadItem.urlPath];
+    OSFileItem *fileItem = nil;
     if (foundItemIdx != NSNotFound) {
-        downloadItem = [self.downloadItems objectAtIndex:foundItemIdx];
-        downloadItem.lastHttpStatusCode = aHttpStatusCode;
-        downloadItem.resumeData = aResumeData;
-        downloadItem.downloadError = anError;
-        downloadItem.downloadErrorMessagesStack = anErrorMessagesStack;
+        fileItem = [self.downloadItems objectAtIndex:foundItemIdx];
+        fileItem.lastHttpStatusCode = downloadItem.lastHttpStatusCode;
+        fileItem.resumeData = resumeData;
+        fileItem.downloadError = error;
+        fileItem.downloadErrorMessagesStack = downloadItem.errorMessagesStack;
         
         // 更新此下载失败的item的状态
-        if (downloadItem.status != OSFileDownloadStatusPaused) {
-            if (aResumeData.length > 0)
+        if (fileItem.status != OSFileDownloadStatusPaused) {
+            if (resumeData.length > 0)
             {
-                downloadItem.status = OSFileDownloadStatusInterrupted;
-            } else if ([anError.domain isEqualToString:NSURLErrorDomain] && (anError.code == NSURLErrorCancelled))
+                fileItem.status = OSFileDownloadStatusInterrupted;
+            } else if ([error.domain isEqualToString:NSURLErrorDomain] && (error.code == NSURLErrorCancelled))
             {
-                downloadItem.status = OSFileDownloadStatusCancelled;
+                fileItem.status = OSFileDownloadStatusCancelled;
             } else
             {
-                downloadItem.status = OSFileDownloadStatusFailure;
+                fileItem.status = OSFileDownloadStatusFailure;
             }
         }
         [self storedDownloadItems];
@@ -296,7 +298,7 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
     
     NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:url];
     
-    OSFileDownloadItem *downloadItem = nil;
+    OSFileItem *downloadItem = nil;
     if (foundItemIdx != NSNotFound) {
         downloadItem = [self.downloadItems objectAtIndex:foundItemIdx];
         if (progress) {
@@ -315,7 +317,7 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
     if (foundItemIdx != NSNotFound) {
         NSLog(@"INFO: Download paused - id: %@ (%@, %d)", url, [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__);
         
-        OSFileDownloadItem *downloadItem = [self.downloadItems objectAtIndex:foundItemIdx];
+        OSFileItem *downloadItem = [self.downloadItems objectAtIndex:foundItemIdx];
         downloadItem.status = OSFileDownloadStatusPaused;
         downloadItem.resumeData = aResumeData;
         [self storedDownloadItems];
@@ -330,7 +332,7 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
     NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:url];
     
     if (foundItemIdx != NSNotFound) {
-        OSFileDownloadItem *downloadItem = [self.downloadItems objectAtIndex:foundItemIdx];
+        OSFileItem *downloadItem = [self.downloadItems objectAtIndex:foundItemIdx];
         [self start:downloadItem];
     }
 }
@@ -374,16 +376,16 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
 
 
 /// 从本地获取所有的downloadItem
-- (NSMutableArray<OSFileDownloadItem *> *)restoredDownloadItems {
+- (NSMutableArray<OSFileItem *> *)restoredDownloadItems {
     
-    NSMutableArray<OSFileDownloadItem *> *restoredDownloadItems = [NSMutableArray array];
-    NSMutableArray<NSData *> *restoredMutableDataArray = [[NSUserDefaults standardUserDefaults] objectForKey:OSFileDownloadItemsKey];
+    NSMutableArray<OSFileItem *> *restoredDownloadItems = [NSMutableArray array];
+    NSMutableArray<NSData *> *restoredMutableDataArray = [[NSUserDefaults standardUserDefaults] objectForKey:OSFileItemsKey];
     if (!restoredMutableDataArray) {
         restoredMutableDataArray = [NSMutableArray array];
     }
     
     [restoredMutableDataArray enumerateObjectsUsingBlock:^(NSData * _Nonnull data, NSUInteger idx, BOOL * _Nonnull stop) {
-        OSFileDownloadItem *item = nil;
+        OSFileItem *item = nil;
         if (data) {
             @try {
                 // 解档
@@ -408,7 +410,7 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
     
     NSMutableArray<NSData *> *downloadItemsArchiveArray = [NSMutableArray arrayWithCapacity:self.downloadItems.count];
     
-    [self.downloadItems enumerateObjectsUsingBlock:^(OSFileDownloadItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self.downloadItems enumerateObjectsUsingBlock:^(OSFileItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSData *itemData = nil;
         @try {
             itemData = [NSKeyedArchiver archivedDataWithRootObject:obj];
@@ -423,7 +425,7 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
         
     }];
     
-    [[NSUserDefaults standardUserDefaults] setObject:downloadItemsArchiveArray forKey:OSFileDownloadItemsKey];
+    [[NSUserDefaults standardUserDefaults] setObject:downloadItemsArchiveArray forKey:OSFileItemsKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
@@ -498,7 +500,7 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
     if (!urlPath.length) {
         return NSNotFound;
     }
-    return [self.downloadItems indexOfObjectPassingTest:^BOOL(OSFileDownloadItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    return [self.downloadItems indexOfObjectPassingTest:^BOOL(OSFileItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         return [urlPath isEqualToString:obj.urlPath];
     }];
 }

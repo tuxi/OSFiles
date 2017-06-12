@@ -330,8 +330,9 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
         if (foundIdx > -1) {
             [self.waitingDownloadArray removeObjectAtIndex:foundIdx];
             NSError *cancelError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:nil];
-            if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadFailureWithURL:error:httpStatusCode:errorMessagesStack:resumeData:)]) {
-                [self.downloadDelegate downloadFailureWithURL:urlPath error:cancelError httpStatusCode:0 errorMessagesStack:nil resumeData:nil];
+            if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadFailureWithDownloadItem:resumeData:error:)]) {
+                OSDownloadItem *item = [[OSDownloadItem alloc] initWithURL:urlPath sessionDownloadTask:nil];
+                [self.downloadDelegate downloadFailureWithDownloadItem:item resumeData:nil error:cancelError];
             }
             [self checkMaxConcurrentDownloadCountThenDownloadWaitingQueueIfExceeded];
             
@@ -420,15 +421,14 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
 
 
 /// 下载成功并已成功保存到本地
-- (void)handleDownloadSuccessToLocalFileURL:(NSURL *)localFileURL
-                               downloadItem:(OSDownloadItem *)downloadItem
+- (void)handleDownloadSuccessWithDownloadItem:(OSDownloadItem *)downloadItem
                              taskIdentifier:(NSUInteger)taskIdentifier {
     
     downloadItem.naviteProgress.completedUnitCount = downloadItem.naviteProgress.totalUnitCount;
     [self.activeDownloadsDictionary removeObjectForKey:@(taskIdentifier)];
     [self _anDownloadTaskDidEnd];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.downloadDelegate downloadSuccessnWithURL:downloadItem.urlPath finalLocalFileURL:localFileURL];
+        [self.downloadDelegate downloadSuccessnWithDownloadItem:downloadItem];
     });
     [self checkMaxConcurrentDownloadCountThenDownloadWaitingQueueIfExceeded];
 }
@@ -443,11 +443,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
     [self.activeDownloadsDictionary removeObjectForKey:@(taskIdentifier)];
     [self _anDownloadTaskDidEnd];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.downloadDelegate downloadFailureWithURL:downloadItem.urlPath
-                                                error:error
-                                       httpStatusCode:downloadItem.lastHttpStatusCode
-                                   errorMessagesStack:downloadItem.errorMessagesStack
-                                           resumeData:resumeData];
+        [self.downloadDelegate downloadFailureWithDownloadItem:downloadItem resumeData:resumeData error:error];
     });
     
     
@@ -609,12 +605,13 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
         NSHTTPURLResponse *aHttpResponse = (NSHTTPURLResponse *)task.response;
         NSInteger httpStatusCode = aHttpResponse.statusCode;
         downloadItem.lastHttpStatusCode = httpStatusCode;
+        downloadItem.MIMEType = task.response.MIMEType;
         if (error == nil) {
             BOOL httpStatusCodeIsCorrectFlag = [self _isVaildHTTPStatusCode:httpStatusCode url:downloadItem.urlPath];
             if (httpStatusCodeIsCorrectFlag == YES) {
                 NSURL *finalLocalFileURL = downloadItem.finalLocalFileURL;
                 if (finalLocalFileURL) {
-                    [self handleDownloadSuccessToLocalFileURL:finalLocalFileURL downloadItem:downloadItem taskIdentifier:task.taskIdentifier];
+                    [self handleDownloadSuccessWithDownloadItem:downloadItem taskIdentifier:task.taskIdentifier];
                 } else {
                     NSError *finalError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorResourceUnavailable userInfo:nil];
                     [self handleDownloadFailureWithError:finalError downloadItem:downloadItem taskIdentifier:task.taskIdentifier resumeData:nil];

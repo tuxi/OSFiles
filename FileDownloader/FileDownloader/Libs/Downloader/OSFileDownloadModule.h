@@ -39,22 +39,22 @@ FOUNDATION_EXTERN NSString * const OSFileDownloadSussessNotification;
 FOUNDATION_EXTERN NSString * const OSFileDownloadFailureNotification;
 FOUNDATION_EXTERN NSString * const OSFileDownloadCanceldNotification;
 
-@class OSFileDownloadItem;
+@class OSFileItem;
 
 @interface OSFileDownloadModule : NSObject <OSDownloadProtocol>
 
-@property (nonatomic, strong, readonly) NSMutableArray<OSFileDownloadItem *> *downloadItems;
+@property (nonatomic, strong, readonly) NSMutableArray<OSFileItem *> *downloadItems;
 
 @property (nonatomic, weak) id<OSFileDownloaderDataSource> dataSource;
 @property (nonatomic, weak) id<OSFileDownloaderDelegate> delegate;
 
-- (void)start:(OSFileDownloadItem *)downloadItem;
+- (void)start:(OSFileItem *)downloadItem;
 - (void)cancel:(NSString *)url;
 - (void)resume:(NSString *)url;
 - (void)pause:(NSString *)url;
 + (OSDownloaderManager *)getDownloadManager;
 - (void)clearAllDownloadTask;
-- (NSArray<OSFileDownloadItem *> *)getAllSuccessItems;
-- (NSArray<OSFileDownloadItem *> *)getDownloadingItems;
+- (NSArray<OSFileItem *> *)getAllSuccessItems;
+- (NSArray<OSFileItem *> *)getDownloadingItems;
 
 @end

@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "FileDownloader/Libs/Downloader/OSDownloaderManager.m"
-            timestampString = "518886360.276553"
+            timestampString = "518971229.194916"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "597"
-            endingLineNumber = "597"
+            startingLineNumber = "593"
+            endingLineNumber = "593"
             landmarkName = "-URLSession:downloadTask:didResumeAtOffset:expectedTotalBytes:"
             landmarkType = "7">
          </BreakpointContent>
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "FileDownloader/Libs/Downloader/OSDownloaderManager.m"
-            timestampString = "518886360.276553"
+            timestampString = "518971229.194916"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "594"
-            endingLineNumber = "594"
+            startingLineNumber = "590"
+            endingLineNumber = "590"
             landmarkName = "-URLSession:downloadTask:didResumeAtOffset:expectedTotalBytes:"
             landmarkType = "7">
          </BreakpointContent>
@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "FileDownloader/Libs/Downloader/OSDownloaderManager.m"
-            timestampString = "518886360.276553"
+            timestampString = "518971229.194916"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "579"
-            endingLineNumber = "579"
+            startingLineNumber = "575"
+            endingLineNumber = "575"
             landmarkName = "-URLSession:downloadTask:didWriteData:totalBytesWritten:totalBytesExpectedToWrite:"
             landmarkType = "7">
          </BreakpointContent>
@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "FileDownloader/Libs/Downloader/OSDownloaderManager.m"
-            timestampString = "518886360.276553"
+            timestampString = "518971229.194916"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "909"
-            endingLineNumber = "909"
+            startingLineNumber = "906"
+            endingLineNumber = "906"
             landmarkName = "+remainingTimeAndBytesPerSecondForDownloadItem:"
             landmarkType = "7">
          </BreakpointContent>
@@ -74,11 +74,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "FileDownloader/Libs/Downloader/OSFileDownloadModule.m"
-            timestampString = "518890995.889885"
+            timestampString = "518971300.338114"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "482"
-            endingLineNumber = "482"
+            startingLineNumber = "484"
+            endingLineNumber = "484"
             landmarkName = "-applicationWillTerminate"
             landmarkType = "7">
          </BreakpointContent>

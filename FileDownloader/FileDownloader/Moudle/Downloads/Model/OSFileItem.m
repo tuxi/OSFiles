@@ -1,22 +1,22 @@
 
 //
-//  OSFileDownloadItem.m
+//  OSFileItem.m
 //  DownloaderManager
 //
 //  Created by Ossey on 2017/6/5.
 //  Copyright © 2017年 Ossey. All rights reserved.
 //
 
-#import "OSFileDownloadItem.h"
+#import "OSFileItem.h"
 
-@interface OSFileDownloadItem() <NSCoding>
+@interface OSFileItem() <NSCoding>
 
 @property (nonatomic, strong) NSString *urlPath;
 
 @end
 
 
-@implementation OSFileDownloadItem
+@implementation OSFileItem
 
 - (instancetype)init {
     NSAssert(NO, @"use - initWithURL:");
@@ -57,6 +57,9 @@
     if (self.fileName) {
         [aCoder encodeObject:self.fileName forKey:NSStringFromSelector(@selector(fileName))];
     }
+    if (self.MIMEType) {
+        [aCoder encodeObject:self.MIMEType forKey:NSStringFromSelector(@selector(MIMEType))];
+    }
 }
 
 
@@ -74,6 +77,7 @@
         self.lastHttpStatusCode = [[aCoder decodeObjectForKey:NSStringFromSelector(@selector(lastHttpStatusCode))] integerValue];
         self.localFileURL = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(localFileURL))];
         self.fileName = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(fileName))];
+        self.MIMEType = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(MIMEType))];
     }
     return self;
 }
@@ -128,6 +132,9 @@
     }
     if (self.fileName) {
         [descriptionDict setObject:self.fileName forKey:@"fileName"];
+    }
+    if (self.MIMEType) {
+        [descriptionDict setObject:self.MIMEType forKey:@"MIMEType"];
     }
     
     NSString *description = [NSString stringWithFormat:@"%@", descriptionDict];

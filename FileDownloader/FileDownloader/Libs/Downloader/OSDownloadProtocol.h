@@ -10,25 +10,70 @@
 
 @class OSDownloadProgress;
 
+
+@protocol OSDownloadItem <NSObject>
+
+/// 开始下载时的时间
+- (NSDate *)downloadStartDate;
+- (void)setDownloadStartDate:(NSDate *)downloadStartDate;
+
+/// 预计文件的总大小字节数
+- (int64_t)expectedFileTotalSize;
+- (void)setExpectedFileTotalSize:(int64_t)expectedFileTotalSize;
+
+/// 已下载文件的大小字节数
+- (int64_t)receivedFileSize;
+- (void)setReceivedFileSize:(int64_t)receivedFileSize;
+
+/// 恢复下载时所在文件的字节数
+- (ino64_t)resumedFileSizeInBytes;
+- (void)setResumedFileSizeInBytes:(ino64_t)resumedFileSizeInBytes;
+
+/// 每秒下载的字节数
+- (NSUInteger)bytesPerSecondSpeed;
+- (void)setBytesPerSecondSpeed:(NSUInteger)bytesPerSecondSpeed;
+
+/// 下载进度
+- (NSProgress *)naviteProgress;
+
+/// 下载的url
+- (NSString *)urlPath;
+
+/// 下载会话对象 NSURLSessionDownloadTask
+- (NSURLSessionDownloadTask *)sessionDownloadTask;
+
+/// 下载时发送的错误信息栈 错误信息栈(最新的错误信息初入在第一位)
+- (NSArray<NSString *> *)errorMessagesStack;
+- (void)setErrorMessagesStack:(NSArray<NSString *> *)errorMessagesStack;
+
+/// 最后的HTTP状态码
+- (NSInteger)lastHttpStatusCode;
+- (void)setLastHttpStatusCode:(NSInteger)lastHttpStatusCode;
+
+/// 最终文件存储的本地路径
+- (NSURL *)finalLocalFileURL;
+- (void)setFinalLocalFileURL:(NSURL *)finalLocalFileURL;
+
+/// 文件的类型
+- (NSString *)MIMEType;
+- (void)setMIMEType:(NSString *)MIMEType;
+
+@end
+
 @protocol OSDownloadProtocol <NSObject>
 
 
 /// 下载成功回调
-/// @param url 下载任务的url
-/// @param aFileURL 存放的本地路径
-- (void)downloadSuccessnWithURL:(NSString *)url finalLocalFileURL:(NSURL *)aFileURL;
+/// @param downloadItem 下载的OSDownloadItem
+- (void)downloadSuccessnWithDownloadItem:(id<OSDownloadItem>)downloadItem;
 
 /// 一个任务下载时候时调用
-/// @param url 下载任务的url
-/// @param anError 下载任务失败的错误的信息
-/// @param aHttpStatusCode HTTP状态码
-/// @param anErrorMessagesStack 错误信息栈(最新的错误信息初入在第一位)
-/// @param aResumeData 当前错误前已经下载的数据，当继续下载时可以复用此数据继续之前进度
-- (void)downloadFailureWithURL:(NSString *)url
-                         error:(NSError *)anError
-                httpStatusCode:(NSInteger)aHttpStatusCode
-            errorMessagesStack:(NSArray<NSString *> *)anErrorMessagesStack
-                    resumeData:(NSData *)aResumeData;
+/// @param downloadItem 下载的OSDownloadItem
+/// @param resumeData 当前错误前已经下载的数据，当继续下载时可以复用此数据继续之前进度
+/// @prram error 下载错误信息
+- (void)downloadFailureWithDownloadItem:(id<OSDownloadItem>)downloadItem
+                             resumeData:(NSData *)resumeData
+                                  error:(NSError *)error;
 
 @optional
 
