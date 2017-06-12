@@ -98,6 +98,14 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
    
 }
 
+#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ cell config ~~~~~~~~~~~~~~~~~~~~~~~
+
+- (void)xy_configCellByModel:(id)model indexPath:(NSIndexPath *)indexPath {
+    self.downloadItem = model;
+    
+}
+
+
 
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~ update subviews ~~~~~~~~~~~~~~~~~~~~~~
 - (void)setDownloadItem:(OSFileItem *)downloadItem {

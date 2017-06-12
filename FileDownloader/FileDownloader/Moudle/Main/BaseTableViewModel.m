@@ -14,6 +14,7 @@
     tableView.delegate = self;
     tableView.dataSource = self;
     [tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"baseCell"];
+    tableView.translatesAutoresizingMaskIntoConstraints = NO;
 }
 
 

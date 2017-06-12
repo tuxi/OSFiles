@@ -6,7 +6,6 @@
 //  Copyright © 2017年 Ossey. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "BaseTableViewModel.h"
 
 @interface FilesTableViewModel : BaseTableViewModel

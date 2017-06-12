@@ -11,6 +11,7 @@
 #import "AppDelegate.h"
 #import "OSFileItem.h"
 #import "AppUtils.h"
+#import "UITableViewCell+XYConfigure.h"
 
 static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
 
@@ -19,7 +20,7 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
 - (void)prepareTableView:(UITableView *)tableView {
     tableView.delegate = self;
     tableView.dataSource = self;
-    [tableView registerClass:[OSFileDownloadCell class] forCellReuseIdentifier:DownloadCellIdentifierKey];
+    [OSFileDownloadCell xy_registerTableViewCell:tableView classIdentifier:DownloadCellIdentifierKey];
 }
 
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ Table view data source ~~~~~~~~~~~~~~~~~~~~~~~
@@ -36,7 +37,7 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
     OSFileDownloadCell *cell = [tableView dequeueReusableCellWithIdentifier:DownloadCellIdentifierKey forIndexPath:indexPath];
     AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     OSFileItem *downloadItem = [delegate.downloadModule getDownloadingItems][indexPath.row];
-    cell.downloadItem = downloadItem;
+    [cell xy_configCellByModel:downloadItem indexPath:indexPath];
     [cell setLongPressGestureRecognizer:^(UILongPressGestureRecognizer *longPres) {
         if (longPres.state == UIGestureRecognizerStateBegan) {
             UIAlertController *alVc = [UIAlertController alertControllerWithTitle:@"delete download" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
