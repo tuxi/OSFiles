@@ -91,7 +91,6 @@ static NSString * const OSLastLocalizedAdditionalDescription = @"lastLocalizedAd
 
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ <NSCoding> ~~~~~~~~~~~~~~~~~~~~~~~
 
-
 // 归档
 - (void)encodeWithCoder:(NSCoder *)coder {
     

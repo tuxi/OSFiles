@@ -8,10 +8,75 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class OSDownloadProgress;
 
+FOUNDATION_EXTERN NSString * const OSFileDownloadProgressChangeNotification;
+FOUNDATION_EXTERN NSString * const OSFileDownloadSussessNotification;
+FOUNDATION_EXTERN NSString * const OSFileDownloadFailureNotification;
+FOUNDATION_EXTERN NSString * const OSFileDownloadCanceldNotification;
 
-@protocol OSDownloadItem <NSObject>
+typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
+    OSFileDownloadStatusNotStarted = 0,
+    OSFileDownloadStatusStarted,
+    OSFileDownloadStatusSuccess,
+    OSFileDownloadStatusPaused,
+    OSFileDownloadStatusCancelled,
+    OSFileDownloadStatusInterrupted,
+    OSFileDownloadStatusFailure
+};
+
+@protocol OSDownloadFileItemProtocol <NSObject>
+
+@optional
+
+- (NSString *)urlPath;
+
+- (NSURL *)localFileURL;
+- (void)setLocalFileURL:(NSURL *)localFileURL;
+
+- (nullable NSData *)resumeData;
+- (void)setResumeData:(nullable NSData *)resumeData;
+
+- (OSFileDownloadStatus)status;
+- (void)setStatus:(OSFileDownloadStatus)status;
+
+- (nullable OSDownloadProgress *)progressObj;
+- (void)setProgressObj:(nullable OSDownloadProgress *)progressObj;
+
+- (NSError *)downloadError;
+- (void)setDownloadError:(NSError *)downloadError;
+
+- (nullable NSArray<NSString *> *)downloadErrorMessagesStack;
+- (void)setDownloadErrorMessagesStack:(nullable NSArray<NSString *> *)downloadErrorMessagesStack;
+
+- (NSInteger)lastHttpStatusCode;
+- (void)setLastHttpStatusCode:(NSInteger)lastHttpStatusCode;
+
+- (NSString *)fileName;
+- (void)setFileName:(NSString *)fileName;
+
+- (NSString *)MIMEType;
+- (void)setMIMEType:(NSString *)MIMEType;
+
+@end
+
+/// 对下载进行操作指定的协议
+@protocol OSDownloadOperationProtocol <NSObject>
+
+- (void)start:(id<OSDownloadFileItemProtocol>)downloadItem;
+- (void)cancel:(NSString *)url;
+- (void)resume:(NSString *)url;
+- (void)pause:(NSString *)url;
+
+- (NSArray<id<OSDownloadFileItemProtocol>> *)getAllSuccessItems;
+- (NSArray<id<OSDownloadFileItemProtocol>> *)getDownloadingItems;
+
+
+@end
+
+@protocol OSDownloadItemProtocol <NSObject>
 
 /// 开始下载时的时间
 - (NSDate *)downloadStartDate;
@@ -34,7 +99,7 @@
 - (void)setBytesPerSecondSpeed:(NSUInteger)bytesPerSecondSpeed;
 
 /// 下载进度
-- (NSProgress *)naviteProgress;
+- (nullable NSProgress *)naviteProgress;
 
 /// 下载的url
 - (NSString *)urlPath;
@@ -60,20 +125,20 @@
 
 @end
 
-@protocol OSDownloadProtocol <NSObject>
+@protocol OSDownloadProtocol <OSDownloadOperationProtocol>
 
 
 /// 下载成功回调
 /// @param downloadItem 下载的OSDownloadItem
-- (void)downloadSuccessnWithDownloadItem:(id<OSDownloadItem>)downloadItem;
+- (void)downloadSuccessnWithDownloadItem:(id<OSDownloadItemProtocol>)downloadItem;
 
 /// 一个任务下载时候时调用
 /// @param downloadItem 下载的OSDownloadItem
 /// @param resumeData 当前错误前已经下载的数据，当继续下载时可以复用此数据继续之前进度
 /// @prram error 下载错误信息
-- (void)downloadFailureWithDownloadItem:(id<OSDownloadItem>)downloadItem
-                             resumeData:(NSData *)resumeData
-                                  error:(NSError *)error;
+- (void)downloadFailureWithDownloadItem:(id<OSDownloadItemProtocol>)downloadItem
+                             resumeData:(nullable NSData *)resumeData
+                                  error:(nullable NSError *)error;
 
 @optional
 
@@ -142,3 +207,6 @@
 /// @return 下载进度的对象
 - (NSProgress *)usingNaviteProgress;
 @end
+
+
+NS_ASSUME_NONNULL_END

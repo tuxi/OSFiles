@@ -222,19 +222,16 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~ Actions ~~~~~~~~~~~~~~~~~~~~~~
 
 - (void)pause:(NSString *)urlPath {
-    AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    [delegate.downloadModule pause:urlPath];
+    [[OSDownloaderManager manager].downloadDelegate pause:urlPath];
     
 }
 
 - (void)resume:(NSString *)urlPath {
-    AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    [delegate.downloadModule resume:urlPath];
+    [[OSDownloaderManager manager].downloadDelegate resume:urlPath];
 }
 
 - (void)start:(OSFileItem *)downloadItem {
-    AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    [delegate.downloadModule start:downloadItem];
+    [[OSDownloaderManager manager].downloadDelegate start:downloadItem];
 }
 
 - (void)cycleViewClick:(FFCircularProgressView *)cycleView {

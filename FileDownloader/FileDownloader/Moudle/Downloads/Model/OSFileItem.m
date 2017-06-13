@@ -12,6 +12,16 @@
 @interface OSFileItem() <NSCoding>
 
 @property (nonatomic, strong) NSString *urlPath;
+@property (nonatomic, strong) NSURL *localFileURL;
+@property (nonatomic, strong) NSData *resumeData;
+@property (nonatomic, assign) OSFileDownloadStatus status;
+@property (nonatomic, strong) OSDownloadProgress *progressObj;
+@property (nonatomic, strong) NSError *downloadError;
+@property (nonatomic, strong) NSArray<NSString *> *downloadErrorMessagesStack;
+@property (nonatomic, assign) NSInteger lastHttpStatusCode;
+@property (nonatomic, copy) NSString *fileName;
+@property (nonatomic, copy) NSString *MIMEType;
+
 
 @end
 
@@ -31,7 +41,7 @@
     self = [super init];
     if (self)
     {
-        self.urlPath = urlPath;
+        _urlPath = urlPath;
         self.status = OSFileDownloadStatusNotStarted;
     }
     return self;
@@ -68,7 +78,7 @@
     self = [super init];
     if (self)
     {
-        self.urlPath = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(urlPath))];
+        _urlPath = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(urlPath))];
         self.status = [[aCoder decodeObjectForKey:NSStringFromSelector(@selector(status))] unsignedIntegerValue];
         self.resumeData = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(resumeData))];
         self.progressObj = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(progressObj))];

@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "OSFileDownloadModule.h"
 #import "UITableViewCell+XYConfigure.h"
 
 @class OSFileItem;

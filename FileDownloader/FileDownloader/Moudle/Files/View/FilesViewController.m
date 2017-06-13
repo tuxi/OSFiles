@@ -10,7 +10,7 @@
 #import "AppDelegate.h"
 #import "OSFileDownloadCell.h"
 #import "FilesTableViewModel.h"
-
+#import "OSDownloaderManager.h"
 
 @interface FilesViewController ()
 
@@ -42,8 +42,7 @@
     
     __weak typeof(self) weakSelf = self;
     [self.tableViewModel getDataSourceBlock:^id{
-        AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-         return [delegate.downloadModule getAllSuccessItems];
+         return [[OSDownloaderManager manager].downloadDelegate getAllSuccessItems];
     } completion:^{
         [weakSelf.tableView reloadData];
     }];
@@ -59,8 +58,8 @@
 - (void)downloadSuccess:(NSNotification *)noti {
     __weak typeof(self) weakSelf = self;
     [self.tableViewModel getDataSourceBlock:^id{
-        AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-        return [delegate.downloadModule getAllSuccessItems];
+        
+        return [[OSDownloaderManager manager].downloadDelegate getAllSuccessItems];
     } completion:^{
         [weakSelf.tableView reloadData];
     }];

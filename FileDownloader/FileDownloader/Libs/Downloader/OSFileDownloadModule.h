@@ -48,13 +48,7 @@ FOUNDATION_EXTERN NSString * const OSFileDownloadCanceldNotification;
 @property (nonatomic, weak) id<OSFileDownloaderDataSource> dataSource;
 @property (nonatomic, weak) id<OSFileDownloaderDelegate> delegate;
 
-- (void)start:(OSFileItem *)downloadItem;
-- (void)cancel:(NSString *)url;
-- (void)resume:(NSString *)url;
-- (void)pause:(NSString *)url;
-+ (OSDownloaderManager *)getDownloadManager;
 - (void)clearAllDownloadTask;
-- (NSArray<OSFileItem *> *)getAllSuccessItems;
-- (NSArray<OSFileItem *> *)getDownloadingItems;
+
 
 @end

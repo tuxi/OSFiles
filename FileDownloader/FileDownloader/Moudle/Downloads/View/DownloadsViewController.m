@@ -7,11 +7,11 @@
 //
 
 #import "DownloadsViewController.h"
-#import "AppDelegate.h"
 #import "NetworkTypeUtils.h"
 #import "NSObject+XYHUD.h"
 #import "DownloadsTableViewModel.h"
 #import "OSFileDownloadModule.h"
+#import "OSDownloaderManager.h"
 
 @interface DownloadsViewController () <OSFileDownloaderDelegate, OSFileDownloaderDataSource>
 
@@ -19,8 +19,17 @@
 @end
 
 @implementation DownloadsViewController
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ life cycle ~~~~~~~~~~~~~~~~~~~~~~~
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        
+    }
+    return self;
+}
+
+#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ life cycle ~~~~~~~~~~~~~~~~~~~~~~~
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -46,10 +55,17 @@
     self.navigationItem.title = @"Downloads";
     self.tableViewModel = [DownloadsTableViewModel new];
     [self.tableViewModel prepareTableView:self.tableView];
-    AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    delegate.downloadModule.delegate = self;
-    delegate.downloadModule.dataSource = self;
+    OSFileDownloadModule *module = [OSDownloaderManager manager].downloadDelegate;
+    module.delegate = self;
+    module.dataSource = self;
     [self addObservers];
+    
+    __weak typeof(self) weakSelf = self;
+    [self.tableViewModel getDataSourceBlock:^id{
+        return [module getDownloadingItems];
+    } completion:^{
+        [weakSelf.tableView reloadData];
+    }];
 }
 
 
@@ -68,7 +84,13 @@
 
 
 - (void)downloadSuccess:(NSNotification *)note {
-    [self.tableView reloadData];
+    
+    __weak typeof(self) weakSelf = self;
+    [self.tableViewModel getDataSourceBlock:^id{
+        return [[OSDownloaderManager manager].downloadDelegate getDownloadingItems];
+    } completion:^{
+        [weakSelf.tableView reloadData];
+    }];
 }
 
 - (void)downloadFailure:(NSNotification *)note {

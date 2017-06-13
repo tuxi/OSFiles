@@ -13,7 +13,6 @@
 
 @interface AppDelegate () 
 
-@property (nonatomic, strong) OSDownloaderManager *downloadManager;
 @property (nonatomic, strong) OSFileDownloadModule *downloadModule;
 
 @end
@@ -59,9 +58,10 @@
 
 - (void)configBackgroundSession {
     
+    OSDownloaderManager *manager = [OSDownloaderManager manager];
     self.downloadModule = [OSFileDownloadModule new];
-    self.downloadManager = [[OSDownloaderManager alloc] initWithDelegate:(id<OSDownloadProtocol>)self.downloadModule maxConcurrentDownloads:-1];
-    [self.downloadManager setupTasksWithCompletionHandler:nil];
+    manager.downloadDelegate = self.downloadModule;
+    [manager setupTasksWithCompletionHandler:nil];
 }
 
 @end

@@ -30,13 +30,11 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
 
 @interface OSDownloaderManager () <NSURLSessionDelegate, NSURLSessionDataDelegate, NSURLSessionTaskDelegate, NSURLSessionDownloadDelegate>
 
-@property (nonatomic, assign) NSInteger maxConcurrentDownloads;
 @property (nonatomic, strong) NSURLSession *backgroundSeesion;
 /// 下载的任务(包括正在下载的、暂停的) key 为 taskIdentifier， value 为 OSDownloadItem, 下载完成后会从此集合中移除
 @property (nonatomic, strong) NSMutableDictionary<NSNumber *, OSDownloadItem *> *activeDownloadsDictionary;
 /// 等待下载的任务数组 每个元素 字典 为一个等待的任务
 @property (nonatomic, strong) NSMutableArray<NSDictionary <NSString *, NSObject *> *> *waitingDownloadArray;
-@property (nonatomic, weak) id<OSDownloadProtocol> downloadDelegate;
 @property (nonatomic, copy) OSBackgroundSessionCompletionHandler backgroundSessionCompletionHandler;
 @property (nonatomic, strong) NSOperationQueue *backgroundSeesionQueue;
 
@@ -44,30 +42,25 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
 
 @implementation OSDownloaderManager
 
+@dynamic manager;
+@synthesize maxConcurrentDownloads = _maxConcurrentDownloads;
+
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~initialize~~~~~~~~~~~~~~~~~~~~
 
-- (instancetype)init {
-    NSAssert(NO, @"use initWithDelegate:maxConcurrentDownloads:");
-    @throw nil;
-}
-+ (instancetype)new {
-    NSAssert(NO, @"use initWithDelegate:maxConcurrentDownloads:");
-    @throw nil;
-}
-
-- (instancetype)initWithDelegate:(id<OSDownloadProtocol>)aDelegate {
-    return [self initWithDelegate:aDelegate maxConcurrentDownloads:-1];
++ (OSDownloaderManager *)manager {
+    static OSDownloaderManager *manager = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        manager = [OSDownloaderManager new];
+    });
+    return manager;
 }
 
-- (instancetype)initWithDelegate:(id<OSDownloadProtocol>)aDelegate maxConcurrentDownloads:(NSInteger)maxConcurrentDownloads {
-    
-    if (self = [super init]) {
-        self.maxConcurrentDownloads = -1;
-        if (maxConcurrentDownloads > self.maxConcurrentDownloads) {
-            self.maxConcurrentDownloads = maxConcurrentDownloads;
-        }
-        
-        self.downloadDelegate = aDelegate;
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
         self.activeDownloadsDictionary = [NSMutableDictionary dictionary];
         self.waitingDownloadArray = [NSMutableArray array];
         self.backgroundSeesionQueue = [NSOperationQueue mainQueue];
@@ -453,7 +446,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
 
 /// 检查当前同时下载的任务数量是否超出最大值maxConcurrentDownloadCount
 /// @mark 当当前正在下载的activeDownloadsDictionary任务中小于最大同时下载数量时，
-//  @mark 则从等待的waitingDownloadArray中取出第一个开始下载，添加到activeDownloadsDictionary，并从waitingDownloadArray中移除
+///  @mark 则从等待的waitingDownloadArray中取出第一个开始下载，添加到activeDownloadsDictionary，并从waitingDownloadArray中移除
 - (void)checkMaxConcurrentDownloadCountThenDownloadWaitingQueueIfExceeded {
     
     if (self.maxConcurrentDownloads == -1 || self.activeDownloadsDictionary.count < self.maxConcurrentDownloads) {
@@ -928,6 +921,42 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     
     return aDescriptionString;
 }
+
+
+- (void)setMaxConcurrentDownloads:(NSInteger)maxConcurrentDownloads {
+    _maxConcurrentDownloads = -1;
+    if (maxConcurrentDownloads > _maxConcurrentDownloads) {
+        _maxConcurrentDownloads = maxConcurrentDownloads;
+        [self checkMaxConcurrentDownloadCountThenDownloadWaitingQueueIfExceeded];
+    }
+}
+
+- (NSInteger)maxConcurrentDownloads {
+    return _maxConcurrentDownloads ?: -1;
+}
+
+/// 检测当前正在下载的队列是否超出最大设定的
+//- (void)checkDownloadingQueueIsAboveMaxConcurrentDownloads {
+//    if (_maxConcurrentDownloads == -1) {
+//        return;
+//    }
+//    
+//    __block NSInteger downnloadingIdx = 0;
+//    [self.activeDownloadsDictionary enumerateKeysAndObjectsUsingBlock:^(NSNumber * _Nonnull key, OSDownloadItem * _Nonnull obj, BOOL * _Nonnull stop) {
+//        if ([self isDownloadingByURL:obj.urlPath]) {
+//            downnloadingIdx++;
+//        }
+//    }];
+//    if (downnloadingIdx > self.maxConcurrentDownloads) {
+//        // 当前正在下载的总数大于最大设定值，暂停最后添加到activeDownloadsDictionary中的正在下载的item
+//        NSInteger count = downnloadingIdx - self.maxConcurrentDownloads;
+//        [self.activeDownloadsDictionary enumerateKeysAndObjectsWithOptions:NSEnumerationReverse usingBlock:^(NSNumber * _Nonnull key, OSDownloadItem * _Nonnull obj, BOOL * _Nonnull stop) {
+//            if () {
+//                
+//            }
+//        }];
+//    }
+//}
 
 
 @end
