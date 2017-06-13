@@ -8,6 +8,12 @@
 
 #import "BaseTableViewModel.h"
 
+@interface BaseTableViewModel ()
+
+@property (nonatomic, strong) NSMutableArray *dataSource;
+
+@end
+
 @implementation BaseTableViewModel
 
 - (void)prepareTableView:(UITableView *)tableView {
@@ -18,11 +24,25 @@
 }
 
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ Table view data source ~~~~~~~~~~~~~~~~~~~~~~~
+#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ XYTableViewModelProtocol ~~~~~~~~~~~~~~~~~~~~~~~
+
+- (void)getDataSourceBlock:(id (^)())dataSource completion:(void (^)())completion {
+
+    if (dataSource) {
+        self.dataSource = [dataSource() mutableCopy];
+        
+        if (completion) {
+            completion();
+        }
+
+    }
+}
+
+#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ UITableViewDataSource ~~~~~~~~~~~~~~~~~~~~~~~
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 0.0;
+    return self.dataSource.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -33,6 +53,13 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     return 60;
+}
+
+- (NSMutableArray *)dataSource {
+    if (!_dataSource) {
+        _dataSource = [NSMutableArray array];
+    }
+    return _dataSource;
 }
 
 @end

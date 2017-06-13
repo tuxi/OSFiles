@@ -38,6 +38,15 @@
     self.tableViewModel = [FilesTableViewModel new];
     [self.tableViewModel prepareTableView:self.tableView];
     [self addObservers];
+    
+    
+    __weak typeof(self) weakSelf = self;
+    [self.tableViewModel getDataSourceBlock:^id{
+        AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+         return [delegate.downloadModule getAllSuccessItems];
+    } completion:^{
+        [weakSelf.tableView reloadData];
+    }];
 }
 
 
@@ -48,7 +57,13 @@
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ Notify ~~~~~~~~~~~~~~~~~~~~~~~
 
 - (void)downloadSuccess:(NSNotification *)noti {
-    [self.tableView reloadData];
+    __weak typeof(self) weakSelf = self;
+    [self.tableViewModel getDataSourceBlock:^id{
+        AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+        return [delegate.downloadModule getAllSuccessItems];
+    } completion:^{
+        [weakSelf.tableView reloadData];
+    }];
 }
 
 

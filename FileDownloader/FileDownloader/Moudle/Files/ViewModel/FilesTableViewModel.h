@@ -10,4 +10,5 @@
 
 @interface FilesTableViewModel : BaseTableViewModel
 
+
 @end

@@ -308,7 +308,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
             make.bottom.equalTo(self.contentView.mas_bottom).mas_offset(-8.8);
         }
     }];
-
+    
     [_downloadStatusLabel mas_updateConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(_fileNameLabel);
         make.bottom.equalTo(self.contentView).mas_offset(-8.8);

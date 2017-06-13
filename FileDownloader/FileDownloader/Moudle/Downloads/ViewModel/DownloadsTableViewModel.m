@@ -10,8 +10,8 @@
 #import "OSFileDownloadCell.h"
 #import "AppDelegate.h"
 #import "OSFileItem.h"
-#import "AppUtils.h"
 #import "UITableViewCell+XYConfigure.h"
+#import "UIView+Extend.h"
 
 static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
 
@@ -23,7 +23,7 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
     [OSFileDownloadCell xy_registerTableViewCell:tableView classIdentifier:DownloadCellIdentifierKey];
 }
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ Table view data source ~~~~~~~~~~~~~~~~~~~~~~~
+#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ UITableViewDataSource ~~~~~~~~~~~~~~~~~~~~~~~
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -52,7 +52,7 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
                 
             }];
             [alVc addAction:cancelAction];
-            [[AppUtils topViewController] presentViewController:alVc animated:YES completion:nil];
+            [[tableView currentViewController] presentViewController:alVc animated:YES completion:nil];;
         }
     }];
     return cell;
@@ -62,5 +62,12 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
     
     return 60;
 }
+
+#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ UITableViewDelegate ~~~~~~~~~~~~~~~~~~~~~~~
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+}
+
 
 @end

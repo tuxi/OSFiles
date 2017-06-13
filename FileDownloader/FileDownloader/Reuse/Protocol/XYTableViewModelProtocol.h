@@ -14,6 +14,9 @@
 /// 传入一个tableView，内部设置其代理和数据源对象, 及注册cell
 - (void)prepareTableView:(UITableView *)tableView;
 
+- (NSMutableArray *)dataSource;
+- (void)setDataSource:(NSMutableArray *)dataSource;
+
 @optional
 
 /// 获取模型数据源
@@ -28,5 +31,8 @@
 
 /// 根据索引删除数据源中的数据
 - (void)removeObjcetAtIndex:(NSInteger)index;
+
+/// 当请求到新数据时是否覆盖之前的数据源
+- (BOOL)shouldRemoveDataSourceWhenRequestNewData;
 
 @end
