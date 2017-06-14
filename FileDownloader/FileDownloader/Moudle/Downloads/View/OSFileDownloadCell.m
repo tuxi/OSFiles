@@ -87,7 +87,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
     self.fileNameLabel.text = @"fileName";
     self.downloadStatusLabel.text = @"0.0KB of 0.0KB";
     [self.moreBtn setTitle:@"•••" forState:UIControlStateNormal];
-    [self.moreBtn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+    [self.moreBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
     [self.cycleView startSpinProgressBackgroundLayer];
     [self.cycleView setProgress:1.0];
     self.bottomLine.backgroundColor = [UIColor colorWithWhite:0.8 alpha:0.8];
@@ -433,6 +433,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
         
         FFCircularProgressView *cycleView = [[FFCircularProgressView alloc] init];
         _cycleView = cycleView;
+        cycleView.progressColor = [UIColor grayColor];
         [self.contentView addSubview:cycleView];
         [cycleView addTarget:self action:@selector(cycleViewClick:) forControlEvents:UIControlEventTouchUpInside];
     }

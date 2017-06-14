@@ -96,6 +96,9 @@
 		18878A981EF03908005C0185 /* ICGRulerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18878A8E1EF03907005C0185 /* ICGRulerView.m */; };
 		18878A991EF03908005C0185 /* ICGThumbView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18878A901EF03907005C0185 /* ICGThumbView.m */; };
 		18878A9A1EF03908005C0185 /* ICGVideoTrimmerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18878A931EF03908005C0185 /* ICGVideoTrimmerView.m */; };
+		18878B261EF19EAC005C0185 /* UIApplication+ActivityIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 18878B211EF19EAC005C0185 /* UIApplication+ActivityIndicator.m */; };
+		18878B271EF19EAC005C0185 /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = 18878B231EF19EAC005C0185 /* UIColor+Hex.m */; };
+		18878B281EF19EAC005C0185 /* UINavigationItem+MultipleItems.m in Sources */ = {isa = PBXBuildFile; fileRef = 18878B251EF19EAC005C0185 /* UINavigationItem+MultipleItems.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -286,6 +289,12 @@
 		18878A911EF03908005C0185 /* ICGVideoTrimmer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ICGVideoTrimmer.h; sourceTree = "<group>"; };
 		18878A921EF03908005C0185 /* ICGVideoTrimmerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ICGVideoTrimmerView.h; sourceTree = "<group>"; };
 		18878A931EF03908005C0185 /* ICGVideoTrimmerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ICGVideoTrimmerView.m; sourceTree = "<group>"; };
+		18878B201EF19EAC005C0185 /* UIApplication+ActivityIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIApplication+ActivityIndicator.h"; sourceTree = "<group>"; };
+		18878B211EF19EAC005C0185 /* UIApplication+ActivityIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIApplication+ActivityIndicator.m"; sourceTree = "<group>"; };
+		18878B221EF19EAC005C0185 /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
+		18878B231EF19EAC005C0185 /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
+		18878B241EF19EAC005C0185 /* UINavigationItem+MultipleItems.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationItem+MultipleItems.h"; sourceTree = "<group>"; };
+		18878B251EF19EAC005C0185 /* UINavigationItem+MultipleItems.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationItem+MultipleItems.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -708,6 +717,12 @@
 		18517C611EEBDB3600B148C8 /* Category */ = {
 			isa = PBXGroup;
 			children = (
+				18878B201EF19EAC005C0185 /* UIApplication+ActivityIndicator.h */,
+				18878B211EF19EAC005C0185 /* UIApplication+ActivityIndicator.m */,
+				18878B221EF19EAC005C0185 /* UIColor+Hex.h */,
+				18878B231EF19EAC005C0185 /* UIColor+Hex.m */,
+				18878B241EF19EAC005C0185 /* UINavigationItem+MultipleItems.h */,
+				18878B251EF19EAC005C0185 /* UINavigationItem+MultipleItems.m */,
 				18878A791EF030AF005C0185 /* UIButton+ClickBlock.h */,
 				18878A7A1EF030AF005C0185 /* UIButton+ClickBlock.m */,
 				18517C621EEBDB3E00B148C8 /* UIImage+XYImage.h */,
@@ -941,6 +956,7 @@
 				18878A971EF03908005C0185 /* XYVideoPlayerView.m in Sources */,
 				1871AD241EEEF76E00ABC452 /* UITableViewCell+XYConfigure.m in Sources */,
 				18300FAF1EECE79F0035D6EE /* View+MASAdditions.m in Sources */,
+				18878B271EF19EAC005C0185 /* UIColor+Hex.m in Sources */,
 				18517C671EEBDDDB00B148C8 /* BaseViewController.m in Sources */,
 				18300FAA1EECE79F0035D6EE /* MASLayoutConstraint.m in Sources */,
 				18517C741EEBE08700B148C8 /* UIScrollView+NoDataPlaceholder.m in Sources */,
@@ -970,6 +986,7 @@
 				18517C751EEBE08700B148C8 /* UITableView+NoDataPlaceholderExtend.m in Sources */,
 				1871AD231EEEF76E00ABC452 /* UICollectionViewCell+XYConfigure.m in Sources */,
 				1871AD261EEEF76E00ABC452 /* XYDBUtil.m in Sources */,
+				18878B261EF19EAC005C0185 /* UIApplication+ActivityIndicator.m in Sources */,
 				1871ACF21EEEECBE00ABC452 /* FilesTableViewModel.m in Sources */,
 				1871AD0D1EEEF15100ABC452 /* BaseTableViewModel.m in Sources */,
 				1871ACDD1EEEE55700ABC452 /* NSDate+Utilities.m in Sources */,
@@ -985,6 +1002,7 @@
 				1871AD221EEEF76E00ABC452 /* NSObject+XYRequest.m in Sources */,
 				18878A521EF022B6005C0185 /* UIImageView+HighlightedWebCache.m in Sources */,
 				18878A4F1EF022B6005C0185 /* UIButton+WebCache.m in Sources */,
+				18878B281EF19EAC005C0185 /* UINavigationItem+MultipleItems.m in Sources */,
 				18300F7D1EEC57280035D6EE /* MBProgressHUD.m in Sources */,
 				18878A961EF03908005C0185 /* XYMenuView.m in Sources */,
 				18878A811EF035DF005C0185 /* UIView+Extend.m in Sources */,

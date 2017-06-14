@@ -10,6 +10,7 @@
 #import "OSFileItem.h"
 #import "AppDelegate.h"
 #import "OSDownloaderManager.h"
+#import "UIApplication+ActivityIndicator.h"
 
 static NSString * OSFileItemsKey = @"downloadItems";
 static void *ProgressObserverContext = &ProgressObserverContext;
@@ -20,7 +21,6 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
 
 @interface OSFileDownloadModule()
 
-@property (nonatomic, assign) NSUInteger networkActivityIndicatorCount;
 @property (nonatomic, strong) NSMutableArray<OSFileItem *> *downloadItems;;
 @property (nonatomic, strong) NSProgress *progress;
 
@@ -37,7 +37,6 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
     self = [super init];
     if (self) {
         
-        self.networkActivityIndicatorCount = 0;
         // 创建任务进度管理对象 UnitCount是一个基于UI上的完整任务的单元数
         // 这个方法创建了一个NSProgress实例作为当前实例的子类，以要执行的任务单元总数来初始化
         self.progress = [NSProgress progressWithTotalUnitCount:0];
@@ -90,7 +89,7 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
         }];
         
         [self storedDownloadItems];
-
+        
     }
 }
 
@@ -126,7 +125,7 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
             }
         }
     }];
-   
+    
 }
 
 - (void)cancel:(NSString *)urlPath {
@@ -227,7 +226,7 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
         }
     }];
     return downloadingItems;
-
+    
 }
 
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ <OSDownloadProtocol> ~~~~~~~~~~~~~~~~~~~~~~~
@@ -430,9 +429,11 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
 }
 
 - (void)toggleNetworkActivityIndicatorVisible:(BOOL)visible {
-    visible ? self.networkActivityIndicatorCount++ : self.networkActivityIndicatorCount--;
-    NSLog(@"INFO: NetworkActivityIndicatorCount: %@", @(self.networkActivityIndicatorCount));
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = (self.networkActivityIndicatorCount > 0);
+    if (visible) {
+        [[UIApplication sharedApplication] retainNetworkActivityIndicator];
+    } else {
+        [[UIApplication sharedApplication] releaseNetworkActivityIndicator];
+    }
 }
 
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ NSProgress ~~~~~~~~~~~~~~~~~~~~~~~
