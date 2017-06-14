@@ -61,7 +61,7 @@
 }
 
 - (CGFloat)contentSubviewsVerticalSpaceFoNoDataPlaceholder:(UIScrollView *)scrollView {
-    return 80;
+    return 50;
 }
 
 
@@ -144,6 +144,7 @@
 
 - (void)setNoDataPlaceholderTitleAttributedString:(NSString *)noDataPlaceholderTitleAttributedString {
     objc_setAssociatedObject(self, @selector(noDataPlaceholderTitleAttributedString), noDataPlaceholderTitleAttributedString, OBJC_ASSOCIATION_COPY_NONATOMIC);
+    [self reloadNoDataView];
 }
 
 - (NSString *)noDataPlaceholderTitleAttributedString {
@@ -152,6 +153,7 @@
 
 - (void)setNoDataPlaceholderDetailAttributedString:(NSString *)noDataPlaceholderDetailAttributedString {
     objc_setAssociatedObject(self, @selector(noDataPlaceholderDetailAttributedString), noDataPlaceholderDetailAttributedString, OBJC_ASSOCIATION_COPY_NONATOMIC);
+    [self reloadNoDataView];
 }
 
 - (NSString *)noDataPlaceholderDetailAttributedString {
@@ -160,6 +162,7 @@
 
 - (void)setNoDataPlaceholderReloadbuttonAttributedString:(NSAttributedString *)noDataPlaceholderReloadbuttonAttributedString {
     objc_setAssociatedObject(self, @selector(noDataPlaceholderReloadbuttonAttributedString), noDataPlaceholderReloadbuttonAttributedString, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    [self reloadNoDataView];
 }
 
 - (NSAttributedString *)noDataPlaceholderReloadbuttonAttributedString {
@@ -168,6 +171,7 @@
 
 - (void)setNoDataPlaceholderLoadingImage:(UIImage *)noDataPlaceholderLoadingImage {
     objc_setAssociatedObject(self, @selector(noDataPlaceholderLoadingImage), noDataPlaceholderLoadingImage, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    [self reloadNoDataView];
 }
 
 - (UIImage *)noDataPlaceholderLoadingImage {
@@ -176,6 +180,7 @@
 
 - (void)setNoDataPlaceholderNotLoadingImage:(UIImage *)noDataPlaceholderNotLoadingImage {
     objc_setAssociatedObject(self, @selector(noDataPlaceholderNotLoadingImage), noDataPlaceholderNotLoadingImage, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    [self reloadNoDataView];
 }
 
 - (UIImage *)noDataPlaceholderNotLoadingImage {

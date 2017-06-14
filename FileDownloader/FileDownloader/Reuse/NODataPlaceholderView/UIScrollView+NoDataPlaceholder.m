@@ -872,6 +872,8 @@ customView = _customView;
         btn.contentVerticalAlignment = UIControlContentHorizontalAlignmentCenter;
         btn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         [btn addTarget:self action:@selector(clickReloadBtn:) forControlEvents:UIControlEventTouchUpInside];
+        [btn.layer setCornerRadius:5.0];
+        [btn.layer setMasksToBounds:YES];
         _reloadButton = btn;
         [[self contentView] addSubview:btn];
     }

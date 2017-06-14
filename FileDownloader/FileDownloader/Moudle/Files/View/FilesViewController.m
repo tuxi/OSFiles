@@ -38,9 +38,12 @@
     self.tableViewModel = [FilesTableViewModel new];
     [self.tableViewModel prepareTableView:self.tableView];
     [self addObservers];
-    
-    
     __weak typeof(self) weakSelf = self;
+    self.tableView.reloadButtonClickBlock = ^{
+        weakSelf.tabBarController.selectedIndex = 1;
+    };
+    
+    
     [self.tableViewModel getDataSourceBlock:^id{
          return [[OSDownloaderManager manager].downloadDelegate getAllSuccessItems];
     } completion:^{
@@ -72,7 +75,7 @@
 
 - (NSAttributedString *)titleAttributedStringForNoDataPlaceholder {
     
-    NSString *text = @"本地无下载文件";
+    NSString *text = @"本地无下载文件\n去查看下载页是否有文件在下载中";
     
     UIFont *font = nil;
     if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_8_4) {
@@ -80,7 +83,7 @@
     } else {
         font = [UIFont boldSystemFontOfSize:18.0];
     }
-    UIColor *textColor = [UIColor redColor];
+    UIColor *textColor = [UIColor grayColor];
     
     NSMutableDictionary *attributeDict = [NSMutableDictionary dictionaryWithCapacity:0];
     NSMutableParagraphStyle *style = [NSMutableParagraphStyle new];
@@ -97,6 +100,23 @@
     
 }
 
+- (NSAttributedString *)reloadbuttonTitleAttributedStringForNoDataPlaceholder {
+    
+    UIFont *font = nil;
+    
+    NSString *text = @"查看下载页";
+    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_8_4) {
+        font = [UIFont monospacedDigitSystemFontOfSize:15.0 weight:UIFontWeightRegular];
+    } else {
+        font = [UIFont boldSystemFontOfSize:15.0];
+    }
+    UIColor *textColor = [UIColor whiteColor];
+    NSMutableDictionary *attributes = [NSMutableDictionary new];
+    if (font) [attributes setObject:font forKey:NSFontAttributeName];
+    if (textColor) [attributes setObject:textColor forKey:NSForegroundColorAttributeName];
+    
+    return [[NSAttributedString alloc] initWithString:text attributes:attributes];
+}
 
 
 @end

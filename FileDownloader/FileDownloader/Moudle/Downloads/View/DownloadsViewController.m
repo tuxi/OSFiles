@@ -140,7 +140,7 @@
 
 - (NSArray <NSString *> *)getImageUrls {
     return @[
-             
+            
              @"http://sw.bos.baidu.com/sw-search-sp/software/447feea06f61e/QQ_mac_5.5.1.dmg",
              @"http://sw.bos.baidu.com/sw-search-sp/software/9d93250a5f604/QQMusic_mac_4.2.3.dmg",
              @"http://dlsw.baidu.com/sw-search-sp/soft/b4/25734/itunes12.3.1442478948.dmg",
@@ -195,6 +195,32 @@
     
 }
 
+- (NSAttributedString *)detailAttributedStringForNoDataPlaceholder {
+    NSString *text = @"可以输入URL下载哦";
+    
+    UIFont *font = nil;
+    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_8_4) {
+        font = [UIFont monospacedDigitSystemFontOfSize:18.0 weight:UIFontWeightRegular];
+    } else {
+        font = [UIFont boldSystemFontOfSize:18.0];
+    }
+    UIColor *textColor = [UIColor redColor];
+    
+    NSMutableDictionary *attributeDict = [NSMutableDictionary dictionaryWithCapacity:0];
+    NSMutableParagraphStyle *style = [NSMutableParagraphStyle new];
+    style.lineBreakMode = NSLineBreakByWordWrapping;
+    style.alignment = NSTextAlignmentCenter;
+    
+    [attributeDict setObject:font forKey:NSFontAttributeName];
+    [attributeDict setObject:textColor forKey:NSForegroundColorAttributeName];
+    [attributeDict setObject:style forKey:NSParagraphStyleAttributeName];
+    
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:text attributes:attributeDict];
+    
+    return attributedString;
+
+}
+
 - (NSAttributedString *)reloadbuttonTitleAttributedStringForNoDataPlaceholder {
     
     UIFont *font = nil;
@@ -205,7 +231,7 @@
     } else {
         font = [UIFont boldSystemFontOfSize:15.0];
     }
-    UIColor *textColor = [UIColor blackColor];
+    UIColor *textColor = [UIColor whiteColor];
     NSMutableDictionary *attributes = [NSMutableDictionary new];
     if (font) [attributes setObject:font forKey:NSFontAttributeName];
     if (textColor) [attributes setObject:textColor forKey:NSForegroundColorAttributeName];

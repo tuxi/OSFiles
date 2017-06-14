@@ -131,7 +131,7 @@
     } else {
         font = [UIFont boldSystemFontOfSize:15.0];
     }
-    UIColor *textColor = [UIColor blackColor];
+    UIColor *textColor = [UIColor whiteColor];
     NSMutableDictionary *attributes = [NSMutableDictionary new];
     if (font) [attributes setObject:font forKey:NSFontAttributeName];
     if (textColor) [attributes setObject:textColor forKey:NSForegroundColorAttributeName];
