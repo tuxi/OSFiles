@@ -140,9 +140,7 @@
 
 - (NSArray <NSString *> *)getImageUrls {
     return @[
-             @"https://d2.xia12345.com/down/2017/3/11001/173110269.mp4",
-             @"https://d1.xia12345.com/down/201611/116/116027.mp4",
-             @"https://d2.xia12345.com/down/2017/3/11001/173110322.mp4",
+            
              @"http://sw.bos.baidu.com/sw-search-sp/software/447feea06f61e/QQ_mac_5.5.1.dmg",
              @"http://sw.bos.baidu.com/sw-search-sp/software/9d93250a5f604/QQMusic_mac_4.2.3.dmg",
              @"http://dlsw.baidu.com/sw-search-sp/soft/b4/25734/itunes12.3.1442478948.dmg",
