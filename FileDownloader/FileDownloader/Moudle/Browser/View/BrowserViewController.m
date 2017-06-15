@@ -7,8 +7,12 @@
 //
 
 #import "BrowserViewController.h"
+#import "UITextField+Blocks.h"
+#import "OSDownloaderManager.h"
+#import "OSFileItem.h"
 
 @interface BrowserViewController ()
+@property (weak, nonatomic) IBOutlet UITextField *textField;
 
 @end
 
@@ -19,6 +23,14 @@
     // Do any additional setup after loading the view.
     
     self.view.backgroundColor = [UIColor whiteColor];
+    
+    self.textField.shouldReturnBlock = ^BOOL(UITextField *textField) {
+      
+        OSFileItem *downloadItem = [[OSFileItem alloc] initWithURL:textField.text];
+        [[OSDownloaderManager manager].downloadDelegate start:downloadItem];
+        return YES;
+    };
+    
 }
 
 - (void)didReceiveMemoryWarning {

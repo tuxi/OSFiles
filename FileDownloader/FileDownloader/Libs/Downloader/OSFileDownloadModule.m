@@ -367,6 +367,9 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
     if (self.delegate && [self.delegate respondsToSelector:@selector(shouldDownloadTaskInCurrentNetworkWithCompletionHandler:)]) {
         return [self.delegate shouldDownloadTaskInCurrentNetworkWithCompletionHandler:completionHandler];
     }
+    if (completionHandler) {
+        completionHandler(YES);
+    }
     return YES;
 }
 

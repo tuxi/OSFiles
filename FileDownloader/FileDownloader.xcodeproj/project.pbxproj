@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1819EFAF1EF2E29300208A20 /* BrowserViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1819EFAE1EF2E29300208A20 /* BrowserViewController.xib */; };
+		1819EFB51EF2E3FE00208A20 /* UITextField+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 1819EFB41EF2E3FE00208A20 /* UITextField+Blocks.m */; };
 		18300F641EEC54570035D6EE /* OSDownloaderManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300F5E1EEC54570035D6EE /* OSDownloaderManager.m */; };
 		18300F651EEC54570035D6EE /* OSDownloadItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300F601EEC54570035D6EE /* OSDownloadItem.m */; };
 		18300F661EEC54570035D6EE /* OSDownloadProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300F621EEC54570035D6EE /* OSDownloadProgress.m */; };
@@ -102,6 +104,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1819EFAE1EF2E29300208A20 /* BrowserViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BrowserViewController.xib; sourceTree = "<group>"; };
+		1819EFB31EF2E3FE00208A20 /* UITextField+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITextField+Blocks.h"; sourceTree = "<group>"; };
+		1819EFB41EF2E3FE00208A20 /* UITextField+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextField+Blocks.m"; sourceTree = "<group>"; };
 		18300F5D1EEC54570035D6EE /* OSDownloaderManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSDownloaderManager.h; sourceTree = "<group>"; };
 		18300F5E1EEC54570035D6EE /* OSDownloaderManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSDownloaderManager.m; sourceTree = "<group>"; };
 		18300F5F1EEC54570035D6EE /* OSDownloadItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSDownloadItem.h; sourceTree = "<group>"; };
@@ -626,6 +631,7 @@
 			children = (
 				18517C541EEBD93800B148C8 /* BrowserViewController.h */,
 				18517C551EEBD93800B148C8 /* BrowserViewController.m */,
+				1819EFAE1EF2E29300208A20 /* BrowserViewController.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -733,6 +739,8 @@
 				1871ACDC1EEEE55700ABC452 /* NSDate+Utilities.m */,
 				18878A7F1EF035DF005C0185 /* UIView+Extend.h */,
 				18878A801EF035DF005C0185 /* UIView+Extend.m */,
+				1819EFB31EF2E3FE00208A20 /* UITextField+Blocks.h */,
+				1819EFB41EF2E3FE00208A20 /* UITextField+Blocks.m */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -931,6 +939,7 @@
 				18517BD61EEBC86600B148C8 /* LaunchScreen.storyboard in Resources */,
 				18878A451EF022B6005C0185 /* LICENSE in Resources */,
 				18517BD31EEBC86600B148C8 /* Assets.xcassets in Resources */,
+				1819EFAF1EF2E29300208A20 /* BrowserViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -956,6 +965,7 @@
 				18878A971EF03908005C0185 /* XYVideoPlayerView.m in Sources */,
 				1871AD241EEEF76E00ABC452 /* UITableViewCell+XYConfigure.m in Sources */,
 				18300FAF1EECE79F0035D6EE /* View+MASAdditions.m in Sources */,
+				1819EFB51EF2E3FE00208A20 /* UITextField+Blocks.m in Sources */,
 				18878B271EF19EAC005C0185 /* UIColor+Hex.m in Sources */,
 				18517C671EEBDDDB00B148C8 /* BaseViewController.m in Sources */,
 				18300FAA1EECE79F0035D6EE /* MASLayoutConstraint.m in Sources */,
