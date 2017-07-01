@@ -12,6 +12,7 @@
 
 + (NSString *)transformedFileSizeValue:(NSNumber *)value;
 + (NSString *)stringWithRemainingTime:(NSInteger)secs;
+- (unsigned long long)fileSize;
 
 @end
 

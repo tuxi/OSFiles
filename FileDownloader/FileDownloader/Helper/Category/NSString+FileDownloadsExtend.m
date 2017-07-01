@@ -93,5 +93,29 @@
     }
 }
 
-
+- (unsigned long long)fileSize {
+    unsigned long long totalSize = 0;
+    NSFileManager *mgr = [NSFileManager defaultManager];
+    // 是否为文件夹
+    BOOL isDirectory = NO;
+    
+    // 路径是否存在
+    BOOL exists = [mgr fileExistsAtPath:self isDirectory:&isDirectory];
+    if (!exists) {
+        return totalSize;
+    }
+    
+    if (isDirectory) {
+        // 获得文件夹的大小  == 获得文件夹中所有文件的总大小
+        NSDirectoryEnumerator *enumerator = [mgr enumeratorAtPath:self];
+        for (NSString *subpath in enumerator) {
+            NSString *fullSubpath = [self stringByAppendingPathComponent:subpath];
+            // 累加文件大小
+            totalSize += [mgr attributesOfItemAtPath:fullSubpath error:nil].fileSize;
+        }
+    } else {
+        totalSize = [mgr attributesOfItemAtPath:self error:nil].fileSize;
+    }
+    return totalSize;
+}
 @end
