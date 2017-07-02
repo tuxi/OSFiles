@@ -71,6 +71,7 @@
 		1871AD251EEEF76E00ABC452 /* UIView+XYConfigure.m in Sources */ = {isa = PBXBuildFile; fileRef = 1871AD181EEEF76E00ABC452 /* UIView+XYConfigure.m */; };
 		1871AD261EEEF76E00ABC452 /* XYDBUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 1871AD1B1EEEF76E00ABC452 /* XYDBUtil.m */; };
 		1871AD271EEEF76E00ABC452 /* XYNetworkRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1871AD1D1EEEF76E00ABC452 /* XYNetworkRequest.m */; };
+		187BA64B1F0947A600E7EA5D /* NSURLSession+CorrectedResumeData.m in Sources */ = {isa = PBXBuildFile; fileRef = 187BA64A1F0947A600E7EA5D /* NSURLSession+CorrectedResumeData.m */; };
 		18878A221EF01B87005C0185 /* XYImageBrowerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18878A1F1EF01B87005C0185 /* XYImageBrowerView.m */; };
 		18878A231EF01B87005C0185 /* XYImageViewer.m in Sources */ = {isa = PBXBuildFile; fileRef = 18878A211EF01B87005C0185 /* XYImageViewer.m */; };
 		18878A451EF022B6005C0185 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 18878A251EF022B6005C0185 /* LICENSE */; };
@@ -240,6 +241,8 @@
 		1871AD1E1EEEF76E00ABC452 /* XYRequestProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYRequestProtocol.h; sourceTree = "<group>"; };
 		1871AD1F1EEEF76E00ABC452 /* XYTableViewModelProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYTableViewModelProtocol.h; sourceTree = "<group>"; };
 		1871AD201EEEF76E00ABC452 /* XYViewModelProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYViewModelProtocol.h; sourceTree = "<group>"; };
+		187BA6491F0947A600E7EA5D /* NSURLSession+CorrectedResumeData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLSession+CorrectedResumeData.h"; sourceTree = "<group>"; };
+		187BA64A1F0947A600E7EA5D /* NSURLSession+CorrectedResumeData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURLSession+CorrectedResumeData.m"; sourceTree = "<group>"; };
 		18878A1E1EF01B87005C0185 /* XYImageBrowerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYImageBrowerView.h; sourceTree = "<group>"; };
 		18878A1F1EF01B87005C0185 /* XYImageBrowerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XYImageBrowerView.m; sourceTree = "<group>"; };
 		18878A201EF01B87005C0185 /* XYImageViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYImageViewer.h; sourceTree = "<group>"; };
@@ -326,6 +329,8 @@
 				18300F631EEC54570035D6EE /* OSDownloadProtocol.h */,
 				18300F6D1EEC55390035D6EE /* OSFileDownloadModule.h */,
 				18300F6E1EEC55390035D6EE /* OSFileDownloadModule.m */,
+				187BA6491F0947A600E7EA5D /* NSURLSession+CorrectedResumeData.h */,
+				187BA64A1F0947A600E7EA5D /* NSURLSession+CorrectedResumeData.m */,
 			);
 			path = Downloader;
 			sourceTree = "<group>";
@@ -953,6 +958,7 @@
 				18878A4D1EF022B6005C0185 /* SDWebImageManager.m in Sources */,
 				18878A4E1EF022B6005C0185 /* SDWebImagePrefetcher.m in Sources */,
 				18300FCA1EED38820035D6EE /* FFCircularProgressView.m in Sources */,
+				187BA64B1F0947A600E7EA5D /* NSURLSession+CorrectedResumeData.m in Sources */,
 				18517C271EEBD64800B148C8 /* AFURLSessionManager.m in Sources */,
 				18300FAE1EECE79F0035D6EE /* NSLayoutConstraint+MASDebugAdditions.m in Sources */,
 				18300F661EEC54570035D6EE /* OSDownloadProgress.m in Sources */,

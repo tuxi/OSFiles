@@ -8,6 +8,7 @@
 
 #import "OSDownloaderManager.h"
 #import "OSDownloadItem.h"
+#import "NSURLSession+CorrectedResumeData.h"
 
 #define dispatch_main_async_safe(block)\
 if (strcmp(dispatch_queue_get_label(DISPATCH_CURRENT_QUEUE_LABEL), dispatch_queue_get_label(dispatch_get_main_queue())) == 0) {\
@@ -45,7 +46,9 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
 @dynamic manager;
 @synthesize maxConcurrentDownloads = _maxConcurrentDownloads;
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~initialize~~~~~~~~~~~~~~~~~~~~
+////////////////////////////////////////////////////////////////////////
+#pragma mark - initialize
+////////////////////////////////////////////////////////////////////////
 
 + (OSDownloaderManager *)manager {
     static OSDownloaderManager *manager = nil;
@@ -142,7 +145,9 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
     }];
 }
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~download~~~~~~~~~~~~~~~~~~~~
+////////////////////////////////////////////////////////////////////////
+#pragma mark - Download
+////////////////////////////////////////////////////////////////////////
 
 - (void)downloadWithURL:(NSString *)urlPath {
     [self downloadWithURL:urlPath resumeData:nil];
@@ -164,7 +169,12 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
         }
         if (resumeData) {
             // 当之前下载过，就按照之前的进度继续下载
-            sessionDownloadTask = [self.backgroundSeesion downloadTaskWithResumeData:resumeData];
+            if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_9_4) {
+                // NSURLSession在iOS10上的Bug 在iOS10上，resumeData不能直接使用, 使用处理后的
+                sessionDownloadTask = [self.backgroundSeesion downloadTaskWithCorrectResumeData:resumeData];
+            } else {
+                sessionDownloadTask = [self.backgroundSeesion downloadTaskWithResumeData:resumeData];
+            }
         } else if (remoteURL) {
             // 之前未下载过，就开启新的任务
             sessionDownloadTask = [self.backgroundSeesion downloadTaskWithURL:remoteURL];
@@ -350,7 +360,9 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
 }
 
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~download status~~~~~~~~~~~~~~~~~~~~
+////////////////////////////////////////////////////////////////////////
+#pragma mark - download status
+////////////////////////////////////////////////////////////////////////
 
 - (BOOL)isDownloadingByURL:(NSString *)urlPath {
     
@@ -410,7 +422,9 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
 }
 
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~download Handler~~~~~~~~~~~~~~~~~~~~
+////////////////////////////////////////////////////////////////////////
+#pragma mark - download Handler
+////////////////////////////////////////////////////////////////////////
 
 
 /// 下载成功并已成功保存到本地
@@ -463,7 +477,9 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
 }
 
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~~~~~~download progress~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+////////////////////////////////////////////////////////////////////////
+#pragma mark - download progress
+////////////////////////////////////////////////////////////////////////
 
 
 - (OSDownloadProgress *)getDownloadProgressByURL:(NSString *)urlPath {
@@ -502,7 +518,9 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
 }
 
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~~~~~~NSURLSessionDownloadDelegate~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+////////////////////////////////////////////////////////////////////////
+#pragma mark - NSURLSessionDownloadDelegate
+////////////////////////////////////////////////////////////////////////
 
 /// 下载完成之后回调
 - (void)URLSession:(NSURLSession *)session downloadTask:(nonnull NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(nonnull NSURL *)location {
@@ -588,7 +606,9 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
     }
 }
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~~~~~~NSURLSessionTaskDelegate~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+////////////////////////////////////////////////////////////////////////
+#pragma mark - NSURLSessionTaskDelegate
+////////////////////////////////////////////////////////////////////////
 
 /// 当请求完成之后调用该方法
 /// 不论是请求成功还是请求失败都调用该方法，如果请求失败，那么error对象有值，否则那么error对象为空
@@ -656,7 +676,9 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     
 }
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~~~~~~NSURLSessionDelegate~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+////////////////////////////////////////////////////////////////////////
+#pragma mark - NSURLSessionDelegate
+////////////////////////////////////////////////////////////////////////
 
 /// 后台任务完成时调用
 - (void)URLSessionDidFinishEventsForBackgroundURLSession:(NSURLSession *)session {
@@ -673,7 +695,9 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     NSLog(@"Error: URL session did become invalid with error: %@ (%@, %d)", error, [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__);
 }
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~~~~~~Private delegate methods~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+////////////////////////////////////////////////////////////////////////
+#pragma mark - Private delegate methods
+////////////////////////////////////////////////////////////////////////
 
 /// 获取下载后文件最终存放的本地路径,若代理实现了则设置使用代理的，没实现则使用默认设定的LocalURL
 - (NSURL *)_getFinalLocalFileURLWithRemoteURL:(NSURL *)remoteURL {
@@ -816,7 +840,9 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     }
 }
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~~~~~~Private methods~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+////////////////////////////////////////////////////////////////////////
+#pragma mark - Private methods
+////////////////////////////////////////////////////////////////////////
 
 /// 通过downloadToken获取下载任务的TaskIdentifier
 - (NSInteger)getDownloadTaskIdentifierByURL:(nonnull NSString *)urlPath {
