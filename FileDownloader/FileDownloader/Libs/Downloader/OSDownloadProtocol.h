@@ -1,5 +1,5 @@
 //
-//  OSDownloadProtocol.h
+//  OSDownloaderDelegate.h
 //  DownloaderManager
 //
 //  Created by Ossey on 2017/6/4.
@@ -27,7 +27,7 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
     OSFileDownloadStatusFailure
 };
 
-@protocol OSDownloadFileItemProtocol <NSObject>
+@protocol OSDownloadFileItemProtocol <NSObject, NSCoding>
 
 @optional
 
@@ -125,7 +125,7 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 
 @end
 
-@protocol OSDownloadProtocol <OSDownloadOperationProtocol>
+@protocol OSDownloaderDelegate <NSObject>
 
 
 /// 下载成功回调

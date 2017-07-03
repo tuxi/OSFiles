@@ -9,13 +9,13 @@
 
 
 #import <Foundation/Foundation.h>
-#import "OSDownloadProtocol.h"
+#import "OSDownloaderDelegate.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface OSDownloadItem : NSObject <OSDownloadItemProtocol>
 /*
- * 此类由OSDownloaderManager内部使用的
+ * 此类由OSDownloader内部使用的
  */
 
 /// 初始化OSDownloadItem，

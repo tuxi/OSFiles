@@ -10,9 +10,9 @@
 #import "NetworkTypeUtils.h"
 #import "NSObject+XYHUD.h"
 #import "DownloadsTableViewModel.h"
-#import "OSFileDownloadModule.h"
-#import "OSDownloaderManager.h"
+#import "OSDownloaderModule.h"
 #import "OSFileItem.h"
+#import "OSDownloaderModule.h"
 
 @interface DownloadsViewController () <OSFileDownloaderDataSource>
 
@@ -56,7 +56,7 @@
     self.navigationItem.title = @"Downloads";
     self.tableViewModel = [DownloadsTableViewModel new];
     [self.tableViewModel prepareTableView:self.tableView];
-    OSFileDownloadModule *module = [OSDownloaderManager manager].downloadDelegate;
+    OSDownloaderModule *module = [OSDownloaderModule sharedInstance];
     module.dataSource = self;
     [self addObservers];
     
@@ -94,7 +94,7 @@
     
     __weak typeof(self) weakSelf = self;
     [self.tableViewModel getDataSourceBlock:^id{
-        return [[OSDownloaderManager manager].downloadDelegate getDownloadingItems];
+        return [[OSDownloaderModule sharedInstance] getDownloadingItems];
     } completion:^{
         [weakSelf.tableView reloadData];
     }];

@@ -1,5 +1,5 @@
 //
-//  OSDownloaderManager.h
+//  OSDownloader.h
 //  DownloaderManager
 //
 //  Created by Ossey on 2017/6/4.
@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "OSDownloadProtocol.h"
+#import "OSDownloaderDelegate.h"
 #import "OSDownloadProgress.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -17,15 +17,14 @@ typedef void (^OSDownloaderResumeDataHandler)(NSData * aResumeData);
 
 FOUNDATION_EXTERN NSString * const OS_Downloader_Folder;
 
-@interface OSDownloaderManager : NSObject
-
-@property (nonatomic, class) OSDownloaderManager *manager;
+@interface OSDownloader : NSObject
 
 @property (nonatomic, assign) NSInteger maxConcurrentDownloads;
 
-@property (nonatomic, weak) id<OSDownloadProtocol> downloadDelegate;
+- (instancetype)initWithDelegate:(id<OSDownloaderDelegate>)downloadDelegate NS_DESIGNATED_INITIALIZER;
+- (instancetype)init NS_UNAVAILABLE;
++ (instancetype)new NS_UNAVAILABLE;
 
-/// 初始化
 - (void)setupTasksWithCompletionHandler:(nullable void (^)())completionHandler;
 
 

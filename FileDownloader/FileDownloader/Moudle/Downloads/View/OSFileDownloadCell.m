@@ -9,7 +9,7 @@
 #import "OSFileDownloadCell.h"
 #import "OSFileItem.h"
 #import "AppDelegate.h"
-#import "OSDownloaderManager.h"
+#import "OSDownloaderModule.h"
 #import "FFCircularProgressView.h"
 #import "NSString+FileDownloadsExtend.h"
 
@@ -222,16 +222,16 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~ Actions ~~~~~~~~~~~~~~~~~~~~~~
 
 - (void)pause:(NSString *)urlPath {
-    [[OSDownloaderManager manager].downloadDelegate pause:urlPath];
+    [[OSDownloaderModule sharedInstance] pause:urlPath];
     
 }
 
 - (void)resume:(NSString *)urlPath {
-    [[OSDownloaderManager manager].downloadDelegate resume:urlPath];
+    [[OSDownloaderModule sharedInstance] resume:urlPath];
 }
 
 - (void)start:(OSFileItem *)downloadItem {
-    [[OSDownloaderManager manager].downloadDelegate start:downloadItem];
+    [[OSDownloaderModule sharedInstance] start:downloadItem];
 }
 
 - (void)cycleViewClick:(FFCircularProgressView *)cycleView {

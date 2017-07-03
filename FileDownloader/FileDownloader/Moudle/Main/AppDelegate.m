@@ -8,12 +8,11 @@
 
 #import "AppDelegate.h"
 #import "MainTabBarController.h"
-#import "OSDownloaderManager.h"
-#import "OSFileDownloadModule.h"
+#import "OSDownloader.h"
+#import "OSDownloaderModule.h"
 
 @interface AppDelegate () 
 
-@property (nonatomic, strong) OSFileDownloadModule *downloadModule;
 
 @end
 
@@ -58,10 +57,7 @@
 
 - (void)configBackgroundSession {
     
-    OSDownloaderManager *manager = [OSDownloaderManager manager];
-    self.downloadModule = [OSFileDownloadModule new];
-    manager.downloadDelegate = self.downloadModule;
-    [manager setupTasksWithCompletionHandler:nil];
+    [[OSDownloaderModule sharedInstance].downloader setupTasksWithCompletionHandler:nil];
 }
 
 @end

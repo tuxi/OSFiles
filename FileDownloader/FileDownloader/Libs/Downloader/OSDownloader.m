@@ -1,12 +1,12 @@
 //
-//  OSDownloaderManager.m
+//  OSDownloader.m
 //  DownloaderManager
 //
 //  Created by Ossey on 2017/6/4.
 //  Copyright © 2017年 Ossey. All rights reserved.
 //
 
-#import "OSDownloaderManager.h"
+#import "OSDownloader.h"
 #import "OSDownloadItem.h"
 #import "NSURLSession+CorrectedResumeData.h"
 
@@ -29,7 +29,7 @@ static NSString * const OSDownloadBytesPerSecondSpeedKey = @"bytesPerSecondSpeed
 // 剩余时间key
 static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
 
-@interface OSDownloaderManager () <NSURLSessionDelegate, NSURLSessionDataDelegate, NSURLSessionTaskDelegate, NSURLSessionDownloadDelegate>
+@interface OSDownloader () <NSURLSessionDelegate, NSURLSessionDataDelegate, NSURLSessionTaskDelegate, NSURLSessionDownloadDelegate>
 
 @property (nonatomic, strong) NSURLSession *backgroundSeesion;
 /// 下载的任务(包括正在下载的、暂停的) key 为 taskIdentifier， value 为 OSDownloadItem, 下载完成后会从此集合中移除
@@ -38,38 +38,38 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
 @property (nonatomic, strong) NSMutableArray<NSDictionary <NSString *, NSObject *> *> *waitingDownloadArray;
 @property (nonatomic, copy) OSBackgroundSessionCompletionHandler backgroundSessionCompletionHandler;
 @property (nonatomic, strong) NSOperationQueue *backgroundSeesionQueue;
+@property (nonatomic, weak) id<OSDownloaderDelegate> downloadDelegate;
 
 @end
 
-@implementation OSDownloaderManager
+@implementation OSDownloader
 
-@dynamic manager;
 @synthesize maxConcurrentDownloads = _maxConcurrentDownloads;
 
 ////////////////////////////////////////////////////////////////////////
 #pragma mark - initialize
 ////////////////////////////////////////////////////////////////////////
 
-+ (OSDownloaderManager *)manager {
-    static OSDownloaderManager *manager = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        manager = [OSDownloaderManager new];
-    });
-    return manager;
+- (instancetype)init {
+    NSAssert(NO, @"use - initWithDelegate:");
+    @throw nil;
+}
++ (instancetype)new {
+    NSAssert(NO, @"use - initWithDelegate:");
+    @throw nil;
 }
 
 
-- (instancetype)init
-{
+- (instancetype)initWithDelegate:(id<OSDownloaderDelegate>)downloadDelegate {
     self = [super init];
     if (self) {
+        self.downloadDelegate = downloadDelegate;
         self.activeDownloadsDictionary = [NSMutableDictionary dictionary];
         self.waitingDownloadArray = [NSMutableArray array];
         self.backgroundSeesionQueue = [NSOperationQueue mainQueue];
         
         // 后台任务的标识符
-        NSString *backgroundDownloadSessionIdentifier = [NSString stringWithFormat:@"%@.OSDownloaderManager", [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleIdentifier"]];
+        NSString *backgroundDownloadSessionIdentifier = [NSString stringWithFormat:@"%@.OSDownloader", [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleIdentifier"]];
         
         // 创建后台会话配置对象
         NSURLSessionConfiguration *backgroundConfiguration = nil;
@@ -87,6 +87,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
     }
     return self;
 }
+
 
 - (void)setupTasksWithCompletionHandler:(void (^)())completionHandler {
     

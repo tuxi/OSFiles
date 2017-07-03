@@ -9,7 +9,7 @@
 
 #import "OSFileItem.h"
 
-@interface OSFileItem() <NSCoding>
+@interface OSFileItem ()
 
 @property (nonatomic, strong) NSString *urlPath;
 @property (nonatomic, strong) NSURL *localFileURL;

@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "OSDownloadProgress.h"
-#import "OSDownloadProtocol.h"
+#import "OSDownloaderDelegate.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
