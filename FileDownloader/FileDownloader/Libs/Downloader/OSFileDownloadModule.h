@@ -21,13 +21,6 @@
 
 @end
 
-@protocol OSFileDownloaderDelegate <NSObject>
-
-@optional
-/// 下载之前对在当前网络下载的授权，默认为YES, 可在此方法中提示用户当前网络状态
-- (BOOL)shouldDownloadTaskInCurrentNetworkWithCompletionHandler:(void (^)(BOOL shouldDownload))completionHandler;
-
-@end
 
 /*
  此类遵守了OSDownloadProtocol，作为OSDownloaderManager的协议实现类
@@ -46,7 +39,6 @@ FOUNDATION_EXTERN NSString * const OSFileDownloadCanceldNotification;
 @property (nonatomic, strong, readonly) NSMutableArray<OSFileItem *> *downloadItems;
 
 @property (nonatomic, weak) id<OSFileDownloaderDataSource> dataSource;
-@property (nonatomic, weak) id<OSFileDownloaderDelegate> delegate;
 
 - (void)clearAllDownloadTask;
 

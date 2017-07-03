@@ -12,8 +12,9 @@
 #import "DownloadsTableViewModel.h"
 #import "OSFileDownloadModule.h"
 #import "OSDownloaderManager.h"
+#import "OSFileItem.h"
 
-@interface DownloadsViewController () <OSFileDownloaderDelegate, OSFileDownloaderDataSource>
+@interface DownloadsViewController () <OSFileDownloaderDataSource>
 
 
 @end
@@ -56,9 +57,13 @@
     self.tableViewModel = [DownloadsTableViewModel new];
     [self.tableViewModel prepareTableView:self.tableView];
     OSFileDownloadModule *module = [OSDownloaderManager manager].downloadDelegate;
-    module.delegate = self;
     module.dataSource = self;
     [self addObservers];
+    
+    [[self getImageUrls] enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        OSFileItem *item = [[OSFileItem alloc] initWithURL:obj];
+        [module start:item];
+    }];
     
     __weak typeof(self) weakSelf = self;
     [self.tableViewModel getDataSourceBlock:^id{
@@ -66,6 +71,8 @@
     } completion:^{
         [weakSelf.tableView reloadData];
     }];
+    
+
 }
 
 
@@ -107,7 +114,6 @@
     [self.tableView reloadData];
 }
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ <OSFileDownloaderDelegate> ~~~~~~~~~~~~~~~~~~~~~~~
 
 - (BOOL)shouldDownloadTaskInCurrentNetworkWithCompletionHandler:(void (^)(BOOL))completionHandler {
     
@@ -134,9 +140,9 @@
 
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ <OSFileDownloaderDataSource> ~~~~~~~~~~~~~~~~~~~~~~~
 
-- (NSArray<NSString *> *)addDownloadTaskFromRemoteURLs {
-    return [self getImageUrls];
-}
+//- (NSArray<NSString *> *)addDownloadTaskFromRemoteURLs {
+//    return [self getImageUrls];
+//}
 
 - (NSArray <NSString *> *)getImageUrls {
     return @[

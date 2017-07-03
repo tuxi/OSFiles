@@ -26,7 +26,7 @@ FOUNDATION_EXTERN NSString * const OS_Downloader_Folder;
 @property (nonatomic, weak) id<OSDownloadProtocol> downloadDelegate;
 
 /// 初始化
-- (void)setupTasksWithCompletionHandler:(nonnull void (^)())completionHandler;
+- (void)setupTasksWithCompletionHandler:(nullable void (^)())completionHandler;
 
 
 /// 执行开始下载任务

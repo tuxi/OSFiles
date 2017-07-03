@@ -11,7 +11,7 @@
 
 #define IS_IOS10ORLATER ([[[UIDevice currentDevice] systemVersion] floatValue] >= 10)
 
-#pragma mark- private
+#pragma mark - private
 
 static NSData * correctRequestData(NSData *data) {
     if (!data) {

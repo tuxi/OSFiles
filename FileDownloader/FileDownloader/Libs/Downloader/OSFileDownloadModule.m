@@ -8,7 +8,6 @@
 
 #import "OSFileDownloadModule.h"
 #import "OSFileItem.h"
-#import "AppDelegate.h"
 #import "OSDownloaderManager.h"
 #import "UIApplication+ActivityIndicator.h"
 
@@ -98,33 +97,35 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
 
 - (void)start:(OSFileItem *)downloadItem {
     
-    [self checkAllowedToDownloadTasksInTheCurrentNetworkWithCompletionHandler:^(BOOL shouldDownload) {
-        if (!shouldDownload) {
-            return;
-        }
-        
-        // 有新的下载任务时重置下载进度
-        [self resetProgressIfNoActiveDownloadsRunning];
-        
-        if ((downloadItem.status != OSFileDownloadStatusCancelled) && (downloadItem.status != OSFileDownloadStatusSuccess)) {
-            BOOL isDownloading = [[OSDownloaderManager manager] isDownloadingByURL:downloadItem.urlPath];
-            if (isDownloading == NO){
-                downloadItem.status = OSFileDownloadStatusStarted;
-                
-                // 开始下载前对所有下载的信息进行归档
-                [self storedDownloadItems];
-                
-                // 开始下载
-                if (downloadItem.resumeData.length > 0) {
-                    // 从上次下载位置继续下载
-                    [[OSDownloaderManager manager] downloadWithURL:downloadItem.urlPath resumeData:downloadItem.resumeData];
-                } else {
-                    // 从url下载新的任务
-                    [[OSDownloaderManager manager] downloadWithURL:downloadItem.urlPath];
+    // 有新的下载任务时重置下载进度
+    [self resetProgressIfNoActiveDownloadsRunning];
+    
+    if ((downloadItem.status != OSFileDownloadStatusCancelled) && (downloadItem.status != OSFileDownloadStatusSuccess)) {
+        BOOL isDownloading = [[OSDownloaderManager manager] isDownloadingByURL:downloadItem.urlPath];
+        if (isDownloading == NO){
+            downloadItem.status = OSFileDownloadStatusStarted;
+            
+            // 开始下载前对所有下载的信息进行归档
+            [self storedDownloadItems];
+            
+            // 开始下载
+            if (downloadItem.resumeData.length > 0) {
+                // 从上次下载位置继续下载
+                [[OSDownloaderManager manager] downloadWithURL:downloadItem.urlPath resumeData:downloadItem.resumeData];
+                NSInteger foundIndexInDownloadItems = [self foundItemIndxInDownloadItemsByURL:downloadItem.urlPath];
+                if (foundIndexInDownloadItems == NSNotFound) {
+                    [self.downloadItems addObject:downloadItem];
+                }
+            } else {
+                // 从url下载新的任务
+                [[OSDownloaderManager manager] downloadWithURL:downloadItem.urlPath];
+                NSInteger foundIndexInDownloadItems = [self foundItemIndxInDownloadItemsByURL:downloadItem.urlPath];
+                if (foundIndexInDownloadItems == NSNotFound) {
+                    [self.downloadItems addObject:downloadItem];
                 }
             }
         }
-    }];
+    }
     
 }
 
@@ -147,31 +148,24 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
 
 - (void)resume:(NSString *)urlPath {
     
-    [self checkAllowedToDownloadTasksInTheCurrentNetworkWithCompletionHandler:^(BOOL shouldDownload) {
-        if (!shouldDownload) {
-            return;
-        }
-        
-        // 重置下载进度
-        [self resetProgressIfNoActiveDownloadsRunning];
-        
-        NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:urlPath];
-        if (foundItemIdx != NSNotFound) {
-            OSFileItem *downloadItem = [self.downloadItems objectAtIndex:foundItemIdx];
-            if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_8_4) {
-                // iOS9以上执行NSProgress 的 resume，resumingHandler会得到回调
-                // OSDownloaderManager中已经对其回调时使用了执行了恢复任务
-                if (downloadItem.progressObj.nativeProgress) {
-                    [downloadItem.progressObj.nativeProgress resume];
-                } else {
-                    [self start:downloadItem];
-                }
+    // 重置下载进度
+    [self resetProgressIfNoActiveDownloadsRunning];
+    
+    NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:urlPath];
+    if (foundItemIdx != NSNotFound) {
+        OSFileItem *downloadItem = [self.downloadItems objectAtIndex:foundItemIdx];
+        if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_8_4) {
+            // iOS9以上执行NSProgress 的 resume，resumingHandler会得到回调
+            // OSDownloaderManager中已经对其回调时使用了执行了恢复任务
+            if (downloadItem.progressObj.nativeProgress) {
+                [downloadItem.progressObj.nativeProgress resume];
             } else {
                 [self start:downloadItem];
             }
+        } else {
+            [self start:downloadItem];
         }
-        
-    }];
+    }
     
     
 }
@@ -359,18 +353,6 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
 
 - (NSProgress *)usingNaviteProgress {
     return self.progress;
-}
-
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ Private delegate ~~~~~~~~~~~~~~~~~~~~~~~
-
-- (BOOL)checkAllowedToDownloadTasksInTheCurrentNetworkWithCompletionHandler:(void (^)(BOOL shouldDownload))completionHandler {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(shouldDownloadTaskInCurrentNetworkWithCompletionHandler:)]) {
-        return [self.delegate shouldDownloadTaskInCurrentNetworkWithCompletionHandler:completionHandler];
-    }
-    if (completionHandler) {
-        completionHandler(YES);
-    }
-    return YES;
 }
 
 
