@@ -49,6 +49,13 @@
     } completion:^{
         [weakSelf.tableView reloadData];
     }];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"clear" style:UIBarButtonItemStyleDone target:self action:@selector(resertDownlod)];
+}
+
+/// 重新下载全部
+- (void)resertDownlod {
+    [[OSDownloaderModule sharedInstance] clearAllDownloadTask];
+
 }
 
 

@@ -72,10 +72,7 @@
         [weakSelf.tableView reloadData];
     }];
     
-
 }
-
-
 
 - (void)addObservers {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadSuccess:) name:OSFileDownloadSussessNotification object:nil];

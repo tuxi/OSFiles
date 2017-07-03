@@ -30,7 +30,9 @@ static NSString * const OSLastLocalizedAdditionalDescription = @"lastLocalizedAd
 
 @implementation OSDownloadProgress
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ initialize ~~~~~~~~~~~~~~~~~~~~~~~
+////////////////////////////////////////////////////////////////////////
+#pragma mark - initialize
+////////////////////////////////////////////////////////////////////////
 
 
 - (instancetype)init {
@@ -89,7 +91,9 @@ static NSString * const OSLastLocalizedAdditionalDescription = @"lastLocalizedAd
 
 
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ <NSCoding> ~~~~~~~~~~~~~~~~~~~~~~~
+////////////////////////////////////////////////////////////////////////
+#pragma mark - NSCoding
+////////////////////////////////////////////////////////////////////////
 
 // 归档
 - (void)encodeWithCoder:(NSCoder *)coder {
