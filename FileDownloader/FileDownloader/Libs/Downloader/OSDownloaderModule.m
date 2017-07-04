@@ -237,6 +237,9 @@ static NSString * OSFileItemsKey = @"downloadItems";
             @try {
                 // 解档
                 item = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+                if (item.resumeData.length) {
+                    NSLog(@"---");
+                }
             } @catch (NSException *exception) {
                 @throw exception;
             } @finally {

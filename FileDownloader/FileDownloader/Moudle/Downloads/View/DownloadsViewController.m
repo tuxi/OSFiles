@@ -14,7 +14,7 @@
 #import "OSFileItem.h"
 #import "OSDownloaderModule.h"
 
-@interface DownloadsViewController () <OSFileDownloaderDataSource>
+@interface DownloadsViewController ()
 
 
 @end
@@ -57,20 +57,29 @@
     self.tableViewModel = [DownloadsTableViewModel new];
     [self.tableViewModel prepareTableView:self.tableView];
     OSDownloaderModule *module = [OSDownloaderModule sharedInstance];
-    module.dataSource = self;
     [self addObservers];
     
-    [[self getImageUrls] enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        OSFileItem *item = [[OSFileItem alloc] initWithURL:obj];
-        [module start:item];
-    }];
-    
     __weak typeof(self) weakSelf = self;
-    [self.tableViewModel getDataSourceBlock:^id{
-        return [module getDownloadingItems];
-    } completion:^{
-        [weakSelf.tableView reloadData];
-    }];
+    __weak OSDownloaderModule *weakMoudle = module;
+    void (^reloadBlock)() = ^{
+        
+        [[weakSelf getImageUrls] enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            OSFileItem *item = [[OSFileItem alloc] initWithURL:obj];
+            [weakMoudle start:item];
+        }];
+
+        
+        [weakSelf.tableViewModel getDataSourceBlock:^id{
+            return [weakMoudle getDownloadingItems];
+        } completion:^{
+            [weakSelf.tableView reloadData];
+        }];
+
+    };
+    
+    reloadBlock();
+    
+    self.tableView.reloadButtonClickBlock = reloadBlock;
     
 }
 
@@ -250,6 +259,8 @@
         return image;
     }
 }
+
+
 
 
 @end

@@ -86,6 +86,7 @@
     self.tableView.noDataPlaceholderReloadbuttonAttributedString = [self reloadbuttonTitleAttributedStringForNoDataPlaceholder];
     self.tableView.noDataPlaceholderLoadingImage = [self noDataPlaceholderImageWithIsLoading:YES];
     self.tableView.noDataPlaceholderNotLoadingImage = [self noDataPlaceholderImageWithIsLoading:NO];
+    
 }
 
 - (NSAttributedString *)titleAttributedStringForNoDataPlaceholder {
@@ -147,6 +148,7 @@
         return image;
     }
 }
+
 
 
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ Lazy ~~~~~~~~~~~~~~~~~~~~~~~

@@ -55,6 +55,14 @@
 /// 重新下载全部
 - (void)resertDownlod {
     [[OSDownloaderModule sharedInstance] clearAllDownloadTask];
+    __weak typeof(self) weakSelf = self;
+    [self.tableViewModel getDataSourceBlock:^id{
+        
+        return [[OSDownloaderModule sharedInstance] getAllSuccessItems];
+    } completion:^{
+        [weakSelf.tableView reloadData];
+    }];
+    [self.tabBarController performSelector:@selector(setSelectedIndex:) withObject:@1 afterDelay:0.5];
 
 }
 
