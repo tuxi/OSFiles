@@ -12,6 +12,7 @@
 #import "OSDownloaderModule.h"
 #import "FFCircularProgressView.h"
 #import "NSString+FileDownloadsExtend.h"
+#import "NetworkTypeUtils.h"
 
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
@@ -227,11 +228,23 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
 }
 
 - (void)resume:(NSString *)urlPath {
-    [[OSDownloaderModule sharedInstance] resume:urlPath];
+    if ([NetworkTypeUtils networkType] == NetworkTypeWIFI) {
+        [[OSDownloaderModule sharedInstance] resume:urlPath];
+    } else {
+        [[[UIAlertView alloc] initWithTitle:@"非Wifi环境下不能下载" message:nil delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil, nil] show];
+    }
 }
 
 - (void)start:(OSFileItem *)downloadItem {
-    [[OSDownloaderModule sharedInstance] start:downloadItem];
+    if ([NetworkTypeUtils networkType] == NetworkTypeWIFI) {
+        [[OSDownloaderModule sharedInstance] start:downloadItem];
+    } else {
+        [[[UIAlertView alloc] initWithTitle:@"非Wifi环境下不能下载" message:nil delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil, nil] show];
+    }
+}
+
+- (void)cancel:(NSString *)urlPath {
+    [[OSDownloaderModule sharedInstance] cancel:urlPath];
 }
 
 - (void)cycleViewClick:(FFCircularProgressView *)cycleView {
@@ -247,6 +260,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
         case OSFileDownloadStatusStarted:
         {
             [self pause:self.downloadItem.urlPath];
+//            [self cancel:self.downloadItem.urlPath];
         }
             break;
         case OSFileDownloadStatusPaused:
@@ -263,7 +277,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
             
         case OSFileDownloadStatusCancelled:
         {
-            
+            [self resume:self.downloadItem.urlPath];
         }
             break;
             

@@ -10,19 +10,14 @@
 #import "OSDownloadItem.h"
 #import "NSURLSession+CorrectedResumeData.h"
 
-#define dispatch_main_async_safe(block)\
-if (strcmp(dispatch_queue_get_label(DISPATCH_CURRENT_QUEUE_LABEL), dispatch_queue_get_label(dispatch_get_main_queue())) == 0) {\
-    block();\
-} else {\
-    dispatch_async(dispatch_get_main_queue(), block);\
-}
-
+// 后台任务的标识符
+#define kBackgroundDownloadSessionIdentifier [NSString stringWithFormat:@"%@.OSDownloader", [NSBundle mainBundle].bundleIdentifier]
 
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 static NSString * const OSDownloadURLKey = @"downloadURLPath";
 static NSString * const OSDownloadResumeDataKey = @"resumeData";
 
-NSString * const OS_Downloader_Folder = @"OS_Downloader_Folder";
+NSString * const OSDownloaderFolderNameKey = @"OSDownloaderFolder";
 
 // 下载速度key
 static NSString * const OSDownloadBytesPerSecondSpeedKey = @"bytesPerSecondSpeed";
@@ -39,6 +34,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
 @property (nonatomic, copy) OSBackgroundSessionCompletionHandler backgroundSessionCompletionHandler;
 @property (nonatomic, strong) NSOperationQueue *backgroundSeesionQueue;
 @property (nonatomic, weak) id<OSDownloaderDelegate> downloadDelegate;
+@property (nonatomic, strong) NSURL *downloaderFolderPath;
 
 @end
 
@@ -64,25 +60,8 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
     self = [super init];
     if (self) {
         self.downloadDelegate = downloadDelegate;
-        self.activeDownloadsDictionary = [NSMutableDictionary dictionary];
-        self.waitingDownloadArray = [NSMutableArray array];
-        self.backgroundSeesionQueue = [NSOperationQueue mainQueue];
         
-        // 后台任务的标识符
-        NSString *backgroundDownloadSessionIdentifier = [NSString stringWithFormat:@"%@.OSDownloader", [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleIdentifier"]];
-        
-        // 创建后台会话配置对象
-        NSURLSessionConfiguration *backgroundConfiguration = nil;
-        if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_7_1) {
-            backgroundConfiguration = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:backgroundDownloadSessionIdentifier];
-        } else {
-            backgroundConfiguration = [NSURLSessionConfiguration backgroundSessionConfiguration:backgroundDownloadSessionIdentifier];
-        }
-        
-        // 如果代理实现了自定义后台会话配置方法,就按照代理的配置
-        [self _customBackgroundSessionConfig:backgroundConfiguration];
-        
-        self.backgroundSeesion = [NSURLSession sessionWithConfiguration:backgroundConfiguration delegate:self delegateQueue:self.backgroundSeesionQueue];
+        self.backgroundSeesion = [NSURLSession sessionWithConfiguration:[self _createBackgroundSessionConfig] delegate:self delegateQueue:self.backgroundSeesionQueue];
         self.backgroundSeesion.sessionDescription = @"OSDownload_BackgroundSession";
     }
     return self;
@@ -136,7 +115,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
                 [weakSelf _anDownloadTaskWillBegin];
                 
             } else {
-                NSLog(@"Error: Missing taskDescription (%@, %d)", [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__);
+                DLog(@"Error: Missing taskDescription");
             }
             
             if (completionHandler) {
@@ -212,7 +191,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
             
             [sessionDownloadTask resume];
         } else {
-            NSLog(@"Error: No download item (%@, %d)", [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__);
+            DLog(@"Error: No download item");
         }
     } else {
         
@@ -238,7 +217,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
         if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(resumeDownloadWithURL:)]) {
             [self.downloadDelegate resumeDownloadWithURL:urlPath];
         } else {
-            NSLog(@"Error: Resume action called without implementation (%@, %d)", [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__);
+            DLog(@"Error: Resume action called without implementation");
         }
     }
 }
@@ -255,7 +234,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
             if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadPausedWithURL:resumeData:)]) {
                 if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_8_4) {
                     // iOS9及以上resumeData(恢复数据)由系统管理，并在使用NSProgress调用时使用
-                    aResumeData = nil;
+//                    aResumeData = nil;
                 }
                 [self.downloadDelegate downloadPausedWithURL:urlPath resumeData:aResumeData];
             }
@@ -305,7 +284,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
             }
             // 此时会调用NSURLSessionTaskDelegate 的 URLSession:task:didCompleteWithError:
         } else {
-            NSLog(@"INFO: NSURLSessionDownloadTask cancelled (task not found): %@ (%@, %d)", downloadItem.urlPath, [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__);
+            DLog(@"INFO: NSURLSessionDownloadTask cancelled (task not found): %@", downloadItem.urlPath);
             NSError *error = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:nil];
             // 当downloadTask不存在时执行下载失败的回调
             [self handleDownloadFailureWithError:error downloadItem:downloadItem taskIdentifier:taskIdentifier resumeData:nil];
@@ -353,7 +332,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
             // NSURLSessionTaskDelegate method is called
             // URLSession:task:didCompleteWithError:
         } else {
-            NSLog(@"INFO: NSURLSessionDownloadTask cancelled (task not found): %@ (%@, %d)", downloadItem.urlPath, [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__);
+            DLog(@"INFO: NSURLSessionDownloadTask cancelled (task not found): %@", downloadItem.urlPath);
             NSError *error = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:nil];
             [self handleDownloadFailureWithError:error downloadItem:downloadItem taskIdentifier:taskIdentifier resumeData:nil];
         }
@@ -538,8 +517,8 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
             finalLocalFileURL = [self _getFinalLocalFileURLWithRemoteURL:remoteURL];
             downloadItem.finalLocalFileURL = finalLocalFileURL;
         } else {
-            errorStr = [NSString stringWithFormat:@"Error: Missing information: Remote URL (token: %@) (%@, %d)", downloadItem.urlPath, [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__];
-            NSLog(@"%@", errorStr);
+            errorStr = [NSString stringWithFormat:@"Error: Missing information: Remote URL (token: %@)", downloadItem.urlPath];
+            DLog(@"%@", errorStr);
         }
         
         if (finalLocalFileURL) {
@@ -552,8 +531,8 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
             
         } else {
             // 获取最终存储文件的url为nil
-            errorStr = [NSString stringWithFormat:@"Error: Missing information: Local file URL (token: %@) (%@, %d)", downloadItem.urlPath, [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__];
-            NSLog(@"%@", errorStr);
+            errorStr = [NSString stringWithFormat:@"Error: Missing information: Local file URL (token: %@)", downloadItem.urlPath];
+            DLog(@"%@", errorStr);
         }
         
         if (errorStr) {
@@ -568,7 +547,8 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
             downloadItem.finalLocalFileURL = finalLocalFileURL;
         }
     } else {
-        NSLog(@"Error: 通过downloadTask.taskIdentifier未获取到downloadItem: %@ (%@, %d)", @(downloadTask.taskIdentifier), [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__);
+        DLog(@"Error: 通过downloadTask.taskIdentifier未获取到downloadItem: %@", @(downloadTask.taskIdentifier));
+        
     }
     
 }
@@ -603,7 +583,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
         downloadItem.resumedFileSizeInBytes = fileOffset;
         downloadItem.downloadStartDate = [NSDate date];
         downloadItem.bytesPerSecondSpeed = 0;
-        NSLog(@"INFO: Download (id: %@) resumed (offset: %@ bytes, expected: %@ bytes", downloadTask.taskDescription, @(fileOffset), @(expectedTotalBytes));
+        DLog(@"INFO: Download (id: %@) resumed (offset: %@ bytes, expected: %@ bytes", downloadTask.taskDescription, @(fileOffset), @(expectedTotalBytes));
     }
 }
 
@@ -616,6 +596,8 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
     OSDownloadItem *downloadItem = [self.activeDownloadsDictionary objectForKey:@(task.taskIdentifier)];
     if (downloadItem) {
+        NSData *resumeData = [error.userInfo objectForKey:NSURLSessionDownloadTaskResumeData];
+        
         NSHTTPURLResponse *aHttpResponse = (NSHTTPURLResponse *)task.response;
         NSInteger httpStatusCode = aHttpResponse.statusCode;
         downloadItem.lastHttpStatusCode = httpStatusCode;
@@ -628,7 +610,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
                     [self handleDownloadSuccessWithDownloadItem:downloadItem taskIdentifier:task.taskIdentifier];
                 } else {
                     NSError *finalError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorResourceUnavailable userInfo:nil];
-                    [self handleDownloadFailureWithError:finalError downloadItem:downloadItem taskIdentifier:task.taskIdentifier resumeData:nil];
+                    [self handleDownloadFailureWithError:finalError downloadItem:downloadItem taskIdentifier:task.taskIdentifier resumeData:resumeData];
                 }
             } else {
                 NSString *errorString = [NSString stringWithFormat:@"Invalid http status code: %@", @(httpStatusCode)];
@@ -640,19 +622,29 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
                 [downloadItem setErrorMessagesStack:errorMessagesStackArray];
                 
                 NSError *finalError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorBadServerResponse userInfo:nil];
-                [self handleDownloadFailureWithError:finalError downloadItem:downloadItem taskIdentifier:task.taskIdentifier resumeData:nil];
+                [self handleDownloadFailureWithError:finalError downloadItem:downloadItem taskIdentifier:task.taskIdentifier resumeData:resumeData];
             }
         } else {
             
-            NSData *aSessionDownloadTaskResumeData = [error.userInfo objectForKey:NSURLSessionDownloadTaskResumeData];
             //NSString *aFailingURLStringErrorKeyString = [anError.userInfo objectForKey:NSURLErrorFailingURLStringErrorKey];
             //NSNumber *aBackgroundTaskCancelledReasonKeyNumber = [anError.userInfo objectForKey:NSURLErrorBackgroundTaskCancelledReasonKey];
-            [self handleDownloadFailureWithError:error downloadItem:downloadItem taskIdentifier:task.taskIdentifier resumeData:aSessionDownloadTaskResumeData];
+            [self handleDownloadFailureWithError:error downloadItem:downloadItem taskIdentifier:task.taskIdentifier resumeData:resumeData];
         }
     } else {
-        NSLog(@"Error: Download item not found for download task: %@ (%@, %d)", task, [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__);
+        DLog(@"Error: Download item not found for download task: %@", task);
+        
+        NSData *resumeData = error ? [error.userInfo objectForKey:NSURLSessionDownloadTaskResumeData]:nil;
+        if (resumeData) {
+            NSURL *resumeDataCachePath = [[self downloaderFolderPath] URLByAppendingPathComponent:task.taskDescription.lastPathComponent];
+            [resumeData writeToURL:resumeDataCachePath atomically:YES];
+            
+        }else {
+            [self deleteFileIfExist:task.taskDescription];
+        }
+
     }
 }
+
 
 /// SSL / TLS 验证
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
@@ -667,11 +659,11 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
                                              completionHandler(aDisposition, aCredential);
                                          }];
         } else {
-            NSLog(@"Error: Missing task description (%@, %d)", [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__);
+            DLog(@"Error: Missing task description");
             completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, nil);
         }
     } else {
-        NSLog(@"Error: Received authentication challenge with no delegate method implemented (%@, %d)", [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__);
+        DLog(@"Error: Received authentication challenge with no delegate method implemented");
         completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, nil);
     }
     
@@ -693,7 +685,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 /// 当不再需要连接调用Session的invalidateAndCancel直接关闭，或者调用finishTasksAndInvalidate等待当前Task结束后关闭
 /// 此时此方法会收到回调
 - (void)URLSession:(NSURLSession *)session didBecomeInvalidWithError:(NSError *)error {
-    NSLog(@"Error: URL session did become invalid with error: %@ (%@, %d)", error, [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__);
+    DLog(@"Error: URL session did become invalid with error: %@", error);
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -702,10 +694,21 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 
 /// 获取下载后文件最终存放的本地路径,若代理实现了则设置使用代理的，没实现则使用默认设定的LocalURL
 - (NSURL *)_getFinalLocalFileURLWithRemoteURL:(NSURL *)remoteURL {
+    NSURL *finalUrl = nil;
     if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(finalLocalFileURLWithRemoteURL:)]) {
-        return [self.downloadDelegate finalLocalFileURLWithRemoteURL:remoteURL];
+        finalUrl = [self.downloadDelegate finalLocalFileURLWithRemoteURL:remoteURL];
+    } else {
+        finalUrl = [[self class] getDefaultLocalFilePathWithRemoteURL:remoteURL];
     }
-    return [[self class] getDefaultLocalFilePathWithRemoteURL:remoteURL];
+    
+    return finalUrl;
+}
+
+- (NSURL *)downloaderFolderPath {
+    if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(finalLocalFolderURL)]) {
+        return [self.downloadDelegate finalLocalFolderURL];
+    }
+    return [[self class] getDefaultLocalFolderPath];
 }
 
 /// 验证下载的文件是否有效
@@ -718,8 +721,8 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     // 获取最终文件的属性
     NSDictionary *finalFileAttributesDictionary = [[NSFileManager defaultManager] attributesOfItemAtPath:finalLocalFileURL.path error:&error];
     if (error && errorStr) {
-        *errorStr = [NSString stringWithFormat:@"Error: Error on getting file size for item at %@: %@ (%@, %d)", finalLocalFileURL, error.localizedDescription, [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__];
-        NSLog(@"%@", *errorStr);
+        *errorStr = [NSString stringWithFormat:@"Error: Error on getting file size for item at %@: %@", finalLocalFileURL, error.localizedDescription];
+        DLog(@"%@", *errorStr);
         isVaild = NO;
     } else {
         // 成功获取到文件的属性
@@ -728,15 +731,15 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
         if (fileSize == 0) {
             // 文件大小字节数为0 不正常
             NSError *fileSizeZeroError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorZeroByteResource userInfo:nil];
-            *errorStr = [NSString stringWithFormat:@"Error: Zero file size for item at %@: %@ (%@, %d)", finalLocalFileURL, fileSizeZeroError.localizedDescription, [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__];
-            NSLog(@"%@", *errorStr);
+            *errorStr = [NSString stringWithFormat:@"Error: Zero file size for item at %@: %@", finalLocalFileURL, fileSizeZeroError.localizedDescription];
+            DLog(@"%@", *errorStr);
             isVaild = NO;
         } else {
             if ([self.downloadDelegate respondsToSelector:@selector(downloadFinalLocalFileURL:isVaildByURL:)]) {
                 BOOL isVaild = [self.downloadDelegate downloadFinalLocalFileURL:finalLocalFileURL isVaildByURL:identifier];
                 if (isVaild == NO) {
                     *errorStr = [NSString stringWithFormat:@"Error: Download check failed for item at %@", finalLocalFileURL];
-                    NSLog(@"%@", *errorStr);
+                    DLog(@"%@", *errorStr);
                 }
             }
         }
@@ -753,8 +756,8 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
         NSError *removeError = nil;
         [[NSFileManager defaultManager] removeItemAtURL:toURL error:&removeError];
         if (removeError && errorStr) {
-            *errorStr = [NSString stringWithFormat:@"Error: Error on removing file at %@: %@ (%@, %d)", toURL, removeError, [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__];
-            NSLog(@"%@", *errorStr);
+            *errorStr = [NSString stringWithFormat:@"Error: Error on removing file at %@: %@", toURL, removeError];
+            DLog(@"%@", *errorStr);
         }
     }
     
@@ -768,9 +771,9 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
             moveError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorCannotMoveFile userInfo:nil];
         }
         if (errorStr) {
-            *errorStr = [NSString stringWithFormat:@"Error: Unable to move file from %@ to %@ (%@) (%@, %d)", fromURL, toURL, moveError.localizedDescription, [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__];
+            *errorStr = [NSString stringWithFormat:@"Error: Unable to move file from %@ to %@ (%@)", fromURL, toURL, moveError.localizedDescription];
         }
-        NSLog(@"%@", *errorStr);
+        DLog(@"%@", *errorStr);
     }
     return successFlag;
 }
@@ -800,8 +803,16 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     
 }
 
-// 配置backgroundConfiguration
-- (void)_customBackgroundSessionConfig:(NSURLSessionConfiguration *)backgroundConfiguration {
+// 创建并配置backgroundConfiguration
+// 如果代理实现了自定义后台会话配置方法,就按照代理的配置
+- (NSURLSessionConfiguration *)_createBackgroundSessionConfig {
+    // 创建后台会话配置对象
+    NSURLSessionConfiguration *backgroundConfiguration = nil;
+    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_7_1) {
+        backgroundConfiguration = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:kBackgroundDownloadSessionIdentifier];
+    } else {
+        backgroundConfiguration = [NSURLSessionConfiguration backgroundSessionConfiguration:kBackgroundDownloadSessionIdentifier];
+    }
     if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(customBackgroundSessionConfiguration:)]) {
         [self.downloadDelegate customBackgroundSessionConfiguration:backgroundConfiguration];
     } else {
@@ -815,7 +826,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
         // 是否自动选择最佳网络，仅「后台会话」有效
         backgroundConfiguration.discretionary = YES;
     }
-    
+    return backgroundConfiguration;
 }
 
 /// 创建NSProgress
@@ -860,36 +871,45 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     return taskIdentifier;
 }
 
-
-/// 获取下载的文件默认存储在背的的位置，若代理未实现时则使用此默认的
-+ (NSURL *)getDefaultLocalFilePathWithRemoteURL:(NSURL *)remoteURL {
-    NSURL *aLocalFileURL = nil;
+/// 默认缓存下载文件的本地文件夹
++ (NSURL *)getDefaultLocalFolderPath {
     NSURL *aFileDownloadDirectoryURL = nil;
     NSError *anError = nil;
     NSArray *documentDirectoryURLsArray = [[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];
     NSURL *documentsDirectoryURL = [documentDirectoryURLsArray firstObject];
     if (documentsDirectoryURL)
     {
-        aFileDownloadDirectoryURL = [documentsDirectoryURL URLByAppendingPathComponent:OS_Downloader_Folder isDirectory:YES];
+        aFileDownloadDirectoryURL = [documentsDirectoryURL URLByAppendingPathComponent:OSDownloaderFolderNameKey isDirectory:YES];
         if ([[NSFileManager defaultManager] fileExistsAtPath:aFileDownloadDirectoryURL.path] == NO)
         {
             BOOL aCreateDirectorySuccess = [[NSFileManager defaultManager] createDirectoryAtPath:aFileDownloadDirectoryURL.path withIntermediateDirectories:YES attributes:nil error:&anError];
             if (aCreateDirectorySuccess == NO)
             {
-                NSLog(@"Error on create directory: %@ (%@, %d)", anError, [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__);
+                DLog(@"Error on create directory: %@", anError);
             }
             else
             {
+                // 排除备份，即使文件存储在document中，该目录下载的文件也不会被备份到itunes或上传的iCloud中
                 BOOL aSetResourceValueSuccess = [aFileDownloadDirectoryURL setResourceValue:@YES forKey:NSURLIsExcludedFromBackupKey error:&anError];
                 if (aSetResourceValueSuccess == NO)
                 {
-                    NSLog(@"Error on set resource value (NSURLIsExcludedFromBackupKey): %@ (%@, %d)", anError, [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__);
+                    DLog(@"Error on set resource value (NSURLIsExcludedFromBackupKey): %@", anError);
                 }
             }
         }
+        return aFileDownloadDirectoryURL;
+    }
+    return nil;
+
+}
+
+/// 获取下载的文件默认存储在背的的位置，若代理未实现时则使用此默认的
+- (NSURL *)getDefaultLocalFilePathWithRemoteURL:(NSURL *)remoteURL {
+    NSURL *aLocalFileURL = nil;
+    NSURL *aFileDownloadDirectoryURL = [self downloaderFolderPath];
         NSString *aLocalFileName = [NSString stringWithFormat:@"%@.%@", [[NSUUID UUID] UUIDString], [[remoteURL lastPathComponent] pathExtension]];
         aLocalFileURL = [aFileDownloadDirectoryURL URLByAppendingPathComponent:aLocalFileName isDirectory:NO];
-    }
+    
     return aLocalFileURL;
 }
 
@@ -962,6 +982,27 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     return _maxConcurrentDownloads ?: -1;
 }
 
+- (NSOperationQueue *)backgroundSeesionQueue {
+    if (!_backgroundSeesionQueue) {
+        _backgroundSeesionQueue = [NSOperationQueue mainQueue];
+    }
+    return _backgroundSeesionQueue;
+}
+
+- (NSMutableDictionary<NSNumber *,OSDownloadItem *> *)activeDownloadsDictionary {
+    if (!_activeDownloadsDictionary) {
+        _activeDownloadsDictionary = [NSMutableDictionary dictionaryWithCapacity:0];
+    }
+    return _activeDownloadsDictionary;
+}
+
+- (NSMutableArray<NSDictionary<NSString *,NSObject *> *> *)waitingDownloadArray {
+    if (!_waitingDownloadArray) {
+        _waitingDownloadArray = [NSMutableArray arrayWithCapacity:0];
+    }
+    return _waitingDownloadArray;
+}
+
 /// 检测当前正在下载的队列是否超出最大设定的
 //- (void)checkDownloadingQueueIsAboveMaxConcurrentDownloads {
 //    if (_maxConcurrentDownloads == -1) {
@@ -985,5 +1026,15 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 //    }
 //}
 
+
+- (void)deleteFileIfExist:(NSString *)filePath {
+    if ([[NSFileManager defaultManager] fileExistsAtPath:filePath] ) {
+        NSError *error  = nil;
+        [[NSFileManager defaultManager] removeItemAtPath:filePath error:&error];
+        if (error) {
+            DLog(@"emoveItem error %@",error);
+        }
+    }
+}
 
 @end

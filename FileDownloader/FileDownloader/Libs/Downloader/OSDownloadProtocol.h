@@ -171,6 +171,8 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 /// @discussion 虽然anIdentifier用于识别下载的任务，这里回调aRemoteURL更方便区分
 - (NSURL *)finalLocalFileURLWithRemoteURL:(NSURL *)aRemoteURL;
 
+- (NSURL *)finalLocalFolderURL;
+
 /// 回调此方法，验证下载数据
 /// @param aLocalFileURL 下载文件的本地路径
 /// @param url 当前下载任务的url

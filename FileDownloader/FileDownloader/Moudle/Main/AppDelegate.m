@@ -10,6 +10,7 @@
 #import "MainTabBarController.h"
 #import "OSDownloader.h"
 #import "OSDownloaderModule.h"
+#import "NetworkTypeUtils.h"
 
 @interface AppDelegate () 
 
@@ -24,7 +25,7 @@
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.rootViewController = [MainTabBarController new];
     [self.window makeKeyAndVisible];
-    [self configBackgroundSession];
+    [self performSelector:@selector(configBackgroundSession) withObject:nil afterDelay:5.0];
     return YES;
 }
 
@@ -61,7 +62,10 @@
 }
 
 - (void)configBackgroundSession {
-    
+    if ([NetworkTypeUtils networkType] != NetworkTypeWIFI) {
+        [[[UIAlertView alloc] initWithTitle:@"非Wifi环境下不能下载" message:nil delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil, nil] show];
+        return;
+    }
     [[OSDownloaderModule sharedInstance].downloader setupTasksWithCompletionHandler:nil];
 }
 

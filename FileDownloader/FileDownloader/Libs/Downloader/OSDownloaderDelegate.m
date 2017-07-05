@@ -11,6 +11,14 @@
 #import "OSDownloaderModule.h"
 #import "OSDownloadProgress.h"
 
+#define dispatch_main_async_safe(block)\
+if (strcmp(dispatch_queue_get_label(DISPATCH_CURRENT_QUEUE_LABEL), dispatch_queue_get_label(dispatch_get_main_queue())) == 0) {\
+block();\
+} else {\
+dispatch_async(dispatch_get_main_queue(), block);\
+}
+
+
 static void *ProgressObserverContext = &ProgressObserverContext;
 
 NSString * const OSFileDownloadProgressChangeNotification = @"OSFileDownloadProgressChangeNotification";
@@ -97,8 +105,10 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
         [[OSDownloaderModule sharedInstance] storedDownloadItems];
         
     }
-    // 发送失败通知
-    [[NSNotificationCenter defaultCenter] postNotificationName:OSFileDownloadFailureNotification object:downloadItem];
+    dispatch_main_async_safe(^{
+        // 发送失败通知
+        [[NSNotificationCenter defaultCenter] postNotificationName:OSFileDownloadFailureNotification object:downloadItem];
+    })
 }
 
 - (void)downloadTaskWillBegin {
@@ -214,7 +224,9 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
         // 取出当前的progress
         NSProgress *progress = object;
         if ([keyPath isEqualToString:NSStringFromSelector(@selector(fractionCompleted))]) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:OSFileDownloadProgressChangeNotification object:progress];
+            dispatch_main_async_safe(^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:OSFileDownloadProgressChangeNotification object:progress];
+            });
         } else {
             NSLog(@"ERR: Invalid keyPath (%@, %d)", [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__);
         }

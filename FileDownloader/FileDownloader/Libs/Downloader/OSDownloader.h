@@ -12,10 +12,16 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+#ifdef DEBUG
+#define DLog(fmt, ...) NSLog((@"<%s : %d> %s  " fmt), [[[NSString stringWithUTF8String:__FILE__] lastPathComponent]   UTF8String], __LINE__, __PRETTY_FUNCTION__,  ##__VA_ARGS__);
+#else
+#define DLog(...)
+#endif
+
 typedef void (^OSBackgroundSessionCompletionHandler)();
 typedef void (^OSDownloaderResumeDataHandler)(NSData * aResumeData);
 
-FOUNDATION_EXTERN NSString * const OS_Downloader_Folder;
+FOUNDATION_EXTERN NSString * const OSDownloaderFolderNameKey;
 
 @interface OSDownloader : NSObject
 

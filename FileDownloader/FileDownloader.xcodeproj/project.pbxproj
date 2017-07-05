@@ -103,6 +103,7 @@
 		18878B261EF19EAC005C0185 /* UIApplication+ActivityIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 18878B211EF19EAC005C0185 /* UIApplication+ActivityIndicator.m */; };
 		18878B271EF19EAC005C0185 /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = 18878B231EF19EAC005C0185 /* UIColor+Hex.m */; };
 		18878B281EF19EAC005C0185 /* UINavigationItem+MultipleItems.m in Sources */ = {isa = PBXBuildFile; fileRef = 18878B251EF19EAC005C0185 /* UINavigationItem+MultipleItems.m */; };
+		18910A6C1F0D3472002BA292 /* PSPDFUIKitMainThreadGuard.m in Sources */ = {isa = PBXBuildFile; fileRef = 18910A6B1F0D3472002BA292 /* PSPDFUIKitMainThreadGuard.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -306,6 +307,7 @@
 		18878B231EF19EAC005C0185 /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
 		18878B241EF19EAC005C0185 /* UINavigationItem+MultipleItems.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationItem+MultipleItems.h"; sourceTree = "<group>"; };
 		18878B251EF19EAC005C0185 /* UINavigationItem+MultipleItems.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationItem+MultipleItems.m"; sourceTree = "<group>"; };
+		18910A6B1F0D3472002BA292 /* PSPDFUIKitMainThreadGuard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSPDFUIKitMainThreadGuard.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -450,6 +452,7 @@
 		18517BE91EEBCB2C00B148C8 /* Helper */ = {
 			isa = PBXGroup;
 			children = (
+				18910A6B1F0D3472002BA292 /* PSPDFUIKitMainThreadGuard.m */,
 				18878A1D1EF01B87005C0185 /* ImageViewer */,
 				18300FC51EED38820035D6EE /* FFCircularProgressView */,
 				18300F711EEC57280035D6EE /* HUD */,
@@ -1012,6 +1015,7 @@
 				1871ACF21EEEECBE00ABC452 /* FilesTableViewModel.m in Sources */,
 				1871AD0D1EEEF15100ABC452 /* BaseTableViewModel.m in Sources */,
 				1871ACDD1EEEE55700ABC452 /* NSDate+Utilities.m in Sources */,
+				18910A6C1F0D3472002BA292 /* PSPDFUIKitMainThreadGuard.m in Sources */,
 				18517C471EEBD81D00B148C8 /* MainTabBarController.m in Sources */,
 				1871AD251EEEF76E00ABC452 /* UIView+XYConfigure.m in Sources */,
 				18300F651EEC54570035D6EE /* OSDownloadItem.m in Sources */,

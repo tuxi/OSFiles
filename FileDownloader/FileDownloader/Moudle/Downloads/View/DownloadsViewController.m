@@ -14,7 +14,7 @@
 #import "OSFileItem.h"
 #import "OSDownloaderModule.h"
 
-@interface DownloadsViewController ()
+@interface DownloadsViewController () <OSFileDownloaderDataSource>
 
 
 @end
@@ -57,30 +57,39 @@
     self.tableViewModel = [DownloadsTableViewModel new];
     [self.tableViewModel prepareTableView:self.tableView];
     OSDownloaderModule *module = [OSDownloaderModule sharedInstance];
+    module.dataSource = self;
     [self addObservers];
     
+    [self.tableView reloadData];
+    
+   
+    
+    [self reloadBlock]();
+    
+    self.tableView.reloadButtonClickBlock = [self reloadBlock];
+    
+}
+
+- (void (^)())reloadBlock {
+    
     __weak typeof(self) weakSelf = self;
-    __weak OSDownloaderModule *weakMoudle = module;
+    __weak OSDownloaderModule *weakMoudle = [OSDownloaderModule sharedInstance];
     void (^reloadBlock)() = ^{
         
-        [[weakSelf getImageUrls] enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            OSFileItem *item = [[OSFileItem alloc] initWithURL:obj];
-            [weakMoudle start:item];
-        }];
-
+        //        [[weakSelf getImageUrls] enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        //            OSFileItem *item = [[OSFileItem alloc] initWithURL:obj];
+        //            [weakMoudle start:item];
+        //        }];
+        
         
         [weakSelf.tableViewModel getDataSourceBlock:^id{
             return [weakMoudle getDownloadingItems];
         } completion:^{
             [weakSelf.tableView reloadData];
         }];
-
+        
     };
-    
-    reloadBlock();
-    
-    self.tableView.reloadButtonClickBlock = reloadBlock;
-    
+    return reloadBlock;
 }
 
 - (void)addObservers {
@@ -98,57 +107,29 @@
 
 - (void)downloadSuccess:(NSNotification *)note {
     
-    __weak typeof(self) weakSelf = self;
-    [self.tableViewModel getDataSourceBlock:^id{
-        return [[OSDownloaderModule sharedInstance] getDownloadingItems];
-    } completion:^{
-        [weakSelf.tableView reloadData];
-    }];
+    [self reloadBlock]();
 }
 
 - (void)downloadFailure:(NSNotification *)note {
-    [self.tableView reloadData];
+    [self reloadBlock]();
 }
 
 - (void)downloadProgressChange:(NSNotification *)note {
     
-    [self.tableView reloadData];
+    [self reloadBlock]();
     
 }
 
 - (void)downloadCanceld {
-    [self.tableView reloadData];
+    [self reloadBlock]();
 }
 
-
-- (BOOL)shouldDownloadTaskInCurrentNetworkWithCompletionHandler:(void (^)(BOOL))completionHandler {
-    
-    __block BOOL shouldDownload = YES;
-    [NetworkTypeUtils judgeNetworkType:^(NetworkType type) {
-        switch (type) {
-            case NetworkTypeWWAN:
-            {
-                [self xy_showMessage:@"当前处于蜂窝移动网络下，不允许下载"];
-                shouldDownload = NO;
-            }
-                break;
-                
-            default:
-                break;
-        }
-        if (completionHandler) {
-            completionHandler(shouldDownload);
-        }
-    }];
-    return shouldDownload;
-    
-}
 
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ <OSFileDownloaderDataSource> ~~~~~~~~~~~~~~~~~~~~~~~
 
-//- (NSArray<NSString *> *)addDownloadTaskFromRemoteURLs {
-//    return [self getImageUrls];
-//}
+- (NSArray<NSString *> *)addDownloadTaskFromRemoteURLs {
+    return [self getImageUrls];
+}
 
 - (NSArray <NSString *> *)getImageUrls {
     return @[
