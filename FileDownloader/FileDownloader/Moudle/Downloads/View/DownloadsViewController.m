@@ -83,7 +83,7 @@
         
         
         [weakSelf.tableViewModel getDataSourceBlock:^id{
-            return [weakMoudle getDownloadingItems];
+            return [weakMoudle getActiveDownloadItems];
         } completion:^{
             [weakSelf.tableView reloadData];
         }];
@@ -127,7 +127,7 @@
 
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ <OSFileDownloaderDataSource> ~~~~~~~~~~~~~~~~~~~~~~~
 
-- (NSArray<NSString *> *)addDownloadTaskFromRemoteURLs {
+- (NSArray<NSString *> *)fileDownloaderAddTasksFromRemoteURLPaths {
     return [self getImageUrls];
 }
 

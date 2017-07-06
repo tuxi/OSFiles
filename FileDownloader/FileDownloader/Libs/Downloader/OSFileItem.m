@@ -119,7 +119,27 @@
 }
 
 - (NSString *)fileName {
-    return self.urlPath.lastPathComponent;
+    if (!_fileName.length) {
+        return self.urlPath.lastPathComponent;
+    };
+    return _fileName;
+}
+
+- (void)setStatus:(OSFileDownloadStatus)status {
+    if (_status == status) {
+        return;
+    }
+    [self willChangeValueForKey:@"status"];
+    _status = status;
+    [self didChangeValueForKey:@"status"];
+    
+}
+
+- (void)setProgressObj:(OSDownloadProgress *)progressObj {
+    _progressObj = progressObj;
+    if (!progressObj) {
+        NSLog(@"----");
+    }
 }
 
 #pragma mark - Description

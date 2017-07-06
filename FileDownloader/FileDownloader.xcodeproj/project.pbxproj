@@ -30,7 +30,7 @@
 		18300FB01EECE79F0035D6EE /* ViewController+MASAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300FA61EECE79F0035D6EE /* ViewController+MASAdditions.m */; };
 		18300FCA1EED38820035D6EE /* FFCircularProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300FC71EED38820035D6EE /* FFCircularProgressView.m */; };
 		18300FCB1EED38820035D6EE /* UIColor+iOS7.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300FC91EED38820035D6EE /* UIColor+iOS7.m */; };
-		18300FCE1EED3DF50035D6EE /* OSFileItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300FCD1EED3DF50035D6EE /* OSFileItem.m */; };
+		183031511F0E9571007354D2 /* OSFileItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 183031501F0E9571007354D2 /* OSFileItem.m */; };
 		184BD1AA1F0A96F8007FD40B /* OSDownloaderDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 184BD1A91F0A96F8007FD40B /* OSDownloaderDelegate.m */; };
 		18517BC81EEBC86600B148C8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 18517BC71EEBC86600B148C8 /* main.m */; };
 		18517BD31EEBC86600B148C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18517BD21EEBC86600B148C8 /* Assets.xcassets */; };
@@ -158,8 +158,8 @@
 		18300FC71EED38820035D6EE /* FFCircularProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFCircularProgressView.m; sourceTree = "<group>"; };
 		18300FC81EED38820035D6EE /* UIColor+iOS7.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+iOS7.h"; sourceTree = "<group>"; };
 		18300FC91EED38820035D6EE /* UIColor+iOS7.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+iOS7.m"; sourceTree = "<group>"; };
-		18300FCC1EED3DF50035D6EE /* OSFileItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSFileItem.h; sourceTree = "<group>"; };
-		18300FCD1EED3DF50035D6EE /* OSFileItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSFileItem.m; sourceTree = "<group>"; };
+		1830314F1F0E9571007354D2 /* OSFileItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSFileItem.h; sourceTree = "<group>"; };
+		183031501F0E9571007354D2 /* OSFileItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSFileItem.m; sourceTree = "<group>"; };
 		184BD1A81F0A96F8007FD40B /* OSDownloaderDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSDownloaderDelegate.h; sourceTree = "<group>"; };
 		184BD1A91F0A96F8007FD40B /* OSDownloaderDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSDownloaderDelegate.m; sourceTree = "<group>"; };
 		18517BC31EEBC86600B148C8 /* FileDownloader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FileDownloader.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -336,6 +336,8 @@
 				18300F6E1EEC55390035D6EE /* OSDownloaderModule.m */,
 				184BD1A81F0A96F8007FD40B /* OSDownloaderDelegate.h */,
 				184BD1A91F0A96F8007FD40B /* OSDownloaderDelegate.m */,
+				1830314F1F0E9571007354D2 /* OSFileItem.h */,
+				183031501F0E9571007354D2 /* OSFileItem.m */,
 				187BA6491F0947A600E7EA5D /* NSURLSession+CorrectedResumeData.h */,
 				187BA64A1F0947A600E7EA5D /* NSURLSession+CorrectedResumeData.m */,
 			);
@@ -659,8 +661,6 @@
 		18517C4B1EEBD8D400B148C8 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				18300FCC1EED3DF50035D6EE /* OSFileItem.h */,
-				18300FCD1EED3DF50035D6EE /* OSFileItem.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1008,6 +1008,7 @@
 				18517C3A1EEBD66A00B148C8 /* FMDatabase.m in Sources */,
 				18517C3B1EEBD66A00B148C8 /* FMDatabaseAdditions.m in Sources */,
 				18517C461EEBD81D00B148C8 /* MainNavigationController.m in Sources */,
+				183031511F0E9571007354D2 /* OSFileItem.m in Sources */,
 				18517C751EEBE08700B148C8 /* UITableView+NoDataPlaceholderExtend.m in Sources */,
 				1871AD231EEEF76E00ABC452 /* UICollectionViewCell+XYConfigure.m in Sources */,
 				1871AD261EEEF76E00ABC452 /* XYDBUtil.m in Sources */,
@@ -1053,7 +1054,6 @@
 				1871ACDA1EEEE2D900ABC452 /* NSString+FileDownloadsExtend.m in Sources */,
 				18878A941EF03908005C0185 /* XYCutVideoController.m in Sources */,
 				18517BC81EEBC86600B148C8 /* main.m in Sources */,
-				18300FCE1EED3DF50035D6EE /* OSFileItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

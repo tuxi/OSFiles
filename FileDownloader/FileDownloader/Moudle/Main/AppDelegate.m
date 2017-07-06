@@ -66,7 +66,7 @@
         [[[UIAlertView alloc] initWithTitle:@"非Wifi环境下不能下载" message:nil delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil, nil] show];
         return;
     }
-    [[OSDownloaderModule sharedInstance].downloader setupTasksWithCompletionHandler:nil];
+//    [[OSDownloaderModule sharedInstance].downloader setupDownloadTasksWithCompletionHandler:nil];
 }
 
 @end

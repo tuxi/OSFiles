@@ -191,9 +191,12 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
           self.cycleView.circularState = FFCircularStateStopSpinning;
             break;
         case OSFileDownloadStatusInterrupted:
-          self.cycleView.circularState = FFCircularStateStopSpinning;
+          self.cycleView.circularState = FFCircularStateIcon;
             break;
-            
+        case OSFileDownloadStatusWaiting:
+            self.cycleView.circularState = FFCircularStateStopSpinning;
+            break;
+
         default:
             break;
     }
@@ -280,11 +283,16 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
             [self resume:self.downloadItem.urlPath];
         }
             break;
+        case OSFileDownloadStatusWaiting:
+        {
+            [self pause:self.downloadItem.urlPath];
+        }
+            break;
             
         case OSFileDownloadStatusFailure:
         case OSFileDownloadStatusInterrupted:
         {
-            [self start:self.downloadItem];
+            [self resume:self.downloadItem.urlPath];
         }
             break;
             

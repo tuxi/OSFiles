@@ -73,8 +73,9 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
     } else {
         NSLog(@"Error: Completed download item not found (id: %@) (%@, %d)", downloadItem.urlPath, [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__);
     }
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:OSFileDownloadSussessNotification object:downloadItem];
+    dispatch_main_async_safe(^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:OSFileDownloadSussessNotification object:downloadItem];
+    })
 }
 
 - (void)downloadFailureWithDownloadItem:(id<OSDownloadItemProtocol>)downloadItem resumeData:(NSData *)resumeData error:(NSError *)error {
@@ -94,7 +95,8 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
             if (resumeData.length > 0)
             {
                 fileItem.status = OSFileDownloadStatusInterrupted;
-            } else if ([error.domain isEqualToString:NSURLErrorDomain] && (error.code == NSURLErrorCancelled))
+            } else if ([error.domain isEqualToString:NSURLErrorDomain]
+                       && (error.code == NSURLErrorCancelled))
             {
                 fileItem.status = OSFileDownloadStatusCancelled;
             } else
@@ -134,10 +136,12 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
             downloadItem.progressObj.lastLocalizedAdditionalDescription = downloadItem.progressObj.nativeProgress.localizedAdditionalDescription;
         }
     }
-    [[NSNotificationCenter defaultCenter] postNotificationName:OSFileDownloadProgressChangeNotification object:downloadItem];
+    dispatch_main_async_safe(^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:OSFileDownloadProgressChangeNotification object:downloadItem];
+    })
 }
 
-- (void)downloadPausedWithURL:(NSString *)url resumeData:(NSData *)aResumeData{
+- (void)downloadPausedWithURL:(NSString *)url resumeData:(NSData *)aResumeData {
     
     NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:url];
     
@@ -161,7 +165,7 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
     if (foundItemIdx != NSNotFound) {
         id<OSDownloadFileItemProtocol> downloadItem = [[OSDownloaderModule sharedInstance].downloadItems objectAtIndex:foundItemIdx];
         [[OSDownloaderModule sharedInstance] start:downloadItem];
-    }
+    } 
 }
 
 - (BOOL)downloadFinalLocalFileURL:(NSURL *)aLocalFileURL isVaildByURL:(NSString *)url {
@@ -187,6 +191,36 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
 
 - (NSProgress *)usingNaviteProgress {
     return self.progress;
+}
+
+/// 有一个任务等待下载时调用
+- (void)didWaitingForDownloadWithUrlPath:(NSString *)url progress:(nonnull OSDownloadProgress *)progress{
+    NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:url];
+    
+    id<OSDownloadFileItemProtocol> downloadItem = nil;
+    if (foundItemIdx != NSNotFound) {
+        downloadItem = [[OSDownloaderModule sharedInstance].downloadItems objectAtIndex:foundItemIdx];
+        if (progress) {
+            downloadItem.progressObj = progress;
+            downloadItem.progressObj.lastLocalizedDescription = downloadItem.progressObj.nativeProgress.localizedDescription;
+            downloadItem.progressObj.lastLocalizedAdditionalDescription = downloadItem.progressObj.nativeProgress.localizedAdditionalDescription;
+        }
+    }
+}
+
+/// 从等待队列中开始下载一个任务
+- (void)startDownloadTaskFromTheWaitingQueue:(NSString *)url progress:(nonnull OSDownloadProgress *)progress{
+    NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:url];
+    
+    id<OSDownloadFileItemProtocol> downloadItem = nil;
+    if (foundItemIdx != NSNotFound) {
+        downloadItem = [[OSDownloaderModule sharedInstance].downloadItems objectAtIndex:foundItemIdx];
+        if (progress) {
+            downloadItem.progressObj = progress;
+            downloadItem.progressObj.lastLocalizedDescription = downloadItem.progressObj.nativeProgress.localizedDescription;
+            downloadItem.progressObj.lastLocalizedAdditionalDescription = downloadItem.progressObj.nativeProgress.localizedAdditionalDescription;
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////

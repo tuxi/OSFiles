@@ -26,12 +26,9 @@ FOUNDATION_EXTERN NSString * const OSDownloaderFolderNameKey;
 @interface OSDownloader : NSObject
 
 @property (nonatomic, assign) NSInteger maxConcurrentDownloads;
+@property (nonatomic, weak) id<OSDownloaderDelegate> downloadDelegate;
 
-- (instancetype)initWithDelegate:(id<OSDownloaderDelegate>)downloadDelegate NS_DESIGNATED_INITIALIZER;
-- (instancetype)init NS_UNAVAILABLE;
-+ (instancetype)new NS_UNAVAILABLE;
-
-- (void)setupTasksWithCompletionHandler:(nullable void (^)())completionHandler;
+- (void)setupDownloadTasksWithCompletionHandler:(nullable void (^)())completionHandler;
 
 
 /// 执行开始下载任务

@@ -19,11 +19,19 @@ FOUNDATION_EXTERN NSString * const OSFileDownloadCanceldNotification;
 
 typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
     OSFileDownloadStatusNotStarted = 0,
+    /// 开始下载
     OSFileDownloadStatusStarted,
+    /// 下载完成
     OSFileDownloadStatusSuccess,
+    /// 暂停下载
     OSFileDownloadStatusPaused,
+    /// 取消下载
     OSFileDownloadStatusCancelled,
+    /// 等待下载
+    OSFileDownloadStatusWaiting,
+    /// 下载过程中由于其他因素被中断，比如设备重启
     OSFileDownloadStatusInterrupted,
+    /// 下载失败
     OSFileDownloadStatusFailure
 };
 
@@ -71,7 +79,7 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 - (void)pause:(NSString *)url;
 
 - (NSArray<id<OSDownloadFileItemProtocol>> *)getAllSuccessItems;
-- (NSArray<id<OSDownloadFileItemProtocol>> *)getDownloadingItems;
+- (NSArray<id<OSDownloadFileItemProtocol>> *)getActiveDownloadItems;
 
 
 @end
@@ -208,6 +216,13 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 /// 提供一个下载进度的对象，以记录下载进度
 /// @return 下载进度的对象
 - (NSProgress *)usingNaviteProgress;
+
+#warning TODO bug:目前等待中的task获取不到progress，待修复
+/// 有一个任务等待下载时调用
+- (void)didWaitingForDownloadWithUrlPath:(NSString *)url progress:(OSDownloadProgress *)progress;
+
+/// 从等待队列中开始下载一个任务
+- (void)startDownloadTaskFromTheWaitingQueue:(NSString *)url progress:(OSDownloadProgress *)progress;
 @end
 
 

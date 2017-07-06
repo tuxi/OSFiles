@@ -15,7 +15,7 @@
 @optional
 /// 需要下载的任务, 默认按照url在数组中的索引顺序下载
 /// @return 所有需要下载的url 字符串
-- (NSArray<NSString *> *)addDownloadTaskFromRemoteURLs;
+- (NSArray<NSString *> *)fileDownloaderAddTasksFromRemoteURLPaths;
 
 @end
 

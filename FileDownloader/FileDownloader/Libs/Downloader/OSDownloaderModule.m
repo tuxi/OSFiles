@@ -43,11 +43,18 @@ static NSString * OSFileItemsKey = @"downloadItems";
     if (self) {
         
         self.downloadDelegate = [OSDownloaderDelegate new];
-        self.downloader = [[OSDownloader alloc] initWithDelegate:self.downloadDelegate];;
-
+        self.downloader = [OSDownloader new];
+        self.downloader.downloadDelegate = self.downloadDelegate;
+        self.downloader.maxConcurrentDownloads = 1;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate) name:UIApplicationWillTerminateNotification object:nil];
         // 本地获取
         self.downloadItems = [self restoredDownloadItems];
+        [self.downloadItems enumerateObjectsUsingBlock:^(id<OSDownloadFileItemProtocol>  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if (obj.status == OSFileDownloadStatusWaiting) {
+                obj.status = OSFileDownloadStatusInterrupted;
+            }
+        }];
+        [self storedDownloadItems];
     }
     return self;
 }
@@ -61,8 +68,9 @@ static NSString * OSFileItemsKey = @"downloadItems";
 }
 
 - (void)_addDownloadTaskFromDataSource {
-    if (self.dataSource && [self.dataSource respondsToSelector:@selector(addDownloadTaskFromRemoteURLs)]) {
-        NSArray *urls = [self.dataSource addDownloadTaskFromRemoteURLs];
+    if (self.dataSource
+        && [self.dataSource respondsToSelector:@selector(fileDownloaderAddTasksFromRemoteURLPaths)]) {
+        NSArray *urls = [self.dataSource fileDownloaderAddTasksFromRemoteURLPaths];
         
         /// 设置所有要下载的url,根据url创建OSFileItem
         [urls enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -90,7 +98,7 @@ static NSString * OSFileItemsKey = @"downloadItems";
             if (downloadItem.status == OSFileDownloadStatusStarted) {
                 BOOL isDownloading = [self.downloader isDownloadingByURL:downloadItem.urlPath];
                 if (isDownloading == NO) {
-                    downloadItem.status = OSFileDownloadStatusStarted;
+                    downloadItem.status = OSFileDownloadStatusInterrupted;
                 }
             }
             [self.downloadItems replaceObjectAtIndex:downloadItemIdx withObject:downloadItem];
@@ -112,9 +120,6 @@ static NSString * OSFileItemsKey = @"downloadItems";
             if (isDownloading == NO){
                 downloadItem.status = OSFileDownloadStatusStarted;
                 
-                // 开始下载前对所有下载的信息进行归档
-                [self storedDownloadItems];
-                
                 // 开始下载
                 if (downloadItem.resumeData.length > 0) {
                     // 从上次下载位置继续下载
@@ -131,6 +136,12 @@ static NSString * OSFileItemsKey = @"downloadItems";
                         [self.downloadItems addObject:downloadItem];
                     }
                 }
+                BOOL isWaiting = [self.downloader isWaitingByURL:downloadItem.urlPath];
+                if (isWaiting) {
+                    downloadItem.status = OSFileDownloadStatusWaiting;
+                }
+                // 开始下载前对所有下载的信息进行归档
+                [self storedDownloadItems];
             }
         }
     }
@@ -144,6 +155,10 @@ static NSString * OSFileItemsKey = @"downloadItems";
             // 根据索引在self.downloadItems中取出OSFileItem，修改状态，并进行归档
             OSFileItem *downloadItem = [self.downloadItems objectAtIndex:itemIdx];
             downloadItem.status = OSFileDownloadStatusCancelled;
+            if (!downloadItem.progressObj) {
+                OSDownloadProgress *progress = [self.downloader getDownloadProgressByURL:urlPath];
+                downloadItem.progressObj = progress;
+            }
             if (downloadItem.progressObj.nativeProgress) {
                 [downloadItem.progressObj.nativeProgress cancel];
             }
@@ -168,8 +183,18 @@ static NSString * OSFileItemsKey = @"downloadItems";
             if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_8_4) {
                 // iOS9以上执行NSProgress 的 resume，resumingHandler会得到回调
                 // OSDownloader中已经对其回调时使用了执行了恢复任务
+                if (!downloadItem.progressObj) {
+                    OSDownloadProgress *progress = [self.downloader getDownloadProgressByURL:urlPath];
+                    downloadItem.progressObj = progress;
+                }
                 if (downloadItem.progressObj.nativeProgress) {
                     [downloadItem.progressObj.nativeProgress resume];
+                    
+                    BOOL isWaiting = [self.downloader isWaitingByURL:downloadItem.urlPath];
+                    if (isWaiting) {
+                        downloadItem.status = OSFileDownloadStatusWaiting;
+                    }
+
                 } else {
                     [self start:downloadItem];
                 }
@@ -180,6 +205,7 @@ static NSString * OSFileItemsKey = @"downloadItems";
             id<OSDownloadFileItemProtocol> item = [self addUrlPathToDownloadItemArray:urlPath];
             [self start:item];
         }
+        [self storedDownloadItems];
     }
     
 }
@@ -193,13 +219,15 @@ static NSString * OSFileItemsKey = @"downloadItems";
             BOOL isDownloading = [self.downloader isDownloadingByURL:downloadItem.urlPath];
             if (isDownloading) {
                 downloadItem.status = OSFileDownloadStatusPaused;
-                
-                // 暂停前前对所有下载的信息进行归档
-                [self storedDownloadItems];
-                
+                if (!downloadItem.progressObj) {
+                    OSDownloadProgress *progress = [self.downloader getDownloadProgressByURL:urlPath];
+                    downloadItem.progressObj = progress;
+                }
                 if (downloadItem.progressObj.nativeProgress) {
                     [downloadItem.progressObj.nativeProgress pause];
                 }
+                // 暂停前前对所有下载的信息进行归档
+                [self storedDownloadItems];
             }
         }
     }
@@ -224,7 +252,7 @@ static NSString * OSFileItemsKey = @"downloadItems";
     return allSuccessItems;
 }
 
-- (NSArray<OSFileItem *> *)getDownloadingItems {
+- (NSArray<OSFileItem *> *)getActiveDownloadItems {
     if (!self.downloadItems.count) {
         return nil;
     }

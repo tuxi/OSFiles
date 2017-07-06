@@ -48,6 +48,7 @@ NSString * const NetworkTypeChangeNotification = @"NetworkTypeChangeNotification
 }
 
 + (NetworkType)networkType {
+    
     return _networkType;
 }
 
