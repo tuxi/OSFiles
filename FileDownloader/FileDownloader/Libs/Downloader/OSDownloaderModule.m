@@ -170,7 +170,7 @@ static NSString * OSFileItemsKey = @"downloadItems";
         else {
             NSLog(@"ERR: Cancelled download item not found (id: %@) (%@, %d)", urlPath, [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__);
         }
-
+        
     }
 }
 
@@ -194,7 +194,7 @@ static NSString * OSFileItemsKey = @"downloadItems";
                     if (isWaiting) {
                         downloadItem.status = OSFileDownloadStatusWaiting;
                     }
-
+                    
                 } else {
                     [self start:downloadItem];
                 }

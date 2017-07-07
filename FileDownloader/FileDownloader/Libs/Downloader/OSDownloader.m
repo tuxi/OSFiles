@@ -14,6 +14,15 @@
 #define kBackgroundDownloadSessionIdentifier [NSString stringWithFormat:@"%@.OSDownloader", [NSBundle mainBundle].bundleIdentifier]
 
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#define OSPerformSelectorLeakWarning(Stuff) \
+do { \
+_Pragma("clang diagnostic push") \
+_Pragma("clang diagnostic ignored \"-Warc-performSelector-leaks\"") \
+Stuff; \
+_Pragma("clang diagnostic pop") \
+} while (0)
+
+
 static NSString * const OSDownloadURLKey = @"downloadURLPath";
 static NSString * const OSDownloadResumeDataKey = @"resumeData";
 
@@ -100,7 +109,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
                 // 注意: 必须和becomeCurrentWithPendingUnitCount成对使用
                 [rootProgress resignCurrent];
                 
-                [self _downloadWithSessionDownloadTask:sessionDownloadTask downloadItem:downloadItem];
+                [self _downloadTaskCallBack:sessionDownloadTask downloadItem:downloadItem];
                 [sessionDownloadTask resume];
             } else {
                 DLog(@"Error: Missing taskDescription");
@@ -158,7 +167,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
             downloadItem.bytesPerSecondSpeed = 0;
         }
         [naviteProgress resignCurrent];
-        [self _downloadWithSessionDownloadTask:sessionDownloadTask downloadItem:downloadItem];
+        [self _downloadTaskCallBack:sessionDownloadTask downloadItem:downloadItem];
         [sessionDownloadTask resume];
     } else {
         
@@ -192,9 +201,9 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
     }
 }
 
-- (void)_downloadWithSessionDownloadTask:(NSURLSessionDownloadTask *)sessionDownloadTask downloadItem:(OSDownloadItem *)downloadItem  {
+- (void)_downloadTaskCallBack:(NSURLSessionDownloadTask *)sessionDownloadTask downloadItem:(OSDownloadItem *)downloadItem  {
     if (downloadItem) {
-         // 将下载任务保存到activeDownloadsDictionary中
+        // 将下载任务保存到activeDownloadsDictionary中
         [self.activeDownloadsDictionary setObject:downloadItem forKey:@(sessionDownloadTask.taskIdentifier)];
         
         NSString *urlPath = [downloadItem.urlPath copy];
@@ -235,7 +244,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
             if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadPausedWithURL:resumeData:)]) {
                 if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_8_4) {
                     // iOS9及以上resumeData(恢复数据)由系统管理，并在使用NSProgress调用时使用
-//                    aResumeData = nil;
+                    //                    aResumeData = nil;
                 }
                 [self.downloadDelegate downloadPausedWithURL:urlPath resumeData:aResumeData];
             }
@@ -383,13 +392,13 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
         }
     }];
     
-//    NSInteger taskIdentifer = [self getDownloadTaskIdentifierByURL:urlPath];
-//    if (taskIdentifer > -1) {
-//        OSDownloadItem *downloadItem = [self.activeDownloadsDictionary objectForKey:@(taskIdentifer)];
-//        if (downloadItem && downloadItem.receivedFileSize == 0) {
-//            isWaiting = YES;
-//        }
-//    }
+    //    NSInteger taskIdentifer = [self getDownloadTaskIdentifierByURL:urlPath];
+    //    if (taskIdentifer > -1) {
+    //        OSDownloadItem *downloadItem = [self.activeDownloadsDictionary objectForKey:@(taskIdentifer)];
+    //        if (downloadItem && downloadItem.receivedFileSize == 0) {
+    //            isWaiting = YES;
+    //        }
+    //    }
     
     return isWaiting;
 }
@@ -410,7 +419,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
 
 /// 下载成功并已成功保存到本地
 - (void)handleDownloadSuccessWithDownloadItem:(OSDownloadItem *)downloadItem
-                             taskIdentifier:(NSUInteger)taskIdentifier {
+                               taskIdentifier:(NSUInteger)taskIdentifier {
     
     downloadItem.naviteProgress.completedUnitCount = downloadItem.naviteProgress.totalUnitCount;
     [self.activeDownloadsDictionary removeObjectForKey:@(taskIdentifier)];
@@ -427,7 +436,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
                           downloadItem:(OSDownloadItem *)downloadItem
                         taskIdentifier:(NSUInteger)taskIdentifier
                             resumeData:(NSData *)resumeData {
-//    downloadItem.naviteProgress.completedUnitCount = downloadItem.naviteProgress.totalUnitCount;
+    //    downloadItem.naviteProgress.completedUnitCount = downloadItem.naviteProgress.totalUnitCount;
     [self.activeDownloadsDictionary removeObjectForKey:@(taskIdentifier)];
     [self _anDownloadTaskDidEnd];
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -644,7 +653,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
         }else {
             [self deleteFileIfExist:task.taskDescription];
         }
-
+        
     }
 }
 
@@ -840,9 +849,9 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
         // 请求超时时间；默认为60秒
         backgroundConfiguration.timeoutIntervalForRequest = 180;
         // 是否允许蜂窝网络访问（2G/3G/4G）
-//        backgroundConfiguration.allowsCellularAccess = NO;
+        //        backgroundConfiguration.allowsCellularAccess = NO;
         //限制每次最多连接数；在 iOS 中默认值为4
-//        backgroundConfiguration.HTTPMaximumConnectionsPerHost = self.maxConcurrentDownloads;
+        //        backgroundConfiguration.HTTPMaximumConnectionsPerHost = self.maxConcurrentDownloads;
         // 是否自动选择最佳网络，仅「后台会话」有效
         backgroundConfiguration.discretionary = YES;
     }
@@ -920,15 +929,15 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
         return aFileDownloadDirectoryURL;
     }
     return nil;
-
+    
 }
 
 /// 获取下载的文件默认存储在背的的位置，若代理未实现时则使用此默认的
 - (NSURL *)getDefaultLocalFilePathWithRemoteURL:(NSURL *)remoteURL {
     NSURL *aLocalFileURL = nil;
     NSURL *aFileDownloadDirectoryURL = [self downloaderFolderPath];
-        NSString *aLocalFileName = [NSString stringWithFormat:@"%@.%@", [[NSUUID UUID] UUIDString], [[remoteURL lastPathComponent] pathExtension]];
-        aLocalFileURL = [aFileDownloadDirectoryURL URLByAppendingPathComponent:aLocalFileName isDirectory:NO];
+    NSString *aLocalFileName = [NSString stringWithFormat:@"%@.%@", [[NSUUID UUID] UUIDString], [[remoteURL lastPathComponent] pathExtension]];
+    aLocalFileURL = [aFileDownloadDirectoryURL URLByAppendingPathComponent:aLocalFileName isDirectory:NO];
     
     return aLocalFileURL;
 }
@@ -1006,6 +1015,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     if (!_backgroundSeesionQueue) {
         _backgroundSeesionQueue = [NSOperationQueue new];
         _backgroundSeesionQueue.maxConcurrentOperationCount = 1;
+        _backgroundSeesionQueue.name = @"com.sey.FileDownloaderQueue";
     }
     return _backgroundSeesionQueue;
 }
@@ -1029,7 +1039,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 //    if (_maxConcurrentDownloads == -1) {
 //        return;
 //    }
-//    
+//
 //    __block NSInteger downnloadingIdx = 0;
 //    [self.activeDownloadsDictionary enumerateKeysAndObjectsUsingBlock:^(NSNumber * _Nonnull key, OSDownloadItem * _Nonnull obj, BOOL * _Nonnull stop) {
 //        if ([self isDownloadingByURL:obj.urlPath]) {
@@ -1041,7 +1051,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 //        NSInteger count = downnloadingIdx - self.maxConcurrentDownloads;
 //        [self.activeDownloadsDictionary enumerateKeysAndObjectsWithOptions:NSEnumerationReverse usingBlock:^(NSNumber * _Nonnull key, OSDownloadItem * _Nonnull obj, BOOL * _Nonnull stop) {
 //            if () {
-//                
+//
 //            }
 //        }];
 //    }

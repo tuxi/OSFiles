@@ -165,7 +165,7 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
     if (foundItemIdx != NSNotFound) {
         id<OSDownloadFileItemProtocol> downloadItem = [[OSDownloaderModule sharedInstance].downloadItems objectAtIndex:foundItemIdx];
         [[OSDownloaderModule sharedInstance] start:downloadItem];
-    } 
+    }
 }
 
 - (BOOL)downloadFinalLocalFileURL:(NSURL *)aLocalFileURL isVaildByURL:(NSString *)url {
