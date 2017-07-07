@@ -40,6 +40,14 @@ FOUNDATION_EXTERN NSString * const OSDownloaderFolderNameKey;
 /// @param resumeData 之前下载的数据
 - (void)downloadWithURL:(NSString *)urlPath resumeData:(nullable NSData *)resumeData;
 
+/// 取消下载
+/// @param urlPath 下载任务
+- (void)cancelWithURL:(NSString *)urlPath;
+
+/// 暂停下载
+/// @param urlPath 暂停下载任务的urlPath
+- (void)pauseWithURL:(NSString *)urlPath;
+
 /// 根据是否urlPath判断正在下载中
 /// @param urlPath 下载任务的url
 - (BOOL)isDownloadingByURL:(NSString *)urlPath;
@@ -50,10 +58,6 @@ FOUNDATION_EXTERN NSString * const OSDownloaderFolderNameKey;
 
 /// 当前是否有任务下载
 - (BOOL)hasActiveDownloads;
-
-/// 取消下载
-/// @param urlPath 下载任务
-- (void)cancelWithURL:(NSString *)urlPath;
 
 
 /// 当完成一个后台任务时回调

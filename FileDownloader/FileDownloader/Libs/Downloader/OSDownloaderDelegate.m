@@ -200,6 +200,7 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
     id<OSDownloadFileItemProtocol> downloadItem = nil;
     if (foundItemIdx != NSNotFound) {
         downloadItem = [[OSDownloaderModule sharedInstance].downloadItems objectAtIndex:foundItemIdx];
+        downloadItem.status = OSFileDownloadStatusWaiting;
         if (progress) {
             downloadItem.progressObj = progress;
             downloadItem.progressObj.lastLocalizedDescription = downloadItem.progressObj.nativeProgress.localizedDescription;

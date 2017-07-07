@@ -249,6 +249,14 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
                 [self.downloadDelegate downloadPausedWithURL:urlPath resumeData:aResumeData];
             }
         }];
+
+    }
+    
+    // 判断文件是否在等待中
+    BOOL isWaiting = [self isWaitingByURL:urlPath];
+    // 在等待中就移除
+    if (isWaiting) {
+        [self removeDownloadTaskFromWaitingDownloadArrayByUrlPath:urlPath];
     }
 }
 
@@ -261,20 +269,11 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
     if (taskIdentifier > -1) {
         [self pauseWithTaskIdentifier:taskIdentifier resumeDataHandler:resumeDataHandler];
     } else {
-        __block NSInteger foundIdx = -1;
-        [self.waitingDownloadArray enumerateObjectsUsingBlock:^(NSDictionary<NSString *,NSObject *> * _Nonnull waitingDownloadDict, NSUInteger idx, BOOL * _Nonnull stop) {
-            NSString *urlPath = (NSString *)waitingDownloadDict[OSDownloadURLKey];
-            if ([urlPath isKindOfClass:[NSString class]] && [urlPath isEqualToString:urlPath]) {
-                foundIdx = idx;
-                *stop = YES;
-            }
-        }];
-        if (foundIdx > -1) {
-            [self.waitingDownloadArray removeObjectAtIndex:foundIdx];
-        }
+        [self removeDownloadTaskFromWaitingDownloadArrayByUrlPath:urlPath];
     }
     
 }
+
 
 
 - (void)pauseWithTaskIdentifier:(NSUInteger)taskIdentifier resumeDataHandler:(OSDownloaderResumeDataHandler)resumeDataHandler {
@@ -309,19 +308,9 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
     if (taskIdentifier > -1) {
         [self cancelWithTaskIdentifier:taskIdentifier];
     } else {
-        __block NSInteger foundIdx = -1;
-        
-        [self.waitingDownloadArray enumerateObjectsUsingBlock:^(NSDictionary<NSString *,NSObject *> * _Nonnull waitingDownloadDict, NSUInteger idx, BOOL * _Nonnull stop) {
-            NSString *waitingUrlPath = (NSString *)waitingDownloadDict[OSDownloadURLKey];
-            if ([waitingUrlPath isKindOfClass:[NSString class]] && [waitingUrlPath isEqualToString:urlPath]) {
-                foundIdx = idx;
-                *stop = YES;
-            }
-            foundIdx++;
-        }];
-        
-        if (foundIdx > -1) {
-            [self.waitingDownloadArray removeObjectAtIndex:foundIdx];
+        BOOL res = [self removeDownloadTaskFromWaitingDownloadArrayByUrlPath:urlPath];
+        if (res) {
+            
             NSError *cancelError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:nil];
             if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadFailureWithDownloadItem:resumeData:error:)]) {
                 OSDownloadItem *item = [[OSDownloadItem alloc] initWithURL:urlPath sessionDownloadTask:nil];
@@ -351,6 +340,22 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
 
 
 ////////////////////////////////////////////////////////////////////////
+#pragma mark -
+////////////////////////////////////////////////////////////////////////
+
+- (BOOL)removeDownloadTaskFromWaitingDownloadArrayByUrlPath:(NSString *)url {
+    NSInteger foundIdx = [self.waitingDownloadArray indexOfObjectPassingTest:^BOOL(NSDictionary<NSString *,NSObject *> * _Nonnull waitingDownloadDict, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSString *waitingUrlPath = (NSString *)waitingDownloadDict[OSDownloadURLKey];
+        return [url isKindOfClass:[NSString class]] && [url isEqualToString:waitingUrlPath];
+    }];
+    if (foundIdx != NSNotFound) {
+        [self.waitingDownloadArray removeObjectAtIndex:foundIdx];
+        return YES;
+    }
+    return NO;
+}
+
+////////////////////////////////////////////////////////////////////////
 #pragma mark - download status
 ////////////////////////////////////////////////////////////////////////
 
@@ -365,17 +370,17 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
         }
     }
     
-    if (!isDownloading) {
-        [self.waitingDownloadArray  enumerateObjectsUsingBlock:^(NSDictionary<NSString *,NSObject *> * _Nonnull waitingDownloadDict, NSUInteger idx, BOOL * _Nonnull stop) {
-            if ([waitingDownloadDict[OSDownloadURLKey] isKindOfClass:[NSString class]]) {
-                NSString *waitingUrlPath = (NSString *)waitingDownloadDict[OSDownloadURLKey];
-                if ([waitingUrlPath isEqualToString:urlPath]) {
-                    isDownloading = YES;
-                    *stop = YES;
-                }
-            }
-        }];
-    }
+//    if (!isDownloading) {
+//        [self.waitingDownloadArray  enumerateObjectsUsingBlock:^(NSDictionary<NSString *,NSObject *> * _Nonnull waitingDownloadDict, NSUInteger idx, BOOL * _Nonnull stop) {
+//            if ([waitingDownloadDict[OSDownloadURLKey] isKindOfClass:[NSString class]]) {
+//                NSString *waitingUrlPath = (NSString *)waitingDownloadDict[OSDownloadURLKey];
+//                if ([waitingUrlPath isEqualToString:urlPath]) {
+//                    isDownloading = YES;
+//                    *stop = YES;
+//                }
+//            }
+//        }];
+//    }
     return isDownloading;
 }
 

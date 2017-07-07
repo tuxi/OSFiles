@@ -71,7 +71,16 @@ static NSString * OSFileItemsKey = @"downloadItems";
     if (self.dataSource
         && [self.dataSource respondsToSelector:@selector(fileDownloaderAddTasksFromRemoteURLPaths)]) {
         NSArray *urls = [self.dataSource fileDownloaderAddTasksFromRemoteURLPaths];
-        
+        NSMutableArray *downloadItems = [@[] mutableCopy];
+        [self.downloadItems enumerateObjectsUsingBlock:^(id<OSDownloadFileItemProtocol>  _Nonnull downloadItem, NSUInteger idxInDownloadItems, BOOL * _Nonnull stop) {
+          NSUInteger foundIndexInUrls = [urls indexOfObjectPassingTest:^BOOL(NSString *  _Nonnull url, NSUInteger idx, BOOL * _Nonnull stop) {
+               return [url isEqualToString:downloadItem.urlPath];
+           }];
+            if (foundIndexInUrls != NSNotFound) {
+                [downloadItems addObject:downloadItem];
+            }
+        }];
+        self.downloadItems = [downloadItems mutableCopy];
         /// 设置所有要下载的url,根据url创建OSFileItem
         [urls enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             [self addUrlPathToDownloadItemArray:obj];
@@ -226,9 +235,20 @@ static NSString * OSFileItemsKey = @"downloadItems";
                 if (downloadItem.progressObj.nativeProgress) {
                     [downloadItem.progressObj.nativeProgress pause];
                 }
-                // 暂停前前对所有下载的信息进行归档
-                [self storedDownloadItems];
+            } else {
+                BOOL isWaiting = [self.downloader isWaitingByURL:urlPath];
+                if (isWaiting) {
+                    OSDownloadProgress *progress = [self.downloader getDownloadProgressByURL:urlPath];
+                    if (progress.nativeProgress) {
+                        [progress.nativeProgress pause];
+                        downloadItem.progressObj = progress;
+                    } else {
+                        [self.downloader pauseWithURL:urlPath];
+                    }
+                    downloadItem.status = OSFileDownloadStatusPaused;
+                }
             }
+            [self storedDownloadItems];
         }
     }
 }
