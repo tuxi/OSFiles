@@ -44,6 +44,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
 @property (nonatomic, strong) NSOperationQueue *backgroundSeesionQueue;
 @property (nonatomic, strong) NSURL *downloaderFolderPath;
 @property (nonatomic, strong) dispatch_semaphore_t lockSemaphore;
+@property (nonatomic, strong) NSMutableArray<NSURLSessionDownloadTask *> *initializeAllBackgroundSessionDownloadTasks;
 
 @end
 
@@ -60,6 +61,9 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
     self = [super init];
     if (self) {
         _lockSemaphore = dispatch_semaphore_create(1);
+        [self getAllBackgroundSessionDownloadTasks:^(NSArray<NSURLSessionDownloadTask *> *downloadTasks) {
+            self.initializeAllBackgroundSessionDownloadTasks = [downloadTasks mutableCopy];
+        }];
     }
     return self;
 }
@@ -77,51 +81,16 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
 // 这个方法用来异步的获取当前session的所有未完成的task
 - (void)getAllBackgroundSessionDownloadTasks:(void (^)(NSArray<NSURLSessionDownloadTask *> *downloadTasks))sessionDownloadTasks {
     __block NSArray *tasks = nil;
-    [self.backgroundSeesionQueue addOperationWithBlock:^{
-        [self.backgroundSeesion getTasksWithCompletionHandler:^(NSArray<NSURLSessionDataTask *> * _Nonnull dataTasks, NSArray<NSURLSessionUploadTask *> * _Nonnull uploadTasks, NSArray<NSURLSessionDownloadTask *> * _Nonnull downloadTasks) {
-            tasks = downloadTasks;
-            if (sessionDownloadTasks) {
-                sessionDownloadTasks(downloadTasks);
-            }
-        }];
+    [self.backgroundSeesion getTasksWithCompletionHandler:^(NSArray<NSURLSessionDataTask *> * _Nonnull dataTasks, NSArray<NSURLSessionUploadTask *> * _Nonnull uploadTasks, NSArray<NSURLSessionDownloadTask *> * _Nonnull downloadTasks) {
+        tasks = downloadTasks;
+        if (sessionDownloadTasks) {
+            sessionDownloadTasks(downloadTasks);
+        }
     }];
     
 }
 
 
-
-- (void)setupDownloadTasksWithCompletionHandler:(void (^)())completionHandler {
-    
-    __weak typeof(self) weakSelf = self;
-    
-    [self getAllBackgroundSessionDownloadTasks:^(NSArray<NSURLSessionDownloadTask *> *downloadTasks) {
-        [downloadTasks enumerateObjectsUsingBlock:^(NSURLSessionDownloadTask * _Nonnull sessionDownloadTask, NSUInteger idx, BOOL * _Nonnull stop) {
-            NSString *urlPath = [[sessionDownloadTask taskDescription] copy];
-            if (urlPath) {
-                NSProgress *rootProgress = [weakSelf _createNativeProgress];
-                rootProgress.totalUnitCount++;
-                // UnitCount是一个基于UI上的完整任务的单元数
-                // 将此rootProgress注册为当前线程任务的根进度管理对象，向下分支出一个子任务 比如子任务进度总数为10个单元 即当子任务完成时 父progerss对象进度走1个单元
-                [rootProgress becomeCurrentWithPendingUnitCount:1];
-                
-                OSDownloadItem *downloadItem = [[OSDownloadItem alloc] initWithURL:urlPath
-                                                               sessionDownloadTask:sessionDownloadTask];
-                // 注意: 必须和becomeCurrentWithPendingUnitCount成对使用
-                [rootProgress resignCurrent];
-                
-                [self _downloadTaskCallBack:sessionDownloadTask downloadItem:downloadItem];
-                [sessionDownloadTask resume];
-            } else {
-                DLog(@"Error: Missing taskDescription");
-            }
-            
-            if (completionHandler) {
-                completionHandler();
-            }
-        }];
-    }];
-    
-}
 
 ////////////////////////////////////////////////////////////////////////
 #pragma mark - Download
@@ -133,55 +102,91 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
 
 
 - (void)downloadWithURL:(NSString *)urlPath resumeData:(NSData *)resumeData {
-    
-    
-    NSUInteger taskIdentifier = 0;
-    NSURL *remoteURL = [NSURL URLWithString:urlPath];
-    // 当前同时下载的数量是否超出最大的设定
-    if (self.maxConcurrentDownloads == -1 || self.activeDownloadsDictionary.count < self.maxConcurrentDownloads) {
-        
-        NSURLSessionDownloadTask *sessionDownloadTask = nil;
-        OSDownloadItem *downloadItem = nil;
-        NSProgress *naviteProgress = [self _createNativeProgress];
-        naviteProgress.totalUnitCount++;
-        [naviteProgress becomeCurrentWithPendingUnitCount:1];
-        if (resumeData) {
-            // 当之前下载过，就按照之前的进度继续下载
-            if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_9_4) {
-                // NSURLSession在iOS10上的Bug 在iOS10上，resumeData不能直接使用, 使用处理后的
-                sessionDownloadTask = [self.backgroundSeesion downloadTaskWithCorrectResumeData:resumeData];
-            } else {
-                sessionDownloadTask = [self.backgroundSeesion downloadTaskWithResumeData:resumeData];
+     __weak typeof(self) weakSelf = self;
+    dispatch_block_t downloadBlock = ^{
+        NSUInteger taskIdentifier = 0;
+        NSURL *remoteURL = [NSURL URLWithString:urlPath];
+        // 当前同时下载的数量是否超出最大的设定
+        if (weakSelf.maxConcurrentDownloads == -1 || weakSelf.activeDownloadsDictionary.count < weakSelf.maxConcurrentDownloads) {
+            
+            NSURLSessionDownloadTask *sessionDownloadTask = nil;
+            OSDownloadItem *downloadItem = nil;
+            NSProgress *naviteProgress = [weakSelf _createNativeProgress];
+            naviteProgress.totalUnitCount++;
+            [naviteProgress becomeCurrentWithPendingUnitCount:1];
+            if (resumeData) {
+                // 当之前下载过，就按照之前的进度继续下载
+                if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_9_4) {
+                    // NSURLSession在iOS10上的Bug 在iOS10上，resumeData不能直接使用, 使用处理后的
+                    sessionDownloadTask = [weakSelf.backgroundSeesion downloadTaskWithCorrectResumeData:resumeData];
+                } else {
+                    sessionDownloadTask = [weakSelf.backgroundSeesion downloadTaskWithResumeData:resumeData];
+                }
+            } else if (remoteURL) {
+                // 之前未下载过，就开启新的任务
+                sessionDownloadTask = [weakSelf.backgroundSeesion downloadTaskWithURL:remoteURL];
             }
-        } else if (remoteURL) {
-            // 之前未下载过，就开启新的任务
-            sessionDownloadTask = [self.backgroundSeesion downloadTaskWithURL:remoteURL];
+            taskIdentifier = sessionDownloadTask.taskIdentifier;
+            sessionDownloadTask.taskDescription = urlPath;
+            downloadItem = [[OSDownloadItem alloc] initWithURL:urlPath
+                                           sessionDownloadTask:sessionDownloadTask];
+            if (resumeData) {
+                downloadItem.resumedFileSizeInBytes = [resumeData length];
+                downloadItem.downloadStartDate = [NSDate date];
+                downloadItem.bytesPerSecondSpeed = 0;
+            }
+            [naviteProgress resignCurrent];
+            [weakSelf _downloadTaskCallBack:sessionDownloadTask downloadItem:downloadItem];
+            [sessionDownloadTask resume];
+        } else {
+            
+            // 超出同时的最大下载数量时，将新的任务的aResumeData或者aRemoteURL添加到等待下载数组中
+            NSMutableDictionary *waitingDownloadDict = [NSMutableDictionary dictionary];
+            if (urlPath) {
+                [waitingDownloadDict setObject:urlPath forKey:OSDownloadURLKey];
+            }
+            if (resumeData) {
+                [waitingDownloadDict setObject:resumeData forKey:OSDownloadResumeDataKey];
+            }
+            [weakSelf.waitingDownloadArray addObject:waitingDownloadDict];
+            [weakSelf _didWaitingDownloadForUrlPath:urlPath];
         }
-        taskIdentifier = sessionDownloadTask.taskIdentifier;
-        sessionDownloadTask.taskDescription = urlPath;
-        downloadItem = [[OSDownloadItem alloc] initWithURL:urlPath
-                                       sessionDownloadTask:sessionDownloadTask];
-        if (resumeData) {
-            downloadItem.resumedFileSizeInBytes = [resumeData length];
-            downloadItem.downloadStartDate = [NSDate date];
-            downloadItem.bytesPerSecondSpeed = 0;
-        }
-        [naviteProgress resignCurrent];
-        [self _downloadTaskCallBack:sessionDownloadTask downloadItem:downloadItem];
-        [sessionDownloadTask resume];
-    } else {
-        
-        // 超出同时的最大下载数量时，将新的任务的aResumeData或者aRemoteURL添加到等待下载数组中
-        NSMutableDictionary *waitingDownloadDict = [NSMutableDictionary dictionary];
+
+    };
+    
+    /// 通过getTasksWithCompletionHandler 获取到的sessionDownloadTask去恢复下载，这样系统可以解决比如app突然重启时resumeData未保存起来，再次启动app时无remuseData而断点续传的问题
+    void (^downloadWithgetTask)(NSURLSessionDownloadTask *) = ^(NSURLSessionDownloadTask *sessionDownloadTask){
+        NSString *urlPath = [[sessionDownloadTask taskDescription] copy];
         if (urlPath) {
-            [waitingDownloadDict setObject:urlPath forKey:OSDownloadURLKey];
+            NSProgress *rootProgress = [weakSelf _createNativeProgress];
+            rootProgress.totalUnitCount++;
+            // UnitCount是一个基于UI上的完整任务的单元数
+            // 将此rootProgress注册为当前线程任务的根进度管理对象，向下分支出一个子任务 比如子任务进度总数为10个单元 即当子任务完成时 父progerss对象进度走1个单元
+            [rootProgress becomeCurrentWithPendingUnitCount:1];
+            
+            OSDownloadItem *downloadItem = [[OSDownloadItem alloc] initWithURL:urlPath
+                                                           sessionDownloadTask:sessionDownloadTask];
+            // 注意: 必须和becomeCurrentWithPendingUnitCount成对使用
+            [rootProgress resignCurrent];
+            
+            [self _downloadTaskCallBack:sessionDownloadTask downloadItem:downloadItem];
+            [sessionDownloadTask resume];
         }
-        if (resumeData) {
-            [waitingDownloadDict setObject:resumeData forKey:OSDownloadResumeDataKey];
-        }
-        [self.waitingDownloadArray addObject:waitingDownloadDict];
-        [self _didWaitingDownloadForUrlPath:urlPath];
+
+    };
+    
+    
+    
+    NSUInteger foundIndexInDownloadTasks = [self.initializeAllBackgroundSessionDownloadTasks indexOfObjectPassingTest:^BOOL(NSURLSessionDownloadTask * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        return [obj.taskDescription isEqualToString:urlPath];
+    }];
+    if (foundIndexInDownloadTasks != NSNotFound) {
+        NSURLSessionDownloadTask *sessionDownloadTask = [self.initializeAllBackgroundSessionDownloadTasks objectAtIndex:foundIndexInDownloadTasks];
+        downloadWithgetTask(sessionDownloadTask);
+    } else {
+        downloadBlock();
     }
+    
 }
 
 
@@ -855,10 +860,11 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
         backgroundConfiguration.timeoutIntervalForRequest = 180;
         // 是否允许蜂窝网络访问（2G/3G/4G）
         //        backgroundConfiguration.allowsCellularAccess = NO;
-        //限制每次最多连接数；在 iOS 中默认值为4
-        //        backgroundConfiguration.HTTPMaximumConnectionsPerHost = self.maxConcurrentDownloads;
-        // 是否自动选择最佳网络，仅「后台会话」有效
-        backgroundConfiguration.discretionary = YES;
+        // 限制每次最多连接数；在 iOS 中默认值为4
+        // backgroundConfiguration.HTTPMaximumConnectionsPerHost = self.maxConcurrentDownloads;
+        // 允许后台任务按系统的最佳时间安排，以获得最佳性能 (仅background session有效)
+        // 设置discretionary = YES 后，若iPhone未连接电源则下载没有任何响应，连接电源后立即可以下载
+        backgroundConfiguration.discretionary = NO;
     }
     return backgroundConfiguration;
 }

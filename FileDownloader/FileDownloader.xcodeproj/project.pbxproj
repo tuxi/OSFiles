@@ -118,7 +118,7 @@
 		18300F621EEC54570035D6EE /* OSDownloadProgress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSDownloadProgress.m; sourceTree = "<group>"; };
 		18300F631EEC54570035D6EE /* OSDownloadProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSDownloadProtocol.h; sourceTree = "<group>"; };
 		18300F6D1EEC55390035D6EE /* OSDownloaderModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSDownloaderModule.h; sourceTree = "<group>"; };
-		18300F6E1EEC55390035D6EE /* OSDownloaderModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSDownloaderModule.m; sourceTree = "<group>"; };
+		18300F6E1EEC55390035D6EE /* OSDownloaderModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = OSDownloaderModule.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		18300F721EEC57280035D6EE /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		18300F731EEC57280035D6EE /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		18300F741EEC57280035D6EE /* NSObject+XYHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+XYHUD.h"; sourceTree = "<group>"; };

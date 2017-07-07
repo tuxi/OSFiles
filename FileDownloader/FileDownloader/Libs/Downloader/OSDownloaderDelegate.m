@@ -63,7 +63,7 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
     NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:downloadItem.urlPath];
     id<OSDownloadFileItemProtocol> fileItem = nil;
     if (foundItemIdx != NSNotFound) {
-        NSLog(@"INFO: Download success (id: %@) (%@, %d)", downloadItem.urlPath, [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__);
+        DLog(@"INFO: Download success (id: %@)", downloadItem.urlPath);
         
         fileItem = [[OSDownloaderModule sharedInstance].downloadItems objectAtIndex:foundItemIdx];
         fileItem.status = OSFileDownloadStatusSuccess;
@@ -71,7 +71,7 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
         fileItem.MIMEType = downloadItem.MIMEType;
         [[OSDownloaderModule sharedInstance] storedDownloadItems];
     } else {
-        NSLog(@"Error: Completed download item not found (id: %@) (%@, %d)", downloadItem.urlPath, [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__);
+        DLog(@"Error: Completed download item not found (id: %@)", downloadItem.urlPath);
     }
     dispatch_main_async_safe(^{
         [[NSNotificationCenter defaultCenter] postNotificationName:OSFileDownloadSussessNotification object:downloadItem];
@@ -146,14 +146,14 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
     NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:url];
     
     if (foundItemIdx != NSNotFound) {
-        NSLog(@"INFO: Download paused - id: %@ (%@, %d)", url, [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__);
+        DLog(@"INFO: Download paused - id: %@", url);
         
         id<OSDownloadFileItemProtocol> downloadItem = [[OSDownloaderModule sharedInstance].downloadItems objectAtIndex:foundItemIdx];
         downloadItem.status = OSFileDownloadStatusPaused;
         downloadItem.resumeData = aResumeData;
         [[OSDownloaderModule sharedInstance] storedDownloadItems];
     } else {
-        NSLog(@"Error: Paused download item not found (id: %@) (%@, %d)", url, [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__);
+        DLog(@"Error: Paused download item not found (id: %@)", url);
     }
 }
 
@@ -178,7 +178,7 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
     NSDictionary *fileAttritubes = [[NSFileManager defaultManager] attributesOfItemAtPath:aLocalFileURL.path error:&error];
     
     if (error) {
-        NSLog(@"Error: Error on getting file size for item at %@: %@ (%@, %d)", aLocalFileURL, error.localizedDescription, [NSString stringWithUTF8String:__FILE__], __LINE__);
+        DLog(@"Error: Error on getting file size for item at %@: %@", aLocalFileURL, error.localizedDescription);
         isValid = NO;
     } else {
         unsigned long long fileSize = [fileAttritubes fileSize];
@@ -263,7 +263,7 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
                 [[NSNotificationCenter defaultCenter] postNotificationName:OSFileDownloadProgressChangeNotification object:progress];
             });
         } else {
-            NSLog(@"ERR: Invalid keyPath (%@, %d)", [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__);
+            DLog(@"ERR: Invalid keyPath");
         }
     } else {
         [super observeValueForKeyPath:keyPath
@@ -281,7 +281,7 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
         @try {
             [self.progress removeObserver:self forKeyPath:NSStringFromSelector(@selector(fractionCompleted))];
         } @catch (NSException *exception) {
-            NSLog(@"Error: Repeated removeObserver(keyPath = fractionCompleted)");
+            DLog(@"Error: Repeated removeObserver(keyPath = fractionCompleted)");
         } @finally {
             
         }

@@ -28,8 +28,6 @@ FOUNDATION_EXTERN NSString * const OSDownloaderFolderNameKey;
 @property (nonatomic, assign) NSInteger maxConcurrentDownloads;
 @property (nonatomic, weak) id<OSDownloaderDelegate> downloadDelegate;
 
-- (void)setupDownloadTasksWithCompletionHandler:(nullable void (^)())completionHandler;
-
 
 /// 执行开始下载任务
 /// @param urlPath 下载任务的remote url path

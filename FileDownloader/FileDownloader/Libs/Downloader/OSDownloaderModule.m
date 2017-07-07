@@ -104,7 +104,7 @@ static NSString * OSFileItemsKey = @"downloadItems";
         } else {
             // 之前下载过
             downloadItem = [self.downloadItems objectAtIndex:downloadItemIdx];
-            if (downloadItem.status == OSFileDownloadStatusStarted) {
+            if (downloadItem.status == OSFileDownloadStatusDownloading) {
                 BOOL isDownloading = [self.downloader isDownloadingByURL:downloadItem.urlPath];
                 if (isDownloading == NO) {
                     downloadItem.status = OSFileDownloadStatusInterrupted;
@@ -127,7 +127,7 @@ static NSString * OSFileItemsKey = @"downloadItems";
         if ((downloadItem.status != OSFileDownloadStatusCancelled) && (downloadItem.status != OSFileDownloadStatusSuccess)) {
             BOOL isDownloading = [self.downloader isDownloadingByURL:downloadItem.urlPath];
             if (isDownloading == NO){
-                downloadItem.status = OSFileDownloadStatusStarted;
+                downloadItem.status = OSFileDownloadStatusDownloading;
                 
                 // 开始下载
                 if (downloadItem.resumeData.length > 0) {
@@ -177,7 +177,7 @@ static NSString * OSFileItemsKey = @"downloadItems";
             [[NSNotificationCenter defaultCenter] postNotificationName:OSFileDownloadCanceldNotification object:nil];
         }
         else {
-            NSLog(@"ERR: Cancelled download item not found (id: %@) (%@, %d)", urlPath, [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__);
+            DLog(@"ERR: Cancelled download item not found (id: %@)", urlPath);
         }
         
     }
@@ -254,8 +254,16 @@ static NSString * OSFileItemsKey = @"downloadItems";
 }
 
 - (void)clearAllDownloadTask {
-    [self.downloadItems removeAllObjects];
-    [self storedDownloadItems];
+    @synchronized (self) {
+        typeof(self) weakSelf = self;
+        [self.downloadItems enumerateObjectsUsingBlock:^(id<OSDownloadFileItemProtocol>  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+
+            [weakSelf cancel:obj.urlPath];
+        }];
+        [self.downloadItems removeAllObjects];
+        [self storedDownloadItems];
+    }
+  
 }
 
 - (NSArray<OSFileItem *> *)getAllSuccessItems {
@@ -274,9 +282,8 @@ static NSString * OSFileItemsKey = @"downloadItems";
 
 - (NSArray<OSFileItem *> *)getActiveDownloadItems {
     if (!self.downloadItems.count) {
-        return nil;
+        [self _addDownloadTaskFromDataSource];
     }
-    
     NSMutableArray *downloadingItems = [NSMutableArray array];
     [self.downloadItems enumerateObjectsUsingBlock:^(OSFileItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if (obj.status != OSFileDownloadStatusSuccess) {
@@ -309,7 +316,7 @@ static NSString * OSFileItemsKey = @"downloadItems";
                 // 解档
                 item = [NSKeyedUnarchiver unarchiveObjectWithData:data];
                 if (item.resumeData.length) {
-                    NSLog(@"---");
+                    DLog(@"item.resumeData.len == %ld", item.resumeData.length);
                 }
             } @catch (NSException *exception) {
                 @throw exception;

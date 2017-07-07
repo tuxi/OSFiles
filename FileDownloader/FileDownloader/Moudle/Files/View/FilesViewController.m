@@ -64,6 +64,7 @@
     }];
     [self.tabBarController performSelector:@selector(setSelectedIndex:) withObject:@1 afterDelay:0.5];
 
+    [[NSNotificationCenter defaultCenter] postNotificationName:FileDownloaderResetDownloadsNotification object:nil];
 }
 
 

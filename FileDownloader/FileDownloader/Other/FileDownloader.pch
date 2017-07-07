@@ -15,4 +15,7 @@
 #import "UIImage+XYImage.h"
 #import "Masonry.h"
 
+static NSString * const FileDownloaderResetDownloadsNotification = @"FileDownloaderResetDownloadsNotification";
+
+
 #endif /* FileDownloader_pch */

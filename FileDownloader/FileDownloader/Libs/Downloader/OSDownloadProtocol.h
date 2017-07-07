@@ -19,8 +19,8 @@ FOUNDATION_EXTERN NSString * const OSFileDownloadCanceldNotification;
 
 typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
     OSFileDownloadStatusNotStarted = 0,
-    /// 开始下载
-    OSFileDownloadStatusStarted,
+    /// 下载中
+    OSFileDownloadStatusDownloading,
     /// 下载完成
     OSFileDownloadStatusSuccess,
     /// 暂停下载
@@ -217,7 +217,6 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 /// @return 下载进度的对象
 - (NSProgress *)usingNaviteProgress;
 
-#warning TODO bug:目前等待中的task获取不到progress，待修复
 /// 有一个任务等待下载时调用
 - (void)didWaitingForDownloadWithUrlPath:(NSString *)url progress:(OSDownloadProgress *)progress;
 
