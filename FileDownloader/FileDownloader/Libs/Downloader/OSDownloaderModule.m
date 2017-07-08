@@ -157,6 +157,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 
 - (void)start:(NSString *)urlPath {
     @synchronized (self) {
+        
         NSUInteger foundIndexInDownloadItems = [self foundItemIndxInDownloadItemsByURL:urlPath];
         if (foundIndexInDownloadItems == NSNotFound) {
             NSUInteger foundIndexInDisplay = [self foundItemIndxInDisplayItemsByURL:urlPath];

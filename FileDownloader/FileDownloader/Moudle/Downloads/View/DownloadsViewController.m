@@ -16,6 +16,7 @@
 
 @interface DownloadsViewController () <OSFileDownloaderDataSource>
 
+@property (nonatomic, weak) UIProgressView *totalProgressView;
 
 @end
 
@@ -36,6 +37,7 @@
     [super viewDidLoad];
     
     [self setup];
+    [self totalProgressView];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -104,6 +106,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadProgressChange:) name:OSFileDownloadProgressChangeNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadCanceld) name:OSFileDownloadCanceldNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableView) name:FileDownloaderResetDownloadsNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(totalProgressChange:) name:OSFileDownloadTotalProgressCanceldNotification object:nil];
 }
 
 
@@ -131,6 +134,12 @@
     [self reloadBlock]();
 }
 
+- (void)totalProgressChange:(NSNotification *)note {
+    
+    NSProgress *progress = note.object;
+    self.totalProgressView.progress = progress.fractionCompleted;
+    
+}
 
 
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ <OSFileDownloaderDataSource> ~~~~~~~~~~~~~~~~~~~~~~~
@@ -179,6 +188,22 @@
     }
     return _tableView;
 }
+
+- (UIProgressView *)totalProgressView {
+    if (!_totalProgressView) {
+        UIProgressView *progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
+        CGRect rect = progressView.frame;
+        rect.size.width = self.view.frame.size.width;
+        rect.origin.y = 64;
+        [progressView setFrame:rect];
+        [progressView setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
+        progressView.progress = 0.0;
+        [self.view addSubview:progressView];
+        _totalProgressView = progressView;
+    }
+    return _totalProgressView;
+}
+
 
 
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ Config NoDataPlaceholderExtend ~~~~~~~~~~~~~~~~~~~~~~~

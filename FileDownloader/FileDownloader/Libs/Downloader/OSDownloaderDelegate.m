@@ -25,6 +25,7 @@ NSString * const OSFileDownloadProgressChangeNotification = @"OSFileDownloadProg
 NSString * const OSFileDownloadSussessNotification = @"OSFileDownloadSussessNotification";
 NSString * const OSFileDownloadFailureNotification = @"OSFileDownloadFailureNotification";
 NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNotification";
+NSString * const OSFileDownloadTotalProgressCanceldNotification = @"OSFileDownloadTotalProgressCanceldNotification";
 
 @interface OSDownloaderDelegate ()
 
@@ -257,7 +258,7 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
         NSProgress *progress = object;
         if ([keyPath isEqualToString:NSStringFromSelector(@selector(fractionCompleted))]) {
             dispatch_main_async_safe(^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:OSFileDownloadProgressChangeNotification object:progress];
+                [[NSNotificationCenter defaultCenter] postNotificationName:OSFileDownloadTotalProgressCanceldNotification object:progress];
             });
         } else {
             DLog(@"ERR: Invalid keyPath");
