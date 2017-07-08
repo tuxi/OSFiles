@@ -78,7 +78,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
     return _backgroundSeesion;
 }
 
-// 这个方法用来异步的获取当前session的所有未完成的task
+
 - (NSArray<NSURLSessionDownloadTask *> *)downloadTasks {
     __block NSArray *tasks = nil;
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
@@ -89,6 +89,14 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
     
     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
     return tasks;
+}
+
+- (void)getDownloadTasks:(void (^)(NSArray *downloadTasks))downloadTasksBlock {
+    [self.backgroundSeesion getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
+        if (downloadTasksBlock) {
+            downloadTasksBlock(downloadTasks);
+        }
+    }];
 }
 
 
@@ -177,19 +185,21 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
     };
     
     
-//    downloadBlock();
-    NSUInteger foundIndexInDownloadTasks =
-    [self.downloadTasks indexOfObjectPassingTest:
-                                            ^BOOL(NSURLSessionDownloadTask * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                                                return [obj.taskDescription isEqualToString:urlPath];
-                                            }];
-    if (foundIndexInDownloadTasks != NSNotFound) {
-        NSURLSessionDownloadTask *sessionDownloadTask =
-        [self.downloadTasks objectAtIndex:foundIndexInDownloadTasks];
-        downloadWithgetTask(sessionDownloadTask);
-    } else {
-        downloadBlock();
-    }
+    [self getDownloadTasks:^(NSArray *downloadTasks) {
+        NSUInteger foundIndexInDownloadTasks =
+        [downloadTasks indexOfObjectPassingTest:
+         ^BOOL(NSURLSessionDownloadTask * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+             return [obj.taskDescription isEqualToString:urlPath];
+         }];
+        if (foundIndexInDownloadTasks != NSNotFound) {
+            NSURLSessionDownloadTask *sessionDownloadTask =
+            [self.downloadTasks objectAtIndex:foundIndexInDownloadTasks];
+            downloadWithgetTask(sessionDownloadTask);
+        } else {
+            downloadBlock();
+        }
+    }];
+    
     
 }
 
