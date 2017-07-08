@@ -27,7 +27,7 @@ FOUNDATION_EXTERN NSString * const OSDownloaderFolderNameKey;
 
 @property (nonatomic, assign) NSInteger maxConcurrentDownloads;
 @property (nonatomic, weak) id<OSDownloaderDelegate> downloadDelegate;
-
+@property (nonatomic, strong) NSArray<NSURLSessionDownloadTask *> *downloadTasks;
 
 /// 执行开始下载任务
 /// @param urlPath 下载任务的remote url path
@@ -38,11 +38,11 @@ FOUNDATION_EXTERN NSString * const OSDownloaderFolderNameKey;
 /// @param resumeData 之前下载的数据
 - (void)downloadWithURL:(NSString *)urlPath resumeData:(nullable NSData *)resumeData;
 
-/// 取消下载
+/// 取消下载, 取消下载后任务不可恢复
 /// @param urlPath 下载任务
 - (void)cancelWithURL:(NSString *)urlPath;
 
-/// 暂停下载
+/// 暂停下载，暂停后任务可恢复
 /// @param urlPath 暂停下载任务的urlPath
 - (void)pauseWithURL:(NSString *)urlPath;
 

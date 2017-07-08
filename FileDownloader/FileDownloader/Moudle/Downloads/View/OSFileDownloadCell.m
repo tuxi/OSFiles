@@ -194,12 +194,12 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
             break;
             
         case OSFileDownloadStatusFailure:
-          self.cycleView.circularState = FFCircularStateStopSpinning;
+            self.cycleView.circularState = FFCircularStateStopSpinning;
             break;
         case OSFileDownloadStatusWaiting:
             self.cycleView.circularState = FFCircularStateStopSpinning;
             break;
-
+            
         default:
             break;
     }
@@ -464,6 +464,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
         FFCircularProgressView *cycleView = [[FFCircularProgressView alloc] init];
         _cycleView = cycleView;
         cycleView.progressColor = [UIColor grayColor];
+        cycleView.tintColor = [UIColor grayColor];
         [self.contentView addSubview:cycleView];
         [cycleView addTarget:self action:@selector(cycleViewClick:) forControlEvents:UIControlEventTouchUpInside];
     }

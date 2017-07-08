@@ -392,7 +392,7 @@
     }
 }
 
-- (void)tintColorDidChange{
+- (void)tintColorDidChange {
     if(self.tintColor){
         [self setProgressColor:self.tintColor];
     }
@@ -410,6 +410,8 @@
         self.alpha = 1.0;
     }
 }
+
+
 
 #pragma mark Animations
 

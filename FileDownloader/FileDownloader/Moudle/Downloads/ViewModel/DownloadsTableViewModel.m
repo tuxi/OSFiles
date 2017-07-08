@@ -100,7 +100,11 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
         }
     }
     if (section == 1) {
-        return @"display files";
+        if ([self.dataSource[section] count]) {
+            return @"display files";
+        } else {
+            return @"";
+        }
     }
     return @"";
 }

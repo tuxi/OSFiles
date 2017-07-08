@@ -44,7 +44,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
 @property (nonatomic, strong) NSOperationQueue *backgroundSeesionQueue;
 @property (nonatomic, strong) NSURL *downloaderFolderPath;
 @property (nonatomic, strong) dispatch_semaphore_t lockSemaphore;
-@property (nonatomic, strong) NSMutableArray<NSURLSessionDownloadTask *> *initializeAllBackgroundSessionDownloadTasks;
+
 
 @end
 
@@ -61,12 +61,12 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
     self = [super init];
     if (self) {
         _lockSemaphore = dispatch_semaphore_create(1);
-        [self getAllBackgroundSessionDownloadTasks:^(NSArray<NSURLSessionDownloadTask *> *downloadTasks) {
-            self.initializeAllBackgroundSessionDownloadTasks = [downloadTasks mutableCopy];
-        }];
+
     }
     return self;
 }
+
+
 
 
 
@@ -79,17 +79,17 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
 }
 
 // 这个方法用来异步的获取当前session的所有未完成的task
-- (void)getAllBackgroundSessionDownloadTasks:(void (^)(NSArray<NSURLSessionDownloadTask *> *downloadTasks))sessionDownloadTasks {
+- (NSArray<NSURLSessionDownloadTask *> *)downloadTasks {
     __block NSArray *tasks = nil;
-    [self.backgroundSeesion getTasksWithCompletionHandler:^(NSArray<NSURLSessionDataTask *> * _Nonnull dataTasks, NSArray<NSURLSessionUploadTask *> * _Nonnull uploadTasks, NSArray<NSURLSessionDownloadTask *> * _Nonnull downloadTasks) {
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    [self.backgroundSeesion getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
         tasks = downloadTasks;
-        if (sessionDownloadTasks) {
-            sessionDownloadTasks(downloadTasks);
-        }
+        dispatch_semaphore_signal(semaphore);
     }];
     
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    return tasks;
 }
-
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -106,6 +106,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
     dispatch_block_t downloadBlock = ^{
         NSUInteger taskIdentifier = 0;
         NSURL *remoteURL = [NSURL URLWithString:urlPath];
+        BOOL isValidResumeData = [weakSelf __isValidResumeData:resumeData];
         // 当前同时下载的数量是否超出最大的设定
         if (weakSelf.maxConcurrentDownloads == -1 || weakSelf.activeDownloadsDictionary.count < weakSelf.maxConcurrentDownloads) {
             
@@ -114,7 +115,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
             NSProgress *naviteProgress = [weakSelf _createNativeProgress];
             naviteProgress.totalUnitCount++;
             [naviteProgress becomeCurrentWithPendingUnitCount:1];
-            if (resumeData) {
+            if (isValidResumeData) {
                 // 当之前下载过，就按照之前的进度继续下载
                 if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_9_4) {
                     // NSURLSession在iOS10上的Bug 在iOS10上，resumeData不能直接使用, 使用处理后的
@@ -130,7 +131,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
             sessionDownloadTask.taskDescription = urlPath;
             downloadItem = [[OSDownloadItem alloc] initWithURL:urlPath
                                            sessionDownloadTask:sessionDownloadTask];
-            if (resumeData) {
+            if (isValidResumeData) {
                 downloadItem.resumedFileSizeInBytes = [resumeData length];
                 downloadItem.downloadStartDate = [NSDate date];
                 downloadItem.bytesPerSecondSpeed = 0;
@@ -155,7 +156,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
     };
     
     /// 通过getTasksWithCompletionHandler 获取到的sessionDownloadTask去恢复下载，这样系统可以解决比如app突然重启时resumeData未保存起来，再次启动app时无remuseData而断点续传的问题
-    void (^downloadWithgetTask)(NSURLSessionDownloadTask *) = ^(NSURLSessionDownloadTask *sessionDownloadTask){
+    __unused void (^downloadWithgetTask)(NSURLSessionDownloadTask *) = ^(NSURLSessionDownloadTask *sessionDownloadTask){
         NSString *urlPath = [[sessionDownloadTask taskDescription] copy];
         if (urlPath) {
             NSProgress *rootProgress = [weakSelf _createNativeProgress];
@@ -172,23 +173,23 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
             [self _downloadTaskCallBack:sessionDownloadTask downloadItem:downloadItem];
             [sessionDownloadTask resume];
         }
-
+        
     };
     
     
-    
-    NSUInteger foundIndexInDownloadTasks =
-    [self.initializeAllBackgroundSessionDownloadTasks indexOfObjectPassingTest:
-                                            ^BOOL(NSURLSessionDownloadTask * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                                                return [obj.taskDescription isEqualToString:urlPath];
-                                            }];
-    if (foundIndexInDownloadTasks != NSNotFound) {
-        NSURLSessionDownloadTask *sessionDownloadTask =
-        [self.initializeAllBackgroundSessionDownloadTasks objectAtIndex:foundIndexInDownloadTasks];
-        downloadWithgetTask(sessionDownloadTask);
-    } else {
-        downloadBlock();
-    }
+    downloadBlock();
+//    NSUInteger foundIndexInDownloadTasks =
+//    [self.initializeAllBackgroundSessionDownloadTasks indexOfObjectPassingTest:
+//                                            ^BOOL(NSURLSessionDownloadTask * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+//                                                return [obj.taskDescription isEqualToString:urlPath];
+//                                            }];
+//    if (foundIndexInDownloadTasks != NSNotFound) {
+//        NSURLSessionDownloadTask *sessionDownloadTask =
+//        [self.initializeAllBackgroundSessionDownloadTasks objectAtIndex:foundIndexInDownloadTasks];
+//        downloadWithgetTask(sessionDownloadTask);
+//    } else {
+//        downloadBlock();
+//    }
     
 }
 
@@ -1047,6 +1048,26 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
         _waitingDownloadArray = [NSMutableArray arrayWithCapacity:0];
     }
     return _waitingDownloadArray;
+}
+
+- (BOOL)__isValidResumeData:(NSData *)data{
+    if (!data || [data length] < 1) {
+        return NO;
+    }
+    
+    NSError *error;
+    NSDictionary *resumeDictionary = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable format:NULL error:&error];
+    if (!resumeDictionary || error) {
+        return NO;
+    }
+    return YES;
+//    NSString *localFilePath = [resumeDictionary objectForKey:@"NSURLSessionResumeInfoLocalPath"];
+//    if ([localFilePath length] < 1) {
+//        return NO;
+//    }
+//    
+//    BOOL res = [[NSFileManager defaultManager] fileExistsAtPath:localFilePath];
+//    return res;
 }
 
 /// 检测当前正在下载的队列是否超出最大设定的
