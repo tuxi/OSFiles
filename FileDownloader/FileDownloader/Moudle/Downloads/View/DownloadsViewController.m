@@ -62,6 +62,7 @@
     self.tableViewModel = [DownloadsTableViewModel new];
     [self.tableViewModel prepareTableView:self.tableView];
     OSDownloaderModule *module = [OSDownloaderModule sharedInstance];
+    module.shouldAutoDownloadWhenInitialize = NO;
     module.dataSource = self;
     [self addObservers];
     

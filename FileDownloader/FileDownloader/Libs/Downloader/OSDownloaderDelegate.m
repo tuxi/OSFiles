@@ -140,7 +140,7 @@ NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNoti
     dispatch_main_async_safe(^{
         [[NSNotificationCenter defaultCenter] postNotificationName:OSFileDownloadProgressChangeNotification object:downloadItem];
     })
-                             
+
 }
 
 - (void)downloadPausedWithURL:(NSString *)url resumeData:(NSData *)aResumeData {

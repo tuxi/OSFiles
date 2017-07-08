@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign, readonly) float progress;
 /** 预计文件的总大小字节数 */
 @property (nonatomic, assign, readonly) int64_t expectedFileTotalSize;
-/** 已下载文件的大小字节数 */
+/** 已下载文件并写入大小字节数 */
 @property (nonatomic, assign, readonly) int64_t receivedFileSize;
 /** 预估剩余时间 */
 @property (nonatomic, assign, readonly) NSTimeInterval estimatedRemainingTime;

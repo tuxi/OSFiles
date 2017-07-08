@@ -51,7 +51,10 @@
     } completion:^{
         [weakSelf.tableView reloadData];
     }];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"clear" style:UIBarButtonItemStyleDone target:self action:@selector(resertDownlod)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"clear"
+                                                                              style:UIBarButtonItemStyleDone
+                                                                             target:self
+                                                                             action:@selector(resertDownlod)];
 }
 
 /// 重新下载全部
@@ -64,14 +67,19 @@
     } completion:^{
         [weakSelf.tableView reloadData];
     }];
-    [self.tabBarController performSelector:@selector(setSelectedIndex:) withObject:@1 afterDelay:0.5];
+    [self.tabBarController performSelector:@selector(setSelectedIndex:)
+                                withObject:@1
+                                afterDelay:0.5];
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:FileDownloaderResetDownloadsNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:FileDownloaderResetDownloadsNotification
+                                                        object:nil];
 }
 
 
 - (void)addObservers {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadSuccess:) name:OSFileDownloadSussessNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadSuccess:)
+                                                 name:OSFileDownloadSussessNotification
+                                               object:nil];
 }
 
 ////////////////////////////////////////////////////////////////////////

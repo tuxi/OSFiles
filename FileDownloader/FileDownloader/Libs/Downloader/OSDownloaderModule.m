@@ -34,13 +34,14 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 @dynamic sharedInstance;
 @synthesize shouldAutoDownloadWhenInitialize = _shouldAutoDownloadWhenInitialize;
 
+
 + (OSDownloaderModule *)sharedInstance {
-    static OSDownloaderModule *sharedInstance;
+    static OSDownloaderModule *_sharedInstance;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedInstance = [self new];
+        _sharedInstance = [OSDownloaderModule new];
     });
-    return sharedInstance;
+    return _sharedInstance;
 }
 
 
@@ -53,22 +54,23 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
         self.downloadDelegate = [OSDownloaderDelegate new];
         self.downloader = [OSDownloader new];
         self.downloader.downloadDelegate = self.downloadDelegate;
-        self.downloader.maxConcurrentDownloads = 1;
+        self.downloader.maxConcurrentDownloads = 2;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate) name:UIApplicationWillTerminateNotification object:nil];
         self.downloadItems = [self restoredDownloadItems];
-        [self initDownloadTasks];
     }
     return self;
 }
 
 - (void)setShouldAutoDownloadWhenInitialize:(BOOL)shouldAutoDownloadWhenInitialize {
-    if (_shouldAutoDownloadWhenInitialize == shouldAutoDownloadWhenInitialize) {
-        return;
-    }
     _shouldAutoDownloadWhenInitialize = shouldAutoDownloadWhenInitialize;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        [self initDownloadTasks];
+    });
     [[NSUserDefaults standardUserDefaults] setBool:shouldAutoDownloadWhenInitialize
                                             forKey:AutoDownloadWhenInitializeKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
+
 }
 
 - (BOOL)shouldAutoDownloadWhenInitialize {
@@ -146,33 +148,6 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
         return NO;
     }
 }
-/*
-/// 根据url创建或获取一个OSDownloadIem 返回
-- (OSFileItem *)addUrlPathToDownloadItemArray:(NSString *)urlPath {
-    @synchronized (self) {
-        OSFileItem *downloadItem = nil;
-        // 下载之前先去downloadItems中查找有没有相同的downloadToken，如果有就是已经添加过的
-        NSInteger downloadItemIdx = [self foundItemIndxInDownloadItemsByURL:urlPath];
-        if (downloadItemIdx == NSNotFound) {
-            // 之前没下载过
-            downloadItem = [[OSFileItem alloc] initWithURL:urlPath];
-            [self.downloadItems addObject:downloadItem];
-        } else {
-            // 之前下载过
-            downloadItem = [self.downloadItems objectAtIndex:downloadItemIdx];
-            if (downloadItem.status == OSFileDownloadStatusDownloading) {
-                BOOL isDownloading = [self.downloader isDownloadingByURL:downloadItem.urlPath];
-                if (isDownloading == NO) {
-                    downloadItem.status = OSFileDownloadStatusInterrupted;
-                }
-            }
-            [self.downloadItems replaceObjectAtIndex:downloadItemIdx withObject:downloadItem];
-        }
-        return downloadItem;
-    }
-    
-}
-*/
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -328,6 +303,9 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
                         [self.downloader pauseWithURL:urlPath];
                     }
                     downloadItem.status = OSFileDownloadStatusPaused;
+                } else {
+                    // 不在下载队列中，也不在等待队列中，就标记为取消
+                    downloadItem.status = OSFileDownloadStatusFailure;
                 }
             }
             [self storedDownloadItems];
@@ -364,7 +342,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 
 - (NSArray<OSFileItem *> *)getActiveDownloadItems {
     if (!self.downloadItems.count) {
-        [self _addDownloadTaskFromDataSource];
+        return @[];
     }
     NSMutableArray *downloadingItems = [NSMutableArray array];
     [self.downloadItems enumerateObjectsUsingBlock:^(OSFileItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -445,7 +423,11 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 ////////////////////////////////////////////////////////////////////////
 
 - (void)applicationWillTerminate {
-//    [self storedDownloadItems];
+    
+    [[self getActiveDownloadItems] enumerateObjectsUsingBlock:^(id<OSDownloadFileItemProtocol>  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [self pause:obj.urlPath];
+    }];
+    
 }
 
 ////////////////////////////////////////////////////////////////////////

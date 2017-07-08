@@ -21,7 +21,9 @@
 @property (nonatomic, assign) NSInteger lastHttpStatusCode;
 @property (nonatomic, copy) NSString *fileName;
 @property (nonatomic, copy) NSString *MIMEType;
-
+@property (nonatomic, copy) NSString *resumeString;
+@property (nonatomic, copy) NSString *tmpFilename;
+@property (nonatomic, copy) NSString *resumeDirectoryStr;
 
 @end
 
@@ -169,6 +171,46 @@
     NSString *description = [NSString stringWithFormat:@"%@", descriptionDict];
     
     return description;
+}
+
+#pragma mark - 分析继续下载数据
+- (void)parseResumeData:(NSData *)resumeData {
+    if (!resumeData.length) {
+        return;
+    }
+    NSString *XMLStr = [[NSString alloc] initWithData:resumeData encoding:NSUTF8StringEncoding];
+    self.resumeString = [NSMutableString stringWithFormat:@"%@", XMLStr];
+    
+    //判断系统，iOS8以前和以后
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] < 9.0) {
+        //iOS8包含iOS8以前
+        NSRange tmpRange = [XMLStr rangeOfString:@"NSURLSessionResumeInfoLocalPath"];
+        NSString *tmpStr = [XMLStr substringFromIndex:tmpRange.location + tmpRange.length];
+        NSRange oneStringRange = [tmpStr rangeOfString:@"CFNetworkDownload_"];
+        NSRange twoStringRange = [tmpStr rangeOfString:@".tmp"];
+        self.tmpFilename = [tmpStr substringWithRange:NSMakeRange(oneStringRange.location, twoStringRange.location + twoStringRange.length - oneStringRange.location)];
+        
+    } else {
+        //iOS8以后
+        NSRange tmpRange = [XMLStr rangeOfString:@"NSURLSessionResumeInfoTempFileName"];
+        NSString *tmpStr = [XMLStr substringFromIndex:tmpRange.location + tmpRange.length];
+        NSRange oneStringRange = [tmpStr rangeOfString:@"<string>"];
+        NSRange twoStringRange = [tmpStr rangeOfString:@"</string>"];
+        //记录tmp文件名
+        self.tmpFilename = [tmpStr substringWithRange:NSMakeRange(oneStringRange.location + oneStringRange.length, twoStringRange.location - oneStringRange.location - oneStringRange.length)];
+    }
+    
+    //有数据，保存到本地
+    //存储数据
+    BOOL isS = [resumeData writeToFile:self.resumeDirectoryStr atomically:NO];
+    if (isS) {
+        //继续存储数据成功
+        NSLog(@"继续存储数据成功");
+    } else {
+        //继续存储数据失败
+        NSLog(@"继续存储数据失败");
+    }
+    
 }
 
 @end

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		180CBDDC1F11269E006D2871 /* ExceptionUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 180CBDDB1F11269E006D2871 /* ExceptionUtils.m */; };
+		180CBDE01F1126E0006D2871 /* SuspensionControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 180CBDDF1F1126E0006D2871 /* SuspensionControl.m */; };
 		1819EFAF1EF2E29300208A20 /* BrowserViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1819EFAE1EF2E29300208A20 /* BrowserViewController.xib */; };
 		1819EFB51EF2E3FE00208A20 /* UITextField+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 1819EFB41EF2E3FE00208A20 /* UITextField+Blocks.m */; };
 		18300F641EEC54570035D6EE /* OSDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300F5E1EEC54570035D6EE /* OSDownloader.m */; };
@@ -107,6 +109,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		180CBDDA1F11269E006D2871 /* ExceptionUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExceptionUtils.h; sourceTree = "<group>"; };
+		180CBDDB1F11269E006D2871 /* ExceptionUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExceptionUtils.m; sourceTree = "<group>"; };
+		180CBDDE1F1126E0006D2871 /* SuspensionControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SuspensionControl.h; sourceTree = "<group>"; };
+		180CBDDF1F1126E0006D2871 /* SuspensionControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SuspensionControl.m; sourceTree = "<group>"; };
 		1819EFAE1EF2E29300208A20 /* BrowserViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BrowserViewController.xib; sourceTree = "<group>"; };
 		1819EFB31EF2E3FE00208A20 /* UITextField+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITextField+Blocks.h"; sourceTree = "<group>"; };
 		1819EFB41EF2E3FE00208A20 /* UITextField+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextField+Blocks.m"; sourceTree = "<group>"; };
@@ -322,6 +328,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		180CBDDD1F1126E0006D2871 /* SuspensionControl */ = {
+			isa = PBXGroup;
+			children = (
+				180CBDDE1F1126E0006D2871 /* SuspensionControl.h */,
+				180CBDDF1F1126E0006D2871 /* SuspensionControl.m */,
+			);
+			path = SuspensionControl;
+			sourceTree = "<group>";
+		};
 		18300F5C1EEC54570035D6EE /* Downloader */ = {
 			isa = PBXGroup;
 			children = (
@@ -454,6 +469,9 @@
 		18517BE91EEBCB2C00B148C8 /* Helper */ = {
 			isa = PBXGroup;
 			children = (
+				180CBDDD1F1126E0006D2871 /* SuspensionControl */,
+				180CBDDA1F11269E006D2871 /* ExceptionUtils.h */,
+				180CBDDB1F11269E006D2871 /* ExceptionUtils.m */,
 				18910A6B1F0D3472002BA292 /* PSPDFUIKitMainThreadGuard.m */,
 				18878A1D1EF01B87005C0185 /* ImageViewer */,
 				18300FC51EED38820035D6EE /* FFCircularProgressView */,
@@ -978,6 +996,7 @@
 				18517C3C1EEBD66A00B148C8 /* FMDatabasePool.m in Sources */,
 				18300FAB1EECE79F0035D6EE /* MASViewAttribute.m in Sources */,
 				18878A971EF03908005C0185 /* XYVideoPlayerView.m in Sources */,
+				180CBDDC1F11269E006D2871 /* ExceptionUtils.m in Sources */,
 				1871AD241EEEF76E00ABC452 /* UITableViewCell+XYConfigure.m in Sources */,
 				18300FAF1EECE79F0035D6EE /* View+MASAdditions.m in Sources */,
 				1819EFB51EF2E3FE00208A20 /* UITextField+Blocks.m in Sources */,
@@ -1045,6 +1064,7 @@
 				18517C5C1EEBD97500B148C8 /* DownloadsViewController.m in Sources */,
 				18300F6F1EEC55390035D6EE /* OSDownloaderModule.m in Sources */,
 				18517C231EEBD64800B148C8 /* AFNetworkReachabilityManager.m in Sources */,
+				180CBDE01F1126E0006D2871 /* SuspensionControl.m in Sources */,
 				18878A481EF022B6005C0185 /* SDImageCache.m in Sources */,
 				18300F7F1EEC57280035D6EE /* UIViewController+XYHUD.m in Sources */,
 				18300F641EEC54570035D6EE /* OSDownloader.m in Sources */,

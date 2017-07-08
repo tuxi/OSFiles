@@ -177,19 +177,19 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
     };
     
     
-    downloadBlock();
-//    NSUInteger foundIndexInDownloadTasks =
-//    [self.initializeAllBackgroundSessionDownloadTasks indexOfObjectPassingTest:
-//                                            ^BOOL(NSURLSessionDownloadTask * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-//                                                return [obj.taskDescription isEqualToString:urlPath];
-//                                            }];
-//    if (foundIndexInDownloadTasks != NSNotFound) {
-//        NSURLSessionDownloadTask *sessionDownloadTask =
-//        [self.initializeAllBackgroundSessionDownloadTasks objectAtIndex:foundIndexInDownloadTasks];
-//        downloadWithgetTask(sessionDownloadTask);
-//    } else {
-//        downloadBlock();
-//    }
+//    downloadBlock();
+    NSUInteger foundIndexInDownloadTasks =
+    [self.downloadTasks indexOfObjectPassingTest:
+                                            ^BOOL(NSURLSessionDownloadTask * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                                                return [obj.taskDescription isEqualToString:urlPath];
+                                            }];
+    if (foundIndexInDownloadTasks != NSNotFound) {
+        NSURLSessionDownloadTask *sessionDownloadTask =
+        [self.downloadTasks objectAtIndex:foundIndexInDownloadTasks];
+        downloadWithgetTask(sessionDownloadTask);
+    } else {
+        downloadBlock();
+    }
     
 }
 
@@ -212,6 +212,12 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
 
 - (void)_downloadTaskCallBack:(NSURLSessionDownloadTask *)sessionDownloadTask downloadItem:(OSDownloadItem *)downloadItem  {
     if (downloadItem) {
+        NSDictionary *activeDownloadsDictionary = [self.activeDownloadsDictionary mutableCopy];
+        [activeDownloadsDictionary enumerateKeysAndObjectsUsingBlock:^(NSNumber * _Nonnull key, OSDownloadItem * _Nonnull obj, BOOL * _Nonnull stop) {
+            if ([obj.urlPath isEqualToString:downloadItem.urlPath]) {
+                [self.activeDownloadsDictionary removeObjectForKey:key];
+            }
+        }];
         // 将下载任务保存到activeDownloadsDictionary中
         [self.activeDownloadsDictionary setObject:downloadItem forKey:@(sessionDownloadTask.taskIdentifier)];
         
@@ -535,6 +541,20 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
     
     // 获取当前downloadTask对应的OSDownloadItem
     OSDownloadItem *downloadItem = [self.activeDownloadsDictionary objectForKey:@(downloadTask.taskIdentifier)];
+    if (!downloadItem) {
+        NSProgress *rootProgress = [self _createNativeProgress];
+        rootProgress.totalUnitCount++;
+        // UnitCount是一个基于UI上的完整任务的单元数
+        // 将此rootProgress注册为当前线程任务的根进度管理对象，向下分支出一个子任务 比如子任务进度总数为10个单元 即当子任务完成时 父progerss对象进度走1个单元
+        [rootProgress becomeCurrentWithPendingUnitCount:1];
+        
+        downloadItem = [[OSDownloadItem alloc] initWithURL:downloadTask.taskDescription
+                                                       sessionDownloadTask:downloadTask];
+        // 注意: 必须和becomeCurrentWithPendingUnitCount成对使用
+        [rootProgress resignCurrent];
+        
+        [self _downloadTaskCallBack:downloadTask downloadItem:downloadItem];
+    }
     if (downloadItem) {
         
         NSURL *finalLocalFileURL = nil;
@@ -588,6 +608,20 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
     
     // 通过downloadTask.taskIdentifier获取OSDownloadItem对象
     OSDownloadItem *downloadItem = [self.activeDownloadsDictionary objectForKey:@(downloadTask.taskIdentifier)];
+    if (!downloadItem) {
+        NSProgress *rootProgress = [self _createNativeProgress];
+        rootProgress.totalUnitCount++;
+        // UnitCount是一个基于UI上的完整任务的单元数
+        // 将此rootProgress注册为当前线程任务的根进度管理对象，向下分支出一个子任务 比如子任务进度总数为10个单元 即当子任务完成时 父progerss对象进度走1个单元
+        [rootProgress becomeCurrentWithPendingUnitCount:1];
+        
+        downloadItem = [[OSDownloadItem alloc] initWithURL:downloadTask.taskDescription
+                                                       sessionDownloadTask:downloadTask];
+        // 注意: 必须和becomeCurrentWithPendingUnitCount成对使用
+        [rootProgress resignCurrent];
+        
+        [self _downloadTaskCallBack:downloadTask downloadItem:downloadItem];
+    }
     if (downloadItem) {
         if (!downloadItem.downloadStartDate) {
             downloadItem.downloadStartDate = [NSDate date];
@@ -598,6 +632,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
         NSString *taskDescription = [downloadTask.taskDescription copy];
         [self _progressChangeWithURL:taskDescription];
     }
+    
 }
 
 /// 恢复下载的时候调用该方法
@@ -622,6 +657,23 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
 /// 不论是请求成功还是请求失败都调用该方法，如果请求失败，那么error对象有值，否则那么error对象为空
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
     OSDownloadItem *downloadItem = [self.activeDownloadsDictionary objectForKey:@(task.taskIdentifier)];
+    if (!downloadItem) {
+        if (!downloadItem) {
+            NSProgress *rootProgress = [self _createNativeProgress];
+            rootProgress.totalUnitCount++;
+            // UnitCount是一个基于UI上的完整任务的单元数
+            // 将此rootProgress注册为当前线程任务的根进度管理对象，向下分支出一个子任务 比如子任务进度总数为10个单元 即当子任务完成时 父progerss对象进度走1个单元
+            [rootProgress becomeCurrentWithPendingUnitCount:1];
+            
+            downloadItem = [[OSDownloadItem alloc] initWithURL:task.taskDescription
+                                                           sessionDownloadTask:task];
+            // 注意: 必须和becomeCurrentWithPendingUnitCount成对使用
+            [rootProgress resignCurrent];
+            
+            [self _downloadTaskCallBack:task downloadItem:downloadItem];
+        }
+
+    }
     if (downloadItem) {
         NSData *resumeData = [error.userInfo objectForKey:NSURLSessionDownloadTaskResumeData];
         

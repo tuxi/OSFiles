@@ -66,6 +66,7 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 - (NSString *)MIMEType;
 - (void)setMIMEType:(NSString *)MIMEType;
 
+
 @end
 
 /// 对下载进行操作指定的协议

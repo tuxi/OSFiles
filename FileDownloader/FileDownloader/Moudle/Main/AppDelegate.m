@@ -11,6 +11,7 @@
 #import "OSDownloader.h"
 #import "OSDownloaderModule.h"
 #import "NetworkTypeUtils.h"
+#import "ExceptionUtils.h"
 
 @interface AppDelegate () 
 
@@ -25,6 +26,7 @@
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.rootViewController = [MainTabBarController new];
     [self.window makeKeyAndVisible];
+    [ExceptionUtils configExceptionHandler];
     return YES;
 }
 
