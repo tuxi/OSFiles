@@ -32,6 +32,8 @@
 
 @property (nonatomic, strong) OSDownloader *downloader;
 
+@property (nonatomic, assign) BOOL shouldAutoDownloadWhenInitialize;
+
 - (void)clearAllDownloadTask;
 
 /// 归档items

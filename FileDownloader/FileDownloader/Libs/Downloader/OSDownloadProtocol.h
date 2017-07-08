@@ -21,18 +21,16 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
     OSFileDownloadStatusNotStarted = 0,
     /// 下载中
     OSFileDownloadStatusDownloading,
-    /// 下载完成
-    OSFileDownloadStatusSuccess,
     /// 暂停下载
     OSFileDownloadStatusPaused,
-    /// 取消下载
-    OSFileDownloadStatusCancelled,
     /// 等待下载
     OSFileDownloadStatusWaiting,
-    /// 下载过程中由于其他因素被中断，比如设备重启
-    OSFileDownloadStatusInterrupted,
+    /// 取消下载
+    OSFileDownloadStatusCancelled,
     /// 下载失败
-    OSFileDownloadStatusFailure
+    OSFileDownloadStatusFailure,
+    /// 下载完成
+    OSFileDownloadStatusSuccess,
 };
 
 @protocol OSDownloadFileItemProtocol <NSObject, NSCoding>
@@ -73,14 +71,15 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 /// 对下载进行操作指定的协议
 @protocol OSDownloadOperationProtocol <NSObject>
 
-- (void)start:(id<OSDownloadFileItemProtocol>)downloadItem;
+- (void)start:(NSString *)url;
 - (void)cancel:(NSString *)url;
 - (void)resume:(NSString *)url;
 - (void)pause:(NSString *)url;
 
 - (NSArray<id<OSDownloadFileItemProtocol>> *)getAllSuccessItems;
 - (NSArray<id<OSDownloadFileItemProtocol>> *)getActiveDownloadItems;
-
+/// 所有展示中的文件，还未开始下载时存放的，当文件取消下载时也会存放到此数组
+- (NSMutableArray<id<OSDownloadFileItemProtocol>> * _Nonnull)displayItems;
 
 @end
 
@@ -218,10 +217,10 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 - (NSProgress *)usingNaviteProgress;
 
 /// 有一个任务等待下载时调用
-- (void)didWaitingForDownloadWithUrlPath:(NSString *)url progress:(OSDownloadProgress *)progress;
+- (void)downloadDidWaitingWithURLPath:(NSString *)url progress:(OSDownloadProgress *)progress;
 
 /// 从等待队列中开始下载一个任务
-- (void)startDownloadTaskFromTheWaitingQueue:(NSString *)url progress:(OSDownloadProgress *)progress;
+- (void)downloadStartFromWaitingQueueWithURLpath:(NSString *)url progress:(OSDownloadProgress *)progress;
 @end
 
 

@@ -18,7 +18,9 @@
 
 @implementation FilesViewController
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ Life cycle ~~~~~~~~~~~~~~~~~~~~~~~
+////////////////////////////////////////////////////////////////////////
+#pragma mark - Life cycle
+////////////////////////////////////////////////////////////////////////
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -72,7 +74,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadSuccess:) name:OSFileDownloadSussessNotification object:nil];
 }
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ Notify ~~~~~~~~~~~~~~~~~~~~~~~
+////////////////////////////////////////////////////////////////////////
+#pragma mark - Notify
+////////////////////////////////////////////////////////////////////////
 
 - (void)downloadSuccess:(NSNotification *)noti {
     __weak typeof(self) weakSelf = self;
@@ -85,9 +89,9 @@
 }
 
 
-
-
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ Config NoDataPlaceholderExtend ~~~~~~~~~~~~~~~~~~~~~~~
+////////////////////////////////////////////////////////////////////////
+#pragma mark - Config NoDataPlaceholderExtend
+////////////////////////////////////////////////////////////////////////
 
 - (NSAttributedString *)titleAttributedStringForNoDataPlaceholder {
     

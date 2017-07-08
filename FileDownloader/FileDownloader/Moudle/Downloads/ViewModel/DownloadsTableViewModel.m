@@ -18,13 +18,15 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
 
 @implementation DownloadsTableViewModel
 
+////////////////////////////////////////////////////////////////////////
+#pragma mark - XYTableViewModelProtocol
+////////////////////////////////////////////////////////////////////////
+
 - (void)prepareTableView:(UITableView *)tableView {
     tableView.delegate = self;
     tableView.dataSource = self;
     [OSFileDownloadCell xy_registerTableViewCell:tableView classIdentifier:DownloadCellIdentifierKey];
 }
-
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ XYTableViewModelProtocol ~~~~~~~~~~~~~~~~~~~~~~~
 
 - (void)getDataSourceBlock:(id (^)())dataSource completion:(void (^)())completion {
     if (dataSource) {
@@ -37,18 +39,23 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
 }
 
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ UITableViewDataSource ~~~~~~~~~~~~~~~~~~~~~~~
+////////////////////////////////////////////////////////////////////////
+#pragma mark - UITableViewDataSource
+////////////////////////////////////////////////////////////////////////
 
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return self.dataSource.count;
+}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    
-    return self.dataSource.count;
+    return  [self.dataSource[section] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     OSFileDownloadCell *cell = [tableView dequeueReusableCellWithIdentifier:DownloadCellIdentifierKey forIndexPath:indexPath];
-    OSFileItem *downloadItem = self.dataSource[indexPath.row];
+    NSArray *items = self.dataSource[indexPath.section];
+    OSFileItem *downloadItem = items[indexPath.row];
     [cell xy_configCellByModel:downloadItem indexPath:indexPath];
     [cell setLongPressGestureRecognizer:^(UILongPressGestureRecognizer *longPres) {
         if (longPres.state == UIGestureRecognizerStateBegan) {
@@ -75,10 +82,27 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
     return 60;
 }
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ UITableViewDelegate ~~~~~~~~~~~~~~~~~~~~~~~
+
+////////////////////////////////////////////////////////////////////////
+#pragma mark - UITableViewDelegate
+////////////////////////////////////////////////////////////////////////
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if (section == 0) {
+        if ([self.dataSource[section] count]) {
+            return @"downloading tasks";
+        } else {
+            return @"";
+        }
+    }
+    if (section == 1) {
+        return @"display files";
+    }
+    return @"";
 }
 
 

@@ -26,8 +26,7 @@
     
     self.textField.shouldReturnBlock = ^BOOL(UITextField *textField) {
       
-        OSFileItem *downloadItem = [[OSFileItem alloc] initWithURL:textField.text];
-        [[OSDownloaderModule sharedInstance] start:downloadItem];
+        [[OSDownloaderModule sharedInstance] start:textField.text];
         return YES;
     };
     

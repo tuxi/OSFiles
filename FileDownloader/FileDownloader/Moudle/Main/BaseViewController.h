@@ -10,7 +10,9 @@
 #import "UITableView+NoDataPlaceholderExtend.h"
 #import "XYTableViewModelProtocol.h"
 
-@interface BaseViewController : UIViewController
+@interface BaseViewController : UIViewController {
+    UITableView *_tableView;
+}
 
 @property (nonatomic, strong) id<XYTableViewModelProtocol> tableViewModel;
 

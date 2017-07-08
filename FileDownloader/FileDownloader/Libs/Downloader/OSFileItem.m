@@ -38,9 +38,8 @@
 }
 
 - (instancetype)initWithURL:(NSString *)urlPath {
-    self = [super init];
-    if (self)
-    {
+    
+    if (self = [super init]) {
         _urlPath = urlPath;
         self.status = OSFileDownloadStatusNotStarted;
     }

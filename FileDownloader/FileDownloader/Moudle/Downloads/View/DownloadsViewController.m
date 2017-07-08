@@ -76,14 +76,10 @@
     __weak OSDownloaderModule *weakMoudle = [OSDownloaderModule sharedInstance];
     void (^reloadBlock)() = ^{
         
-        //        [[weakSelf getImageUrls] enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        //            OSFileItem *item = [[OSFileItem alloc] initWithURL:obj];
-        //            [weakMoudle start:item];
-        //        }];
-        
-        
         [weakSelf.tableViewModel getDataSourceBlock:^id{
-            return [weakMoudle getActiveDownloadItems];
+            NSArray *activeDownloadItems = [weakMoudle getActiveDownloadItems];
+            NSArray *displayItems = [weakMoudle displayItems];
+            return @[activeDownloadItems, displayItems];
         } completion:^{
             [weakSelf.tableView reloadData];
         }];
@@ -165,6 +161,17 @@
               @"https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2307958387,2904044619&fm=21&gp=0.jpg",
               */
              ];
+}
+
+#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ Lazy ~~~~~~~~~~~~~~~~~~~~~~~
+
+- (UITableView *)tableView {
+    if (!_tableView) {
+        _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+        _tableView.accessibilityIdentifier = [NSString stringWithFormat:@"%@-tableView", NSStringFromClass([self class])];
+        _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    }
+    return _tableView;
 }
 
 

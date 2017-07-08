@@ -40,7 +40,9 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
 @implementation OSFileDownloadCell
 
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~ initialize ~~~~~~~~~~~~~~~~~~~~~~
+////////////////////////////////////////////////////////////////////////
+#pragma mark - initialize
+////////////////////////////////////////////////////////////////////////
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style
               reuseIdentifier:(NSString *)reuseIdentifier {
@@ -99,7 +101,9 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
    
 }
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ cell config ~~~~~~~~~~~~~~~~~~~~~~~
+////////////////////////////////////////////////////////////////////////
+#pragma mark - cell config
+////////////////////////////////////////////////////////////////////////
 
 - (void)xy_configCellByModel:(id)model indexPath:(NSIndexPath *)indexPath {
     self.downloadItem = model;
@@ -108,7 +112,9 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
 
 
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~ update subviews ~~~~~~~~~~~~~~~~~~~~~~
+////////////////////////////////////////////////////////////////////////
+#pragma mark -
+////////////////////////////////////////////////////////////////////////
 - (void)setDownloadItem:(OSFileItem *)downloadItem {
     _downloadItem = downloadItem;
     
@@ -175,7 +181,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
             NSString *expectedFileTotalSize = [NSString transformedFileSizeValue:@(self.downloadItem.progressObj.expectedFileTotalSize)];
             [self.fileSizeLabel setText:expectedFileTotalSize];
             self.cycleView.circularState = FFCircularStateCompleted;
-            NSLog(@"MIMEType:(%@) (%@, %d)", self.downloadItem.MIMEType, [NSString stringWithUTF8String:__FILE__].lastPathComponent, __LINE__);
+            DLog(@"MIMEType:(%@)", self.downloadItem.MIMEType);
             if ([self.downloadItem.MIMEType isEqualToString:@"image/jpeg"] || [self.downloadItem.MIMEType isEqualToString:@"image/png"]) {
                 NSData *data = [NSData dataWithContentsOfURL:self.downloadItem.localFileURL];
                 self.iconView.image = [UIImage imageWithData:data];
@@ -189,9 +195,6 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
             
         case OSFileDownloadStatusFailure:
           self.cycleView.circularState = FFCircularStateStopSpinning;
-            break;
-        case OSFileDownloadStatusInterrupted:
-          self.cycleView.circularState = FFCircularStateIcon;
             break;
         case OSFileDownloadStatusWaiting:
             self.cycleView.circularState = FFCircularStateStopSpinning;
@@ -223,7 +226,9 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
         
 }
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~ Actions ~~~~~~~~~~~~~~~~~~~~~~
+////////////////////////////////////////////////////////////////////////
+#pragma mark - Actions
+////////////////////////////////////////////////////////////////////////
 
 - (void)pause:(NSString *)urlPath {
     [[OSDownloaderModule sharedInstance] pause:urlPath];
@@ -240,7 +245,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
 
 - (void)start:(OSFileItem *)downloadItem {
     if ([NetworkTypeUtils networkType] == NetworkTypeWIFI) {
-        [[OSDownloaderModule sharedInstance] start:downloadItem];
+        [[OSDownloaderModule sharedInstance] start:downloadItem.urlPath];
     } else {
         [[[UIAlertView alloc] initWithTitle:@"非Wifi环境下不能下载" message:nil delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil, nil] show];
     }
@@ -290,7 +295,6 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
             break;
             
         case OSFileDownloadStatusFailure:
-        case OSFileDownloadStatusInterrupted:
         {
             [self resume:self.downloadItem.urlPath];
         }
@@ -304,7 +308,9 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
 
 
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ Layout ~~~~~~~~~~~~~~~~~~~~~~~
+////////////////////////////////////////////////////////////////////////
+#pragma mark - Layout
+////////////////////////////////////////////////////////////////////////
 
 - (void)_makeConstraints {
     [_iconView mas_updateConstraints:^(MASConstraintMaker *make) {
@@ -375,7 +381,9 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
 }
 
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ Lazy ~~~~~~~~~~~~~~~~~~~~~~~
+////////////////////////////////////////////////////////////////////////
+#pragma mark - Lazy
+////////////////////////////////////////////////////////////////////////
 
 - (UILabel *)fileNameLabel {
     if (!_fileNameLabel) {
