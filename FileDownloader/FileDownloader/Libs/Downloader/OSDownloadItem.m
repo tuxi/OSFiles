@@ -64,15 +64,13 @@
         self.lastHttpStatusCode = 0;
         
         self.naviteProgress = [[NSProgress alloc] initWithParent:[NSProgress currentProgress] userInfo:nil];
-        if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1) {
-            self.naviteProgress.kind = NSProgressKindFile;
-            [self.naviteProgress setUserInfoObject:NSProgressFileOperationKindKey forKey:NSProgressFileOperationKindDownloading];
-            [self.naviteProgress setUserInfoObject:urlPath forKey:@"urlPath"];
-            self.naviteProgress.cancellable = YES;
-            self.naviteProgress.pausable = YES;
-            self.naviteProgress.totalUnitCount = NSURLSessionTransferSizeUnknown;
-            self.naviteProgress.completedUnitCount = 0;
-        }
+        self.naviteProgress.kind = NSProgressKindFile;
+        [self.naviteProgress setUserInfoObject:NSProgressFileOperationKindKey forKey:NSProgressFileOperationKindDownloading];
+        [self.naviteProgress setUserInfoObject:urlPath forKey:@"urlPath"];
+        self.naviteProgress.cancellable = YES;
+        self.naviteProgress.pausable = YES;
+        self.naviteProgress.totalUnitCount = NSURLSessionTransferSizeUnknown;
+        self.naviteProgress.completedUnitCount = 0;
     }
     return self;
 }
@@ -86,21 +84,17 @@
 - (void)setExpectedFileTotalSize:(int64_t)expectedFileTotalSize {
     
     _expectedFileTotalSize = expectedFileTotalSize;
-    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1) {
-        if (expectedFileTotalSize > 0) {
-            self.naviteProgress.totalUnitCount = expectedFileTotalSize;
-        }
+    if (expectedFileTotalSize > 0) {
+        self.naviteProgress.totalUnitCount = expectedFileTotalSize;
     }
 }
 
 - (void)setReceivedFileSize:(int64_t)receivedFileSize {
     
     _receivedFileSize = receivedFileSize;
-    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1) {
-        if (receivedFileSize > 0) {
-            if (self.expectedFileTotalSize > 0) {
-                self.naviteProgress.completedUnitCount = receivedFileSize;
-            }
+    if (receivedFileSize > 0) {
+        if (self.expectedFileTotalSize > 0) {
+            self.naviteProgress.completedUnitCount = receivedFileSize;
         }
     }
 }

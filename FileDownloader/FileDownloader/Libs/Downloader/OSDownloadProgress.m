@@ -95,7 +95,6 @@ static NSString * const OSLastLocalizedAdditionalDescription = @"lastLocalizedAd
 #pragma mark - NSCoding
 ////////////////////////////////////////////////////////////////////////
 
-// 归档
 - (void)encodeWithCoder:(NSCoder *)coder {
     
     [coder encodeFloat:self.progress forKey:OSProgressKey];
@@ -111,7 +110,6 @@ static NSString * const OSLastLocalizedAdditionalDescription = @"lastLocalizedAd
     }
 }
 
-// 解档
 - (instancetype)initWithCoder:(NSCoder *)coder {
     self = [super init];
     if (self) {

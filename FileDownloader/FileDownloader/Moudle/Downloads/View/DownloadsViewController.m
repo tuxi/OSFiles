@@ -72,8 +72,6 @@
     
     [self.tableView reloadData];
     
-    
-    
     [self reloadBlock]();
     
     self.tableView.reloadButtonClickBlock = [self reloadBlock];

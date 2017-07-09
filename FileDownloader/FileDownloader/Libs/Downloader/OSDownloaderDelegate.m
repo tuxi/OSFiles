@@ -56,8 +56,6 @@ NSString * const OSFileDownloadTotalProgressCanceldNotification = @"OSFileDownlo
 
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ <OSDownloaderDelegate> ~~~~~~~~~~~~~~~~~~~~~~~
 
-
-
 - (void)downloadSuccessnWithDownloadItem:(id<OSDownloadItemProtocol>)downloadItem {
     
     // 根据aIdentifier在downloadItems中查找对应的DownloadItem，更改其下载状态，发送通知
@@ -186,7 +184,7 @@ NSString * const OSFileDownloadTotalProgressCanceldNotification = @"OSFileDownlo
     return isValid;
 }
 
-- (NSProgress *)usingNaviteProgress {
+- (NSProgress *)downloadUsingNaviteProgress {
     return self.progress;
 }
 
@@ -220,6 +218,8 @@ NSString * const OSFileDownloadTotalProgressCanceldNotification = @"OSFileDownlo
         }
     }
 }
+
+
 
 ////////////////////////////////////////////////////////////////////////
 #pragma mark - Other

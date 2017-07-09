@@ -175,7 +175,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
         } else {
            id<OSDownloadFileItemProtocol> downloadItem = [self.downloadItems objectAtIndex:foundIndexInDownloadItems];
             if ((downloadItem.status != OSFileDownloadStatusCancelled) && (downloadItem.status != OSFileDownloadStatusSuccess)) {
-                BOOL isDownloading = [self.downloader isDownloadingByURL:downloadItem.urlPath];
+                BOOL isDownloading = [self.downloader isDownloading:downloadItem.urlPath];
                 if (isDownloading == NO){
                     downloadItem.status = OSFileDownloadStatusDownloading;
                     
@@ -187,7 +187,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
                         // 从url下载新的任务
                         [self.downloader downloadWithURL:downloadItem.urlPath];
                     }
-                    BOOL isWaiting = [self.downloader isWaitingByURL:downloadItem.urlPath];
+                    BOOL isWaiting = [self.downloader isWaiting:downloadItem.urlPath];
                     if (isWaiting) {
                         downloadItem.status = OSFileDownloadStatusWaiting;
                     }
@@ -263,7 +263,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
                 if (downloadItem.progressObj.nativeProgress) {
                     [downloadItem.progressObj.nativeProgress resume];
                     
-                    BOOL isWaiting = [self.downloader isWaitingByURL:downloadItem.urlPath];
+                    BOOL isWaiting = [self.downloader isWaiting:downloadItem.urlPath];
                     if (isWaiting) {
                         downloadItem.status = OSFileDownloadStatusWaiting;
                     }
@@ -288,7 +288,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
         NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:urlPath];
         if (foundItemIdx != NSNotFound) {
             OSFileItem *downloadItem = [self.downloadItems objectAtIndex:foundItemIdx];
-            BOOL isDownloading = [self.downloader isDownloadingByURL:downloadItem.urlPath];
+            BOOL isDownloading = [self.downloader isDownloading:downloadItem.urlPath];
             if (isDownloading) {
                 downloadItem.status = OSFileDownloadStatusPaused;
                 if (!downloadItem.progressObj) {
@@ -299,7 +299,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
                     [downloadItem.progressObj.nativeProgress pause];
                 }
             } else {
-                BOOL isWaiting = [self.downloader isWaitingByURL:urlPath];
+                BOOL isWaiting = [self.downloader isWaiting:urlPath];
                 if (isWaiting) {
                     OSDownloadProgress *progress = [self.downloader getDownloadProgressByURL:urlPath];
                     if (progress.nativeProgress) {

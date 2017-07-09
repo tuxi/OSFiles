@@ -195,11 +195,6 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 /// @discussion 默认范围HTTP状态码从200-299都是正确的，如果默认的范围与公司服务器不符合，可实现此方法设置
 - (BOOL)httpStatusCode:(NSInteger)aHttpStatusCode isVaildByURL:(NSString *)url;
 
-/// 回调此方法，进行配置后台会话任务
-/// @param aBackgroundConiguration 可以修改的后台会话对象
-/// @discussion 可以修改他的timeoutIntervalForRequest, timeoutIntervalForResource, HTTPAdditionalHeaders属性
-- (void)customBackgroundSessionConfiguration:(NSURLSessionConfiguration *)aBackgroundConiguration;
-
 
 /// 回调此方法，进行SSL认证的设置
 /// @param aChallenge 认证
@@ -211,7 +206,7 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 
 /// 提供一个下载进度的对象，以记录下载进度
 /// @return 下载进度的对象
-- (NSProgress *)usingNaviteProgress;
+- (NSProgress *)downloadUsingNaviteProgress;
 
 /// 有一个任务等待下载时调用
 - (void)downloadDidWaitingWithURLPath:(NSString *)url progress:(OSDownloadProgress *)progress;

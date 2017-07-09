@@ -106,6 +106,7 @@
 		18878B271EF19EAC005C0185 /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = 18878B231EF19EAC005C0185 /* UIColor+Hex.m */; };
 		18878B281EF19EAC005C0185 /* UINavigationItem+MultipleItems.m in Sources */ = {isa = PBXBuildFile; fileRef = 18878B251EF19EAC005C0185 /* UINavigationItem+MultipleItems.m */; };
 		18910A6C1F0D3472002BA292 /* PSPDFUIKitMainThreadGuard.m in Sources */ = {isa = PBXBuildFile; fileRef = 18910A6B1F0D3472002BA292 /* PSPDFUIKitMainThreadGuard.m */; };
+		18D6ABD11F12295E001DF350 /* OSDownloaderSessionPrivateDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D6ABD01F12295E001DF350 /* OSDownloaderSessionPrivateDelegate.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -314,6 +315,8 @@
 		18878B241EF19EAC005C0185 /* UINavigationItem+MultipleItems.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationItem+MultipleItems.h"; sourceTree = "<group>"; };
 		18878B251EF19EAC005C0185 /* UINavigationItem+MultipleItems.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationItem+MultipleItems.m"; sourceTree = "<group>"; };
 		18910A6B1F0D3472002BA292 /* PSPDFUIKitMainThreadGuard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSPDFUIKitMainThreadGuard.m; sourceTree = "<group>"; };
+		18D6ABCF1F12295E001DF350 /* OSDownloaderSessionPrivateDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSDownloaderSessionPrivateDelegate.h; sourceTree = "<group>"; };
+		18D6ABD01F12295E001DF350 /* OSDownloaderSessionPrivateDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSDownloaderSessionPrivateDelegate.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -351,6 +354,8 @@
 				18300F6E1EEC55390035D6EE /* OSDownloaderModule.m */,
 				184BD1A81F0A96F8007FD40B /* OSDownloaderDelegate.h */,
 				184BD1A91F0A96F8007FD40B /* OSDownloaderDelegate.m */,
+				18D6ABCF1F12295E001DF350 /* OSDownloaderSessionPrivateDelegate.h */,
+				18D6ABD01F12295E001DF350 /* OSDownloaderSessionPrivateDelegate.m */,
 				1830314F1F0E9571007354D2 /* OSFileItem.h */,
 				183031501F0E9571007354D2 /* OSFileItem.m */,
 				187BA6491F0947A600E7EA5D /* NSURLSession+CorrectedResumeData.h */,
@@ -995,6 +1000,7 @@
 				18878A981EF03908005C0185 /* ICGRulerView.m in Sources */,
 				18517C3C1EEBD66A00B148C8 /* FMDatabasePool.m in Sources */,
 				18300FAB1EECE79F0035D6EE /* MASViewAttribute.m in Sources */,
+				18D6ABD11F12295E001DF350 /* OSDownloaderSessionPrivateDelegate.m in Sources */,
 				18878A971EF03908005C0185 /* XYVideoPlayerView.m in Sources */,
 				180CBDDC1F11269E006D2871 /* ExceptionUtils.m in Sources */,
 				1871AD241EEEF76E00ABC452 /* UITableViewCell+XYConfigure.m in Sources */,
