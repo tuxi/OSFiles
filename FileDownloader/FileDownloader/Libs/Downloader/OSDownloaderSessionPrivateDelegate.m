@@ -431,7 +431,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 }
 
 /// 通过urlPath恢复下载
-- (void)resumeWithURL:(NSString *)urlPath {
+- (void)_resumeWithURL:(NSString *)urlPath {
     if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadResumeDownloadWithURL:)]) {
         [self.downloadDelegate downloadResumeDownloadWithURL:urlPath];
     } else {
@@ -439,7 +439,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     }
 }
 
-- (void)pauseWithURL:(NSString *)urlPath resumeData:(NSData *)resumeData {
+- (void)_pauseWithURL:(NSString *)urlPath resumeData:(NSData *)resumeData {
     if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadPausedWithURL:resumeData:)]) {
         if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_8_4) {
             // iOS9及以上resumeData(恢复数据)由系统管理，并在使用NSProgress调用时使用
@@ -448,6 +448,15 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
         [self.downloadDelegate downloadPausedWithURL:urlPath resumeData:resumeData];
     }
     
+}
+
+- (void)_cancelWithURL:(NSString *)urlPath {
+    NSError *cancelError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:nil];
+    if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadFailureWithDownloadItem:resumeData:error:)]) {
+        OSDownloadItem *item = [[OSDownloadItem alloc] initWithURL:urlPath sessionDownloadTask:nil];
+        [self.downloadDelegate downloadFailureWithDownloadItem:item resumeData:nil error:cancelError];
+    }
+
 }
 
 - (NSProgress *)progress {

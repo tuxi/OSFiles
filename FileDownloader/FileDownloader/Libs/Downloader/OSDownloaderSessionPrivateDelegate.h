@@ -37,7 +37,8 @@
 - (void)_startDownloadTaskFromTheWaitingQueue:(NSString *)url;
 
 /// 收到恢复下载的回调
-- (void)resumeWithURL:(NSString *)urlPath;
+- (void)_resumeWithURL:(NSString *)urlPath;
 /// 收到暂停下载的回调
-- (void)pauseWithURL:(NSString *)urlPath resumeData:(NSData *)resumeData;
+- (void)_pauseWithURL:(NSString *)urlPath resumeData:(NSData *)resumeData;
+
 @end

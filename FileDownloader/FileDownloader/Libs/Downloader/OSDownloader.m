@@ -228,7 +228,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
     BOOL isDownloading = [self isDownloading:urlPath];
     // 如果不在下载中，就执行恢复
     if (!isDownloading) {
-        [self.sessionDelegate resumeWithURL:urlPath];
+        [self.sessionDelegate _resumeWithURL:urlPath];
     }
     [self unLock];
 }
@@ -273,7 +273,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
     if (isDownloading) {
         
         [self pauseWithURL:urlPath resumeDataHandler:^(NSData *resumeData) {
-            [self.sessionDelegate pauseWithURL:urlPath resumeData:resumeData];
+            [self.sessionDelegate _pauseWithURL:urlPath resumeData:resumeData];
         }];
         
     }
@@ -338,12 +338,8 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
         if (res) {
             
             NSError *cancelError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:nil];
-            if (self.sessionDelegate.downloadDelegate && [self.sessionDelegate.downloadDelegate respondsToSelector:@selector(downloadFailureWithDownloadItem:resumeData:error:)]) {
-                OSDownloadItem *item = [[OSDownloadItem alloc] initWithURL:urlPath sessionDownloadTask:nil];
-                [self.sessionDelegate.downloadDelegate downloadFailureWithDownloadItem:item resumeData:nil error:cancelError];
-            }
-            [self checkMaxConcurrentDownloadCountThenDownloadWaitingQueueIfExceeded];
-            
+            OSDownloadItem *item = [[OSDownloadItem alloc] initWithURL:urlPath sessionDownloadTask:nil];
+            [self.sessionDelegate handleDownloadFailureWithError:cancelError downloadItem:item taskIdentifier:NSNotFound resumeData:nil];
         }
     }
     [self unLock];
