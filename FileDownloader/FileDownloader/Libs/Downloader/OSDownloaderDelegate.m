@@ -160,7 +160,7 @@ NSString * const OSFileDownloadTotalProgressCanceldNotification = @"OSFileDownlo
     }
 }
 
-- (void)resumeDownloadWithURL:(NSString *)url {
+- (void)downloadResumeDownloadWithURL:(NSString *)url {
     
     [[OSDownloaderModule sharedInstance] start:url];
 }

@@ -172,15 +172,13 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 
 /// 恢复下载时调用
 /// @param url 当前下载任务的url
-- (void)resumeDownloadWithURL:(NSString *)url;
+- (void)downloadResumeDownloadWithURL:(NSString *)url;
 
 /// 当下载的文件需要存储到本地时调用，并设置本地的路径
-/// @param aRemoteURL 下载文件的服务器地址
+/// @param remoteURL 下载文件的服务器地址
 /// @return 设置本地存储的路径
-/// @discussion 虽然anIdentifier用于识别下载的任务，这里回调aRemoteURL更方便区分
-- (NSURL *)finalLocalFileURLWithRemoteURL:(NSURL *)aRemoteURL;
-
-- (NSURL *)finalLocalFolderURL;
+/// @discussion 使用下载的url配置下载完成存储的本地路径
+- (NSURL *)finalLocalFileURLWithRemoteURL:(NSURL *)remoteURL;
 
 /// 回调此方法，验证下载数据
 /// @param aLocalFileURL 下载文件的本地路径
@@ -201,10 +199,6 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 /// @discussion 可以修改他的timeoutIntervalForRequest, timeoutIntervalForResource, HTTPAdditionalHeaders属性
 - (void)customBackgroundSessionConfiguration:(NSURLSessionConfiguration *)aBackgroundConiguration;
 
-/// 根据aRemoteURL创建一个NSURLRequest返回
-/// @param aRemoteURL 需要下载的url
-/// @retun 一个自定义的NSURLRequest对象
-- (NSURLRequest *)URLRequestForRemoteURL:(NSURL *)aRemoteURL;
 
 /// 回调此方法，进行SSL认证的设置
 /// @param aChallenge 认证

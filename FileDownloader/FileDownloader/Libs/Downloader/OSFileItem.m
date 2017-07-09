@@ -116,12 +116,13 @@
         NSString *newPath = [cachesPath stringByAppendingString:relativePath];
         _localFileURL = [NSURL fileURLWithPath:newPath];
     }
+
     return _localFileURL;
 }
 
 - (NSString *)fileName {
     if (!_fileName.length) {
-        return self.urlPath.lastPathComponent;
+        return _fileName = self.urlPath.lastPathComponent;
     };
     return _fileName;
 }

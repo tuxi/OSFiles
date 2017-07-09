@@ -48,7 +48,7 @@ static NSString * _emailStr;
 
 static void createExceptionLogBtn() {
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2. * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         suspensionMenuWindow();
     });
 }
@@ -155,7 +155,7 @@ static void suspensionMenuWindow()
                 }
             }
             
-            if ([item.hypotenuseButton.titleLabel.text isEqualToString:@"沙盒浏览"]) {
+            if ([item.hypotenuseButton.titleLabel.text isEqualToString:@"SandBox"]) {
                 NSString *path = nil;
                 switch (index) {
                     case 0:

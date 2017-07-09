@@ -224,6 +224,11 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
             }
             // 将其从downloadItem中移除，并添加到display中 重新归档
             NSUInteger founIdxInDisplay = [self foundItemIndxInDisplayItemsByURL:urlPath];
+            NSError *error = nil;
+            BOOL isRemoveSuccess = [[NSFileManager defaultManager] removeItemAtURL:downloadItem.localFileURL error:&error];
+            if (isRemoveSuccess) {
+                DLog(@"remove localFile success");
+            }
             [self.downloadItems removeObject:downloadItem];
             OSFileItem *cancelItem = [[OSFileItem alloc] initWithURL:urlPath];
             cancelItem.status = OSFileDownloadStatusCancelled;
@@ -323,6 +328,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
         }];
         [self.downloadItems removeAllObjects];
         [self storedDownloadItems];
+        [self _addDownloadTaskFromDataSource];
     }
   
 }

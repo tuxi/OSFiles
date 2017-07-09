@@ -31,7 +31,9 @@
     return self;
 }
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ life cycle ~~~~~~~~~~~~~~~~~~~~~~~
+////////////////////////////////////////////////////////////////////////
+#pragma mark - life cycle
+////////////////////////////////////////////////////////////////////////
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -55,7 +57,7 @@
     NSLog(@"%s", __func__);
 }
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ initialize ~~~~~~~~~~~~~~~~~~~~~~~
+
 
 
 - (void)setup {
@@ -112,7 +114,9 @@
 
 
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ notifiy events ~~~~~~~~~~~~~~~~~~~~~~~
+////////////////////////////////////////////////////////////////////////
+#pragma mark - notifiy events
+////////////////////////////////////////////////////////////////////////
 
 
 - (void)downloadSuccess:(NSNotification *)note {
@@ -142,7 +146,9 @@
 }
 
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ <OSFileDownloaderDataSource> ~~~~~~~~~~~~~~~~~~~~~~~
+////////////////////////////////////////////////////////////////////////
+#pragma mark - OSFileDownloaderDataSource
+////////////////////////////////////////////////////////////////////////
 
 - (NSArray<NSString *> *)fileDownloaderAddTasksFromRemoteURLPaths {
     return [self getImageUrls];
@@ -178,7 +184,9 @@
              ];
 }
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ Lazy ~~~~~~~~~~~~~~~~~~~~~~~
+////////////////////////////////////////////////////////////////////////
+#pragma mark - Lazy
+////////////////////////////////////////////////////////////////////////
 
 - (UITableView *)tableView {
     if (!_tableView) {
@@ -206,7 +214,9 @@
 
 
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ Config NoDataPlaceholderExtend ~~~~~~~~~~~~~~~~~~~~~~~
+////////////////////////////////////////////////////////////////////////
+#pragma mark - Config NoDataPlaceholderExtend
+////////////////////////////////////////////////////////////////////////
 
 - (NSAttributedString *)titleAttributedStringForNoDataPlaceholder {
     
