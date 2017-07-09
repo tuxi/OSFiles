@@ -732,11 +732,11 @@ __unused static void semaphore_autoreleasepoolBlock (void (^block)())
 }
 
 - (void)lock {
-    [_lock_ lock];
+//    [_lock_ lock];
 }
 
 - (void)unLock {
-    [_lock_ unlock];
+//    [_lock_ unlock];
 }
 
 @end
