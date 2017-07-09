@@ -133,6 +133,9 @@
     }
     [self willChangeValueForKey:@"status"];
     _status = status;
+    if (self.downloadStatusBlock) {
+        self.downloadStatusBlock(status);
+    }
     [self didChangeValueForKey:@"status"];
     
 }

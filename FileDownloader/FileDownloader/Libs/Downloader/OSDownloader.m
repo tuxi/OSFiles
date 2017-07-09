@@ -182,11 +182,24 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
     /// 通过getTasksWithCompletionHandler 获取到的sessionDownloadTask去恢复下载，这样系统可以解决比如app突然重启时resumeData未保存起来，再次启动app时无remuseData而断点续传的问题
     __unused void (^downloadWithgetTask)(NSURLSessionDownloadTask *) = ^(NSURLSessionDownloadTask *sessionDownloadTask){
         [self _getDownloadItemByDownloadTask:sessionDownloadTask];
-        
+        [sessionDownloadTask resume];
     };
     
-//    downloadBlock();
+
     [self getDownloadTasks:^(NSArray *downloadTasks) {
+        if (downloadTasks.count) {
+            for (NSURLSessionDownloadTask *task in downloadTasks) {
+                // 不在当前活跃的任务，并且不是当前需要下载的url 就取消掉任务
+                NSInteger taskIdentifier = [self getDownloadTaskIdentifierByURL:task.taskDescription];
+                if (taskIdentifier < 0) {
+                    if (![task.taskDescription isEqualToString:urlPath]) {
+                        [task cancelByProducingResumeData:^(NSData * _Nullable resumeData) {
+                            
+                        }];
+                    }
+                }
+            }
+        }
         NSUInteger foundIdxInDownloadTasks = [downloadTasks indexOfObjectPassingTest:^BOOL(NSURLSessionDownloadTask *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             return [obj.taskDescription isEqualToString:urlPath];
         }];
@@ -196,21 +209,6 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
         } else {
             downloadBlock();
         }
-        if (downloadTasks.count) {
-            for (NSURLSessionDownloadTask *task in downloadTasks) {
-                // 不在当前活跃的任务就暂停掉
-                NSInteger taskIdentifier = [self getDownloadTaskIdentifierByURL:task.taskDescription];
-                if (taskIdentifier < 0) {
-//                    downloadWithgetTask(task);
-                    [task cancelByProducingResumeData:^(NSData * _Nullable resumeData) {
-                        
-                    }];
-                }
-            }
-            
-            
-        }
-        
     }];
 
 }
@@ -405,6 +403,19 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
         OSDownloadItem *downloadItem = [self.activeDownloadsDictionary objectForKey:@(taskIdentifier)];
         if (downloadItem) {
             isDownloading = YES;
+            NSArray *tasks = self.downloadTasks;
+            NSUInteger taskIdxInDownloadTasks = [self.downloadTasks indexOfObjectPassingTest:^BOOL(NSURLSessionDownloadTask * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                return obj.taskIdentifier == taskIdentifier;
+            }];
+            if (taskIdxInDownloadTasks != NSNotFound) {
+                NSURLSessionDownloadTask *downloadTask = [tasks objectAtIndex:taskIdxInDownloadTasks];
+                if (downloadItem.sessionDownloadTask != downloadTask) {
+                    downloadItem.sessionDownloadTask  = downloadTask;
+                }
+//                if (downloadTask.state != NSURLSessionTaskStateRunning) {
+//                    isDownloading = NO;
+//                }
+            }
         }
     }
     

@@ -107,7 +107,12 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
 
 - (void)xy_configCellByModel:(id)model indexPath:(NSIndexPath *)indexPath {
     self.downloadItem = model;
-    
+    typeof(self) weakSelf = self;
+    self.downloadItem.downloadStatusBlock = ^(OSFileDownloadStatus state) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [weakSelf setDownloadViewByStatus:state];
+        });
+    };
 }
 
 
@@ -268,7 +273,6 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
         case OSFileDownloadStatusDownloading:
         {
             [self pause:self.downloadItem.urlPath];
-//            [self cancel:self.downloadItem.urlPath];
         }
             break;
         case OSFileDownloadStatusPaused:

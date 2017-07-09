@@ -14,6 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface OSFileItem : NSObject <OSDownloadFileItemProtocol>
 
+@property (nonatomic, copy) void (^downloadStatusBlock)(OSFileDownloadStatus state);
 
 - (instancetype)initWithURL:(NSString *)urlPath NS_DESIGNATED_INITIALIZER;
 

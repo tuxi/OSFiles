@@ -115,6 +115,7 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 
 /// 下载会话对象 NSURLSessionDownloadTask
 - (NSURLSessionDownloadTask *)sessionDownloadTask;
+- (void)setSessionDownloadTask:(NSURLSessionDownloadTask *)sessionDownloadTask;
 
 /// 下载时发送的错误信息栈 错误信息栈(最新的错误信息初入在第一位)
 - (NSArray<NSString *> *)errorMessagesStack;
