@@ -65,6 +65,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
     return self;
 }
 
+
 - (void)setDownloadDelegate:(id<OSDownloaderDelegate>)downloadDelegate {
     if (_downloadDelegate == downloadDelegate) {
         return;
@@ -660,7 +661,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 - (void)setMaxConcurrentDownloads:(NSInteger)maxConcurrentDownloads {
 
     if (maxConcurrentDownloads > _maxConcurrentDownloads
-        && maxConcurrentDownloads < -1) {
+        && maxConcurrentDownloads < NSIntegerMax) {
         _maxConcurrentDownloads = maxConcurrentDownloads;
         [self checkMaxConcurrentDownloadCountThenDownloadWaitingQueueIfExceeded];
     }
