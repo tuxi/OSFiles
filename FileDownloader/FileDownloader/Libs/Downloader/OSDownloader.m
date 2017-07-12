@@ -33,6 +33,7 @@ NSString * const OSDownloaderFolderNameKey = @"OSDownloaderFolder";
 static NSString * const OSDownloadBytesPerSecondSpeedKey = @"bytesPerSecondSpeed";
 // 剩余时间key
 static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
+static void * ProgressObserverContext = &ProgressObserverContext;
 
 
 @interface OSDownloader () <NSURLSessionDelegate, NSURLSessionDataDelegate, NSURLSessionTaskDelegate, NSURLSessionDownloadDelegate>
@@ -42,6 +43,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
 @property (nonatomic, strong) NSURL *downloaderFolderPath;
 @property (nonatomic, strong) NSLock *lock_;
 @property (nonatomic, strong) OSDownloaderSessionPrivateDelegate *sessionDelegate;
+@property (nonatomic, strong) NSProgress *downloadTotalProgress;
 
 @end
 
@@ -60,9 +62,61 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
         _sessionDelegate = [[OSDownloaderSessionPrivateDelegate alloc] initWithDownloader:self];
         _backgroundSeesion = [NSURLSession sessionWithConfiguration:[self createBackgroundSessionConfig] delegate:self delegateQueue:self.backgroundSeesionQueue];
         _backgroundSeesion.sessionDescription = @"OSDownload_BackgroundSession";
+        _downloadTotalProgress = [NSProgress progressWithTotalUnitCount:0];;
+        [_downloadTotalProgress addObserver:self
+                        forKeyPath:NSStringFromSelector(@selector(fractionCompleted))
+                           options:NSKeyValueObservingOptionInitial
+                           context:ProgressObserverContext];
         _lock_ = [NSLock new];
     }
     return self;
+}
+
+////////////////////////////////////////////////////////////////////////
+#pragma mark - NSProgress Tracking
+////////////////////////////////////////////////////////////////////////
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary<NSKeyValueChangeKey,id> *)change
+                       context:(void *)context {
+    
+    if (context == ProgressObserverContext) {
+        NSProgress *progress = object;
+        if ([keyPath isEqualToString:NSStringFromSelector(@selector(fractionCompleted))]) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:OSFileDownloadTotalProgressCanceldNotification object:progress];
+            });
+        } else {
+            DLog(@"ERR: Invalid keyPath");
+        }
+    } else {
+        [super observeValueForKeyPath:keyPath
+                             ofObject:object
+                               change:change
+                              context:context];
+    }
+    
+}
+
+/// 如果当前没有正在下载中的就重置进度
+- (void)resetProgressIfNoActiveDownloadsRunning {
+    BOOL hasActiveDownloadsFlag = [self hasActiveDownloads];
+    if (hasActiveDownloadsFlag == NO) {
+        @try {
+            [self.downloadTotalProgress removeObserver:self forKeyPath:NSStringFromSelector(@selector(fractionCompleted))];
+        } @catch (NSException *exception) {
+            DLog(@"Error: Repeated removeObserver(keyPath = fractionCompleted)");
+        } @finally {
+            
+        }
+        
+        self.downloadTotalProgress = [NSProgress progressWithTotalUnitCount:0];
+        [self.downloadTotalProgress addObserver:self
+                                forKeyPath:NSStringFromSelector(@selector(fractionCompleted))
+                                   options:NSKeyValueObservingOptionInitial
+                                   context:ProgressObserverContext];
+    }
 }
 
 
@@ -103,7 +157,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
     }
     NSString *urlPath = [[downloadTask taskDescription] copy];
     if (urlPath) {
-        NSProgress *progress = [self.sessionDelegate progress];
+        NSProgress *progress = self.downloadTotalProgress;
         progress.totalUnitCount++;
         // UnitCount是一个基于UI上的完整任务的单元数
         // 将此rootProgress注册为当前线程任务的根进度管理对象，向下分支出一个子任务 比如子任务进度总数为10个单元 即当子任务完成时 父progerss对象进度走1个单元
@@ -119,6 +173,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
     
     return downloadItem;
 }
+
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -142,7 +197,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
             
             NSURLSessionDownloadTask *sessionDownloadTask = nil;
             OSDownloadItem *downloadItem = nil;
-            NSProgress *naviteProgress = [self.sessionDelegate progress];
+            NSProgress *naviteProgress = self.downloadTotalProgress;
             naviteProgress.totalUnitCount++;
             [naviteProgress becomeCurrentWithPendingUnitCount:1];
             if (isValidResumeData) {
@@ -161,6 +216,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
             sessionDownloadTask.taskDescription = urlPath;
             downloadItem = [[OSDownloadItem alloc] initWithURL:urlPath
                                            sessionDownloadTask:sessionDownloadTask];
+
             if (isValidResumeData) {
                 downloadItem.resumedFileSizeInBytes = [resumeData length];
                 downloadItem.downloadStartDate = [NSDate date];
@@ -242,18 +298,18 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
         NSString *urlPath = [downloadItem.urlPath copy];
         __weak typeof(self) weakSelf = self;
         // progress 执行 pause 时回调
-        [downloadItem.naviteProgress setPausingHandler:^{
+        [downloadItem.downloadProgress setPausingHandler:^{
             // 暂停下载
             [weakSelf pauseWithURL:urlPath];
         }];
         // progress 执行 cancel 时回调
-        [downloadItem.naviteProgress setCancellationHandler:^{
+        [downloadItem.downloadProgress setCancellationHandler:^{
             // 取消下载
             [weakSelf cancelWithURL:urlPath];
         }];
         if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_8_4) {
             // progress 执行 resume 时回调 此api为9.0以上才有的，需要适配
-            [downloadItem.naviteProgress setResumingHandler:^{
+            [downloadItem.downloadProgress setResumingHandler:^{
                 // 恢复下载
                 [weakSelf resumeWithURL:urlPath];
             }];
@@ -482,8 +538,8 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
         }
         NSDictionary *remainingTimeDict = [[self class] remainingTimeAndBytesPerSecondForDownloadItem:downloadItem];
         if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1) {
-            [downloadItem.naviteProgress setUserInfoObject:[remainingTimeDict objectForKey:OSDownloadRemainingTimeKey] forKey:NSProgressEstimatedTimeRemainingKey];
-            [downloadItem.naviteProgress setUserInfoObject:[remainingTimeDict objectForKey:OSDownloadBytesPerSecondSpeedKey] forKey:NSProgressThroughputKey];
+            [downloadItem.downloadProgress setUserInfoObject:[remainingTimeDict objectForKey:OSDownloadRemainingTimeKey] forKey:NSProgressEstimatedTimeRemainingKey];
+            [downloadItem.downloadProgress setUserInfoObject:[remainingTimeDict objectForKey:OSDownloadBytesPerSecondSpeedKey] forKey:NSProgressThroughputKey];
         }
         
         progressObj = [[OSDownloadProgress alloc] initWithDownloadProgress:progress
@@ -491,7 +547,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
                                                           receivedFileSize:downloadItem.receivedFileSize
                                                     estimatedRemainingTime:[remainingTimeDict[OSDownloadRemainingTimeKey] doubleValue]
                                                        bytesPerSecondSpeed:[remainingTimeDict[OSDownloadBytesPerSecondSpeedKey] unsignedIntegerValue]
-                                                            nativeProgress:downloadItem.naviteProgress];
+                                                            nativeProgress:downloadItem.downloadProgress];
     }
     return progressObj;
 }
@@ -643,6 +699,9 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 - (void)dealloc {
     
     [self.backgroundSeesion finishTasksAndInvalidate];
+    [self.downloadTotalProgress removeObserver:self
+                               forKeyPath:NSStringFromSelector(@selector(fractionCompleted))
+                                  context:ProgressObserverContext];
 }
 
 

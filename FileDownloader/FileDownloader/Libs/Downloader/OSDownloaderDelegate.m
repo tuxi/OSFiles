@@ -29,29 +29,10 @@ NSString * const OSFileDownloadTotalProgressCanceldNotification = @"OSFileDownlo
 
 @interface OSDownloaderDelegate ()
 
-@property (nonatomic, strong) NSProgress *progress;
 
 @end
 
 @implementation OSDownloaderDelegate
-
-- (instancetype)init
-{
-    self = [super init];
-    if (self) {
-        // 创建任务进度管理对象 UnitCount是一个基于UI上的完整任务的单元数
-        // 这个方法创建了一个NSProgress实例作为当前实例的子类，以要执行的任务单元总数来初始化
-        self.progress = [NSProgress progressWithTotalUnitCount:0];
-        // 对任务进度对象的完成比例进行监听:监听progress的fractionCompleted的改变,
-        // NSKeyValueObservingOptionInitial观察最初的值（在注册观察服务时会调用一次触发方法）
-        // fractionCompleted的返回值是0到1，显示了任务的整体进度。如果当没有子实例的话，fractionCompleted就是简单的完成任务数除以总得任务数。
-        [self.progress addObserver:self
-                        forKeyPath:NSStringFromSelector(@selector(fractionCompleted))
-                           options:NSKeyValueObservingOptionInitial
-                           context:ProgressObserverContext];
-    }
-    return self;
-}
 
 
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ <OSDownloaderDelegate> ~~~~~~~~~~~~~~~~~~~~~~~
@@ -113,8 +94,6 @@ NSString * const OSFileDownloadTotalProgressCanceldNotification = @"OSFileDownlo
 }
 
 - (void)downloadTaskWillBegin {
-    // 有新的下载任务时重置下载进度
-    [self resetProgressIfNoActiveDownloadsRunning];
     [self toggleNetworkActivityIndicatorVisible:YES];
 }
 
@@ -184,9 +163,6 @@ NSString * const OSFileDownloadTotalProgressCanceldNotification = @"OSFileDownlo
     return isValid;
 }
 
-- (NSProgress *)downloadUsingNaviteProgress {
-    return self.progress;
-}
 
 /// 有一个任务等待下载时调用
 - (void)downloadDidWaitingWithUrlPath:(NSString *)url progress:(OSDownloadProgress *)progress {
@@ -246,59 +222,6 @@ NSString * const OSFileDownloadTotalProgressCanceldNotification = @"OSFileDownlo
     }
 }
 
-////////////////////////////////////////////////////////////////////////
-#pragma mark -
-////////////////////////////////////////////////////////////////////////
-
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
-    
-    if (context == ProgressObserverContext) {
-        // 取出当前的progress
-        NSProgress *progress = object;
-        if ([keyPath isEqualToString:NSStringFromSelector(@selector(fractionCompleted))]) {
-            dispatch_main_async_safe(^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:OSFileDownloadTotalProgressCanceldNotification object:progress];
-            });
-        } else {
-            DLog(@"ERR: Invalid keyPath");
-        }
-    } else {
-        [super observeValueForKeyPath:keyPath
-                             ofObject:object
-                               change:change
-                              context:context];
-    }
-    
-}
-
-/// 如果当前没有正在下载中的就重置进度
-- (void)resetProgressIfNoActiveDownloadsRunning {
-    BOOL hasActiveDownloadsFlag = [[OSDownloaderModule sharedInstance].downloader hasActiveDownloads];
-    if (hasActiveDownloadsFlag == NO) {
-        @try {
-            [self.progress removeObserver:self forKeyPath:NSStringFromSelector(@selector(fractionCompleted))];
-        } @catch (NSException *exception) {
-            DLog(@"Error: Repeated removeObserver(keyPath = fractionCompleted)");
-        } @finally {
-            
-        }
-        
-        self.progress = [NSProgress progressWithTotalUnitCount:0];
-        [self.progress addObserver:self
-                        forKeyPath:NSStringFromSelector(@selector(fractionCompleted))
-                           options:NSKeyValueObservingOptionInitial
-                           context:ProgressObserverContext];
-    }
-}
-
-
-- (void)dealloc {
-    
-    [self.progress removeObserver:self
-                       forKeyPath:NSStringFromSelector(@selector(fractionCompleted))
-                          context:ProgressObserverContext];
-}
 
 
 @end

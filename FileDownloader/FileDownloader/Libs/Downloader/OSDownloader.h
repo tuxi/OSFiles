@@ -75,6 +75,8 @@ FOUNDATION_EXTERN NSString * const OSDownloaderFolderNameKey;
 /// @mark 则从等待的waitingDownloadArray中取出第一个开始下载，添加到activeDownloadsDictionary，并从waitingDownloadArray中移除
 - (void)checkMaxConcurrentDownloadCountThenDownloadWaitingQueueIfExceeded;
 
+/// 如果当前没有正在下载中的就重置总进度
+- (void)resetProgressIfNoActiveDownloadsRunning;
 
 @end
 

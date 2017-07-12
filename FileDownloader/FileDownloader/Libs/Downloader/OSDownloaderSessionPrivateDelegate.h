@@ -14,9 +14,6 @@
 @interface OSDownloaderSessionPrivateDelegate : NSObject  <NSURLSessionDelegate, NSURLSessionDataDelegate, NSURLSessionTaskDelegate, NSURLSessionDownloadDelegate>
 @property (nonatomic, weak) id<OSDownloaderDelegate> downloadDelegate;
 
-/// 创建NSProgress
-- (NSProgress *)progress;
-
 - (instancetype)initWithDownloader:(OSDownloader *)downloader;
 /// 取消下载、下载失败时调用
 - (void)handleDownloadFailureWithError:(NSError *)error

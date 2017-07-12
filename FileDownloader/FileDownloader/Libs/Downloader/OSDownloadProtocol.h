@@ -108,7 +108,7 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 - (void)setBytesPerSecondSpeed:(NSUInteger)bytesPerSecondSpeed;
 
 /// 下载进度
-- (nullable NSProgress *)naviteProgress;
+- (nullable NSProgress *)downloadProgress;
 
 /// 下载的url
 - (NSString *)urlPath;
@@ -202,17 +202,16 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 /// @param aCompletionHandler 此block用于配置调用完成回调
 - (void)authenticationChallenge:(NSURLAuthenticationChallenge *)aChallenge
                             url:(NSString *)url
-              completionHandler:(void (^)(NSURLCredential * aCredential, NSURLSessionAuthChallengeDisposition disposition))aCompletionHandler;
-
-/// 提供一个下载进度的对象，以记录下载进度
-/// @return 下载进度的对象
-- (NSProgress *)downloadUsingNaviteProgress;
+              completionHandler:(void (^)(NSURLCredential * aCredential,
+                                          NSURLSessionAuthChallengeDisposition disposition))aCompletionHandler;
 
 /// 有一个任务等待下载时调用
-- (void)downloadDidWaitingWithURLPath:(NSString *)url progress:(OSDownloadProgress *)progress;
+- (void)downloadDidWaitingWithURLPath:(NSString *)url
+                             progress:(OSDownloadProgress *)progress;
 
 /// 从等待队列中开始下载一个任务
-- (void)downloadStartFromWaitingQueueWithURLpath:(NSString *)url progress:(OSDownloadProgress *)progress;
+- (void)downloadStartFromWaitingQueueWithURLpath:(NSString *)url
+                                        progress:(OSDownloadProgress *)progress;
 @end
 
 

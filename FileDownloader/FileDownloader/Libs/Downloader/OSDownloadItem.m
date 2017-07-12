@@ -21,7 +21,7 @@
 /** 每秒下载的字节数 */
 @property (nonatomic, assign) NSUInteger bytesPerSecondSpeed;
 /** 下载进度 */
-@property (nonatomic, strong) NSProgress *naviteProgress;
+@property (nonatomic, strong) NSProgress *downloadProgress;
 /** 下载的url */
 @property (nonatomic, copy) NSString *urlPath;
 /** 下载会话对象 NSURLSessionDownloadTask */
@@ -63,14 +63,14 @@
         self.resumedFileSizeInBytes = 0;
         self.lastHttpStatusCode = 0;
         
-        self.naviteProgress = [[NSProgress alloc] initWithParent:[NSProgress currentProgress] userInfo:nil];
-        self.naviteProgress.kind = NSProgressKindFile;
-        [self.naviteProgress setUserInfoObject:NSProgressFileOperationKindKey forKey:NSProgressFileOperationKindDownloading];
-        [self.naviteProgress setUserInfoObject:urlPath forKey:@"urlPath"];
-        self.naviteProgress.cancellable = YES;
-        self.naviteProgress.pausable = YES;
-        self.naviteProgress.totalUnitCount = NSURLSessionTransferSizeUnknown;
-        self.naviteProgress.completedUnitCount = 0;
+        self.downloadProgress = [[NSProgress alloc] initWithParent:[NSProgress currentProgress] userInfo:nil];
+        self.downloadProgress.kind = NSProgressKindFile;
+        [self.downloadProgress setUserInfoObject:NSProgressFileOperationKindKey forKey:NSProgressFileOperationKindDownloading];
+        [self.downloadProgress setUserInfoObject:urlPath forKey:@"urlPath"];
+        self.downloadProgress.cancellable = YES;
+        self.downloadProgress.pausable = YES;
+        self.downloadProgress.totalUnitCount = NSURLSessionTransferSizeUnknown;
+        self.downloadProgress.completedUnitCount = 0;
     }
     return self;
 }
@@ -85,7 +85,7 @@
     
     _expectedFileTotalSize = expectedFileTotalSize;
     if (expectedFileTotalSize > 0) {
-        self.naviteProgress.totalUnitCount = expectedFileTotalSize;
+        self.downloadProgress.totalUnitCount = expectedFileTotalSize;
     }
 }
 
@@ -94,7 +94,7 @@
     _receivedFileSize = receivedFileSize;
     if (receivedFileSize > 0) {
         if (self.expectedFileTotalSize > 0) {
-            self.naviteProgress.completedUnitCount = receivedFileSize;
+            self.downloadProgress.completedUnitCount = receivedFileSize;
         }
     }
 }
@@ -113,7 +113,7 @@
     [dict setObject:@(self.expectedFileTotalSize) forKey:@"expectedFileTotalSize"];
     [dict setObject:@(self.bytesPerSecondSpeed) forKey:@"bytesPerSecondSpeed"];
     [dict setObject:self.urlPath forKey:@"urlPath"];
-    [dict setObject:self.naviteProgress forKey:@"naviteProgress"];
+    [dict setObject:self.downloadProgress forKey:@"naviteProgress"];
     if (self.sessionDownloadTask) {
         [dict setObject:@(YES) forKey:@"hasSessionDownloadTask"];
     }

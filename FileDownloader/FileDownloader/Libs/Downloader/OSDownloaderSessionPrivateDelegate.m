@@ -93,6 +93,8 @@
 
 /// 即将开始下载时调用
 - (void)_anDownloadTaskWillBegin {
+    // 有新的下载任务时重置下载进度
+    [self.downloader resetProgressIfNoActiveDownloadsRunning];
     if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadTaskWillBegin)]) {
         [self.downloadDelegate downloadTaskWillBegin];
     }
@@ -114,7 +116,7 @@
 - (void)handleDownloadSuccessWithDownloadItem:(OSDownloadItem *)downloadItem
                                taskIdentifier:(NSUInteger)taskIdentifier {
     
-    downloadItem.naviteProgress.completedUnitCount = downloadItem.naviteProgress.totalUnitCount;
+    downloadItem.downloadProgress.completedUnitCount = downloadItem.downloadProgress.totalUnitCount;
     [self.downloader.activeDownloadsDictionary removeObjectForKey:@(taskIdentifier)];
     [self _anDownloadTaskDidEnd];
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -457,19 +459,6 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
         [self.downloadDelegate downloadFailureWithDownloadItem:item resumeData:nil error:cancelError];
     }
 
-}
-
-- (NSProgress *)progress {
-    return [self _createNativeProgress];
-}
-
-/// 创建NSProgress
-- (NSProgress *)_createNativeProgress {
-    NSProgress *progress = nil;
-    if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadUsingNaviteProgress)]) {
-        progress = [self.downloadDelegate downloadUsingNaviteProgress];
-    }
-    return progress;
 }
 
 

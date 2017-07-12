@@ -9,22 +9,6 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "FileDownloader/Libs/Downloader/OSDownloader.m"
-            timestampString = "521385201.38724"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "141"
-            endingLineNumber = "141"
-            landmarkName = "-downloadWithURL:resumeData:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "FileDownloader/Moudle/Main/AppDelegate.m"
             timestampString = "521294762.155375"
             startingColumnNumber = "9223372036854775807"
@@ -42,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "FileDownloader/Libs/Downloader/OSDownloaderSessionPrivateDelegate.m"
-            timestampString = "521294898.805601"
+            timestampString = "521566045.379536"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "314"
-            endingLineNumber = "314"
+            startingLineNumber = "316"
+            endingLineNumber = "316"
             landmarkName = "-URLSessionDidFinishEventsForBackgroundURLSession:"
             landmarkType = "7">
          </BreakpointContent>
