@@ -60,7 +60,9 @@ static void * ProgressObserverContext = &ProgressObserverContext;
     self = [super init];
     if (self) {
         _sessionDelegate = [[OSDownloaderSessionPrivateDelegate alloc] initWithDownloader:self];
-        _backgroundSeesion = [NSURLSession sessionWithConfiguration:[self createBackgroundSessionConfig] delegate:self delegateQueue:self.backgroundSeesionQueue];
+        _backgroundSeesion = [NSURLSession sessionWithConfiguration:[self createBackgroundSessionConfig]
+                                                           delegate:self
+                                                      delegateQueue:self.backgroundSeesionQueue];
         _backgroundSeesion.sessionDescription = @"OSDownload_BackgroundSession";
         _downloadTotalProgress = [NSProgress progressWithTotalUnitCount:0];;
         [_downloadTotalProgress addObserver:self
@@ -159,13 +161,10 @@ static void * ProgressObserverContext = &ProgressObserverContext;
     if (urlPath) {
         NSProgress *progress = self.downloadTotalProgress;
         progress.totalUnitCount++;
-        // UnitCount是一个基于UI上的完整任务的单元数
-        // 将此rootProgress注册为当前线程任务的根进度管理对象，向下分支出一个子任务 比如子任务进度总数为10个单元 即当子任务完成时 父progerss对象进度走1个单元
         [progress becomeCurrentWithPendingUnitCount:1];
         
         downloadItem = [[OSDownloadItem alloc] initWithURL:urlPath
                                        sessionDownloadTask:downloadTask];
-        // 注意: 必须和becomeCurrentWithPendingUnitCount成对使用
         [progress resignCurrent];
         
         [self _downloadTaskCallBack:downloadTask downloadItem:downloadItem];

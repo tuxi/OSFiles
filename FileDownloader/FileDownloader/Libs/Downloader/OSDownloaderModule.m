@@ -95,6 +95,11 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
             [self resume:obj.urlPath];
         }];
     } else {
+        [self.downloader.downloadTasks enumerateObjectsUsingBlock:^(NSURLSessionDownloadTask * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+           [obj cancelByProducingResumeData:^(NSData * _Nullable resumeData) {
+               
+           }];
+        }];
         [needDownloads enumerateObjectsUsingBlock:^(id<OSDownloadFileItemProtocol>  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             obj.status = OSFileDownloadStatusPaused;
         }];
