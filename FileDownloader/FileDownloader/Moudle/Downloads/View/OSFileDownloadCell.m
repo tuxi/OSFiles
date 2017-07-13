@@ -97,8 +97,11 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
     [self.speedLabel setText:@"0.0KB/s"];
     [self.remainTimeLabel setText:@"0s"];
     
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
     [self _makeConstraints];
-   
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -107,12 +110,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
 
 - (void)xy_configCellByModel:(id)model indexPath:(NSIndexPath *)indexPath {
     self.downloadItem = model;
-    typeof(self) weakSelf = self;
-    self.downloadItem.downloadStatusBlock = ^(OSFileDownloadStatus state) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [weakSelf setDownloadViewByStatus:state];
-        });
-    };
+    
 }
 
 
@@ -123,52 +121,27 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
 - (void)setDownloadItem:(OSFileItem *)downloadItem {
     _downloadItem = downloadItem;
     
-    [self setDownloadViewByStatus:downloadItem.status];
     
     [self setProgress];
     
     [self.fileNameLabel setText:self.downloadItem.fileName];
+    [self setDownloadViewByStatus:downloadItem.status];
     
- 
 }
 
 - (void)setDownloadViewByStatus:(OSFileDownloadStatus)aStatus {
     
-    self.downloadStatusLabel.hidden = NO;
-    self.speedLabel.hidden = NO;
-    self.remainTimeLabel.hidden = NO;
-    self.cycleView.hidden = NO;
-    self.fileSizeLabel.hidden = YES;
-    self.iconView.hidden = YES;
-    self.iconView.image = [UIImage imageNamed:@"TabBrowser"];
-    
-    NSString *receivedFileSize = [NSString transformedFileSizeValue:@(self.downloadItem.progressObj.receivedFileSize)];
-    NSString *expectedFileTotalSize = [NSString transformedFileSizeValue:@(self.downloadItem.progressObj.expectedFileTotalSize)];
-    
-    NSString *downloadFileSizeStr = [NSString stringWithFormat:@"%@ of %@", receivedFileSize, expectedFileTotalSize];
-    [self.downloadStatusLabel setText:downloadFileSizeStr];
-    
-    
-    [self.remainTimeLabel setText:[NSString stringWithRemainingTime:self.downloadItem.progressObj.estimatedRemainingTime]];
-    [self.speedLabel setText:[NSString stringWithFormat:@"%@/s", [NSString transformedFileSizeValue:@(self.downloadItem.progressObj.bytesPerSecondSpeed)]]];
-    
-    self.cycleView.circularState = FFCircularStateIcon;
-    
-    NSData *data = [NSData dataWithContentsOfURL:self.downloadItem.localFileURL];
-    if (data) {
-        
-    }
     
     switch (aStatus) {
             
         case OSFileDownloadStatusNotStarted:
             self.cycleView.circularState = FFCircularStateIcon;
-
+            
             break;
             
         case OSFileDownloadStatusDownloading:
         {
-           self.cycleView.circularState = FFCircularStateStopProgress;
+            self.cycleView.circularState = FFCircularStateStopProgress;
         }
             break;
         case OSFileDownloadStatusPaused:
@@ -195,7 +168,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
             break;
             
         case OSFileDownloadStatusCancelled:
-         
+            
             break;
             
         case OSFileDownloadStatusFailure:
@@ -209,10 +182,30 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
             break;
     }
     
-    [self _makeConstraints];
 }
 
 - (void)setProgress {
+    
+    self.downloadStatusLabel.hidden = NO;
+    self.speedLabel.hidden = NO;
+    self.remainTimeLabel.hidden = NO;
+    self.cycleView.hidden = NO;
+    self.fileSizeLabel.hidden = YES;
+    self.iconView.hidden = YES;
+    self.iconView.image = [UIImage imageNamed:@"TabBrowser"];
+    
+    NSString *receivedFileSize = [NSString transformedFileSizeValue:@(self.downloadItem.progressObj.receivedFileSize)];
+    NSString *expectedFileTotalSize = [NSString transformedFileSizeValue:@(self.downloadItem.progressObj.expectedFileTotalSize)];
+    
+    NSString *downloadFileSizeStr = [NSString stringWithFormat:@"%@ of %@", receivedFileSize, expectedFileTotalSize];
+    [self.downloadStatusLabel setText:downloadFileSizeStr];
+    
+    
+    [self.remainTimeLabel setText:[NSString stringWithRemainingTime:self.downloadItem.progressObj.estimatedRemainingTime]];
+    [self.speedLabel setText:[NSString stringWithFormat:@"%@/s", [NSString transformedFileSizeValue:@(self.downloadItem.progressObj.bytesPerSecondSpeed)]]];
+    
+    self.cycleView.circularState = FFCircularStateIcon;
+    
     
     OSDownloadProgress *progress = self.downloadItem.progressObj;
     if (progress) {
@@ -228,7 +221,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
             self.cycleView.progress = 0.0;
         }
     }
-        
+    
 }
 
 ////////////////////////////////////////////////////////////////////////
