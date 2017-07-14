@@ -19,14 +19,11 @@ NS_ASSUME_NONNULL_BEGIN
 #endif
 
 
-typedef void (^OSDownloaderResumeDataHandler)(NSData * aResumeData);
-
 FOUNDATION_EXTERN NSString * const OSDownloaderFolderNameKey;
 
 @interface OSDownloader : NSObject
 
 @property (nonatomic, assign) NSInteger maxConcurrentDownloads;
-@property (nonatomic, strong) NSArray<NSURLSessionDownloadTask *> *downloadTasks;
 /// 完成一个后台任务时回调
 @property (nonatomic, copy) void (^backgroundSessionCompletionHandler)();
 /// 下载的任务(包括正在下载的、暂停的) key 为 taskIdentifier， value 为 OSDownloadItem, 下载完成后会从此集合中移除
@@ -35,16 +32,12 @@ FOUNDATION_EXTERN NSString * const OSDownloaderFolderNameKey;
 @property (nonatomic, strong) NSMutableArray<NSDictionary <NSString *, NSObject *> *> *waitingDownloadArray;
 @property (nonatomic, weak) id<OSDownloaderDelegate> downloadDelegate;
 
-- (id<OSDownloadItemProtocol>)getDownloadItemByDownloadTask:(NSURLSessionDownloadTask *)downloadTask;
-
+- (id<OSDownloadItemProtocol>)getDownloadItemByDownloadTask:(NSURLSessionTask *)downloadTask;
+- (id<OSDownloadItemProtocol>)getDownloadItemByURL:(nonnull NSString *)urlPath;
+- (long long)getCacheFileSizeWithPath:(NSString *)url;
 /// 执行开始下载任务
 /// @param urlPath 下载任务的remote url path
 - (void)downloadWithURL:(NSString *)urlPath;
-
-/// 执行开始下载任务
-/// @param urlPath 下载任务的remote url path
-/// @param resumeData 之前下载的数据
-- (void)downloadWithURL:(NSString *)urlPath resumeData:(nullable NSData *)resumeData;
 
 /// 取消下载, 取消下载后任务不可恢复
 /// @param urlPath 下载任务
@@ -62,6 +55,9 @@ FOUNDATION_EXTERN NSString * const OSDownloaderFolderNameKey;
 /// @param urlPath 下载任务的url
 - (BOOL)isWaiting:(NSString *)urlPath;
 
+/// 判断该文件是否下载完成
+- (BOOL)isCompletionByRemoteUrlPath:(NSString *)url;
+
 /// 当前是否有任务下载
 - (BOOL)hasActiveDownloads;
 
@@ -75,8 +71,9 @@ FOUNDATION_EXTERN NSString * const OSDownloaderFolderNameKey;
 /// @mark 则从等待的waitingDownloadArray中取出第一个开始下载，添加到activeDownloadsDictionary，并从waitingDownloadArray中移除
 - (void)checkMaxConcurrentDownloadCountThenDownloadWaitingQueueIfExceeded;
 
-/// 如果当前没有正在下载中的就重置总进度
+/// 如果当前没有正在下载中的就重置进度
 - (void)resetProgressIfNoActiveDownloadsRunning;
+
 
 @end
 

@@ -70,22 +70,10 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 
 @end
 
-/// 对下载进行操作指定的协议
-@protocol OSDownloadOperationProtocol <NSObject>
-
-- (void)start:(NSString *)url;
-- (void)cancel:(NSString *)url;
-- (void)resume:(NSString *)url;
-- (void)pause:(NSString *)url;
-
-- (NSArray<id<OSDownloadFileItemProtocol>> *)getAllSuccessItems;
-- (NSArray<id<OSDownloadFileItemProtocol>> *)getActiveDownloadItems;
-/// 所有展示中的文件，还未开始下载时存放的，当文件取消下载时也会存放到此数组
-- (NSMutableArray<id<OSDownloadFileItemProtocol>> * _Nonnull)displayItems;
-
-@end
-
 @protocol OSDownloadItemProtocol <NSObject>
+
+- (nullable NSOutputStream *)outputStream;
+- (void)setOutputStream:(nullable NSOutputStream *)outputStream;
 
 /// 开始下载时的时间
 - (NSDate *)downloadStartDate;
@@ -108,14 +96,14 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 - (void)setBytesPerSecondSpeed:(NSUInteger)bytesPerSecondSpeed;
 
 /// 下载进度
-- (nullable NSProgress *)downloadProgress;
+- (nullable NSProgress *)naviteProgress;
 
 /// 下载的url
 - (NSString *)urlPath;
 
 /// 下载会话对象 NSURLSessionDownloadTask
-- (NSURLSessionDownloadTask *)sessionDownloadTask;
-- (void)setSessionDownloadTask:(NSURLSessionDownloadTask *)sessionDownloadTask;
+- (NSURLSessionDataTask *)sessionDownloadTask;
+- (void)setSessionDownloadTask:(NSURLSessionDataTask *)sessionDownloadTask;
 
 /// 下载时发送的错误信息栈 错误信息栈(最新的错误信息初入在第一位)
 - (NSArray<NSString *> *)errorMessagesStack;
@@ -154,11 +142,11 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 
 /// 一个任务即将开始下载时调用，当需要显示网络活动指示器的时候调用
 /// 此时应该在此回调中使用 UIApplication's setNetworkActivityIndicatorVisible: 去设置状态栏网络活动的可见性
-- (void)downloadTaskWillBegin;
+- (void)downloadTaskWillBeginWithDownloadItem:(id<OSDownloadItemProtocol>)downloadItem;
 
 /// 一个任务下载结束时调用，当需要隐藏网络活动指示器即将结束的时候调用,不管是否成功都会调用
 /// 此时应该在此回调中使用 UIApplication's setNetworkActivityIndicatorVisible: 去设置状态栏网络活动的可见性
-- (void)downloadTaskDidEnd;
+- (void)downloadTaskDidEndWithDownloadItem:(id<OSDownloadItemProtocol>)downloadItem;
 
 
 /// 下载进度改变的时候调用
@@ -168,8 +156,7 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 
 /// 下载暂停时调用
 /// @param url 当前下载任务的url
-/// @param aResumeData 当前暂停前已下载的数据，当继续下载时可以复用此数据继续之前进度
-- (void)downloadPausedWithURL:(NSString *)url resumeData:(NSData *)aResumeData;
+- (void)downloadPausedWithURL:(NSString *)url;
 
 /// 恢复下载时调用
 /// @param url 当前下载任务的url
@@ -202,16 +189,14 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 /// @param aCompletionHandler 此block用于配置调用完成回调
 - (void)authenticationChallenge:(NSURLAuthenticationChallenge *)aChallenge
                             url:(NSString *)url
-              completionHandler:(void (^)(NSURLCredential * aCredential,
-                                          NSURLSessionAuthChallengeDisposition disposition))aCompletionHandler;
+              completionHandler:(void (^)(NSURLCredential * aCredential, NSURLSessionAuthChallengeDisposition disposition))aCompletionHandler;
+
 
 /// 有一个任务等待下载时调用
-- (void)downloadDidWaitingWithURLPath:(NSString *)url
-                             progress:(OSDownloadProgress *)progress;
+- (void)downloadDidWaitingWithURLPath:(NSString *)url progress:(OSDownloadProgress *)progress;
 
 /// 从等待队列中开始下载一个任务
-- (void)downloadStartFromWaitingQueueWithURLpath:(NSString *)url
-                                        progress:(OSDownloadProgress *)progress;
+- (void)downloadStartFromWaitingQueueWithURLpath:(NSString *)url progress:(OSDownloadProgress *)progress;
 @end
 
 

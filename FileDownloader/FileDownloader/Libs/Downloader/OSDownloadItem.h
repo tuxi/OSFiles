@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 
 /// 初始化OSDownloadItem，
-- (instancetype)initWithURL:(NSString *)urlPath sessionDownloadTask:(nullable NSURLSessionDownloadTask *)sessionDownloadTask NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithURL:(NSString *)urlPath sessionDownloadTask:(nullable NSURLSessionTask *)sessionDownloadTask NS_DESIGNATED_INITIALIZER;
 
 - (instancetype)init NS_UNAVAILABLE;
 + (instancetype)new NS_UNAVAILABLE;

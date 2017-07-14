@@ -19,8 +19,6 @@ dispatch_async(dispatch_get_main_queue(), block);\
 }
 
 
-static void *ProgressObserverContext = &ProgressObserverContext;
-
 NSString * const OSFileDownloadProgressChangeNotification = @"OSFileDownloadProgressChangeNotification";
 NSString * const OSFileDownloadSussessNotification = @"OSFileDownloadSussessNotification";
 NSString * const OSFileDownloadFailureNotification = @"OSFileDownloadFailureNotification";
@@ -29,10 +27,10 @@ NSString * const OSFileDownloadTotalProgressCanceldNotification = @"OSFileDownlo
 
 @interface OSDownloaderDelegate ()
 
-
 @end
 
 @implementation OSDownloaderDelegate
+
 
 
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ <OSDownloaderDelegate> ~~~~~~~~~~~~~~~~~~~~~~~
@@ -69,6 +67,7 @@ NSString * const OSFileDownloadTotalProgressCanceldNotification = @"OSFileDownlo
         fileItem.resumeData = resumeData;
         fileItem.downloadError = error;
         fileItem.downloadErrorMessagesStack = downloadItem.errorMessagesStack;
+        fileItem.localFileURL = downloadItem.finalLocalFileURL;
         
         // 更新此下载失败的item的状态
         if (fileItem.status != OSFileDownloadStatusPaused) {
@@ -93,11 +92,21 @@ NSString * const OSFileDownloadTotalProgressCanceldNotification = @"OSFileDownlo
     })
 }
 
-- (void)downloadTaskWillBegin {
+- (void)downloadTaskWillBeginWithDownloadItem:(id<OSDownloadItemProtocol>)downloadItem {
     [self toggleNetworkActivityIndicatorVisible:YES];
+    NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:downloadItem.urlPath];
+    id<OSDownloadFileItemProtocol> fileItem = nil;
+    if (foundItemIdx != NSNotFound) {
+        fileItem = [[OSDownloaderModule sharedInstance].downloadItems objectAtIndex:foundItemIdx];
+        fileItem.status = OSFileDownloadStatusDownloading;
+        if (!fileItem.localFileURL) {
+            fileItem.localFileURL = downloadItem.finalLocalFileURL;
+        }
+    }
+    [[OSDownloaderModule sharedInstance] storedDownloadItems];
 }
 
-- (void)downloadTaskDidEnd {
+- (void)downloadTaskDidEndWithDownloadItem:(id<OSDownloadItemProtocol>)downloadItem {
     [self toggleNetworkActivityIndicatorVisible:NO];
 }
 
@@ -118,10 +127,10 @@ NSString * const OSFileDownloadTotalProgressCanceldNotification = @"OSFileDownlo
     dispatch_main_async_safe(^{
         [[NSNotificationCenter defaultCenter] postNotificationName:OSFileDownloadProgressChangeNotification object:downloadItem];
     })
-
+    
 }
 
-- (void)downloadPausedWithURL:(NSString *)url resumeData:(NSData *)aResumeData {
+- (void)downloadPausedWithURL:(NSString *)url {
     
     NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:url];
     
@@ -130,7 +139,6 @@ NSString * const OSFileDownloadTotalProgressCanceldNotification = @"OSFileDownlo
         
         id<OSDownloadFileItemProtocol> downloadItem = [[OSDownloaderModule sharedInstance].downloadItems objectAtIndex:foundItemIdx];
         downloadItem.status = OSFileDownloadStatusPaused;
-        downloadItem.resumeData = aResumeData;
         [[OSDownloaderModule sharedInstance] storedDownloadItems];
     } else {
         DLog(@"Error: Paused download item not found (id: %@)", url);
@@ -221,6 +229,7 @@ NSString * const OSFileDownloadTotalProgressCanceldNotification = @"OSFileDownlo
         [[UIApplication sharedApplication] releaseNetworkActivityIndicator];
     }
 }
+
 
 
 

@@ -21,11 +21,11 @@
 /** 每秒下载的字节数 */
 @property (nonatomic, assign) NSUInteger bytesPerSecondSpeed;
 /** 下载进度 */
-@property (nonatomic, strong) NSProgress *downloadProgress;
+@property (nonatomic, strong) NSProgress *naviteProgress;
 /** 下载的url */
 @property (nonatomic, copy) NSString *urlPath;
 /** 下载会话对象 NSURLSessionDownloadTask */
-@property (nonatomic, strong) NSURLSessionDownloadTask *sessionDownloadTask;
+@property (nonatomic, strong) NSURLSessionTask *sessionDownloadTask;
 /** 下载时发送的错误信息栈 */
 @property (nonatomic, strong) NSArray<NSString *> *errorMessagesStack;
 /** 最后的HTTP状态码 */
@@ -34,6 +34,8 @@
 @property (nonatomic, strong) NSURL *finalLocalFileURL;
 /** 文件的类型 */
 @property (nonatomic, copy) NSString *MIMEType;
+/** 流 */
+@property (nonatomic, strong) NSOutputStream *outputStream;
 
 @end
 
@@ -53,7 +55,7 @@
     @throw nil;
 }
 
-- (instancetype)initWithURL:(NSString *)urlPath sessionDownloadTask:(NSURLSessionDownloadTask *)sessionDownloadTask {
+- (instancetype)initWithURL:(NSString *)urlPath sessionDownloadTask:(NSURLSessionTask *)sessionDownloadTask {
     if (self = [super init]) {
         self.urlPath = urlPath;
         self.sessionDownloadTask = sessionDownloadTask;
@@ -63,14 +65,14 @@
         self.resumedFileSizeInBytes = 0;
         self.lastHttpStatusCode = 0;
         
-        self.downloadProgress = [[NSProgress alloc] initWithParent:[NSProgress currentProgress] userInfo:nil];
-        self.downloadProgress.kind = NSProgressKindFile;
-        [self.downloadProgress setUserInfoObject:NSProgressFileOperationKindKey forKey:NSProgressFileOperationKindDownloading];
-        [self.downloadProgress setUserInfoObject:urlPath forKey:@"urlPath"];
-        self.downloadProgress.cancellable = YES;
-        self.downloadProgress.pausable = YES;
-        self.downloadProgress.totalUnitCount = NSURLSessionTransferSizeUnknown;
-        self.downloadProgress.completedUnitCount = 0;
+        self.naviteProgress = [[NSProgress alloc] initWithParent:[NSProgress currentProgress] userInfo:nil];
+        self.naviteProgress.kind = NSProgressKindFile;
+        [self.naviteProgress setUserInfoObject:NSProgressFileOperationKindKey forKey:NSProgressFileOperationKindDownloading];
+        [self.naviteProgress setUserInfoObject:urlPath forKey:@"urlPath"];
+        self.naviteProgress.cancellable = YES;
+        self.naviteProgress.pausable = YES;
+        self.naviteProgress.totalUnitCount = NSURLSessionTransferSizeUnknown;
+        self.naviteProgress.completedUnitCount = 0;
     }
     return self;
 }
@@ -85,7 +87,7 @@
     
     _expectedFileTotalSize = expectedFileTotalSize;
     if (expectedFileTotalSize > 0) {
-        self.downloadProgress.totalUnitCount = expectedFileTotalSize;
+        self.naviteProgress.totalUnitCount = expectedFileTotalSize;
     }
 }
 
@@ -94,7 +96,7 @@
     _receivedFileSize = receivedFileSize;
     if (receivedFileSize > 0) {
         if (self.expectedFileTotalSize > 0) {
-            self.downloadProgress.completedUnitCount = receivedFileSize;
+            self.naviteProgress.completedUnitCount = receivedFileSize;
         }
     }
 }
@@ -113,7 +115,7 @@
     [dict setObject:@(self.expectedFileTotalSize) forKey:@"expectedFileTotalSize"];
     [dict setObject:@(self.bytesPerSecondSpeed) forKey:@"bytesPerSecondSpeed"];
     [dict setObject:self.urlPath forKey:@"urlPath"];
-    [dict setObject:self.downloadProgress forKey:@"naviteProgress"];
+    [dict setObject:self.naviteProgress forKey:@"naviteProgress"];
     if (self.sessionDownloadTask) {
         [dict setObject:@(YES) forKey:@"hasSessionDownloadTask"];
     }

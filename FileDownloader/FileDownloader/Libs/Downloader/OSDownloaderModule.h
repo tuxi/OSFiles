@@ -22,7 +22,7 @@
 
 @class OSFileItem;
 
-@interface OSDownloaderModule : NSObject <OSDownloadOperationProtocol>
+@interface OSDownloaderModule : NSObject
 
 @property (nonatomic, class) OSDownloaderModule *sharedInstance;
 
@@ -40,4 +40,14 @@
 - (void)storedDownloadItems;
 /// 从本地获取所有的downloadItem
 - (NSMutableArray<id<OSDownloadFileItemProtocol>> *)restoredDownloadItems;
+
+- (void)start:(NSString *)url;
+- (void)cancel:(NSString *)url;
+- (void)resume:(NSString *)url;
+- (void)pause:(NSString *)url;
+
+- (NSArray<id<OSDownloadFileItemProtocol>> *)getAllSuccessItems;
+- (NSArray<id<OSDownloadFileItemProtocol>> *)getActiveDownloadItems;
+/// 所有展示中的文件，还未开始下载时存放的，当文件取消下载时也会存放到此数组
+- (NSMutableArray<id<OSDownloadFileItemProtocol>> *)displayItems;
 @end
