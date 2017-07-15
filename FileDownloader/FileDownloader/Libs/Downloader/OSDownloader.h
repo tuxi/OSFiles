@@ -32,7 +32,7 @@ FOUNDATION_EXTERN NSString * const OSDownloaderFolderNameKey;
 @property (nonatomic, strong) NSMutableArray<NSDictionary <NSString *, NSObject *> *> *waitingDownloadArray;
 @property (nonatomic, weak) id<OSDownloaderDelegate> downloadDelegate;
 
-- (id<OSDownloadItemProtocol>)getDownloadItemByDownloadTask:(NSURLSessionTask *)downloadTask;
+- (id<OSDownloadItemProtocol>)getDownloadItemByTask:(NSURLSessionDataTask *)task;
 - (id<OSDownloadItemProtocol>)getDownloadItemByURL:(nonnull NSString *)urlPath;
 - (long long)getCacheFileSizeWithPath:(NSString *)url;
 /// 执行开始下载任务

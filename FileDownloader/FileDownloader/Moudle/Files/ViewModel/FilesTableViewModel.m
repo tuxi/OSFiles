@@ -86,7 +86,7 @@ static NSString * const FilesViewControllerViewCellID = @"FilesViewController";
     // _MIMEType	NSTaggedPointerString *	@"video/mp4"	0xa2304a003f0625c9
     if ([item.MIMEType isEqualToString:@"video/mp4"]) {
         XYCutVideoController *vc = [XYCutVideoController new];
-        vc.videoURL = item.localFileURL;
+        vc.videoURL = item.finalLocalFileURL;
         [[self.tableView visibleViewController].navigationController pushViewController:vc animated:YES];
     }
     
@@ -111,7 +111,7 @@ static NSString * const FilesViewControllerViewCellID = @"FilesViewController";
     OSFileItem *item = (OSFileItem *)self.dataSource[indexPath.row];
     
     if ([item.MIMEType isEqualToString:@"image/jpeg"] || [item.MIMEType isEqualToString:@"image/png"]) {
-        [[XYImageViewer prepareImages:@[item.localFileURL.path] pageTextList:nil endView:^UIView *(NSIndexPath *indexPath) {
+        [[XYImageViewer prepareImages:@[item.finalLocalFileURL.path] pageTextList:nil endView:^UIView *(NSIndexPath *indexPath) {
             return [self.tableView cellForRowAtIndexPath:indexPath];
         }] show:cell currentIndex:0];
         

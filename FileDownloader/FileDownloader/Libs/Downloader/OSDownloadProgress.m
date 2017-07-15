@@ -8,27 +8,18 @@
 
 #import "OSDownloadProgress.h"
 
-static NSString * const OSProgressKey = @"progress";
-static NSString * const OSExpectedFileTotalSizeKey = @"expectedFileTotalSize";
-static NSString * const OSReceivedFileSizeKey = @"receivedFileSize";
-static NSString * const OSeEtimatedRemainingTimeKet = @"estimatedRemainingTime";
-static NSString * const OSBytesPerSecondSpeedKey = @"bytesPerSecondSpeed";
-static NSString * const OSEstimatedRemainingTimeKey = @"estimatedRemainingTime";
-static NSString * const OSLastLocalizedDescriptionkey = @"lastLocalizedDescription";
-static NSString * const OSLastLocalizedAdditionalDescription = @"lastLocalizedAdditionalDescription";
+// 下载速度key
+static NSString * const OSDownloadBytesPerSecondSpeedKey = @"bytesPerSecondSpeed";
+// 剩余时间key
+static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
 
 @interface OSDownloadProgress () <NSCoding>
-
-@property (nonatomic, assign) float progress;
-@property (nonatomic, assign) int64_t expectedFileTotalSize;
-@property (nonatomic, assign) int64_t receivedFileSize;
-@property (nonatomic, assign) NSTimeInterval estimatedRemainingTime;
-@property (nonatomic, assign) NSUInteger bytesPerSecondSpeed;
-@property (nonatomic, strong) NSProgress *nativeProgress;
 
 @end
 
 @implementation OSDownloadProgress
+
+@synthesize progress = _progress;
 
 ////////////////////////////////////////////////////////////////////////
 #pragma mark - initialize
@@ -63,21 +54,89 @@ static NSString * const OSLastLocalizedAdditionalDescription = @"lastLocalizedAd
     return self;
 }
 
+- (void)setExpectedFileTotalSize:(int64_t)expectedFileTotalSize {
+    
+    _expectedFileTotalSize = expectedFileTotalSize;
+    if (expectedFileTotalSize > 0) {
+        self.nativeProgress.totalUnitCount = expectedFileTotalSize;
+    }
+}
+
+- (void)setReceivedFileSize:(int64_t)receivedFileSize {
+    
+    _receivedFileSize = receivedFileSize;
+    if (receivedFileSize > 0) {
+        if (self.expectedFileTotalSize > 0) {
+            self.nativeProgress.completedUnitCount = receivedFileSize;
+        }
+        float progress = 0.0;
+        if (self.expectedFileTotalSize > 0) {
+            progress = (float)self.receivedFileSize / (float)self.expectedFileTotalSize;
+        }
+        
+        NSDictionary *remainingTimeDict = [self remainingTimeAndBytesPerSecond];
+        if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1) {
+            [self.nativeProgress setUserInfoObject:[remainingTimeDict objectForKey:OSDownloadRemainingTimeKey] forKey:NSProgressEstimatedTimeRemainingKey];
+            [self.nativeProgress setUserInfoObject:[remainingTimeDict objectForKey:OSDownloadBytesPerSecondSpeedKey] forKey:NSProgressThroughputKey];
+        }
+        self.estimatedRemainingTime = [remainingTimeDict[OSDownloadRemainingTimeKey] doubleValue];
+        self.bytesPerSecondSpeed = [remainingTimeDict[OSDownloadBytesPerSecondSpeedKey] unsignedIntegerValue];
+        self.progress = progress;
+        
+    }
+}
+
+- (void)setProgress:(float)progress {
+    [self willChangeValueForKey:@"progress"];
+    _progress = progress;
+    [self didChangeValueForKey:@"progress"];
+    
+}
+
+/// 计算当前下载的剩余时间和每秒下载的字节数
+- (NSDictionary *)remainingTimeAndBytesPerSecond {
+    // 下载剩余时间
+    NSTimeInterval remainingTimeInterval = 0.0;
+    // 当前下载的速度
+    NSUInteger bytesPerSecondsSpeed = 0;
+    if ((self.receivedFileSize > 0) && (self.expectedFileTotalSize > 0)) {
+        float aSmoothingFactor = 0.8; // range 0.0 ... 1.0 (determines the weight of the current speed calculation in relation to the stored past speed value)
+        NSTimeInterval downloadDurationUntilNow = [[NSDate date] timeIntervalSinceDate:self.downloadStartDate];
+        int64_t aDownloadedFileSize = self.receivedFileSize - self.resumedFileSizeInBytes;
+        float aCurrentBytesPerSecondSpeed = (downloadDurationUntilNow > 0.0) ? (aDownloadedFileSize / downloadDurationUntilNow) : 0.0;
+        float aNewWeightedBytesPerSecondSpeed = 0.0;
+        if (self.bytesPerSecondSpeed > 0.0)
+        {
+            aNewWeightedBytesPerSecondSpeed = (aSmoothingFactor * aCurrentBytesPerSecondSpeed) + ((1.0 - aSmoothingFactor) * (float)self.bytesPerSecondSpeed);
+        } else {
+            aNewWeightedBytesPerSecondSpeed = aCurrentBytesPerSecondSpeed;
+        } if (aNewWeightedBytesPerSecondSpeed > 0.0) {
+            remainingTimeInterval = (self.expectedFileTotalSize - self.resumedFileSizeInBytes - aDownloadedFileSize) / aNewWeightedBytesPerSecondSpeed;
+        }
+        bytesPerSecondsSpeed = (NSUInteger)aNewWeightedBytesPerSecondSpeed;
+        self.bytesPerSecondSpeed = bytesPerSecondsSpeed;
+    }
+    return @{
+             OSDownloadBytesPerSecondSpeedKey : @(bytesPerSecondsSpeed),
+             OSDownloadRemainingTimeKey: @(remainingTimeInterval)};
+}
+
+
 
 
 - (NSString *)description {
     NSMutableDictionary *aDescriptionDict = [NSMutableDictionary dictionary];
-    [aDescriptionDict setObject:@(self.progress) forKey:OSProgressKey];
-    [aDescriptionDict setObject:@(self.expectedFileTotalSize) forKey:OSExpectedFileTotalSizeKey];
-    [aDescriptionDict setObject:@(self.receivedFileSize) forKey:OSReceivedFileSizeKey];
-    [aDescriptionDict setObject:@(self.estimatedRemainingTime) forKey:OSEstimatedRemainingTimeKey];
-    [aDescriptionDict setObject:@(self.bytesPerSecondSpeed) forKey:OSBytesPerSecondSpeedKey];
+    [aDescriptionDict setObject:@(self.progress) forKey:NSStringFromSelector(@selector(progress))];
+    [aDescriptionDict setObject:@(self.expectedFileTotalSize) forKey:NSStringFromSelector(@selector(expectedFileTotalSize))];
+    [aDescriptionDict setObject:@(self.receivedFileSize) forKey:NSStringFromSelector(@selector(receivedFileSize))];
+    [aDescriptionDict setObject:@(self.estimatedRemainingTime) forKey:NSStringFromSelector(@selector(estimatedRemainingTime))];
+    [aDescriptionDict setObject:@(self.bytesPerSecondSpeed) forKey:NSStringFromSelector(@selector(bytesPerSecondSpeed))];
     [aDescriptionDict setObject:self.nativeProgress forKey:@"nativeProgress"];
     if (self.lastLocalizedDescription) {
-        [aDescriptionDict setObject:self.lastLocalizedDescription forKey:OSLastLocalizedDescriptionkey];
+        [aDescriptionDict setObject:self.lastLocalizedDescription forKey:NSStringFromSelector(@selector(lastLocalizedDescription))];
     }
     if (self.lastLocalizedAdditionalDescription)  {
-        [aDescriptionDict setObject:self.lastLocalizedAdditionalDescription forKey:OSLastLocalizedAdditionalDescription];
+        [aDescriptionDict setObject:self.lastLocalizedAdditionalDescription forKey:NSStringFromSelector(@selector(lastLocalizedAdditionalDescription))];
     }
     
     NSString *aDescriptionString = [NSString stringWithFormat:@"%@", aDescriptionDict];
@@ -97,29 +156,29 @@ static NSString * const OSLastLocalizedAdditionalDescription = @"lastLocalizedAd
 
 - (void)encodeWithCoder:(NSCoder *)coder {
     
-    [coder encodeFloat:self.progress forKey:OSProgressKey];
-    [coder encodeInteger:self.expectedFileTotalSize forKey:OSExpectedFileTotalSizeKey];
-    [coder encodeInteger:self.receivedFileSize forKey:OSReceivedFileSizeKey];
-    [coder encodeDouble:self.estimatedRemainingTime forKey:OSEstimatedRemainingTimeKey];
-    [coder encodeInteger:self.bytesPerSecondSpeed forKey:OSBytesPerSecondSpeedKey];
+    [coder encodeFloat:self.progress forKey:NSStringFromSelector(@selector(progress))];
+    [coder encodeInteger:self.expectedFileTotalSize forKey:NSStringFromSelector(@selector(expectedFileTotalSize))];
+    [coder encodeInteger:self.receivedFileSize forKey:NSStringFromSelector(@selector(receivedFileSize))];
+    [coder encodeDouble:self.estimatedRemainingTime forKey:NSStringFromSelector(@selector(estimatedRemainingTime))];
+    [coder encodeInteger:self.bytesPerSecondSpeed forKey:NSStringFromSelector(@selector(bytesPerSecondSpeed))];
     if (self.lastLocalizedDescription) {
-        [coder encodeObject:self.lastLocalizedDescription forKey:OSLastLocalizedDescriptionkey];
+        [coder encodeObject:self.lastLocalizedDescription forKey:NSStringFromSelector(@selector(lastLocalizedDescription))];
     }
     if (self.lastLocalizedAdditionalDescription) {
-        [coder encodeObject:self.lastLocalizedAdditionalDescription forKey:OSLastLocalizedAdditionalDescription];
+        [coder encodeObject:self.lastLocalizedAdditionalDescription forKey:NSStringFromSelector(@selector(lastLocalizedAdditionalDescription))];
     }
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder {
     self = [super init];
     if (self) {
-        self.progress = [coder decodeFloatForKey:OSProgressKey];
-        self.expectedFileTotalSize = [coder decodeIntegerForKey:OSExpectedFileTotalSizeKey];
-        self.receivedFileSize = [coder decodeIntegerForKey:OSReceivedFileSizeKey];
-        self.estimatedRemainingTime = [coder decodeDoubleForKey:OSEstimatedRemainingTimeKey];
-        self.bytesPerSecondSpeed = [coder decodeIntegerForKey:OSBytesPerSecondSpeedKey];
-        self.lastLocalizedDescription = [coder decodeObjectForKey:OSLastLocalizedDescriptionkey];
-        self.lastLocalizedAdditionalDescription = [coder decodeObjectForKey:OSLastLocalizedAdditionalDescription];
+        self.progress = [coder decodeFloatForKey:NSStringFromSelector(@selector(progress))];
+        self.expectedFileTotalSize = [coder decodeIntegerForKey:NSStringFromSelector(@selector(expectedFileTotalSize))];
+        self.receivedFileSize = [coder decodeIntegerForKey:NSStringFromSelector(@selector(receivedFileSize))];
+        self.estimatedRemainingTime = [coder decodeDoubleForKey:NSStringFromSelector(@selector(estimatedRemainingTime))];
+        self.bytesPerSecondSpeed = [coder decodeIntegerForKey:NSStringFromSelector(@selector(bytesPerSecondSpeed))];
+        self.lastLocalizedDescription = [coder decodeObjectForKey:NSStringFromSelector(@selector(lastLocalizedDescription))];
+        self.lastLocalizedAdditionalDescription = [coder decodeObjectForKey:NSStringFromSelector(@selector(lastLocalizedAdditionalDescription))];
     }
     return self;
 }

@@ -115,7 +115,7 @@
 - (void)handleDownloadSuccessWithDownloadItem:(OSDownloadItem *)downloadItem
                                taskIdentifier:(NSUInteger)taskIdentifier {
     
-    downloadItem.naviteProgress.completedUnitCount = downloadItem.naviteProgress.totalUnitCount;
+//    downloadItem.naviteProgress.completedUnitCount = downloadItem.naviteProgress.totalUnitCount;
     [self.downloader.activeDownloadsDictionary removeObjectForKey:@(taskIdentifier)];
     [self _anDownloadTaskDidEndWithDownloadItem:downloadItem];
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -314,7 +314,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 - (void)_cancelWithURL:(NSString *)urlPath {
     NSError *cancelError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:nil];
     if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadFailureWithDownloadItem:resumeData:error:)]) {
-        OSDownloadItem *item = [[OSDownloadItem alloc] initWithURL:urlPath sessionDownloadTask:nil];
+        OSDownloadItem *item = [[OSDownloadItem alloc] initWithURL:urlPath sessionDataTask:nil];
         [self.downloadDelegate downloadFailureWithDownloadItem:item resumeData:nil error:cancelError];
     }
     

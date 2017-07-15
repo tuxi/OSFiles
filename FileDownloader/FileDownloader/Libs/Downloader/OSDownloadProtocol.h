@@ -34,72 +34,18 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
     OSFileDownloadStatusSuccess,
 };
 
-@protocol OSDownloadFileItemProtocol <NSObject, NSCoding>
-
-@optional
-
-- (NSString *)urlPath;
-
-- (NSURL *)localFileURL;
-- (void)setLocalFileURL:(NSURL *)localFileURL;
-
-- (nullable NSData *)resumeData;
-- (void)setResumeData:(nullable NSData *)resumeData;
-
-- (OSFileDownloadStatus)status;
-- (void)setStatus:(OSFileDownloadStatus)status;
-
-- (nullable OSDownloadProgress *)progressObj;
-- (void)setProgressObj:(nullable OSDownloadProgress *)progressObj;
-
-- (NSError *)downloadError;
-- (void)setDownloadError:(NSError *)downloadError;
-
-- (nullable NSArray<NSString *> *)downloadErrorMessagesStack;
-- (void)setDownloadErrorMessagesStack:(nullable NSArray<NSString *> *)downloadErrorMessagesStack;
-
-- (NSInteger)lastHttpStatusCode;
-- (void)setLastHttpStatusCode:(NSInteger)lastHttpStatusCode;
-
-- (NSString *)fileName;
-- (void)setFileName:(NSString *)fileName;
-
-- (NSString *)MIMEType;
-- (void)setMIMEType:(NSString *)MIMEType;
-
-
-@end
 
 @protocol OSDownloadItemProtocol <NSObject>
 
 - (nullable NSOutputStream *)outputStream;
 - (void)setOutputStream:(nullable NSOutputStream *)outputStream;
 
-/// 开始下载时的时间
-- (NSDate *)downloadStartDate;
-- (void)setDownloadStartDate:(NSDate *)downloadStartDate;
-
-/// 预计文件的总大小字节数
-- (int64_t)expectedFileTotalSize;
-- (void)setExpectedFileTotalSize:(int64_t)expectedFileTotalSize;
-
-/// 已下载文件的大小字节数
-- (int64_t)receivedFileSize;
-- (void)setReceivedFileSize:(int64_t)receivedFileSize;
-
-/// 恢复下载时所在文件的字节数
-- (ino64_t)resumedFileSizeInBytes;
-- (void)setResumedFileSizeInBytes:(ino64_t)resumedFileSizeInBytes;
-
-/// 每秒下载的字节数
-- (NSUInteger)bytesPerSecondSpeed;
-- (void)setBytesPerSecondSpeed:(NSUInteger)bytesPerSecondSpeed;
-
-/// 下载进度
-- (nullable NSProgress *)naviteProgress;
+- (OSDownloadProgress * _Nonnull)progressObj;
+- (void)setProgressObj:(OSDownloadProgress * _Nonnull)progressObj;
 
 /// 下载的url
 - (NSString *)urlPath;
+- (void)setUrlPath:(NSString *)urlPath;
 
 /// 下载会话对象 NSURLSessionDownloadTask
 - (NSURLSessionDataTask *)sessionDownloadTask;

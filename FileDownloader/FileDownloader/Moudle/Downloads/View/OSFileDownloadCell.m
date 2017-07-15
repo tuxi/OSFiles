@@ -111,6 +111,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
 - (void)xy_configCellByModel:(id)model indexPath:(NSIndexPath *)indexPath {
     self.downloadItem = model;
     
+    
 }
 
 
@@ -120,8 +121,6 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
 ////////////////////////////////////////////////////////////////////////
 - (void)setDownloadItem:(OSFileItem *)downloadItem {
     _downloadItem = downloadItem;
-    
-    
     [self setProgress];
     
     [self.fileNameLabel setText:self.downloadItem.fileName];
@@ -161,7 +160,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
             self.cycleView.circularState = FFCircularStateCompleted;
             DLog(@"MIMEType:(%@)", self.downloadItem.MIMEType);
             if ([self.downloadItem.MIMEType isEqualToString:@"image/jpeg"] || [self.downloadItem.MIMEType isEqualToString:@"image/png"]) {
-                NSData *data = [NSData dataWithContentsOfURL:self.downloadItem.localFileURL];
+                NSData *data = [NSData dataWithContentsOfURL:self.downloadItem.finalLocalFileURL];
                 self.iconView.image = [UIImage imageWithData:data];
             }
         }

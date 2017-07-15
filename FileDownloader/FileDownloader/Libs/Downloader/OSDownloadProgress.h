@@ -12,22 +12,26 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface OSDownloadProgress : NSObject
 
+/** 开始下载时的时间 */
+@property (nonatomic, strong) NSDate *downloadStartDate;
 /** 已下载的进度，0.0 ~ 1.0 */
-@property (nonatomic, assign, readonly) float progress;
+@property (nonatomic, assign) float progress;
 /** 预计文件的总大小字节数 */
-@property (nonatomic, assign, readonly) int64_t expectedFileTotalSize;
+@property (nonatomic, assign) int64_t expectedFileTotalSize;
 /** 已下载文件并写入大小字节数 */
-@property (nonatomic, assign, readonly) int64_t receivedFileSize;
+@property (nonatomic, assign) int64_t receivedFileSize;
 /** 预估剩余时间 */
-@property (nonatomic, assign, readonly) NSTimeInterval estimatedRemainingTime;
+@property (nonatomic, assign) NSTimeInterval estimatedRemainingTime;
 /** 每秒下载的字节数 */
-@property (nonatomic, assign, readonly) NSUInteger bytesPerSecondSpeed;
+@property (nonatomic, assign) NSUInteger bytesPerSecondSpeed;
 /** 下载的进度 */
-@property (nonatomic, strong, readonly) NSProgress *nativeProgress;
+@property (nonatomic, strong) NSProgress *nativeProgress;
 /** 用于存储最后的下载描述(在本地进程完成之前，存储最后的本地化描述比如暂停、取消时) */
 @property (nonatomic, copy) NSString *lastLocalizedDescription;
 /** 用于存储本地本地化进程的最后本地化附加说明 */
 @property (nonatomic, copy) NSString *lastLocalizedAdditionalDescription;
+/** 恢复下载时所在文件的字节数 */
+@property (nonatomic, assign) ino64_t resumedFileSizeInBytes;
 
 /// 初始化方法(指定初始化方法)
 /// @param aDownloadProgress 文件下载的进度 0.0 ~ 1.0

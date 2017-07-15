@@ -8,20 +8,12 @@
 
 #import "OSDownloadItem.h"
 
+static void *ProgressChangeContext = &ProgressChangeContext;
+
 @interface OSDownloadItem ()
 
-/** 开始下载时的时间 */
-@property (nonatomic, strong) NSDate *downloadStartDate;
-/** 预计文件的总大小字节数 */
-@property (nonatomic, assign) int64_t expectedFileTotalSize;
-/** 已下载文件的大小字节数 */
-@property (nonatomic, assign) int64_t receivedFileSize;
 /** 恢复下载时所在文件的字节数 */
 @property (nonatomic, assign) ino64_t resumedFileSizeInBytes;
-/** 每秒下载的字节数 */
-@property (nonatomic, assign) NSUInteger bytesPerSecondSpeed;
-/** 下载进度 */
-@property (nonatomic, strong) NSProgress *naviteProgress;
 /** 下载的url */
 @property (nonatomic, copy) NSString *urlPath;
 /** 下载会话对象 NSURLSessionDownloadTask */
@@ -37,6 +29,8 @@
 /** 流 */
 @property (nonatomic, strong) NSOutputStream *outputStream;
 
+@property (nonatomic, strong) OSDownloadProgress *progressObj;
+
 @end
 
 @implementation OSDownloadItem
@@ -45,60 +39,111 @@
 #pragma mark - initialize
 ////////////////////////////////////////////////////////////////////////
 
+@synthesize
+cancellationHandler = _cancellationHandler,
+pausingHandler = _pausingHandler,
+resumingHandler = _resumingHandler;
 
-- (instancetype)init {
-    NSAssert(NO, @"use - initWithURL:sessionDownloadTask:");
-    @throw nil;
-}
-+ (instancetype)new {
-    NSAssert(NO, @"use - initWithURL:sessionDownloadTask:");
-    @throw nil;
-}
-
-- (instancetype)initWithURL:(NSString *)urlPath sessionDownloadTask:(NSURLSessionTask *)sessionDownloadTask {
+- (instancetype)initWithURL:(NSString *)urlPath sessionDataTask:(NSURLSessionDataTask *)sessionDownloadTask {
     if (self = [super init]) {
         self.urlPath = urlPath;
         self.sessionDownloadTask = sessionDownloadTask;
-        self.receivedFileSize = 0;
-        self.expectedFileTotalSize = 0;
-        self.bytesPerSecondSpeed = 0;
         self.resumedFileSizeInBytes = 0;
         self.lastHttpStatusCode = 0;
         
-        self.naviteProgress = [[NSProgress alloc] initWithParent:[NSProgress currentProgress] userInfo:nil];
-        self.naviteProgress.kind = NSProgressKindFile;
-        [self.naviteProgress setUserInfoObject:NSProgressFileOperationKindKey forKey:NSProgressFileOperationKindDownloading];
-        [self.naviteProgress setUserInfoObject:urlPath forKey:@"urlPath"];
-        self.naviteProgress.cancellable = YES;
-        self.naviteProgress.pausable = YES;
-        self.naviteProgress.totalUnitCount = NSURLSessionTransferSizeUnknown;
-        self.naviteProgress.completedUnitCount = 0;
+        NSProgress *progress = [[NSProgress alloc] initWithParent:[NSProgress currentProgress] userInfo:nil];
+        progress.kind = NSProgressKindFile;
+        [progress setUserInfoObject:NSProgressFileOperationKindKey forKey:NSProgressFileOperationKindDownloading];
+        [progress setUserInfoObject:urlPath forKey:@"urlPath"];
+        progress.cancellable = YES;
+        progress.pausable = YES;
+        progress.totalUnitCount = NSURLSessionTransferSizeUnknown;
+        progress.completedUnitCount = 0;
+        
+        self.progressObj = [[OSDownloadProgress alloc] initWithDownloadProgress:0
+                                                               expectedFileSize:0
+                                                               receivedFileSize:0
+                                                         estimatedRemainingTime:0
+                                                            bytesPerSecondSpeed:0
+                                                                 nativeProgress:progress];
+        
+        [self.progressObj addObserver:self
+                           forKeyPath:@"progress"
+                              options:NSKeyValueObservingOptionNew
+                              context:ProgressChangeContext];
     }
     return self;
 }
 
+- (void)pause {
+    [self.progressObj.nativeProgress pause];
+}
 
-////////////////////////////////////////////////////////////////////////
-#pragma mark - Setter
-////////////////////////////////////////////////////////////////////////
+- (void)cancel {
+    [self.progressObj.nativeProgress cancel];
+}
 
-
-- (void)setExpectedFileTotalSize:(int64_t)expectedFileTotalSize {
-    
-    _expectedFileTotalSize = expectedFileTotalSize;
-    if (expectedFileTotalSize > 0) {
-        self.naviteProgress.totalUnitCount = expectedFileTotalSize;
+- (void)resume {
+    if ([self.progressObj.nativeProgress respondsToSelector:@selector(resume)]) {
+        [self.progressObj.nativeProgress resume];
+    } else {
+        if (self.resumingHandler) {
+            self.resumingHandler();
+        }
     }
 }
 
-- (void)setReceivedFileSize:(int64_t)receivedFileSize {
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary<NSKeyValueChangeKey,id> *)change
+                       context:(void *)context {
     
-    _receivedFileSize = receivedFileSize;
-    if (receivedFileSize > 0) {
-        if (self.expectedFileTotalSize > 0) {
-            self.naviteProgress.completedUnitCount = receivedFileSize;
+    if (context == ProgressChangeContext) {
+        if (object == self.progressObj && [keyPath isEqualToString:@"progress"]) {
+            if (self.progressHandler) {
+                self.progressHandler(object);
+            }
         }
     }
+}
+
+
+
+- (void)dealloc {
+    [self.progressObj removeObserver:self forKeyPath:@"progress"
+                             context:ProgressChangeContext];
+}
+
+
+////////////////////////////////////////////////////////////////////////
+#pragma mark -
+////////////////////////////////////////////////////////////////////////
+
+- (void)setCancellationHandler:(void (^)(void))cancellationHandler {
+    _cancellationHandler = cancellationHandler;
+    [self.progressObj.nativeProgress setCancellationHandler:cancellationHandler];
+}
+
+- (void (^)(void))cancellationHandler {
+    return self.progressObj.nativeProgress.cancellationHandler;
+}
+
+- (void)setPausingHandler:(void (^)(void))pausingHandler {
+    _pausingHandler = pausingHandler;
+    [self.progressObj.nativeProgress setPausingHandler:pausingHandler];
+}
+
+- (void (^)(void))pausingHandler {
+    return self.progressObj.nativeProgress.pausingHandler;
+}
+
+- (void)setResumingHandler:(void (^)(void))resumingHandler {
+    _resumingHandler = resumingHandler;
+    [self.progressObj.nativeProgress setResumingHandler:resumingHandler];
+}
+
+- (void (^)(void))resumingHandler {
+    return self.progressObj.nativeProgress.resumingHandler;
 }
 
 
@@ -111,11 +156,8 @@
 - (NSString *)description {
     
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-    [dict setObject:@(self.receivedFileSize) forKey:@"receivedFileSize"];
-    [dict setObject:@(self.expectedFileTotalSize) forKey:@"expectedFileTotalSize"];
-    [dict setObject:@(self.bytesPerSecondSpeed) forKey:@"bytesPerSecondSpeed"];
     [dict setObject:self.urlPath forKey:@"urlPath"];
-    [dict setObject:self.naviteProgress forKey:@"naviteProgress"];
+    [dict setObject:self.progressObj.description forKey:@"progressObj"];
     if (self.sessionDownloadTask) {
         [dict setObject:@(YES) forKey:@"hasSessionDownloadTask"];
     }

@@ -26,7 +26,7 @@
 
 @property (nonatomic, class) OSDownloaderModule *sharedInstance;
 
-@property (nonatomic, strong, readonly) NSMutableArray<id<OSDownloadFileItemProtocol>> *downloadItems;
+@property (nonatomic, strong, readonly) NSMutableArray *downloadItems;
 
 @property (nonatomic, weak) id<OSFileDownloaderDataSource> dataSource;
 
@@ -39,15 +39,15 @@
 /// 归档items
 - (void)storedDownloadItems;
 /// 从本地获取所有的downloadItem
-- (NSMutableArray<id<OSDownloadFileItemProtocol>> *)restoredDownloadItems;
+- (NSMutableArray *)restoredDownloadItems;
 
 - (void)start:(NSString *)url;
 - (void)cancel:(NSString *)url;
 - (void)resume:(NSString *)url;
 - (void)pause:(NSString *)url;
 
-- (NSArray<id<OSDownloadFileItemProtocol>> *)getAllSuccessItems;
-- (NSArray<id<OSDownloadFileItemProtocol>> *)getActiveDownloadItems;
+- (NSArray *)getAllSuccessItems;
+- (NSArray *)getActiveDownloadItems;
 /// 所有展示中的文件，还未开始下载时存放的，当文件取消下载时也会存放到此数组
-- (NSMutableArray<id<OSDownloadFileItemProtocol>> *)displayItems;
+- (NSMutableArray *)displayItems;
 @end

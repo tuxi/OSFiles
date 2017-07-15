@@ -50,7 +50,7 @@
 /// 接收到响应
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSHTTPURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler {
     
-    id<OSDownloadItemProtocol> downloadItem = [self.downloader getDownloadItemByDownloadTask:dataTask];
+    id<OSDownloadItemProtocol> downloadItem = [self.downloader getDownloadItemByTask:dataTask];
     
     // 打开流
     [downloadItem.outputStream open];
@@ -59,31 +59,34 @@
     NSURL *cacheURL = [self _getFinalLocalFileURLWithRemoteURL:dataTask.currentRequest.URL];
     long long cacheFileSize = [self.downloader getCacheFileSizeWithPath:cacheURL.path];
     NSInteger totalLength = [response.allHeaderFields[@"Content-Length"] integerValue] + cacheFileSize;
-    downloadItem.expectedFileTotalSize = totalLength;
+//    downloadItem.expectedFileTotalSize = totalLength;
+    downloadItem.progressObj.expectedFileTotalSize = totalLength;
     
     // 接收这个请求，允许接收服务器的数据
     completionHandler(NSURLSessionResponseAllow);
 }
 
 /// 接收到服务器返回的数据
-- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data
-{
-    id<OSDownloadItemProtocol> downloadItem = [self.downloader getDownloadItemByDownloadTask:dataTask];
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data {
+    id<OSDownloadItemProtocol> downloadItem = [self.downloader getDownloadItemByTask:dataTask];
     // 下载进度
     NSURL *cacheURL = [self _getFinalLocalFileURLWithRemoteURL:dataTask.currentRequest.URL];
     long long cacheFileSize = [self.downloader getCacheFileSizeWithPath:cacheURL.path];
 //    NSUInteger receivedSize = cacheFileSize;
-    NSUInteger expectedSize = downloadItem.expectedFileTotalSize;
+//    NSUInteger expectedSize = downloadItem.expectedFileTotalSize;
+    NSUInteger expectedSize = downloadItem.progressObj.expectedFileTotalSize;
 //    CGFloat progress = 1.0 * receivedSize / expectedSize;
     // 写入数据
     [downloadItem.outputStream write:data.bytes maxLength:data.length];
     if (downloadItem) {
-        if (!downloadItem.downloadStartDate) {
-            downloadItem.downloadStartDate = [NSDate date];
-            downloadItem.bytesPerSecondSpeed = 0;
+        if (!downloadItem.progressObj.downloadStartDate) {
+            downloadItem.progressObj.downloadStartDate = [NSDate date];
+            downloadItem.progressObj.bytesPerSecondSpeed = 0;
         }
-        downloadItem.receivedFileSize = cacheFileSize;
-        downloadItem.expectedFileTotalSize = expectedSize;
+//        downloadItem.receivedFileSize = cacheFileSize;
+        downloadItem.progressObj.receivedFileSize = cacheFileSize;
+//        downloadItem.expectedFileTotalSize = expectedSize;
+        downloadItem.progressObj.expectedFileTotalSize = expectedSize;
         NSString *taskDescription = [dataTask.taskDescription copy];
         [self _progressChangeWithURL:taskDescription];
     }
@@ -94,7 +97,7 @@
 /// 请求完毕（成功|失败）
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
     
-    id<OSDownloadItemProtocol> downloadItem = [self.downloader getDownloadItemByDownloadTask:(NSURLSessionDownloadTask *)task];
+    id<OSDownloadItemProtocol> downloadItem = [self.downloader getDownloadItemByTask:(NSURLSessionDataTask *)task];
     if (!downloadItem) {
         [self handleDownloadFailureWithError:error downloadItem:downloadItem taskIdentifier:task.taskIdentifier resumeData:nil];
         return;

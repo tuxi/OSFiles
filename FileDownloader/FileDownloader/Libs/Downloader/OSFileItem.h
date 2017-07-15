@@ -6,18 +6,20 @@
 //  Copyright © 2017年 Ossey. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "OSDownloadProgress.h"
 #import "OSDownloaderDelegate.h"
+#import "OSDownloadItem.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface OSFileItem : NSObject <OSDownloadFileItemProtocol>
+@interface OSFileItem : OSDownloadItem
 
-@property (nonatomic, copy) void (^downloadStatusBlock)(OSFileDownloadStatus state);
+@property (nonatomic, assign) OSFileDownloadStatus status;
+@property (nonatomic, copy) NSString *fileName;
+@property (nonatomic, strong) NSError *downloadError;
+@property (nonatomic, copy) void (^statusChangeHandler)(OSFileDownloadStatus status);
 
 - (instancetype)initWithURL:(NSString *)urlPath NS_DESIGNATED_INITIALIZER;
-
+- (instancetype)initWithURL:(NSString *)urlPath sessionDataTask:(nullable NSURLSessionDataTask *)sessionDownloadTask NS_UNAVAILABLE;
 - (instancetype)init NS_UNAVAILABLE;
 + (instancetype)new NS_UNAVAILABLE;
 - (instancetype)initWithCoder:(NSCoder *)coder NS_DESIGNATED_INITIALIZER;

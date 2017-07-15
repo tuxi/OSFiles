@@ -10,19 +10,30 @@
 
 #import <Foundation/Foundation.h>
 #import "OSDownloaderDelegate.h"
+#import "OSDownloadProgress.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface OSDownloadItem : NSObject <OSDownloadItemProtocol>
-/*
- * 此类由OSDownloader内部使用的
- */
+//
+//@property (getter=isCancellable) BOOL cancellable;
+//@property (getter=isPausable) BOOL pausable;
+//
+//@property (readonly, getter=isCancelled) BOOL cancelled;
+//@property (readonly, getter=isPaused) BOOL paused;
+@property (nullable, copy) void (^cancellationHandler)(void);
+@property (nullable, copy) void (^pausingHandler)(void);
+@property (nullable, copy) void (^resumingHandler)(void);
+@property (nullable, copy) void (^progressHandler)(OSDownloadProgress *progressObj);
+//@property (nonatomic, copy) void (^completionHandler)(BOOL isSuccess, NSError *error);
+
+
+- (void)pause;
+- (void)resume;
+- (void)cancel;
 
 /// 初始化OSDownloadItem，
-- (instancetype)initWithURL:(NSString *)urlPath sessionDownloadTask:(nullable NSURLSessionTask *)sessionDownloadTask NS_DESIGNATED_INITIALIZER;
-
-- (instancetype)init NS_UNAVAILABLE;
-+ (instancetype)new NS_UNAVAILABLE;
+- (instancetype)initWithURL:(NSString *)urlPath sessionDataTask:(nullable NSURLSessionDataTask *)sessionDownloadTask;
 
 @end
 

@@ -28,10 +28,6 @@ static NSString * const OSDownloadURLKey = @"downloadURLPath";
 NSString * const OSDownloaderFolderNameKey = @"OSDownloaderFolder";
 static void *ProgressObserverContext = &ProgressObserverContext;
 
-// 下载速度key
-static NSString * const OSDownloadBytesPerSecondSpeedKey = @"bytesPerSecondSpeed";
-// 剩余时间key
-static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
 
 
 @interface OSDownloader () <NSURLSessionDelegate, NSURLSessionDataDelegate, NSURLSessionTaskDelegate>
@@ -95,13 +91,13 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
     }];
 }
 
-- (OSDownloadItem *)getDownloadItemByDownloadTask:(NSURLSessionTask *)downloadTask {
+- (OSDownloadItem *)getDownloadItemByTask:(NSURLSessionDataTask *)task {
     OSDownloadItem *downloadItem = nil;
-    downloadItem = [self.activeDownloadsDictionary objectForKey:@(downloadTask.taskIdentifier)];
+    downloadItem = [self.activeDownloadsDictionary objectForKey:@(task.taskIdentifier)];
     if (downloadItem) {
         return downloadItem;
     }
-    NSString *urlPath = [[downloadTask taskDescription] copy];
+    NSString *urlPath = [[task taskDescription] copy];
     if (urlPath) {
         NSProgress *progress = self.totalProgress;
         progress.totalUnitCount++;
@@ -109,12 +105,11 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
         // 将此rootProgress注册为当前线程任务的根进度管理对象，向下分支出一个子任务 比如子任务进度总数为10个单元 即当子任务完成时 父progerss对象进度走1个单元
         [progress becomeCurrentWithPendingUnitCount:1];
         
-        downloadItem = [[OSDownloadItem alloc] initWithURL:urlPath
-                                       sessionDownloadTask:downloadTask];
+        downloadItem = [[OSDownloadItem alloc] initWithURL:urlPath sessionDataTask:task];
         // 注意: 必须和becomeCurrentWithPendingUnitCount成对使用
         [progress resignCurrent];
         
-        [self _downloadTaskCallBack:downloadTask downloadItem:downloadItem];
+        [self _downloadTaskCallBack:task downloadItem:downloadItem];
     }
     
     return downloadItem;
@@ -141,15 +136,14 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
             NSURLSessionDataTask *dataTask = [self.backgroundSeesion dataTaskWithRequest:request];
             taskIdentifier = dataTask.taskIdentifier;
             dataTask.taskDescription = urlPath;
-            downloadItem = [[OSDownloadItem alloc] initWithURL:urlPath
-                                           sessionDownloadTask:dataTask];
+            downloadItem = [[OSDownloadItem alloc] initWithURL:urlPath sessionDataTask:dataTask];
             downloadItem.finalLocalFileURL = cacheURL;
             downloadItem.outputStream = stream;
             if (cacheFileSize > 0) {
-                downloadItem.resumedFileSizeInBytes = cacheFileSize;
-                downloadItem.downloadStartDate = [NSDate date];
-                downloadItem.bytesPerSecondSpeed = 0;
-                DLog(@"INFO: Download (id: %@) resumed (offset: %@ bytes, expected: %@ bytes", dataTask.taskDescription, @(cacheFileSize), @(downloadItem.expectedFileTotalSize));
+                downloadItem.progressObj.resumedFileSizeInBytes = cacheFileSize;
+                downloadItem.progressObj.downloadStartDate = [NSDate date];
+                downloadItem.progressObj.bytesPerSecondSpeed = 0;
+                DLog(@"INFO: Download (id: %@) resumed (offset: %@ bytes, expected: %@ bytes", dataTask.taskDescription, @(cacheFileSize), @(downloadItem.progressObj.expectedFileTotalSize));
             }
             NSProgress *naviteProgress = self.totalProgress;
             naviteProgress.totalUnitCount++;
@@ -196,23 +190,18 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
         
         NSString *urlPath = [downloadItem.urlPath copy];
         __weak typeof(self) weakSelf = self;
-        // progress 执行 pause 时回调
-        [downloadItem.naviteProgress setPausingHandler:^{
-            // 暂停下载
+        
+        downloadItem.pausingHandler = ^{
             [weakSelf pauseWithURL:urlPath];
-        }];
-        // progress 执行 cancel 时回调
-        [downloadItem.naviteProgress setCancellationHandler:^{
-            // 取消下载
+        };
+        
+        downloadItem.cancellationHandler = ^{
             [weakSelf cancelWithURL:urlPath];
-        }];
-        if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_8_4) {
-            // progress 执行 resume 时回调 此api为9.0以上才有的，需要适配
-            [downloadItem.naviteProgress setResumingHandler:^{
-                // 恢复下载
-                [weakSelf resumeWithURL:urlPath];
-            }];
-        }
+        };
+        
+        downloadItem.resumingHandler = ^{
+            [weakSelf resumeWithURL:urlPath];
+        };
         // 有新的任务开始时，重置总进度
         [self resetProgressIfNoActiveDownloadsRunning];
         [self.sessionDelegate _anDownloadTaskWillBeginWithDownloadItem:downloadItem];
@@ -288,7 +277,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
         if (res) {
             
             NSError *cancelError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:nil];
-            OSDownloadItem *item = [[OSDownloadItem alloc] initWithURL:urlPath sessionDownloadTask:nil];
+            OSDownloadItem *item = [[OSDownloadItem alloc] initWithURL:urlPath sessionDataTask:nil];
             [self.sessionDelegate handleDownloadFailureWithError:cancelError downloadItem:item taskIdentifier:NSNotFound resumeData:nil];
         }
     }
@@ -366,7 +355,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
 - (BOOL)isCompletionByRemoteUrlPath:(NSString *)url {
     OSDownloadItem *item = [self getDownloadItemByURL:url];
     NSURL *localURL = [self.sessionDelegate _getFinalLocalFileURLWithRemoteURL:[NSURL URLWithString:url]];
-    if (item.expectedFileTotalSize && [self getCacheFileSizeWithPath:localURL.path] == item.expectedFileTotalSize) {
+    if (item.progressObj.expectedFileTotalSize && [self getCacheFileSizeWithPath:localURL.path] == item.progressObj.expectedFileTotalSize) {
         return YES;
     }
     return NO;
@@ -419,22 +408,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
     OSDownloadProgress *progressObj = nil;
     OSDownloadItem *downloadItem = [self.activeDownloadsDictionary objectForKey:@(taskIdentifier)];
     if (downloadItem) {
-        float progress = 0.0;
-        if (downloadItem.expectedFileTotalSize > 0) {
-            progress = (float)downloadItem.receivedFileSize / (float)downloadItem.expectedFileTotalSize;
-        }
-        NSDictionary *remainingTimeDict = [[self class] remainingTimeAndBytesPerSecondForDownloadItem:downloadItem];
-        if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1) {
-            [downloadItem.naviteProgress setUserInfoObject:[remainingTimeDict objectForKey:OSDownloadRemainingTimeKey] forKey:NSProgressEstimatedTimeRemainingKey];
-            [downloadItem.naviteProgress setUserInfoObject:[remainingTimeDict objectForKey:OSDownloadBytesPerSecondSpeedKey] forKey:NSProgressThroughputKey];
-        }
-        
-        progressObj = [[OSDownloadProgress alloc] initWithDownloadProgress:progress
-                                                          expectedFileSize:downloadItem.expectedFileTotalSize
-                                                          receivedFileSize:downloadItem.receivedFileSize
-                                                    estimatedRemainingTime:[remainingTimeDict[OSDownloadRemainingTimeKey] doubleValue]
-                                                       bytesPerSecondSpeed:[remainingTimeDict[OSDownloadBytesPerSecondSpeedKey] unsignedIntegerValue]
-                                                            nativeProgress:downloadItem.naviteProgress];
+        progressObj = downloadItem.progressObj;
     }
     return progressObj;
 }
@@ -605,33 +579,6 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     return downloadItem;
 }
 
-/// 计算当前下载的剩余时间和每秒下载的字节数
-+ (NSDictionary *)remainingTimeAndBytesPerSecondForDownloadItem:(nonnull OSDownloadItem *)aDownloadItem {
-    // 下载剩余时间
-    NSTimeInterval remainingTimeInterval = 0.0;
-    // 当前下载的速度
-    NSUInteger bytesPerSecondsSpeed = 0;
-    if ((aDownloadItem.receivedFileSize > 0) && (aDownloadItem.expectedFileTotalSize > 0)) {
-        float aSmoothingFactor = 0.8; // range 0.0 ... 1.0 (determines the weight of the current speed calculation in relation to the stored past speed value)
-        NSTimeInterval downloadDurationUntilNow = [[NSDate date] timeIntervalSinceDate:aDownloadItem.downloadStartDate];
-        int64_t aDownloadedFileSize = aDownloadItem.receivedFileSize - aDownloadItem.resumedFileSizeInBytes;
-        float aCurrentBytesPerSecondSpeed = (downloadDurationUntilNow > 0.0) ? (aDownloadedFileSize / downloadDurationUntilNow) : 0.0;
-        float aNewWeightedBytesPerSecondSpeed = 0.0;
-        if (aDownloadItem.bytesPerSecondSpeed > 0.0)
-        {
-            aNewWeightedBytesPerSecondSpeed = (aSmoothingFactor * aCurrentBytesPerSecondSpeed) + ((1.0 - aSmoothingFactor) * (float)aDownloadItem.bytesPerSecondSpeed);
-        } else {
-            aNewWeightedBytesPerSecondSpeed = aCurrentBytesPerSecondSpeed;
-        } if (aNewWeightedBytesPerSecondSpeed > 0.0) {
-            remainingTimeInterval = (aDownloadItem.expectedFileTotalSize - aDownloadItem.resumedFileSizeInBytes - aDownloadedFileSize) / aNewWeightedBytesPerSecondSpeed;
-        }
-        bytesPerSecondsSpeed = (NSUInteger)aNewWeightedBytesPerSecondSpeed;
-        aDownloadItem.bytesPerSecondSpeed = bytesPerSecondsSpeed;
-    }
-    return @{
-             OSDownloadBytesPerSecondSpeedKey : @(bytesPerSecondsSpeed),
-             OSDownloadRemainingTimeKey: @(remainingTimeInterval)};
-}
 
 ////////////////////////////////////////////////////////////////////////
 #pragma mark -
