@@ -186,7 +186,8 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 - (void)_downloadTaskCallBack:(NSURLSessionTask *)sessionDownloadTask downloadItem:(OSDownloadItem *)downloadItem  {
     if (downloadItem) {
         // 将下载任务保存到activeDownloadsDictionary中
-        [self.activeDownloadsDictionary setObject:downloadItem forKey:@(sessionDownloadTask.taskIdentifier)];
+        [self.activeDownloadsDictionary setObject:downloadItem
+                                           forKey:@(sessionDownloadTask.taskIdentifier)];
         
         NSString *urlPath = [downloadItem.urlPath copy];
         __weak typeof(self) weakSelf = self;

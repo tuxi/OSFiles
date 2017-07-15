@@ -44,7 +44,8 @@ cancellationHandler = _cancellationHandler,
 pausingHandler = _pausingHandler,
 resumingHandler = _resumingHandler;
 
-- (instancetype)initWithURL:(NSString *)urlPath sessionDataTask:(NSURLSessionDataTask *)sessionDownloadTask {
+- (instancetype)initWithURL:(NSString *)urlPath
+            sessionDataTask:(NSURLSessionDataTask *)sessionDownloadTask {
     if (self = [super init]) {
         self.urlPath = urlPath;
         self.sessionDownloadTask = sessionDownloadTask;
@@ -141,7 +142,7 @@ resumingHandler = _resumingHandler;
     _resumingHandler = resumingHandler;
     if ([self.progressObj.nativeProgress respondsToSelector:@selector(setResumingHandler:)]) {
         [self.progressObj.nativeProgress setResumingHandler:resumingHandler];
-    } 
+    }
 }
 
 - (void (^)(void))resumingHandler {
