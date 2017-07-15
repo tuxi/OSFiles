@@ -139,7 +139,9 @@ resumingHandler = _resumingHandler;
 
 - (void)setResumingHandler:(void (^)(void))resumingHandler {
     _resumingHandler = resumingHandler;
-    [self.progressObj.nativeProgress setResumingHandler:resumingHandler];
+    if ([self.progressObj.nativeProgress respondsToSelector:@selector(setResumingHandler:)]) {
+        [self.progressObj.nativeProgress setResumingHandler:resumingHandler];
+    } 
 }
 
 - (void (^)(void))resumingHandler {
