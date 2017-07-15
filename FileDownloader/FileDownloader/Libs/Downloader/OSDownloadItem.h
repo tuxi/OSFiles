@@ -32,7 +32,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)resume;
 - (void)cancel;
 
-/// 初始化OSDownloadItem，
 - (instancetype)initWithURL:(NSString *)urlPath sessionDataTask:(nullable NSURLSessionDataTask *)sessionDownloadTask;
 
 @end
