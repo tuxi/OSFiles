@@ -109,7 +109,13 @@ static void *ProgressObserverContext = &ProgressObserverContext;
         // 注意: 必须和becomeCurrentWithPendingUnitCount成对使用
         [progress resignCurrent];
         
-        [self _downloadTaskCallBack:task downloadItem:downloadItem];
+        // 将下载任务保存到activeDownloadsDictionary中
+        [self.activeDownloadsDictionary setObject:downloadItem
+                                           forKey:@(task.taskIdentifier)];
+        [self initializeDownloadCallBack:downloadItem];
+        // 有新的任务开始时，重置总进度
+        [self resetProgressIfNoActiveDownloadsRunning];
+        [self.sessionDelegate _anDownloadTaskWillBeginWithDownloadItem:downloadItem];
     }
     
     return downloadItem;
@@ -193,7 +199,13 @@ static void *ProgressObserverContext = &ProgressObserverContext;
             DLog(@"INFO: download item exit");
         }
         NSURLSessionDataTask *dataTask = downloadItem.sessionTask;
-        [self _downloadTaskCallBack:dataTask downloadItem:downloadItem];
+        // 将下载任务保存到activeDownloadsDictionary中
+        [self.activeDownloadsDictionary setObject:downloadItem
+                                           forKey:@(dataTask.taskIdentifier)];
+        [self initializeDownloadCallBack:downloadItem];
+        // 有新的任务开始时，重置总进度
+        [self resetProgressIfNoActiveDownloadsRunning];
+        [self.sessionDelegate _anDownloadTaskWillBeginWithDownloadItem:downloadItem];
         [dataTask resume];
         return downloadItem;
     } else {
@@ -225,11 +237,9 @@ static void *ProgressObserverContext = &ProgressObserverContext;
     }
 }
 
-- (void)_downloadTaskCallBack:(NSURLSessionTask *)sessionDownloadTask downloadItem:(OSDownloadItem *)downloadItem  {
+- (void)initializeDownloadCallBack:(OSDownloadItem *)downloadItem  {
+    
     if (downloadItem) {
-        // 将下载任务保存到activeDownloadsDictionary中
-        [self.activeDownloadsDictionary setObject:downloadItem
-                                           forKey:@(sessionDownloadTask.taskIdentifier)];
         
         NSString *urlPath = [downloadItem.urlPath copy];
         __weak typeof(self) weakSelf = self;
@@ -245,9 +255,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
         downloadItem.resumingHandler = ^{
             [weakSelf resumeWithURL:urlPath];
         };
-        // 有新的任务开始时，重置总进度
-        [self resetProgressIfNoActiveDownloadsRunning];
-        [self.sessionDelegate _anDownloadTaskWillBeginWithDownloadItem:downloadItem];
+        
         
     } else {
         DLog(@"Error: No download item");

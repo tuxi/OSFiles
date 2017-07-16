@@ -179,9 +179,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
                 if (isDownloading == NO){
                     downloadItem.status = OSFileDownloadStatusDownloading;
 //                    [self.downloader downloadWithURL:downloadItem.urlPath];
-                    [self.downloader downloadTaskWithURLPath:downloadItem.urlPath progress:^(NSProgress * _Nonnull downloadProgress) {
-                        NSLog(@"%f", downloadProgress.fractionCompleted);
-                    } completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
+                    [self.downloader downloadTaskWithURLPath:downloadItem.urlPath progress:nil completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
                         if (error) {
                             NSLog(@"%@", error);
                         } else {

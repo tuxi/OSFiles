@@ -81,36 +81,42 @@
 
 
 - (NSURL *)finalLocalFileURL {
-    // 处理下载完成后保存的本地路径，由于归档之前获取到的绝对路径，而沙盒路径发送改变时，根据绝对路径是找到文件的
-    NSString *documentPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
-    NSString *documentDirectoryName = [documentPath lastPathComponent];
-    NSString *cachesPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) firstObject];
-    NSString *cacheDirectoryName = [cachesPath lastPathComponent];
-    
-    NSArray *pathComponents = [_finalLocalFileURL pathComponents];
-    
-    if ([pathComponents containsObject:documentDirectoryName]) {
-        NSString *urlPath = _finalLocalFileURL.path;
-        NSArray *subList = [urlPath componentsSeparatedByString:documentDirectoryName];
-        NSString *relativePath = [subList lastObject];
-        NSString *newPath = [documentPath stringByAppendingString:relativePath];
-        _finalLocalFileURL = [NSURL fileURLWithPath:newPath];
-    } else if ([pathComponents componentsJoinedByString:cacheDirectoryName]) {
-        NSString *urlPath = _finalLocalFileURL.path;
-        NSArray *subList = [urlPath componentsSeparatedByString:cacheDirectoryName];
-        NSString *relativePath = [subList lastObject];
-        NSString *newPath = [cachesPath stringByAppendingString:relativePath];
-        _finalLocalFileURL = [NSURL fileURLWithPath:newPath];
+    @synchronized (self) {
+        // 处理下载完成后保存的本地路径，由于归档之前获取到的绝对路径，而沙盒路径发送改变时，根据绝对路径是找到文件的
+        NSString *documentPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+        NSString *documentDirectoryName = [documentPath lastPathComponent];
+        NSString *cachesPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) firstObject];
+        NSString *cacheDirectoryName = [cachesPath lastPathComponent];
+        
+        NSArray *pathComponents = [_finalLocalFileURL pathComponents];
+        
+        if ([pathComponents containsObject:documentDirectoryName]) {
+            NSString *urlPath = _finalLocalFileURL.path;
+            NSArray *subList = [urlPath componentsSeparatedByString:documentDirectoryName];
+            NSString *relativePath = [subList lastObject];
+            NSString *newPath = [documentPath stringByAppendingString:relativePath];
+            _finalLocalFileURL = [NSURL fileURLWithPath:newPath];
+        } else if ([pathComponents componentsJoinedByString:cacheDirectoryName]) {
+            NSString *urlPath = _finalLocalFileURL.path;
+            NSArray *subList = [urlPath componentsSeparatedByString:cacheDirectoryName];
+            NSString *relativePath = [subList lastObject];
+            NSString *newPath = [cachesPath stringByAppendingString:relativePath];
+            _finalLocalFileURL = [NSURL fileURLWithPath:newPath];
+        }
+        
+        return _finalLocalFileURL;
+        
     }
-    
-    return _finalLocalFileURL;
 }
 
 - (NSString *)fileName {
-    if (!_fileName.length) {
-        return _fileName = self.urlPath.lastPathComponent;
-    };
-    return _fileName;
+    @synchronized (self) {
+        if (!_fileName.length) {
+            return _fileName = self.urlPath.lastPathComponent;
+        };
+        return _fileName;
+    }
+    
 }
 
 - (void)setStatus:(OSFileDownloadStatus)status {

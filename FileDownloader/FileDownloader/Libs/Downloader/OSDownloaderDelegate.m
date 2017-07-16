@@ -34,7 +34,9 @@ NSString * const OSFileDownloadTotalProgressCanceldNotification = @"OSFileDownlo
 
 
 
-#pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ <OSDownloaderDelegate> ~~~~~~~~~~~~~~~~~~~~~~~
+////////////////////////////////////////////////////////////////////////
+#pragma mark - OSDownloaderDelegate
+////////////////////////////////////////////////////////////////////////
 
 - (void)downloadSuccessnWithDownloadItem:(id<OSDownloadItemProtocol>)downloadItem {
     
@@ -117,6 +119,7 @@ NSString * const OSFileDownloadTotalProgressCanceldNotification = @"OSFileDownlo
             downloadItem.progressObj = progress;
             downloadItem.progressObj.lastLocalizedDescription = downloadItem.progressObj.nativeProgress.localizedDescription;
             downloadItem.progressObj.lastLocalizedAdditionalDescription = downloadItem.progressObj.nativeProgress.localizedAdditionalDescription;
+            progress.progressHandler = downloadItem.progressHandler;
         }
     }
     [[OSDownloaderModule sharedInstance] storedDownloadItems];
