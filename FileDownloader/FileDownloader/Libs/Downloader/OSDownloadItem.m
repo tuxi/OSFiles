@@ -8,7 +8,6 @@
 
 #import "OSDownloadItem.h"
 
-static void *ProgressChangeContext = &ProgressChangeContext;
 
 @interface OSDownloadItem ()
 
@@ -68,10 +67,6 @@ resumingHandler = _resumingHandler;
                                                             bytesPerSecondSpeed:0
                                                                  nativeProgress:progress];
         
-        [self.progressObj addObserver:self
-                           forKeyPath:@"progress"
-                              options:NSKeyValueObservingOptionNew
-                              context:ProgressChangeContext];
     }
     return self;
 }
@@ -94,25 +89,11 @@ resumingHandler = _resumingHandler;
     }
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath
-                      ofObject:(id)object
-                        change:(NSDictionary<NSKeyValueChangeKey,id> *)change
-                       context:(void *)context {
-    
-    if (context == ProgressChangeContext) {
-        if (object == self.progressObj && [keyPath isEqualToString:@"progress"]) {
-            if (self.progressHandler) {
-                self.progressHandler(object);
-            }
-        }
-    }
-}
 
 
 
 - (void)dealloc {
-    [self.progressObj removeObserver:self forKeyPath:@"progress"
-                             context:ProgressChangeContext];
+    
 }
 
 
@@ -149,6 +130,10 @@ resumingHandler = _resumingHandler;
     return self.progressObj.nativeProgress.resumingHandler;
 }
 
+- (void)setProgressHandler:(void (^)(OSDownloadProgress * _Nonnull))progressHandler {
+    _progressHandler = progressHandler;
+    self.progressObj.progressHandler = progressHandler;
+}
 
 ////////////////////////////////////////////////////////////////////////
 #pragma mark - description

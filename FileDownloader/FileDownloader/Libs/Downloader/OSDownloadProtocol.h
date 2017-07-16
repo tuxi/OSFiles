@@ -67,6 +67,11 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 - (NSString *)MIMEType;
 - (void)setMIMEType:(NSString *)MIMEType;
 
+@property (nullable, copy) void (^cancellationHandler)(void);
+@property (nullable, copy) void (^pausingHandler)(void);
+@property (nullable, copy) void (^resumingHandler)(void);
+@property (nonatomic, nullable, copy) void (^progressHandler)(OSDownloadProgress *progressObj);
+
 @end
 
 @protocol OSDownloaderDelegate <NSObject>

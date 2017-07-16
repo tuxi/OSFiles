@@ -111,7 +111,9 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
 - (void)xy_configCellByModel:(id)model indexPath:(NSIndexPath *)indexPath {
     self.downloadItem = model;
     
-    
+    self.downloadItem.progressHandler = ^(OSDownloadProgress * _Nonnull progressObj) {
+        
+    };
 }
 
 

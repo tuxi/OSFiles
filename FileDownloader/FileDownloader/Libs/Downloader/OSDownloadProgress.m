@@ -87,10 +87,12 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
 }
 
 - (void)setProgress:(float)progress {
-    [self willChangeValueForKey:@"progress"];
     _progress = progress;
-    [self didChangeValueForKey:@"progress"];
-    
+    if (self.progressHandler) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.progressHandler(self);
+        });
+    }
 }
 
 /// 计算当前下载的剩余时间和每秒下载的字节数
