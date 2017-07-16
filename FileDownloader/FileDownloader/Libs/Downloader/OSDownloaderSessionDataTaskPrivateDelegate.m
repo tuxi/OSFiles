@@ -112,9 +112,11 @@
         if (httpStatusCodeIsCorrectFlag == YES) {
             NSURL *finalLocalFileURL = downloadItem.finalLocalFileURL;
             if (finalLocalFileURL) {
+                downloadItem.completionHandler(task.response, downloadItem.finalLocalFileURL, error);
                 [self handleDownloadSuccessWithDownloadItem:downloadItem taskIdentifier:task.taskIdentifier];
             } else {
                 NSError *finalError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorResourceUnavailable userInfo:nil];
+                downloadItem.completionHandler(task.response, nil, finalError);
                 [self handleDownloadFailureWithError:finalError downloadItem:downloadItem taskIdentifier:task.taskIdentifier resumeData:nil];
             }
         } else {
@@ -127,6 +129,7 @@
             [downloadItem setErrorMessagesStack:errorMessagesStackArray];
             
             NSError *finalError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorBadServerResponse userInfo:nil];
+            downloadItem.completionHandler(task.response, nil, finalError);
             [self handleDownloadFailureWithError:finalError downloadItem:downloadItem taskIdentifier:task.taskIdentifier resumeData:nil];
         }
     } else if (error){
@@ -140,6 +143,7 @@
         [downloadItem setErrorMessagesStack:errorMessagesStackArray];
         
         NSError *finalError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorBadServerResponse userInfo:nil];
+        downloadItem.completionHandler(task.response, nil, finalError);
         [self handleDownloadFailureWithError:finalError downloadItem:downloadItem taskIdentifier:task.taskIdentifier resumeData:nil];
     }
     

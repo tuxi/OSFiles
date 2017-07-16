@@ -90,7 +90,7 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
     _progress = progress;
     if (self.progressHandler) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.progressHandler(self);
+            self.progressHandler(self.nativeProgress);
         });
     }
 }

@@ -37,7 +37,11 @@ FOUNDATION_EXTERN NSString * const OSDownloaderFolderNameKey;
 - (long long)getCacheFileSizeWithPath:(NSString *)url;
 /// 执行开始下载任务
 /// @param urlPath 下载任务的remote url path
-- (void)downloadWithURL:(NSString *)urlPath;
+- (id<OSDownloadItemProtocol>)downloadWithURL:(NSString *)urlPath;
+
+- (NSURLSessionDataTask *)downloadTaskWithURLPath:(NSString *)urlPath
+                                             progress:(nullable void (^)(NSProgress *downloadProgress))downloadProgressBlock
+                                    completionHandler:(nullable void (^)(NSURLResponse *response, NSURL * _Nullable filePath, NSError * _Nullable error))completionHandler;
 
 /// 取消下载, 取消下载后任务不可恢复
 /// @param urlPath 下载任务

@@ -48,8 +48,8 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 - (void)setUrlPath:(NSString *)urlPath;
 
 /// 下载会话对象 NSURLSessionDownloadTask
-- (NSURLSessionDataTask *)sessionDownloadTask;
-- (void)setSessionDownloadTask:(NSURLSessionDataTask *)sessionDownloadTask;
+- (NSURLSessionDataTask *)sessionTask;
+- (void)setSessionTask:(NSURLSessionDataTask *)sessionTask;
 
 /// 下载时发送的错误信息栈 错误信息栈(最新的错误信息初入在第一位)
 - (NSArray<NSString *> *)errorMessagesStack;
@@ -70,7 +70,8 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 @property (nullable, copy) void (^cancellationHandler)(void);
 @property (nullable, copy) void (^pausingHandler)(void);
 @property (nullable, copy) void (^resumingHandler)(void);
-@property (nonatomic, nullable, copy) void (^progressHandler)(OSDownloadProgress *progressObj);
+@property (nonatomic, nullable, copy) void (^progressHandler)(NSProgress *progress);
+@property (nonatomic, copy) void (^completionHandler)(NSURLResponse *response, NSURL * _Nullable filePath, NSError * _Nullable error);
 
 @end
 

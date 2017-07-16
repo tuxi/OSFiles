@@ -16,7 +16,7 @@
 /** 下载的url */
 @property (nonatomic, copy) NSString *urlPath;
 /** 下载会话对象 NSURLSessionDownloadTask */
-@property (nonatomic, strong) NSURLSessionTask *sessionDownloadTask;
+@property (nonatomic, strong) NSURLSessionTask *sessionTask;
 /** 下载时发送的错误信息栈 */
 @property (nonatomic, strong) NSArray<NSString *> *errorMessagesStack;
 /** 最后的HTTP状态码 */
@@ -47,7 +47,7 @@ resumingHandler = _resumingHandler;
             sessionDataTask:(NSURLSessionDataTask *)sessionDownloadTask {
     if (self = [super init]) {
         self.urlPath = urlPath;
-        self.sessionDownloadTask = sessionDownloadTask;
+        self.sessionTask = sessionDownloadTask;
         self.resumedFileSizeInBytes = 0;
         self.lastHttpStatusCode = 0;
         
@@ -130,7 +130,7 @@ resumingHandler = _resumingHandler;
     return self.progressObj.nativeProgress.resumingHandler;
 }
 
-- (void)setProgressHandler:(void (^)(OSDownloadProgress * _Nonnull))progressHandler {
+- (void)setProgressHandler:(void (^)(NSProgress * _Nonnull))progressHandler {
     _progressHandler = progressHandler;
     self.progressObj.progressHandler = progressHandler;
 }
@@ -146,8 +146,8 @@ resumingHandler = _resumingHandler;
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     [dict setObject:self.urlPath forKey:@"urlPath"];
     [dict setObject:self.progressObj.description forKey:@"progressObj"];
-    if (self.sessionDownloadTask) {
-        [dict setObject:@(YES) forKey:@"hasSessionDownloadTask"];
+    if (self.sessionTask) {
+        [dict setObject:[NSString stringWithFormat:@"sessionTask identifier:%ld", self.sessionTask.taskIdentifier] forKey:@"taskIdentifier"];
     }
     if (self.MIMEType) {
         [dict setObject:self.MIMEType forKey:@"MIMEType"];

@@ -33,7 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
 /** 恢复下载时所在文件的字节数 */
 @property (nonatomic, assign) ino64_t resumedFileSizeInBytes;
 /** 进度改变回调 */
-@property (nullable, copy) void (^progressHandler)(OSDownloadProgress *progressObj);
+@property (nullable, copy) void (^progressHandler)(NSProgress *progress);
 /// 初始化方法(指定初始化方法)
 /// @param aDownloadProgress 文件下载的进度 0.0 ~ 1.0
 /// @param expectedFileSize 预计文件总大小字节数
