@@ -113,9 +113,13 @@
 
 /// 下载成功并已成功保存到本地
 - (void)handleDownloadSuccessWithDownloadItem:(OSDownloadItem *)downloadItem
-                               taskIdentifier:(NSUInteger)taskIdentifier {
+                               taskIdentifier:(NSUInteger)taskIdentifier
+                                     response:(NSURLResponse *)response {
     
 //    downloadItem.naviteProgress.completedUnitCount = downloadItem.naviteProgress.totalUnitCount;
+    if (downloadItem.completionHandler) {
+        downloadItem.completionHandler(response, downloadItem.finalLocalFileURL, nil);
+    }
     [self.downloader.activeDownloadsDictionary removeObjectForKey:@(taskIdentifier)];
     [self _anDownloadTaskDidEndWithDownloadItem:downloadItem];
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -129,12 +133,15 @@
 - (void)handleDownloadFailureWithError:(NSError *)error
                           downloadItem:(OSDownloadItem *)downloadItem
                         taskIdentifier:(NSUInteger)taskIdentifier
-                            resumeData:(NSData *)resumeData {
+                            response:(NSURLResponse *)response {
     //    downloadItem.naviteProgress.completedUnitCount = downloadItem.naviteProgress.totalUnitCount;
+    if (downloadItem.completionHandler) {
+        downloadItem.completionHandler(response, nil, error);
+    }
     [self.downloader.activeDownloadsDictionary removeObjectForKey:@(taskIdentifier)];
     [self _anDownloadTaskDidEndWithDownloadItem:downloadItem];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.downloadDelegate downloadFailureWithDownloadItem:downloadItem resumeData:resumeData error:error];
+        [self.downloadDelegate downloadFailureWithDownloadItem:downloadItem error:error];
     });
     
     [self.downloader checkMaxConcurrentDownloadCountThenDownloadWaitingQueueIfExceeded];
@@ -313,9 +320,9 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 
 - (void)_cancelWithURL:(NSString *)urlPath {
     NSError *cancelError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:nil];
-    if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadFailureWithDownloadItem:resumeData:error:)]) {
+    if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadFailureWithDownloadItem:error:)]) {
         OSDownloadItem *item = [[OSDownloadItem alloc] initWithURL:urlPath sessionDataTask:nil];
-        [self.downloadDelegate downloadFailureWithDownloadItem:item resumeData:nil error:cancelError];
+        [self.downloadDelegate downloadFailureWithDownloadItem:item error:cancelError];
     }
     
 }

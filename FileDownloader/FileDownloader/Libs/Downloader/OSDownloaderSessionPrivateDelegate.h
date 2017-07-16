@@ -21,10 +21,11 @@
 - (void)handleDownloadFailureWithError:(NSError *)error
                           downloadItem:(id<OSDownloadItemProtocol>)downloadItem
                         taskIdentifier:(NSUInteger)taskIdentifier
-                            resumeData:(NSData *)resumeData;
+                            response:(NSURLResponse *)response;
 /// 下载成功后调用 并已成功保存到本地
 - (void)handleDownloadSuccessWithDownloadItem:(id<OSDownloadItemProtocol>)downloadItem
-                               taskIdentifier:(NSUInteger)taskIdentifier;
+                               taskIdentifier:(NSUInteger)taskIdentifier
+                                     response:(NSURLResponse *)response;
 
 /// 获取下载后文件最终存放的本地路径,若代理实现了则设置使用代理的，没实现则使用默认设定的LocalURL
 - (NSURL *)_getFinalLocalFileURLWithRemoteURL:(NSURL *)remoteURL;

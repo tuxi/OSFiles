@@ -59,7 +59,6 @@
     NSURL *cacheURL = [self _getFinalLocalFileURLWithRemoteURL:dataTask.currentRequest.URL];
     long long cacheFileSize = [self.downloader getCacheFileSizeWithPath:cacheURL.path];
     NSInteger totalLength = [response.allHeaderFields[@"Content-Length"] integerValue] + cacheFileSize;
-//    downloadItem.expectedFileTotalSize = totalLength;
     downloadItem.progressObj.expectedFileTotalSize = totalLength;
     
     // 接收这个请求，允许接收服务器的数据
@@ -69,23 +68,16 @@
 /// 接收到服务器返回的数据
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data {
     id<OSDownloadItemProtocol> downloadItem = [self.downloader getDownloadItemByTask:dataTask];
-    // 下载进度
     NSURL *cacheURL = [self _getFinalLocalFileURLWithRemoteURL:dataTask.currentRequest.URL];
     long long cacheFileSize = [self.downloader getCacheFileSizeWithPath:cacheURL.path];
-//    NSUInteger receivedSize = cacheFileSize;
-//    NSUInteger expectedSize = downloadItem.expectedFileTotalSize;
     NSUInteger expectedSize = downloadItem.progressObj.expectedFileTotalSize;
-//    CGFloat progress = 1.0 * receivedSize / expectedSize;
-    // 写入数据
     [downloadItem.outputStream write:data.bytes maxLength:data.length];
     if (downloadItem) {
         if (!downloadItem.progressObj.downloadStartDate) {
             downloadItem.progressObj.downloadStartDate = [NSDate date];
             downloadItem.progressObj.bytesPerSecondSpeed = 0;
         }
-//        downloadItem.receivedFileSize = cacheFileSize;
         downloadItem.progressObj.receivedFileSize = cacheFileSize;
-//        downloadItem.expectedFileTotalSize = expectedSize;
         downloadItem.progressObj.expectedFileTotalSize = expectedSize;
         NSString *taskDescription = [dataTask.taskDescription copy];
         [self _progressChangeWithURL:taskDescription];
@@ -99,7 +91,7 @@
     
     id<OSDownloadItemProtocol> downloadItem = [self.downloader getDownloadItemByTask:(NSURLSessionDataTask *)task];
     if (!downloadItem) {
-        [self handleDownloadFailureWithError:error downloadItem:downloadItem taskIdentifier:task.taskIdentifier resumeData:nil];
+        [self handleDownloadFailureWithError:error downloadItem:downloadItem taskIdentifier:task.taskIdentifier response:task.response];
         return;
     };
     NSHTTPURLResponse *aHttpResponse = (NSHTTPURLResponse *)task.response;
@@ -112,12 +104,11 @@
         if (httpStatusCodeIsCorrectFlag == YES) {
             NSURL *finalLocalFileURL = downloadItem.finalLocalFileURL;
             if (finalLocalFileURL) {
-                downloadItem.completionHandler(task.response, downloadItem.finalLocalFileURL, error);
-                [self handleDownloadSuccessWithDownloadItem:downloadItem taskIdentifier:task.taskIdentifier];
+                
+                [self handleDownloadSuccessWithDownloadItem:downloadItem taskIdentifier:task.taskIdentifier response:task.response];
             } else {
                 NSError *finalError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorResourceUnavailable userInfo:nil];
-                downloadItem.completionHandler(task.response, nil, finalError);
-                [self handleDownloadFailureWithError:finalError downloadItem:downloadItem taskIdentifier:task.taskIdentifier resumeData:nil];
+                [self handleDownloadFailureWithError:finalError downloadItem:downloadItem taskIdentifier:task.taskIdentifier response:task.response];
             }
         } else {
             NSString *errorString = [NSString stringWithFormat:@"Invalid http status code: %@", @(httpStatusCode)];
@@ -129,8 +120,10 @@
             [downloadItem setErrorMessagesStack:errorMessagesStackArray];
             
             NSError *finalError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorBadServerResponse userInfo:nil];
-            downloadItem.completionHandler(task.response, nil, finalError);
-            [self handleDownloadFailureWithError:finalError downloadItem:downloadItem taskIdentifier:task.taskIdentifier resumeData:nil];
+            if (downloadItem.completionHandler) {
+                downloadItem.completionHandler(task.response, nil, finalError);
+            }
+            [self handleDownloadFailureWithError:finalError downloadItem:downloadItem taskIdentifier:task.taskIdentifier response:task.response];
         }
     } else if (error){
         // 下载失败
@@ -143,8 +136,7 @@
         [downloadItem setErrorMessagesStack:errorMessagesStackArray];
         
         NSError *finalError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorBadServerResponse userInfo:nil];
-        downloadItem.completionHandler(task.response, nil, finalError);
-        [self handleDownloadFailureWithError:finalError downloadItem:downloadItem taskIdentifier:task.taskIdentifier resumeData:nil];
+        [self handleDownloadFailureWithError:finalError downloadItem:downloadItem taskIdentifier:task.taskIdentifier response:task.response];
     }
     
     // 关闭流

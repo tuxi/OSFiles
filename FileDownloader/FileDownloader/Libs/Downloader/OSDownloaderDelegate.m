@@ -57,7 +57,8 @@ NSString * const OSFileDownloadTotalProgressCanceldNotification = @"OSFileDownlo
     })
 }
 
-- (void)downloadFailureWithDownloadItem:(id<OSDownloadItemProtocol>)downloadItem resumeData:(NSData *)resumeData error:(NSError *)error {
+- (void)downloadFailureWithDownloadItem:(id<OSDownloadItemProtocol>)downloadItem
+                                  error:(NSError *)error {
     
     // 根据aIdentifier在downloadItems中查找对应的DownloadItem
     NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:downloadItem.urlPath];
@@ -71,15 +72,10 @@ NSString * const OSFileDownloadTotalProgressCanceldNotification = @"OSFileDownlo
         
         // 更新此下载失败的item的状态
         if (fileItem.status != OSFileDownloadStatusPaused) {
-            if (resumeData.length > 0)
-            {
-                fileItem.status = OSFileDownloadStatusFailure;
-            } else if ([error.domain isEqualToString:NSURLErrorDomain]
-                       && (error.code == NSURLErrorCancelled))
-            {
+            if ([error.domain isEqualToString:NSURLErrorDomain] &&
+                (error.code == NSURLErrorCancelled)) {
                 fileItem.status = OSFileDownloadStatusCancelled;
-            } else
-            {
+            } else {
                 fileItem.status = OSFileDownloadStatusFailure;
             }
         }

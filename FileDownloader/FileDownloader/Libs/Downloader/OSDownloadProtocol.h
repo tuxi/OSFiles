@@ -84,10 +84,8 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 
 /// 一个任务下载时候时调用
 /// @param downloadItem 下载的OSDownloadItem
-/// @param resumeData 当前错误前已经下载的数据，当继续下载时可以复用此数据继续之前进度
 /// @prram error 下载错误信息
 - (void)downloadFailureWithDownloadItem:(id<OSDownloadItemProtocol>)downloadItem
-                             resumeData:(nullable NSData *)resumeData
                                   error:(nullable NSError *)error;
 
 @optional

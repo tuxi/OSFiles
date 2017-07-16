@@ -42,6 +42,9 @@ FOUNDATION_EXTERN NSString * const OSDownloaderFolderNameKey;
 - (NSURLSessionDataTask *)downloadTaskWithURLPath:(NSString *)urlPath
                                              progress:(nullable void (^)(NSProgress *downloadProgress))downloadProgressBlock
                                     completionHandler:(nullable void (^)(NSURLResponse *response, NSURL * _Nullable filePath, NSError * _Nullable error))completionHandler;
+- (NSURLSessionDataTask *)downloadTaskWithRequest:(NSURLRequest *)request
+                                         progress:(nullable void (^)(NSProgress *downloadProgress))downloadProgressBlock
+                                completionHandler:(nullable void (^)(NSURLResponse *response, NSURL * _Nullable filePath, NSError * _Nullable error))completionHandler;
 
 /// 取消下载, 取消下载后任务不可恢复
 /// @param urlPath 下载任务
