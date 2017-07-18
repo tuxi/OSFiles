@@ -99,22 +99,19 @@ static void *ProgressObserverContext = &ProgressObserverContext;
     }
     NSString *urlPath = [[task taskDescription] copy];
     if (urlPath) {
-        NSProgress *progress = self.totalProgress;
-        progress.totalUnitCount++;
-        // UnitCount是一个基于UI上的完整任务的单元数
-        // 将此rootProgress注册为当前线程任务的根进度管理对象，向下分支出一个子任务 比如子任务进度总数为10个单元 即当子任务完成时 父progerss对象进度走1个单元
-        [progress becomeCurrentWithPendingUnitCount:1];
+        self.totalProgress.totalUnitCount++;
+//        // UnitCount是一个基于UI上的完整任务的单元数
+//        // 将此rootProgress注册为当前线程任务的根进度管理对象，向下分支出一个子任务 比如子任务进度总数为10个单元 即当子任务完成时 父progerss对象进度走1个单元
+        [self.totalProgress becomeCurrentWithPendingUnitCount:1];
         
         downloadItem = [[OSDownloadItem alloc] initWithURL:urlPath sessionDataTask:task];
         // 注意: 必须和becomeCurrentWithPendingUnitCount成对使用
-        [progress resignCurrent];
+        [self.totalProgress resignCurrent];
         
         // 将下载任务保存到activeDownloadsDictionary中
         [self.activeDownloadsDictionary setObject:downloadItem
                                            forKey:@(task.taskIdentifier)];
         [self initializeDownloadCallBack:downloadItem];
-        // 有新的任务开始时，重置总进度
-        [self resetProgressIfNoActiveDownloadsRunning];
         [self.sessionDelegate _anDownloadTaskWillBeginWithDownloadItem:downloadItem];
     }
     
@@ -159,6 +156,9 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 }
 
 - (id<OSDownloadItemProtocol>)downloadWithRequest:(NSURLRequest *)request  {
+    // 无任务下载时，重置总进度
+    [self resetProgressIfNoActiveDownloadsRunning];
+    
     NSUInteger taskIdentifier = 0;
     NSURL *remoteURL = request.URL;
     NSString *urlPath = remoteURL.absoluteString;
@@ -166,6 +166,8 @@ static void *ProgressObserverContext = &ProgressObserverContext;
         
         OSDownloadItem *downloadItem = [self getDownloadItemByURL:urlPath];
         if (!downloadItem) {
+            self.totalProgress.totalUnitCount++;
+            [self.totalProgress becomeCurrentWithPendingUnitCount:1];
             NSURL *cacheURL = [self.sessionDelegate _getFinalLocalFileURLWithRemoteURL:remoteURL];
             NSOutputStream *stream = [NSOutputStream outputStreamWithURL:cacheURL append:YES];
             NSURLSessionDataTask *dataTask = [self.backgroundSeesion dataTaskWithRequest:request];
@@ -191,10 +193,9 @@ static void *ProgressObserverContext = &ProgressObserverContext;
                 downloadItem.progressObj.bytesPerSecondSpeed = 0;
                 DLog(@"INFO: Download (id: %@) resumed (offset: %@ bytes, expected: %@ bytes", dataTask.taskDescription, @(cacheFileSize), @(downloadItem.progressObj.expectedFileTotalSize));
             }
-            NSProgress *naviteProgress = self.totalProgress;
-            naviteProgress.totalUnitCount++;
-            [naviteProgress becomeCurrentWithPendingUnitCount:1];
-            [naviteProgress resignCurrent];
+            
+            
+            [self.totalProgress resignCurrent];
         } else {
             DLog(@"INFO: download item exit");
         }
@@ -203,8 +204,6 @@ static void *ProgressObserverContext = &ProgressObserverContext;
         [self.activeDownloadsDictionary setObject:downloadItem
                                            forKey:@(dataTask.taskIdentifier)];
         [self initializeDownloadCallBack:downloadItem];
-        // 有新的任务开始时，重置总进度
-        [self resetProgressIfNoActiveDownloadsRunning];
         [self.sessionDelegate _anDownloadTaskWillBeginWithDownloadItem:downloadItem];
         [dataTask resume];
         return downloadItem;

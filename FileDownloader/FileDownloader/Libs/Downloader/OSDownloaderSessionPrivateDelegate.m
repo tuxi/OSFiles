@@ -116,7 +116,7 @@
                                taskIdentifier:(NSUInteger)taskIdentifier
                                      response:(NSURLResponse *)response {
     
-//    downloadItem.naviteProgress.completedUnitCount = downloadItem.naviteProgress.totalUnitCount;
+    downloadItem.progressObj.nativeProgress.completedUnitCount = downloadItem.progressObj.nativeProgress.totalUnitCount;
     if (downloadItem.completionHandler) {
         downloadItem.completionHandler(response, downloadItem.finalLocalFileURL, nil);
     }
@@ -133,8 +133,8 @@
 - (void)handleDownloadFailureWithError:(NSError *)error
                           downloadItem:(OSDownloadItem *)downloadItem
                         taskIdentifier:(NSUInteger)taskIdentifier
-                            response:(NSURLResponse *)response {
-    //    downloadItem.naviteProgress.completedUnitCount = downloadItem.naviteProgress.totalUnitCount;
+                              response:(NSURLResponse *)response {
+    downloadItem.progressObj.nativeProgress.completedUnitCount = downloadItem.progressObj.nativeProgress.totalUnitCount;
     if (downloadItem.completionHandler) {
         downloadItem.completionHandler(response, nil, error);
     }

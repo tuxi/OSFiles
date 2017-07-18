@@ -54,7 +54,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
         self.downloadDelegate = [OSDownloaderDelegate new];
         self.downloader = [OSDownloader new];
         self.downloader.downloadDelegate = self.downloadDelegate;
-        self.downloader.maxConcurrentDownloads = 1;
+        self.downloader.maxConcurrentDownloads = NSIntegerMax;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate) name:UIApplicationWillTerminateNotification object:nil];
         self.downloadItems = [self restoredDownloadItems];
     }
