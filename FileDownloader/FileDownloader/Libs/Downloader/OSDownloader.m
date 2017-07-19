@@ -9,7 +9,6 @@
 #import "OSDownloader.h"
 #import "OSDownloaderSessionPrivateDelegate.h"
 #import "OSDownloadItem.h"
-#import "OSDownloaderSessionDataTaskPrivateDelegate.h"
 
 // 后台任务的标识符
 #define kBackgroundDownloadSessionIdentifier [NSString stringWithFormat:@"%@.OSDownloader", [NSBundle mainBundle].bundleIdentifier]
@@ -64,7 +63,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
                                 options:NSKeyValueObservingOptionInitial
                                 context:ProgressObserverContext];
         
-        _sessionDelegate = [[OSDownloaderSessionDataTaskPrivateDelegate alloc] initWithDownloader:self];
+        _sessionDelegate = [[OSDownloaderSessionPrivateDelegate alloc] initWithDownloader:self];
         _backgroundSeesion = [NSURLSession sessionWithConfiguration:[self createBackgroundSessionConfig] delegate:self delegateQueue:self.backgroundSeesionQueue];
         _backgroundSeesion.sessionDescription = @"OSDownload_BackgroundSession";
         _lock_ = [NSLock new];

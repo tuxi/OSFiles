@@ -112,9 +112,9 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
     self.downloadItem = model;
     
     typeof(self) weakSelf = self;
-    self.downloadItem.progressHandler = ^(NSProgress * _Nonnull progress) {
-        [weakSelf setProgress];
-    };
+//    self.downloadItem.progressHandler = ^(NSProgress * _Nonnull progress) {
+//        [weakSelf setProgress];
+//    };
     
     self.downloadItem.statusChangeHandler = ^(OSFileDownloadStatus status) {
         [weakSelf setDownloadViewByStatus:status];
@@ -128,7 +128,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
 ////////////////////////////////////////////////////////////////////////
 - (void)setDownloadItem:(OSFileItem *)downloadItem {
     _downloadItem = downloadItem;
-    [self setProgress];
+    
     self.downloadStatusLabel.hidden = NO;
     self.speedLabel.hidden = NO;
     self.remainTimeLabel.hidden = NO;
@@ -136,13 +136,14 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
     self.fileSizeLabel.hidden = YES;
     self.iconView.hidden = YES;
     self.iconView.image = [UIImage imageNamed:@"TabBrowser"];
-    
-    
-    
+
     self.cycleView.circularState = FFCircularStateIcon;
     
     [self.fileNameLabel setText:self.downloadItem.fileName];
+    
+    [self setProgress];
     [self setDownloadViewByStatus:downloadItem.status];
+    
     
 }
 
@@ -216,9 +217,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
     OSDownloadProgress *progress = self.downloadItem.progressObj;
     if (progress) {
         self.cycleView.progress = progress.progress;
-        if (progress) {
-            [self.cycleView stopSpinProgressBackgroundLayer];
-        }
+        [self.cycleView stopSpinProgressBackgroundLayer];
     } else {
         if (self.downloadItem.status == OSFileDownloadStatusSuccess) {
             self.cycleView.progress = 1.0;

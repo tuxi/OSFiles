@@ -66,31 +66,6 @@
     return localFileURL;
 }
 
-/// 默认缓存下载文件的本地文件夹
-+ (NSURL *)getDefaultLocalFolderPath {
-    NSURL *fileDownloadDirectoryURL = nil;
-    NSError *anError = nil;
-    NSArray *documentDirectoryURLsArray = [[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];
-    NSURL *documentsDirectoryURL = [documentDirectoryURLsArray firstObject];
-    if (documentsDirectoryURL) {
-        fileDownloadDirectoryURL = [documentsDirectoryURL URLByAppendingPathComponent:OSDownloaderFolderNameKey isDirectory:YES];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:fileDownloadDirectoryURL.path] == NO) {
-            BOOL aCreateDirectorySuccess = [[NSFileManager defaultManager] createDirectoryAtPath:fileDownloadDirectoryURL.path withIntermediateDirectories:YES attributes:nil error:&anError];
-            if (aCreateDirectorySuccess == NO) {
-                DLog(@"Error on create directory: %@", anError);
-            } else {
-                // 排除备份，即使文件存储在document中，该目录下载的文件也不会被备份到itunes或上传的iCloud中
-                BOOL aSetResourceValueSuccess = [fileDownloadDirectoryURL setResourceValue:@YES forKey:NSURLIsExcludedFromBackupKey error:&anError];
-                if (aSetResourceValueSuccess == NO) {
-                    DLog(@"Error on set resource value (NSURLIsExcludedFromBackupKey): %@", anError);
-                }
-            }
-        }
-        return fileDownloadDirectoryURL;
-    }
-    return nil;
-    
-}
 
 /// 即将开始下载时调用
 - (void)_anDownloadTaskWillBeginWithDownloadItem:(id<OSDownloadItemProtocol>)downloadItem {
@@ -147,48 +122,6 @@
     [self.downloader checkMaxConcurrentDownloadCountThenDownloadWaitingQueueIfExceeded];
 }
 
-
-
-/// SSL / TLS 验证
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
-didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
- completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential * _Nullable credential))completionHandler{
-    
-    if ([self.downloadDelegate respondsToSelector:@selector(authenticationChallenge:url:completionHandler:)]) {
-        NSString *urlPath = [task.taskDescription copy];
-        if (urlPath) {
-            [self.downloadDelegate authenticationChallenge:challenge
-                                                       url:urlPath
-                                         completionHandler:^(NSURLCredential * _Nullable aCredential, NSURLSessionAuthChallengeDisposition aDisposition) {
-                                             completionHandler(aDisposition, aCredential);
-                                         }];
-        } else {
-            DLog(@"Error: Missing task description");
-            completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, nil);
-        }
-    } else {
-        DLog(@"Error: Received authentication challenge with no delegate method implemented");
-        completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, nil);
-    }
-    
-}
-
-////////////////////////////////////////////////////////////////////////
-#pragma mark - NSURLSessionDelegate
-////////////////////////////////////////////////////////////////////////
-
-/// 后台任务完成时调用
-- (void)URLSessionDidFinishEventsForBackgroundURLSession:(NSURLSession *)session {
-    if (self.downloader.backgroundSessionCompletionHandler) {
-        self.downloader.backgroundSessionCompletionHandler();
-    }
-}
-
-/// 当不再需要连接调用Session的invalidateAndCancel直接关闭，或者调用finishTasksAndInvalidate等待当前Task结束后关闭
-/// 此时此方法会收到回调
-- (void)URLSession:(NSURLSession *)session didBecomeInvalidWithError:(NSError *)error {
-    DLog(@"Error: URL session did become invalid with error: %@", error);
-}
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -327,5 +260,173 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     
 }
 
+
+/// 默认缓存下载文件的本地文件夹
++ (NSURL *)getDefaultLocalFolderPath {
+    NSURL *fileDownloadDirectoryURL = nil;
+    NSError *anError = nil;
+    NSArray *documentDirectoryURLsArray = [[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];
+    NSURL *documentsDirectoryURL = [documentDirectoryURLsArray firstObject];
+    if (documentsDirectoryURL) {
+        fileDownloadDirectoryURL = [documentsDirectoryURL URLByAppendingPathComponent:OSDownloaderFolderNameKey isDirectory:YES];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:fileDownloadDirectoryURL.path] == NO) {
+            BOOL aCreateDirectorySuccess = [[NSFileManager defaultManager] createDirectoryAtPath:fileDownloadDirectoryURL.path withIntermediateDirectories:YES attributes:nil error:&anError];
+            if (aCreateDirectorySuccess == NO) {
+                DLog(@"Error on create directory: %@", anError);
+            } else {
+                // 排除备份，即使文件存储在document中，该目录下载的文件也不会被备份到itunes或上传的iCloud中
+                BOOL aSetResourceValueSuccess = [fileDownloadDirectoryURL setResourceValue:@YES forKey:NSURLIsExcludedFromBackupKey error:&anError];
+                if (aSetResourceValueSuccess == NO) {
+                    DLog(@"Error on set resource value (NSURLIsExcludedFromBackupKey): %@", anError);
+                }
+            }
+        }
+        return fileDownloadDirectoryURL;
+    }
+    return nil;
+    
+}
+
+////////////////////////////////////////////////////////////////////////
+#pragma mark - NSURLSessionDataDelegate
+////////////////////////////////////////////////////////////////////////
+
+/// 接收到响应
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSHTTPURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler {
+    
+    id<OSDownloadItemProtocol> downloadItem = [self.downloader getDownloadItemByTask:dataTask];
+    
+    // 打开流
+    [downloadItem.outputStream open];
+    
+    // 获得服务器这次请求 返回数据的总长度
+    NSURL *cacheURL = [self _getFinalLocalFileURLWithRemoteURL:dataTask.currentRequest.URL];
+    long long cacheFileSize = [self.downloader getCacheFileSizeWithPath:cacheURL.path];
+    NSInteger totalLength = [response.allHeaderFields[@"Content-Length"] integerValue] + cacheFileSize;
+    downloadItem.progressObj.expectedFileTotalSize = totalLength;
+    
+    // 接收这个请求，允许接收服务器的数据
+    completionHandler(NSURLSessionResponseAllow);
+}
+
+/// 接收到服务器返回的数据
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data {
+    id<OSDownloadItemProtocol> downloadItem = [self.downloader getDownloadItemByTask:dataTask];
+    NSURL *cacheURL = [self _getFinalLocalFileURLWithRemoteURL:dataTask.currentRequest.URL];
+    long long cacheFileSize = [self.downloader getCacheFileSizeWithPath:cacheURL.path];
+    NSUInteger expectedSize = downloadItem.progressObj.expectedFileTotalSize;
+    [downloadItem.outputStream write:data.bytes maxLength:data.length];
+    if (downloadItem) {
+        if (!downloadItem.progressObj.downloadStartDate) {
+            downloadItem.progressObj.downloadStartDate = [NSDate date];
+            downloadItem.progressObj.bytesPerSecondSpeed = 0;
+        }
+        downloadItem.progressObj.receivedFileSize = cacheFileSize;
+        downloadItem.progressObj.expectedFileTotalSize = expectedSize;
+        NSString *taskDescription = [dataTask.taskDescription copy];
+        [self _progressChangeWithURL:taskDescription];
+    }
+    
+    
+}
+
+/// 请求完毕（成功|失败）
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
+    
+    id<OSDownloadItemProtocol> downloadItem = [self.downloader getDownloadItemByTask:(NSURLSessionDataTask *)task];
+    if (!downloadItem) {
+        [self handleDownloadFailureWithError:error downloadItem:downloadItem taskIdentifier:task.taskIdentifier response:task.response];
+        return;
+    };
+    NSHTTPURLResponse *aHttpResponse = (NSHTTPURLResponse *)task.response;
+    NSInteger httpStatusCode = aHttpResponse.statusCode;
+    downloadItem.lastHttpStatusCode = httpStatusCode;
+    downloadItem.MIMEType = task.response.MIMEType;
+    if (error == nil && [self.downloader isCompletionByRemoteUrlPath:downloadItem.urlPath]) {
+        // 下载完成
+        BOOL httpStatusCodeIsCorrectFlag = [self _isVaildHTTPStatusCode:httpStatusCode url:downloadItem.urlPath];
+        if (httpStatusCodeIsCorrectFlag == YES) {
+            NSURL *finalLocalFileURL = downloadItem.finalLocalFileURL;
+            if (finalLocalFileURL) {
+                
+                [self handleDownloadSuccessWithDownloadItem:downloadItem taskIdentifier:task.taskIdentifier response:task.response];
+            } else {
+                NSError *finalError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorResourceUnavailable userInfo:nil];
+                [self handleDownloadFailureWithError:finalError downloadItem:downloadItem taskIdentifier:task.taskIdentifier response:task.response];
+            }
+        } else {
+            NSString *errorString = [NSString stringWithFormat:@"Invalid http status code: %@", @(httpStatusCode)];
+            NSMutableArray<NSString *> *errorMessagesStackArray = [downloadItem.errorMessagesStack mutableCopy];
+            if (errorMessagesStackArray == nil) {
+                errorMessagesStackArray = [NSMutableArray array];
+            }
+            [errorMessagesStackArray insertObject:errorString atIndex:0];
+            [downloadItem setErrorMessagesStack:errorMessagesStackArray];
+            
+            NSError *finalError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorBadServerResponse userInfo:nil];
+            if (downloadItem.completionHandler) {
+                downloadItem.completionHandler(task.response, nil, finalError);
+            }
+            [self handleDownloadFailureWithError:finalError downloadItem:downloadItem taskIdentifier:task.taskIdentifier response:task.response];
+        }
+    } else if (error){
+        // 下载失败
+        NSString *errorString = [NSString stringWithFormat:@"Invalid http status code: %@", @(httpStatusCode)];
+        NSMutableArray<NSString *> *errorMessagesStackArray = [downloadItem.errorMessagesStack mutableCopy];
+        if (errorMessagesStackArray == nil) {
+            errorMessagesStackArray = [NSMutableArray array];
+        }
+        [errorMessagesStackArray insertObject:errorString atIndex:0];
+        [downloadItem setErrorMessagesStack:errorMessagesStackArray];
+        
+        NSError *finalError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorBadServerResponse userInfo:nil];
+        [self handleDownloadFailureWithError:finalError downloadItem:downloadItem taskIdentifier:task.taskIdentifier response:task.response];
+    }
+    
+    // 关闭流
+    [downloadItem.outputStream close];
+    downloadItem.outputStream = nil;
+}
+
+/// SSL / TLS 验证
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
+didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
+ completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential * _Nullable credential))completionHandler{
+    
+    if ([self.downloadDelegate respondsToSelector:@selector(authenticationChallenge:url:completionHandler:)]) {
+        NSString *urlPath = [task.taskDescription copy];
+        if (urlPath) {
+            [self.downloadDelegate authenticationChallenge:challenge
+                                                       url:urlPath
+                                         completionHandler:^(NSURLCredential * _Nullable aCredential, NSURLSessionAuthChallengeDisposition aDisposition) {
+                                             completionHandler(aDisposition, aCredential);
+                                         }];
+        } else {
+            DLog(@"Error: Missing task description");
+            completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, nil);
+        }
+    } else {
+        DLog(@"Error: Received authentication challenge with no delegate method implemented");
+        completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, nil);
+    }
+    
+}
+
+////////////////////////////////////////////////////////////////////////
+#pragma mark - NSURLSessionDelegate
+////////////////////////////////////////////////////////////////////////
+
+/// 后台任务完成时调用
+- (void)URLSessionDidFinishEventsForBackgroundURLSession:(NSURLSession *)session {
+    if (self.downloader.backgroundSessionCompletionHandler) {
+        self.downloader.backgroundSessionCompletionHandler();
+    }
+}
+
+/// 当不再需要连接调用Session的invalidateAndCancel直接关闭，或者调用finishTasksAndInvalidate等待当前Task结束后关闭
+/// 此时此方法会收到回调
+- (void)URLSession:(NSURLSession *)session didBecomeInvalidWithError:(NSError *)error {
+    DLog(@"Error: URL session did become invalid with error: %@", error);
+}
 
 @end
