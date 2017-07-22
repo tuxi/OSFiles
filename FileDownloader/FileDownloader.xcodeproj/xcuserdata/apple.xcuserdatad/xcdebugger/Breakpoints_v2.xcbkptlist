@@ -57,13 +57,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "FileDownloader/Libs/Downloader/OSDownloaderSessionPrivateDelegate.m"
-            timestampString = "522168527.55372"
+            filePath = "FileDownloader/Libs/Downloader/OSDownloader.m"
+            timestampString = "522434490.256201"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "113"
-            endingLineNumber = "113"
-            landmarkName = "-handleDownloadFailureWithError:downloadItem:taskIdentifier:response:"
+            startingLineNumber = "539"
+            endingLineNumber = "539"
+            landmarkName = "-URLSession:task:didCompleteWithError:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

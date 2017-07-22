@@ -242,10 +242,6 @@
 
 - (void)_pauseWithURL:(NSString *)urlPath {
     if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadPausedWithURL:)]) {
-        if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_8_4) {
-            // iOS9及以上resumeData(恢复数据)由系统管理，并在使用NSProgress调用时使用
-            //                    aResumeData = nil;
-        }
         [self.downloadDelegate downloadPausedWithURL:urlPath];
     }
     
@@ -312,17 +308,13 @@
 /// 接收到服务器返回的数据
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data {
     id<OSDownloadItemProtocol> downloadItem = [self.downloader getDownloadItemByTask:dataTask];
-    NSURL *cacheURL = [self _getFinalLocalFileURLWithRemoteURL:dataTask.currentRequest.URL];
-    long long cacheFileSize = [self.downloader getCacheFileSizeWithPath:cacheURL.path];
-    NSUInteger expectedSize = downloadItem.progressObj.expectedFileTotalSize;
     [downloadItem.outputStream write:data.bytes maxLength:data.length];
     if (downloadItem) {
         if (!downloadItem.progressObj.downloadStartDate) {
             downloadItem.progressObj.downloadStartDate = [NSDate date];
             downloadItem.progressObj.bytesPerSecondSpeed = 0;
         }
-        downloadItem.progressObj.receivedFileSize = cacheFileSize;
-        downloadItem.progressObj.expectedFileTotalSize = expectedSize;
+        downloadItem.progressObj.receivedFileSize += data.length;
         NSString *taskDescription = [dataTask.taskDescription copy];
         [self _progressChangeWithURL:taskDescription];
     }

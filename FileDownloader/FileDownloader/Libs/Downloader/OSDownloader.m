@@ -188,6 +188,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
             
             if (cacheFileSize > 0) {
                 downloadItem.progressObj.resumedFileSizeInBytes = cacheFileSize;
+                downloadItem.progressObj.receivedFileSize = cacheFileSize;
                 downloadItem.progressObj.downloadStartDate = [NSDate date];
                 downloadItem.progressObj.bytesPerSecondSpeed = 0;
                 DLog(@"INFO: Download (id: %@) resumed (offset: %@ bytes, expected: %@ bytes", dataTask.taskDescription, @(cacheFileSize), @(downloadItem.progressObj.expectedFileTotalSize));
