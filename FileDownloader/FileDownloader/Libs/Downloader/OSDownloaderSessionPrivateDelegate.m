@@ -7,7 +7,7 @@
 //
 
 #import "OSDownloaderSessionPrivateDelegate.h"
-#import "OSDownloadItem.h"
+#import "OSDownloadOperation.h"
 #import "OSDownloader.h"
 
 @interface OSDownloaderSessionPrivateDelegate ()
@@ -68,14 +68,14 @@
 
 
 /// 即将开始下载时调用
-- (void)_anDownloadTaskWillBeginWithDownloadItem:(id<OSDownloadItemProtocol>)downloadItem {
+- (void)_anDownloadTaskWillBeginWithDownloadItem:(id<OSDownloadOperationProtocol>)downloadItem {
     if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadTaskWillBeginWithDownloadItem:)]) {
         [self.downloadDelegate downloadTaskWillBeginWithDownloadItem:downloadItem];
     }
 }
 
 /// 已经结束某个任务，不管是否成功都会调用
-- (void)_anDownloadTaskDidEndWithDownloadItem:(id<OSDownloadItemProtocol>)downloadItem {
+- (void)_anDownloadTaskDidEndWithDownloadItem:(id<OSDownloadOperationProtocol>)downloadItem {
     if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadTaskDidEndWithDownloadItem:)]) {
         [self.downloadDelegate downloadTaskDidEndWithDownloadItem:downloadItem];
     }
@@ -87,7 +87,7 @@
 
 
 /// 下载成功并已成功保存到本地
-- (void)handleDownloadSuccessWithDownloadItem:(OSDownloadItem *)downloadItem
+- (void)handleDownloadSuccessWithDownloadItem:(OSDownloadOperation *)downloadItem
                                taskIdentifier:(NSUInteger)taskIdentifier
                                      response:(NSURLResponse *)response {
     
@@ -106,7 +106,7 @@
 
 /// 下载取消、失败时回调
 - (void)handleDownloadFailureWithError:(NSError *)error
-                          downloadItem:(OSDownloadItem *)downloadItem
+                          downloadItem:(OSDownloadOperation *)downloadItem
                         taskIdentifier:(NSUInteger)taskIdentifier
                               response:(NSURLResponse *)response {
     downloadItem.progressObj.nativeProgress.completedUnitCount = downloadItem.progressObj.nativeProgress.totalUnitCount;
@@ -250,7 +250,7 @@
 - (void)_cancelWithURL:(NSString *)urlPath {
     NSError *cancelError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:nil];
     if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadFailureWithDownloadItem:error:)]) {
-        OSDownloadItem *item = [[OSDownloadItem alloc] initWithURL:urlPath sessionDataTask:nil];
+        OSDownloadOperation *item = [[OSDownloadOperation alloc] initWithURL:urlPath sessionDataTask:nil];
         [self.downloadDelegate downloadFailureWithDownloadItem:item error:cancelError];
     }
     
@@ -290,7 +290,7 @@
 /// 接收到响应
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSHTTPURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler {
     
-    id<OSDownloadItemProtocol> downloadItem = [self.downloader getDownloadItemByTask:dataTask];
+    id<OSDownloadOperationProtocol> downloadItem = [self.downloader getDownloadItemByTask:dataTask];
     
     // 打开流
     [downloadItem.outputStream open];
@@ -307,7 +307,7 @@
 
 /// 接收到服务器返回的数据
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data {
-    id<OSDownloadItemProtocol> downloadItem = [self.downloader getDownloadItemByTask:dataTask];
+    id<OSDownloadOperationProtocol> downloadItem = [self.downloader getDownloadItemByTask:dataTask];
     [downloadItem.outputStream write:data.bytes maxLength:data.length];
     if (downloadItem) {
         if (!downloadItem.progressObj.downloadStartDate) {
@@ -325,7 +325,7 @@
 /// 请求完毕（成功|失败）
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
     
-    id<OSDownloadItemProtocol> downloadItem = [self.downloader getDownloadItemByTask:(NSURLSessionDataTask *)task];
+    id<OSDownloadOperationProtocol> downloadItem = [self.downloader getDownloadItemByTask:(NSURLSessionDataTask *)task];
     if (!downloadItem) {
         [self handleDownloadFailureWithError:error downloadItem:downloadItem taskIdentifier:task.taskIdentifier response:task.response];
         return;

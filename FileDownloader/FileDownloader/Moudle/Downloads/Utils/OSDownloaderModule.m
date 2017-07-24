@@ -156,7 +156,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 
 
 - (void)start:(NSString *)urlPath {
-    @synchronized (self) {
+    @synchronized (_downloadItems) {
         
         NSUInteger foundIndexInDownloadItems = [self foundItemIndxInDownloadItemsByURL:urlPath];
         if (foundIndexInDownloadItems == NSNotFound) {
@@ -206,7 +206,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 }
 
 - (void)cancel:(NSString *)urlPath {
-    @synchronized (self) {
+    @synchronized (_downloadItems) {
         /// 根据downloadIdentifier 在self.downloadItems中找到对应的item
         NSUInteger itemIdx = [self foundItemIndxInDownloadItemsByURL:urlPath];
         if (itemIdx != NSNotFound) {
@@ -245,7 +245,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 
 - (void)resume:(NSString *)urlPath {
     
-    @synchronized (self) {
+    @synchronized (_downloadItems) {
         NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:urlPath];
         if (foundItemIdx != NSNotFound) {
             OSFileItem *downloadItem = [self.downloadItems objectAtIndex:foundItemIdx];
@@ -318,7 +318,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 }
 
 - (BOOL)deleteFile:(NSString *)localPath {
-    @synchronized (self) {
+    @synchronized (_downloadItems) {
         NSError *error = nil;
         BOOL isExist = [[NSFileManager defaultManager] fileExistsAtPath:localPath];
         if (isExist) {
@@ -333,7 +333,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 }
 
 - (void)clearAllDownloadTask {
-    @synchronized (self) {
+    @synchronized (_downloadItems) {
         typeof(self) weakSelf = self;
         [self.downloadItems enumerateObjectsUsingBlock:^(OSFileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             
@@ -454,7 +454,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 #pragma mark - Other
 ////////////////////////////////////////////////////////////////////////
 
-// 查找urlPath在displayItems中对应的OSDownloadItem的索引
+// 查找urlPath在displayItems中对应的OSDownloadOperation的索引
 - (NSUInteger)foundItemIndxInDisplayItemsByURL:(NSString *)urlPath {
     if (!urlPath.length) {
         return NSNotFound;
@@ -466,7 +466,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 }
 
 
-// 查找urlPath在downloadItems中对应的OSDownloadItem的索引
+// 查找urlPath在downloadItems中对应的OSDownloadOperation的索引
 - (NSUInteger)foundItemIndxInDownloadItemsByURL:(NSString *)urlPath {
     if (!urlPath.length) {
         return NSNotFound;

@@ -38,7 +38,7 @@ NSString * const OSFileDownloadTotalProgressCanceldNotification = @"OSFileDownlo
 #pragma mark - OSDownloaderDelegate
 ////////////////////////////////////////////////////////////////////////
 
-- (void)downloadSuccessnWithDownloadItem:(id<OSDownloadItemProtocol>)downloadItem {
+- (void)downloadSuccessnWithDownloadItem:(id<OSDownloadOperationProtocol>)downloadItem {
     
     // 根据aIdentifier在downloadItems中查找对应的DownloadItem，更改其下载状态，发送通知
     NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:downloadItem.urlPath];
@@ -59,7 +59,7 @@ NSString * const OSFileDownloadTotalProgressCanceldNotification = @"OSFileDownlo
     })
 }
 
-- (void)downloadFailureWithDownloadItem:(id<OSDownloadItemProtocol>)downloadItem
+- (void)downloadFailureWithDownloadItem:(id<OSDownloadOperationProtocol>)downloadItem
                                   error:(NSError *)error {
     
     // 根据aIdentifier在downloadItems中查找对应的DownloadItem
@@ -90,7 +90,7 @@ NSString * const OSFileDownloadTotalProgressCanceldNotification = @"OSFileDownlo
     })
 }
 
-- (void)downloadTaskWillBeginWithDownloadItem:(id<OSDownloadItemProtocol>)downloadItem {
+- (void)downloadTaskWillBeginWithDownloadItem:(id<OSDownloadOperationProtocol>)downloadItem {
     [self toggleNetworkActivityIndicatorVisible:YES];
     NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:downloadItem.urlPath];
      OSFileItem *fileItem = nil;
@@ -104,7 +104,7 @@ NSString * const OSFileDownloadTotalProgressCanceldNotification = @"OSFileDownlo
     [[OSDownloaderModule sharedInstance] storedDownloadItems];
 }
 
-- (void)downloadTaskDidEndWithDownloadItem:(id<OSDownloadItemProtocol>)downloadItem {
+- (void)downloadTaskDidEndWithDownloadItem:(id<OSDownloadOperationProtocol>)downloadItem {
     [self toggleNetworkActivityIndicatorVisible:NO];
 }
 
@@ -209,7 +209,7 @@ NSString * const OSFileDownloadTotalProgressCanceldNotification = @"OSFileDownlo
 ////////////////////////////////////////////////////////////////////////
 
 // 查找数组中第一个符合条件的对象（代码块过滤），返回对应索引
-// 查找urlPath在downloadItems中对应的OSDownloadItem的索引
+// 查找urlPath在downloadItems中对应的OSDownloadOperation的索引
 - (NSUInteger)foundItemIndxInDownloadItemsByURL:(NSString *)urlPath {
     if (!urlPath.length) {
         return NSNotFound;

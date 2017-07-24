@@ -7,11 +7,11 @@
 //
 
 #import "OSDownloaderDelegate.h"
-#import "OSDownloadItem.h"
+#import "OSDownloadOperation.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface OSFileItem : OSDownloadItem
+@interface OSFileItem : OSDownloadOperation
 
 @property (nonatomic, assign) OSFileDownloadStatus status;
 @property (nonatomic, copy) NSString *fileName;

@@ -1,15 +1,15 @@
 //
-//  OSDownloadItem.m
+//  OSDownloadOperation.m
 //  DownloaderManager
 //
 //  Created by Ossey on 2017/6/4.
 //  Copyright © 2017年 Ossey. All rights reserved.
 //
 
-#import "OSDownloadItem.h"
+#import "OSDownloadOperation.h"
 
 
-@interface OSDownloadItem ()
+@interface OSDownloadOperation ()
 
 /** 恢复下载时所在文件的字节数 */
 @property (nonatomic, assign) ino64_t resumedFileSizeInBytes;
@@ -32,7 +32,7 @@
 
 @end
 
-@implementation OSDownloadItem
+@implementation OSDownloadOperation
 
 ////////////////////////////////////////////////////////////////////////
 #pragma mark - initialize
@@ -72,20 +72,29 @@ resumingHandler = _resumingHandler;
 }
 
 - (void)pause {
-    [self.progressObj.nativeProgress pause];
+    if (self.progressObj.nativeProgress) {
+        [self.progressObj.nativeProgress pause];
+    }
+    else if (self.pausingHandler) {
+        self.pausingHandler();
+    }
 }
 
 - (void)cancel {
-    [self.progressObj.nativeProgress cancel];
+    if (self.progressObj.nativeProgress) {
+        [self.progressObj.nativeProgress cancel];
+    }
+    else if (self.cancellationHandler) {
+        self.cancellationHandler();
+    }
 }
 
 - (void)resume {
     if ([self.progressObj.nativeProgress respondsToSelector:@selector(resume)]) {
         [self.progressObj.nativeProgress resume];
-    } else {
-        if (self.resumingHandler) {
+    }
+    else if (self.resumingHandler) {
             self.resumingHandler();
-        }
     }
 }
 

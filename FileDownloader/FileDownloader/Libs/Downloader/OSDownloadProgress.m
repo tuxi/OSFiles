@@ -75,10 +75,8 @@ static NSString * const OSDownloadRemainingTimeKey = @"remainingTime";
         }
         
         NSDictionary *remainingTimeDict = [self remainingTimeAndBytesPerSecond];
-        if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1) {
-            [self.nativeProgress setUserInfoObject:[remainingTimeDict objectForKey:OSDownloadRemainingTimeKey] forKey:NSProgressEstimatedTimeRemainingKey];
-            [self.nativeProgress setUserInfoObject:[remainingTimeDict objectForKey:OSDownloadBytesPerSecondSpeedKey] forKey:NSProgressThroughputKey];
-        }
+        [self.nativeProgress setUserInfoObject:[remainingTimeDict objectForKey:OSDownloadRemainingTimeKey] forKey:NSProgressEstimatedTimeRemainingKey];
+        [self.nativeProgress setUserInfoObject:[remainingTimeDict objectForKey:OSDownloadBytesPerSecondSpeedKey] forKey:NSProgressThroughputKey];
         self.estimatedRemainingTime = [remainingTimeDict[OSDownloadRemainingTimeKey] doubleValue];
         self.bytesPerSecondSpeed = [remainingTimeDict[OSDownloadBytesPerSecondSpeedKey] unsignedIntegerValue];
         self.progress = progress;

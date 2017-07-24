@@ -1,5 +1,5 @@
 //
-//  OSDownloadItem.h
+//  OSDownloadOperation.h
 //  DownloaderManager
 //
 //  Created by Ossey on 2017/6/4.
@@ -14,13 +14,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface OSDownloadItem : NSObject <OSDownloadItemProtocol>
-//
-//@property (getter=isCancellable) BOOL cancellable;
-//@property (getter=isPausable) BOOL pausable;
-//
-//@property (readonly, getter=isCancelled) BOOL cancelled;
-//@property (readonly, getter=isPaused) BOOL paused;
+@interface OSDownloadOperation : NSObject <OSDownloadOperationProtocol>
+
 @property (nullable, copy) void (^cancellationHandler)(void);
 @property (nullable, copy) void (^pausingHandler)(void);
 @property (nullable, copy) void (^resumingHandler)(void);

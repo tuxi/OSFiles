@@ -19,11 +19,11 @@
 - (instancetype)initWithDownloader:(OSDownloader *)downloader;
 /// 取消下载、下载失败时调用
 - (void)handleDownloadFailureWithError:(NSError *)error
-                          downloadItem:(id<OSDownloadItemProtocol>)downloadItem
+                          downloadItem:(id<OSDownloadOperationProtocol>)downloadItem
                         taskIdentifier:(NSUInteger)taskIdentifier
                             response:(NSURLResponse *)response;
 /// 下载成功后调用 并已成功保存到本地
-- (void)handleDownloadSuccessWithDownloadItem:(id<OSDownloadItemProtocol>)downloadItem
+- (void)handleDownloadSuccessWithDownloadItem:(id<OSDownloadOperationProtocol>)downloadItem
                                taskIdentifier:(NSUInteger)taskIdentifier
                                      response:(NSURLResponse *)response;
 
@@ -31,9 +31,9 @@
 - (NSURL *)_getFinalLocalFileURLWithRemoteURL:(NSURL *)remoteURL;
 
 /// 即将开始下载时调用
-- (void)_anDownloadTaskWillBeginWithDownloadItem:(id<OSDownloadItemProtocol>)downloadItem;
+- (void)_anDownloadTaskWillBeginWithDownloadItem:(id<OSDownloadOperationProtocol>)downloadItem;
 /// 已经结束某个任务，不管是否成功都会调用
-- (void)_anDownloadTaskDidEndWithDownloadItem:(id<OSDownloadItemProtocol>)downloadItem;
+- (void)_anDownloadTaskDidEndWithDownloadItem:(id<OSDownloadOperationProtocol>)downloadItem;
 /// 任务已经添加到等待队列时调用
 - (void)_didWaitingDownloadForUrlPath:(NSString *)url;
 /// 从等待队列中开始下载一个任务

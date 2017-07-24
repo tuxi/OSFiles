@@ -8,7 +8,7 @@
 
 #import "OSDownloader.h"
 #import "OSDownloaderSessionPrivateDelegate.h"
-#import "OSDownloadItem.h"
+#import "OSDownloadOperation.h"
 
 // 后台任务的标识符
 #define kBackgroundDownloadSessionIdentifier [NSString stringWithFormat:@"%@.OSDownloader", [NSBundle mainBundle].bundleIdentifier]
@@ -34,7 +34,6 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 @property (nonatomic, strong) NSURLSession *backgroundSeesion;
 @property (nonatomic, strong) NSOperationQueue *backgroundSeesionQueue;
 @property (nonatomic, strong) NSURL *downloaderFolderPath;
-@property (nonatomic, strong) NSLock *lock_;
 @property (nonatomic, strong) OSDownloaderSessionPrivateDelegate *sessionDelegate;
 @property (nonatomic, strong) NSProgress *totalProgress;
 
@@ -66,7 +65,6 @@ static void *ProgressObserverContext = &ProgressObserverContext;
         _sessionDelegate = [[OSDownloaderSessionPrivateDelegate alloc] initWithDownloader:self];
         _backgroundSeesion = [NSURLSession sessionWithConfiguration:[self createBackgroundSessionConfig] delegate:self delegateQueue:self.backgroundSeesionQueue];
         _backgroundSeesion.sessionDescription = @"OSDownload_BackgroundSession";
-        _lock_ = [NSLock new];
     }
     return self;
 }
@@ -90,31 +88,34 @@ static void *ProgressObserverContext = &ProgressObserverContext;
     }];
 }
 
-- (OSDownloadItem *)getDownloadItemByTask:(NSURLSessionDataTask *)task {
-    OSDownloadItem *downloadItem = nil;
-    downloadItem = [self.activeDownloadsDictionary objectForKey:@(task.taskIdentifier)];
-    if (downloadItem) {
+- (OSDownloadOperation *)getDownloadItemByTask:(NSURLSessionDataTask *)task {
+    @synchronized (_activeDownloadsDictionary) {
+        OSDownloadOperation *downloadItem = nil;
+        downloadItem = [self.activeDownloadsDictionary objectForKey:@(task.taskIdentifier)];
+        if (downloadItem) {
+            return downloadItem;
+        }
+        NSString *urlPath = [[task taskDescription] copy];
+        if (urlPath) {
+            self.totalProgress.totalUnitCount++;
+
+            // 将此totalProgress注册为当前线程任务的根进度管理对象，向下分支出一个子任务 比如子任务进度总数为10个单元 即当子任务完成时 父progerss对象进度走1个单元
+            [self.totalProgress becomeCurrentWithPendingUnitCount:1];
+            
+            downloadItem = [[OSDownloadOperation alloc] initWithURL:urlPath sessionDataTask:task];
+            // 注意: 必须和becomeCurrentWithPendingUnitCount成对使用,必须在同一个线程
+            [self.totalProgress resignCurrent];
+            
+            // 将下载任务保存到activeDownloadsDictionary中
+            [self.activeDownloadsDictionary setObject:downloadItem
+                                               forKey:@(task.taskIdentifier)];
+            [self initializeDownloadCallBack:downloadItem];
+            [self.sessionDelegate _anDownloadTaskWillBeginWithDownloadItem:downloadItem];
+        }
+        
         return downloadItem;
-    }
-    NSString *urlPath = [[task taskDescription] copy];
-    if (urlPath) {
-        self.totalProgress.totalUnitCount++;
-//        // UnitCount是一个基于UI上的完整任务的单元数
-//        // 将此rootProgress注册为当前线程任务的根进度管理对象，向下分支出一个子任务 比如子任务进度总数为10个单元 即当子任务完成时 父progerss对象进度走1个单元
-        [self.totalProgress becomeCurrentWithPendingUnitCount:1];
         
-        downloadItem = [[OSDownloadItem alloc] initWithURL:urlPath sessionDataTask:task];
-        // 注意: 必须和becomeCurrentWithPendingUnitCount成对使用
-        [self.totalProgress resignCurrent];
-        
-        // 将下载任务保存到activeDownloadsDictionary中
-        [self.activeDownloadsDictionary setObject:downloadItem
-                                           forKey:@(task.taskIdentifier)];
-        [self initializeDownloadCallBack:downloadItem];
-        [self.sessionDelegate _anDownloadTaskWillBeginWithDownloadItem:downloadItem];
     }
-    
-    return downloadItem;
 }
 
 
@@ -126,7 +127,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
                                              progress:(void (^)(NSProgress * _Nonnull))downloadProgressBlock
                                     completionHandler:(void (^)(NSURLResponse * _Nonnull, NSURL * _Nullable, NSError * _Nullable))completionHandler {
     
-    id<OSDownloadItemProtocol> item = [self downloadWithURL:urlPath];
+    id<OSDownloadOperationProtocol> item = [self downloadWithURL:urlPath];
     item.progressHandler = downloadProgressBlock;
     item.completionHandler = completionHandler;
     return item.sessionTask;
@@ -136,13 +137,13 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 - (NSURLSessionDataTask *)downloadTaskWithRequest:(NSURLRequest *)request
                                          progress:(void (^)(NSProgress * _Nonnull))downloadProgressBlock
                                 completionHandler:(void (^)(NSURLResponse * _Nonnull, NSURL * _Nullable, NSError * _Nullable))completionHandler {
-    id<OSDownloadItemProtocol> item = [self downloadWithRequest:request];
+    id<OSDownloadOperationProtocol> item = [self downloadWithRequest:request];
     item.progressHandler = downloadProgressBlock;
     item.completionHandler = completionHandler;
     return item.sessionTask;
 }
 
-- (id<OSDownloadItemProtocol>)downloadWithURL:(NSString *)urlPath {
+- (id<OSDownloadOperationProtocol>)downloadWithURL:(NSString *)urlPath {
     NSURL *remoteURL = [NSURL URLWithString:urlPath];
     NSURL *cacheURL = [self.sessionDelegate _getFinalLocalFileURLWithRemoteURL:remoteURL];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:remoteURL
@@ -154,7 +155,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
     return [self downloadWithRequest:request];
 }
 
-- (id<OSDownloadItemProtocol>)downloadWithRequest:(NSURLRequest *)request  {
+- (id<OSDownloadOperationProtocol>)downloadWithRequest:(NSURLRequest *)request  {
     // 无任务下载时，重置总进度
     [self resetProgressIfNoActiveDownloadsRunning];
     
@@ -163,59 +164,63 @@ static void *ProgressObserverContext = &ProgressObserverContext;
     NSString *urlPath = remoteURL.absoluteString;
     if (self.maxConcurrentDownloads == NSIntegerMax || self.activeDownloadsDictionary.count < self.maxConcurrentDownloads) {
         
-        OSDownloadItem *downloadItem = [self getDownloadItemByURL:urlPath];
-        if (!downloadItem) {
-            self.totalProgress.totalUnitCount++;
-            [self.totalProgress becomeCurrentWithPendingUnitCount:1];
-            NSURL *cacheURL = [self.sessionDelegate _getFinalLocalFileURLWithRemoteURL:remoteURL];
-            NSOutputStream *stream = [NSOutputStream outputStreamWithURL:cacheURL append:YES];
-            NSURLSessionDataTask *dataTask = [self.backgroundSeesion dataTaskWithRequest:request];
-            taskIdentifier = dataTask.taskIdentifier;
-            dataTask.taskDescription = urlPath;
-            downloadItem = [[OSDownloadItem alloc] initWithURL:urlPath sessionDataTask:dataTask];
-            downloadItem.finalLocalFileURL = cacheURL;
-            downloadItem.outputStream = stream;
-            
-            long long cacheFileSize = 0;
-            NSString *range = [request valueForHTTPHeaderField:@"Range"];
-            if ([range hasPrefix:@"bytes"]) {
-                NSArray *bytes = [range componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"="]];
-                if ([bytes count] == 2) {
-                    NSString *cacheSize = [bytes objectAtIndex:1];
-                    cacheFileSize = [[cacheSize componentsSeparatedByString:@"-"].firstObject longLongValue];
+        @synchronized (_activeDownloadsDictionary) {
+            OSDownloadOperation *downloadItem = [self getDownloadItemByURL:urlPath];
+            if (!downloadItem) {
+                self.totalProgress.totalUnitCount++;
+                [self.totalProgress becomeCurrentWithPendingUnitCount:1];
+                NSURL *cacheURL = [self.sessionDelegate _getFinalLocalFileURLWithRemoteURL:remoteURL];
+                NSOutputStream *stream = [NSOutputStream outputStreamWithURL:cacheURL append:YES];
+                NSURLSessionDataTask *dataTask = [self.backgroundSeesion dataTaskWithRequest:request];
+                taskIdentifier = dataTask.taskIdentifier;
+                dataTask.taskDescription = urlPath;
+                downloadItem = [[OSDownloadOperation alloc] initWithURL:urlPath sessionDataTask:dataTask];
+                downloadItem.finalLocalFileURL = cacheURL;
+                downloadItem.outputStream = stream;
+                
+                long long cacheFileSize = 0;
+                NSString *range = [request valueForHTTPHeaderField:@"Range"];
+                if ([range hasPrefix:@"bytes"]) {
+                    NSArray *bytes = [range componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"="]];
+                    if ([bytes count] == 2) {
+                        NSString *cacheSize = [bytes objectAtIndex:1];
+                        cacheFileSize = [[cacheSize componentsSeparatedByString:@"-"].firstObject longLongValue];
+                    }
                 }
+                
+                if (cacheFileSize > 0) {
+                    downloadItem.progressObj.resumedFileSizeInBytes = cacheFileSize;
+                    downloadItem.progressObj.receivedFileSize = cacheFileSize;
+                    downloadItem.progressObj.downloadStartDate = [NSDate date];
+                    downloadItem.progressObj.bytesPerSecondSpeed = 0;
+                    DLog(@"INFO: Download (id: %@) resumed (offset: %@ bytes, expected: %@ bytes", dataTask.taskDescription, @(cacheFileSize), @(downloadItem.progressObj.expectedFileTotalSize));
+                }
+                
+                
+                [self.totalProgress resignCurrent];
+            } else {
+                DLog(@"INFO: download item exit");
             }
-            
-            if (cacheFileSize > 0) {
-                downloadItem.progressObj.resumedFileSizeInBytes = cacheFileSize;
-                downloadItem.progressObj.receivedFileSize = cacheFileSize;
-                downloadItem.progressObj.downloadStartDate = [NSDate date];
-                downloadItem.progressObj.bytesPerSecondSpeed = 0;
-                DLog(@"INFO: Download (id: %@) resumed (offset: %@ bytes, expected: %@ bytes", dataTask.taskDescription, @(cacheFileSize), @(downloadItem.progressObj.expectedFileTotalSize));
-            }
-            
-            
-            [self.totalProgress resignCurrent];
-        } else {
-            DLog(@"INFO: download item exit");
+            NSURLSessionDataTask *dataTask = downloadItem.sessionTask;
+            // 将下载任务保存到activeDownloadsDictionary中
+            [self.activeDownloadsDictionary setObject:downloadItem
+                                               forKey:@(dataTask.taskIdentifier)];
+            [self initializeDownloadCallBack:downloadItem];
+            [self.sessionDelegate _anDownloadTaskWillBeginWithDownloadItem:downloadItem];
+            [dataTask resume];
+            return downloadItem;
         }
-        NSURLSessionDataTask *dataTask = downloadItem.sessionTask;
-        // 将下载任务保存到activeDownloadsDictionary中
-        [self.activeDownloadsDictionary setObject:downloadItem
-                                           forKey:@(dataTask.taskIdentifier)];
-        [self initializeDownloadCallBack:downloadItem];
-        [self.sessionDelegate _anDownloadTaskWillBeginWithDownloadItem:downloadItem];
-        [dataTask resume];
-        return downloadItem;
     } else {
         
-        // 超出同时的最大下载数量时，将新的任务的aResumeData或者aRemoteURL添加到等待下载数组中
-        NSMutableDictionary *waitingDownloadDict = [NSMutableDictionary dictionary];
-        if (urlPath) {
-            [waitingDownloadDict setObject:urlPath forKey:OSDownloadURLKey];
+        @synchronized (_waitingDownloadArray) {
+            // 超出同时的最大下载数量时，将新的任务的aResumeData或者aRemoteURL添加到等待下载数组中
+            NSMutableDictionary *waitingDownloadDict = [NSMutableDictionary dictionary];
+            if (urlPath) {
+                [waitingDownloadDict setObject:urlPath forKey:OSDownloadURLKey];
+            }
+            [self.waitingDownloadArray addObject:waitingDownloadDict];
+            [self.sessionDelegate _didWaitingDownloadForUrlPath:urlPath];
         }
-        [self.waitingDownloadArray addObject:waitingDownloadDict];
-        [self.sessionDelegate _didWaitingDownloadForUrlPath:urlPath];
     }
     return nil;
 }
@@ -236,7 +241,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
     }
 }
 
-- (void)initializeDownloadCallBack:(OSDownloadItem *)downloadItem  {
+- (void)initializeDownloadCallBack:(OSDownloadOperation *)downloadItem  {
     
     if (downloadItem) {
         
@@ -295,8 +300,8 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 
 - (void)pauseWithTaskIdentifier:(NSUInteger)taskIdentifier completionHandler:(void (^)())completion {
     
-    // 从正在下载的集合中根据taskIdentifier获取到OSDownloadItem
-    OSDownloadItem *downloadItem = [self.activeDownloadsDictionary objectForKey:@(taskIdentifier)];
+    // 从正在下载的集合中根据taskIdentifier获取到OSDownloadOperation
+    OSDownloadOperation *downloadItem = [self.activeDownloadsDictionary objectForKey:@(taskIdentifier)];
     if (downloadItem) {
         NSURLSessionDataTask *downloadTask = (NSURLSessionDataTask *)downloadItem.sessionTask;
         if (downloadTask) {
@@ -327,14 +332,14 @@ static void *ProgressObserverContext = &ProgressObserverContext;
         if (res) {
             
             NSError *cancelError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:nil];
-            OSDownloadItem *item = [[OSDownloadItem alloc] initWithURL:urlPath sessionDataTask:nil];
+            OSDownloadOperation *item = [[OSDownloadOperation alloc] initWithURL:urlPath sessionDataTask:nil];
             [self.sessionDelegate handleDownloadFailureWithError:cancelError downloadItem:item taskIdentifier:NSNotFound response:nil];
         }
     }
 }
 
 - (void)cancelWithTaskIdentifier:(NSUInteger)taskIdentifier {
-    OSDownloadItem *downloadItem = [self.activeDownloadsDictionary objectForKey:@(taskIdentifier)];
+    OSDownloadOperation *downloadItem = [self.activeDownloadsDictionary objectForKey:@(taskIdentifier)];
     if (downloadItem) {
         NSURLSessionTask *dataTask = downloadItem.sessionTask;
         if (dataTask) {
@@ -355,16 +360,18 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 ////////////////////////////////////////////////////////////////////////
 
 - (BOOL)removeDownloadTaskFromWaitingDownloadArrayByUrlPath:(NSString *)url {
-    NSInteger foundIdx = [self.waitingDownloadArray indexOfObjectPassingTest:
-                          ^BOOL(NSDictionary<NSString *,NSObject *> * _Nonnull waitingDownloadDict, NSUInteger idx, BOOL * _Nonnull stop) {
-                              NSString *waitingUrlPath = (NSString *)waitingDownloadDict[OSDownloadURLKey];
-                              return [url isKindOfClass:[NSString class]] && [url isEqualToString:waitingUrlPath];
-                          }];
-    if (foundIdx != NSNotFound) {
-        [self.waitingDownloadArray removeObjectAtIndex:foundIdx];
-        return YES;
+    @synchronized (_waitingDownloadArray) {
+        NSInteger foundIdx = [self.waitingDownloadArray indexOfObjectPassingTest:
+                              ^BOOL(NSDictionary<NSString *,NSObject *> * _Nonnull waitingDownloadDict, NSUInteger idx, BOOL * _Nonnull stop) {
+                                  NSString *waitingUrlPath = (NSString *)waitingDownloadDict[OSDownloadURLKey];
+                                  return [url isKindOfClass:[NSString class]] && [url isEqualToString:waitingUrlPath];
+                              }];
+        if (foundIdx != NSNotFound) {
+            [self.waitingDownloadArray removeObjectAtIndex:foundIdx];
+            return YES;
+        }
+        return NO;
     }
-    return NO;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -373,37 +380,42 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 
 - (BOOL)isDownloading:(NSString *)urlPath {
     
-    __block BOOL isDownloading = NO;
-    NSInteger taskIdentifier = [self getDownloadTaskIdentifierByURL:urlPath];
-    if (taskIdentifier != NSNotFound) {
-        OSDownloadItem *downloadItem = [self.activeDownloadsDictionary objectForKey:@(taskIdentifier)];
-        if (downloadItem) {
-            isDownloading = downloadItem.sessionTask.state == NSURLSessionTaskStateRunning;
+    @synchronized (_activeDownloadsDictionary) {
+        __block BOOL isDownloading = NO;
+        NSInteger taskIdentifier = [self getDownloadTaskIdentifierByURL:urlPath];
+        if (taskIdentifier != NSNotFound) {
+            OSDownloadOperation *downloadItem = [self.activeDownloadsDictionary objectForKey:@(taskIdentifier)];
+            if (downloadItem) {
+                isDownloading = downloadItem.sessionTask.state == NSURLSessionTaskStateRunning;
+            }
         }
+        
+        return isDownloading;
+        
     }
-    
-    return isDownloading;
 }
 
 - (BOOL)isWaiting:(NSString *)urlPath {
-    __block BOOL isWaiting = NO;
-    
-    [self.waitingDownloadArray enumerateObjectsUsingBlock:^(NSDictionary<NSString *,NSObject *> * _Nonnull waitingDownloadDict, NSUInteger idx, BOOL * _Nonnull stop) {
-        if ([waitingDownloadDict[OSDownloadURLKey] isKindOfClass:[NSString class]]) {
-            NSString *waitingUrlPath = (NSString *)waitingDownloadDict[OSDownloadURLKey];
-            if ([waitingUrlPath isEqualToString:urlPath]) {
-                isWaiting = YES;
-                *stop = YES;
+    @synchronized (_waitingDownloadArray) {
+        __block BOOL isWaiting = NO;
+        
+        [self.waitingDownloadArray enumerateObjectsUsingBlock:^(NSDictionary<NSString *,NSObject *> * _Nonnull waitingDownloadDict, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([waitingDownloadDict[OSDownloadURLKey] isKindOfClass:[NSString class]]) {
+                NSString *waitingUrlPath = (NSString *)waitingDownloadDict[OSDownloadURLKey];
+                if ([waitingUrlPath isEqualToString:urlPath]) {
+                    isWaiting = YES;
+                    *stop = YES;
+                }
             }
-        }
-    }];
-    
-    return isWaiting;
+        }];
+        
+        return isWaiting;
+    }
 }
 
 /// 判断该文件是否下载完成
 - (BOOL)isCompletionByRemoteUrlPath:(NSString *)url {
-    OSDownloadItem *item = [self getDownloadItemByURL:url];
+    OSDownloadOperation *item = [self getDownloadItemByURL:url];
     NSURL *localURL = [self.sessionDelegate _getFinalLocalFileURLWithRemoteURL:[NSURL URLWithString:url]];
     if (item.progressObj.expectedFileTotalSize && [self getCacheFileSizeWithPath:localURL.path] == item.progressObj.expectedFileTotalSize) {
         return YES;
@@ -423,12 +435,14 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 
 - (void)checkMaxConcurrentDownloadCountThenDownloadWaitingQueueIfExceeded {
     
-    if (self.maxConcurrentDownloads == NSIntegerMax || self.activeDownloadsDictionary.count < self.maxConcurrentDownloads) {
-        if (self.waitingDownloadArray.count) {
-            NSDictionary *waitingDownTaskDict = [self.waitingDownloadArray firstObject];
-            [self downloadWithURL:waitingDownTaskDict[OSDownloadURLKey]];
-            [self.waitingDownloadArray removeObjectAtIndex:0];
-            [self.sessionDelegate _startDownloadTaskFromTheWaitingQueue:waitingDownTaskDict[OSDownloadURLKey]];
+    @synchronized (_activeDownloadsDictionary) {
+        if (self.maxConcurrentDownloads == NSIntegerMax || self.activeDownloadsDictionary.count < self.maxConcurrentDownloads) {
+            if (self.waitingDownloadArray.count) {
+                NSDictionary *waitingDownTaskDict = [self.waitingDownloadArray firstObject];
+                [self downloadWithURL:waitingDownTaskDict[OSDownloadURLKey]];
+                [self.waitingDownloadArray removeObjectAtIndex:0];
+                [self.sessionDelegate _startDownloadTaskFromTheWaitingQueue:waitingDownTaskDict[OSDownloadURLKey]];
+            }
         }
     }
 }
@@ -453,7 +467,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 /// 根据taskIdentifier 创建 OSDownloadProgress 对象
 - (OSDownloadProgress *)downloadProgressByTaskIdentifier:(NSUInteger)taskIdentifier {
     OSDownloadProgress *progressObj = nil;
-    OSDownloadItem *downloadItem = [self.activeDownloadsDictionary objectForKey:@(taskIdentifier)];
+    OSDownloadOperation *downloadItem = [self.activeDownloadsDictionary objectForKey:@(taskIdentifier)];
     if (downloadItem) {
         progressObj = downloadItem.progressObj;
     }
@@ -608,7 +622,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     NSArray *aDownloadKeysArray = [self.activeDownloadsDictionary allKeys];
     for (NSNumber *identifier in aDownloadKeysArray)
     {
-        OSDownloadItem *downloadItem = [self.activeDownloadsDictionary objectForKey:identifier];
+        OSDownloadOperation *downloadItem = [self.activeDownloadsDictionary objectForKey:identifier];
         if ([downloadItem.urlPath isEqualToString:urlPath]) {
             taskIdentifier = [identifier unsignedIntegerValue];
             break;
@@ -619,9 +633,9 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 
 
 /// 通过downloadToken获取下载任务的downloadItem
-- (id<OSDownloadItemProtocol>)getDownloadItemByURL:(nonnull NSString *)urlPath {
+- (id<OSDownloadOperationProtocol>)getDownloadItemByURL:(nonnull NSString *)urlPath {
     NSInteger identifier = [self getDownloadTaskIdentifierByURL:urlPath];
-    OSDownloadItem *downloadItem = [self.activeDownloadsDictionary objectForKey:@(identifier)];
+    OSDownloadOperation *downloadItem = [self.activeDownloadsDictionary objectForKey:@(identifier)];
     return downloadItem;
 }
 
@@ -674,7 +688,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     return _backgroundSeesionQueue;
 }
 
-- (NSMutableDictionary<NSNumber *,id<OSDownloadItemProtocol>> *)activeDownloadsDictionary {
+- (NSMutableDictionary<NSNumber *,id<OSDownloadOperationProtocol>> *)activeDownloadsDictionary {
     if (!_activeDownloadsDictionary) {
         _activeDownloadsDictionary = [NSMutableDictionary dictionaryWithCapacity:0];
     }

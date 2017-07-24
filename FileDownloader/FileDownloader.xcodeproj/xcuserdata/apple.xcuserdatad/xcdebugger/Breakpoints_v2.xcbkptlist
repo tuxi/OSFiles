@@ -41,13 +41,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "FileDownloader/Libs/Downloader/OSDownloader.m"
-            timestampString = "522168199.881855"
+            filePath = "FileDownloader/Moudle/Downloads/Utils/OSDownloaderModule.m"
+            timestampString = "522600552.536141"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "106"
-            endingLineNumber = "106"
-            landmarkName = "-getDownloadItemByTask:"
+            startingLineNumber = "161"
+            endingLineNumber = "161"
+            landmarkName = "-start:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -57,13 +57,29 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "FileDownloader/Libs/Downloader/OSDownloader.m"
-            timestampString = "522434490.256201"
+            filePath = "FileDownloader/Moudle/Downloads/Utils/OSDownloaderModule.m"
+            timestampString = "522601176.393432"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "539"
-            endingLineNumber = "539"
-            landmarkName = "-URLSession:task:didCompleteWithError:"
+            startingLineNumber = "250"
+            endingLineNumber = "250"
+            landmarkName = "-resume:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "FileDownloader/Libs/Downloader/OSDownloadOperation.m"
+            timestampString = "522600618.743334"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "93"
+            endingLineNumber = "93"
+            landmarkName = "-resume"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

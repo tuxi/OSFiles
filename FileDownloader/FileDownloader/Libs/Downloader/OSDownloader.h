@@ -26,18 +26,18 @@ FOUNDATION_EXTERN NSString * const OSDownloaderFolderNameKey;
 @property (nonatomic, assign) NSInteger maxConcurrentDownloads;
 /// 完成一个后台任务时回调
 @property (nonatomic, copy) void (^backgroundSessionCompletionHandler)();
-/// 下载的任务(包括正在下载的、暂停的) key 为 taskIdentifier， value 为 OSDownloadItem, 下载完成后会从此集合中移除
-@property (nonatomic, strong) NSMutableDictionary<NSNumber *, id<OSDownloadItemProtocol>> *activeDownloadsDictionary;
+/// 下载的任务(包括正在下载的、暂停的) key 为 taskIdentifier， value 为 OSDownloadOperation, 下载完成后会从此集合中移除
+@property (nonatomic, strong) NSMutableDictionary<NSNumber *, id<OSDownloadOperationProtocol>> *activeDownloadsDictionary;
 /// 等待下载的任务数组 每个元素 字典 为一个等待的任务
 @property (nonatomic, strong) NSMutableArray<NSDictionary <NSString *, NSObject *> *> *waitingDownloadArray;
 @property (nonatomic, weak) id<OSDownloaderDelegate> downloadDelegate;
 
-- (id<OSDownloadItemProtocol>)getDownloadItemByTask:(NSURLSessionDataTask *)task;
-- (id<OSDownloadItemProtocol>)getDownloadItemByURL:(nonnull NSString *)urlPath;
+- (id<OSDownloadOperationProtocol>)getDownloadItemByTask:(NSURLSessionDataTask *)task;
+- (id<OSDownloadOperationProtocol>)getDownloadItemByURL:(nonnull NSString *)urlPath;
 - (long long)getCacheFileSizeWithPath:(NSString *)url;
 /// 执行开始下载任务
 /// @param urlPath 下载任务的remote url path
-- (id<OSDownloadItemProtocol>)downloadWithURL:(NSString *)urlPath;
+- (id<OSDownloadOperationProtocol>)downloadWithURL:(NSString *)urlPath;
 
 - (NSURLSessionDataTask *)downloadTaskWithURLPath:(NSString *)urlPath
                                              progress:(nullable void (^)(NSProgress *downloadProgress))downloadProgressBlock
