@@ -1,5 +1,5 @@
 //
-//  FileDownloaderModule.h
+//  FileDownloaderManager.h
 //  DownloaderManager
 //
 //  Created by Ossey on 2017/6/4.
@@ -22,9 +22,9 @@
 
 @class FileItem;
 
-@interface FileDownloaderModule : NSObject
+@interface FileDownloaderManager : NSObject
 
-@property (nonatomic, class) FileDownloaderModule *sharedInstance;
+@property (nonatomic, class) FileDownloaderManager *sharedInstance;
 
 @property (nonatomic, strong, readonly) NSMutableArray *downloadItems;
 
@@ -46,8 +46,8 @@
 - (void)resume:(NSString *)url;
 - (void)pause:(NSString *)url;
 
-- (NSArray *)getAllSuccessItems;
-- (NSArray *)getActiveDownloadItems;
+- (NSArray *)downloadedItems;
+- (NSArray *)activeDownloadItems;
 /// 所有展示中的文件，还未开始下载时存放的，当文件取消下载时也会存放到此数组
 - (NSMutableArray *)displayItems;
 @end

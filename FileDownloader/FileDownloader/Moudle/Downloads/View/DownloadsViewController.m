@@ -10,9 +10,9 @@
 #import "NetworkTypeUtils.h"
 #import "NSObject+XYHUD.h"
 #import "DownloadsTableViewModel.h"
-#import "FileDownloaderModule.h"
+#import "FileDownloaderManager.h"
 #import "FileItem.h"
-#import "FileDownloaderModule.h"
+#import "FileDownloaderManager.h"
 #import "FileDownloadConst.h"
 
 @interface DownloadsViewController () <FileDownloaderDataSource>
@@ -66,7 +66,7 @@
     self.navigationItem.title = @"Downloads";
     self.tableViewModel = [DownloadsTableViewModel new];
     [self.tableViewModel prepareTableView:self.tableView];
-    FileDownloaderModule *module = [FileDownloaderModule sharedInstance];
+    FileDownloaderManager *module = [FileDownloaderManager sharedInstance];
     module.shouldAutoDownloadWhenInitialize = YES;
     module.dataSource = self;
     [self addObservers];
@@ -85,10 +85,9 @@
 - (void)reloadTableData {
     
     __weak typeof(self) weakSelf = self;
-    __weak FileDownloaderModule *weakMoudle = [FileDownloaderModule sharedInstance];
     [weakSelf.tableViewModel getDataSourceBlock:^id{
-        NSArray *activeDownloadItems = [weakMoudle getActiveDownloadItems];
-        NSArray *displayItems = [weakMoudle displayItems];
+        NSArray *activeDownloadItems = [[FileDownloaderManager sharedInstance] activeDownloadItems];
+        NSArray *displayItems = [[FileDownloaderManager sharedInstance] displayItems];
         return @[activeDownloadItems, displayItems];
     } completion:^{
         [weakSelf.tableView reloadData];
@@ -129,7 +128,7 @@
 - (void)downloadProgressChange:(NSNotification *)note {
     
     FileItem *item = note.object;
-    NSArray *downloadingArray = [[FileDownloaderModule sharedInstance] getActiveDownloadItems];
+    NSArray *downloadingArray = [[FileDownloaderManager sharedInstance] activeDownloadItems];
     NSUInteger foundIdxInDownloading = [downloadingArray indexOfObjectPassingTest:^BOOL(FileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         BOOL res = [obj.urlPath isEqualToString:item.urlPath];
         if (res) {
@@ -138,7 +137,7 @@
         return res;
     }];
     
-    NSArray *displayArray = [[FileDownloaderModule sharedInstance] displayItems];
+    NSArray *displayArray = [[FileDownloaderManager sharedInstance] displayItems];
     NSUInteger foundIdxInDisplay = [displayArray indexOfObjectPassingTest:^BOOL(FileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         BOOL res = [obj.urlPath isEqualToString:item.urlPath];
         if (res) {

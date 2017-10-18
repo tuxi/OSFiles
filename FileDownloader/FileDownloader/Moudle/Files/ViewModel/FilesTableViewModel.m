@@ -35,7 +35,6 @@ static NSString * const FilesViewControllerViewCellID = @"FilesViewController";
 - (void)getDataSourceBlock:(id (^)())dataSource completion:(void (^)())completion {
     if (dataSource) {
         self.dataSource = [dataSource() mutableCopy];
-        
         if (completion) {
             completion();
         }

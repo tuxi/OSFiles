@@ -9,7 +9,7 @@
 #import "AppDelegate.h"
 #import "MainTabBarController.h"
 #import "FileDownloader.h"
-#import "FileDownloaderModule.h"
+#import "FileDownloaderManager.h"
 #import "NetworkTypeUtils.h"
 #import "ExceptionUtils.h"
 
@@ -59,7 +59,7 @@
 
 - (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)())completionHandler {
     
-    [[FileDownloaderModule sharedInstance].downloader setBackgroundSessionCompletionHandler:completionHandler];
+    [[FileDownloaderManager sharedInstance].downloader setBackgroundSessionCompletionHandler:completionHandler];
 }
 
 

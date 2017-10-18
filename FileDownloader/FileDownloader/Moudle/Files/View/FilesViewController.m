@@ -10,7 +10,7 @@
 #import "AppDelegate.h"
 #import "FileDownloadCell.h"
 #import "FilesTableViewModel.h"
-#import "FileDownloaderModule.h"
+#import "FileDownloaderManager.h"
 #import "FileDownloadConst.h"
 
 @interface FilesViewController ()
@@ -48,7 +48,7 @@
     
     
     [self.tableViewModel getDataSourceBlock:^id{
-         return [[FileDownloaderModule sharedInstance] getAllSuccessItems];
+         return [[FileDownloaderManager sharedInstance] downloadedItems];
     } completion:^{
         [weakSelf.tableView reloadData];
     }];
@@ -60,11 +60,11 @@
 
 /// 重新下载全部
 - (void)resertDownlod {
-    [[FileDownloaderModule sharedInstance] clearAllDownloadTask];
+    [[FileDownloaderManager sharedInstance] clearAllDownloadTask];
     __weak typeof(self) weakSelf = self;
     [self.tableViewModel getDataSourceBlock:^id{
         
-        return [[FileDownloaderModule sharedInstance] getAllSuccessItems];
+        return [[FileDownloaderManager sharedInstance] downloadedItems];
     } completion:^{
         [weakSelf.tableView reloadData];
     }];
@@ -91,7 +91,7 @@
     __weak typeof(self) weakSelf = self;
     [self.tableViewModel getDataSourceBlock:^id{
         
-        return [[FileDownloaderModule sharedInstance] getAllSuccessItems];
+        return [[FileDownloaderManager sharedInstance] downloadedItems];
     } completion:^{
         [weakSelf.tableView reloadData];
     }];

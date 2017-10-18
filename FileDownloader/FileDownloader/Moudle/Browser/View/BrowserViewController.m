@@ -8,7 +8,7 @@
 
 #import "BrowserViewController.h"
 #import "UITextField+Blocks.h"
-#import "FileDownloaderModule.h"
+#import "FileDownloaderManager.h"
 #import "FileItem.h"
 
 @interface BrowserViewController ()
@@ -26,7 +26,7 @@
     
     self.textField.shouldReturnBlock = ^BOOL(UITextField *textField) {
       
-        [[FileDownloaderModule sharedInstance] start:textField.text];
+        [[FileDownloaderManager sharedInstance] start:textField.text];
         return YES;
     };
     

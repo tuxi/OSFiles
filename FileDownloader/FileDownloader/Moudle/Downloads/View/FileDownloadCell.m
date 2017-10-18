@@ -9,7 +9,7 @@
 #import "FileDownloadCell.h"
 #import "FileItem.h"
 #import "AppDelegate.h"
-#import "FileDownloaderModule.h"
+#import "FileDownloaderManager.h"
 #import "FFCircularProgressView.h"
 #import "NSString+FileDownloadsExtend.h"
 #import "NetworkTypeUtils.h"
@@ -231,13 +231,13 @@ static CGFloat const FileDownloadCellGloabMargin = 10.0;
 ////////////////////////////////////////////////////////////////////////
 
 - (void)pause:(NSString *)urlPath {
-    [[FileDownloaderModule sharedInstance] pause:urlPath];
+    [[FileDownloaderManager sharedInstance] pause:urlPath];
     
 }
 
 - (void)resume:(NSString *)urlPath {
     if ([NetworkTypeUtils networkType] == NetworkTypeWIFI) {
-        [[FileDownloaderModule sharedInstance] resume:urlPath];
+        [[FileDownloaderManager sharedInstance] resume:urlPath];
     } else {
         [[[UIAlertView alloc] initWithTitle:@"非Wifi环境下不能下载" message:nil delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil, nil] show];
     }
@@ -245,14 +245,14 @@ static CGFloat const FileDownloadCellGloabMargin = 10.0;
 
 - (void)start:(FileItem *)downloadItem {
     if ([NetworkTypeUtils networkType] == NetworkTypeWIFI) {
-        [[FileDownloaderModule sharedInstance] start:downloadItem.urlPath];
+        [[FileDownloaderManager sharedInstance] start:downloadItem.urlPath];
     } else {
         [[[UIAlertView alloc] initWithTitle:@"非Wifi环境下不能下载" message:nil delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil, nil] show];
     }
 }
 
 - (void)cancel:(NSString *)urlPath {
-    [[FileDownloaderModule sharedInstance] cancel:urlPath];
+    [[FileDownloaderManager sharedInstance] cancel:urlPath];
 }
 
 - (void)cycleViewClick:(FFCircularProgressView *)cycleView {

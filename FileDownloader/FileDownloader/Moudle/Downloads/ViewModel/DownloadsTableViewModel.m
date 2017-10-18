@@ -11,7 +11,7 @@
 #import "FileItem.h"
 #import "UITableViewCell+XYConfigure.h"
 #import "UIView+Extend.h"
-#import "FileDownloaderModule.h"
+#import "FileDownloaderManager.h"
 
 static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
 
@@ -68,7 +68,7 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
             UIAlertController *alVc = [UIAlertController alertControllerWithTitle:@"delete download" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
             UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"ok" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 
-                [[FileDownloaderModule sharedInstance] cancel:downloadItem.urlPath];
+                [[FileDownloaderManager sharedInstance] cancel:downloadItem.urlPath];
                 [tableView reloadData];
                 
             }];

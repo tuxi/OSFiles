@@ -104,7 +104,7 @@
 		18910A6C1F0D3472002BA292 /* PSPDFUIKitMainThreadGuard.m in Sources */ = {isa = PBXBuildFile; fileRef = 18910A6B1F0D3472002BA292 /* PSPDFUIKitMainThreadGuard.m */; };
 		18D6ABD11F12295E001DF350 /* FileDownloaderSessionPrivateDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D6ABD01F12295E001DF350 /* FileDownloaderSessionPrivateDelegate.m */; };
 		18DCFC451F263D8F00AC21CA /* FileDownloaderDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 18DCFC401F263D8F00AC21CA /* FileDownloaderDelegate.m */; };
-		18DCFC461F263D8F00AC21CA /* FileDownloaderModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 18DCFC421F263D8F00AC21CA /* FileDownloaderModule.m */; };
+		18DCFC461F263D8F00AC21CA /* FileDownloaderManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 18DCFC421F263D8F00AC21CA /* FileDownloaderManager.m */; };
 		18DCFC471F263D8F00AC21CA /* FileItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 18DCFC441F263D8F00AC21CA /* FileItem.m */; };
 		D08AA3A91F9715D300391F03 /* FileDownloadConst.m in Sources */ = {isa = PBXBuildFile; fileRef = D08AA3A81F9715D300391F03 /* FileDownloadConst.m */; };
 /* End PBXBuildFile section */
@@ -311,8 +311,8 @@
 		18D6ABD01F12295E001DF350 /* FileDownloaderSessionPrivateDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileDownloaderSessionPrivateDelegate.m; sourceTree = "<group>"; };
 		18DCFC3F1F263D8F00AC21CA /* FileDownloaderDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileDownloaderDelegate.h; sourceTree = "<group>"; };
 		18DCFC401F263D8F00AC21CA /* FileDownloaderDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileDownloaderDelegate.m; sourceTree = "<group>"; };
-		18DCFC411F263D8F00AC21CA /* FileDownloaderModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileDownloaderModule.h; sourceTree = "<group>"; };
-		18DCFC421F263D8F00AC21CA /* FileDownloaderModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileDownloaderModule.m; sourceTree = "<group>"; };
+		18DCFC411F263D8F00AC21CA /* FileDownloaderManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileDownloaderManager.h; sourceTree = "<group>"; };
+		18DCFC421F263D8F00AC21CA /* FileDownloaderManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileDownloaderManager.m; sourceTree = "<group>"; };
 		18DCFC431F263D8F00AC21CA /* FileItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileItem.h; sourceTree = "<group>"; };
 		18DCFC441F263D8F00AC21CA /* FileItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileItem.m; sourceTree = "<group>"; };
 		D08AA3A71F9715D300391F03 /* FileDownloadConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileDownloadConst.h; sourceTree = "<group>"; };
@@ -904,8 +904,8 @@
 			children = (
 				18DCFC3F1F263D8F00AC21CA /* FileDownloaderDelegate.h */,
 				18DCFC401F263D8F00AC21CA /* FileDownloaderDelegate.m */,
-				18DCFC411F263D8F00AC21CA /* FileDownloaderModule.h */,
-				18DCFC421F263D8F00AC21CA /* FileDownloaderModule.m */,
+				18DCFC411F263D8F00AC21CA /* FileDownloaderManager.h */,
+				18DCFC421F263D8F00AC21CA /* FileDownloaderManager.m */,
 				18DCFC431F263D8F00AC21CA /* FileItem.h */,
 				18DCFC441F263D8F00AC21CA /* FileItem.m */,
 			);
@@ -1036,7 +1036,7 @@
 				18517C751EEBE08700B148C8 /* UITableView+NoDataPlaceholderExtend.m in Sources */,
 				1871AD231EEEF76E00ABC452 /* UICollectionViewCell+XYConfigure.m in Sources */,
 				1871AD261EEEF76E00ABC452 /* XYDBUtil.m in Sources */,
-				18DCFC461F263D8F00AC21CA /* FileDownloaderModule.m in Sources */,
+				18DCFC461F263D8F00AC21CA /* FileDownloaderManager.m in Sources */,
 				18878B261EF19EAC005C0185 /* UIApplication+ActivityIndicator.m in Sources */,
 				1871ACF21EEEECBE00ABC452 /* FilesTableViewModel.m in Sources */,
 				1871AD0D1EEEF15100ABC452 /* BaseTableViewModel.m in Sources */,

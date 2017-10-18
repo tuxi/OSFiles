@@ -1,12 +1,12 @@
 //
-//  FileDownloaderModule.m
+//  FileDownloaderManager.m
 //  DownloaderManager
 //
 //  Created by Ossey on 2017/6/4.
 //  Copyright © 2017年 Ossey. All rights reserved.
 //
 
-#import "FileDownloaderModule.h"
+#import "FileDownloaderManager.h"
 #import "FileItem.h"
 #import "UIApplication+ActivityIndicator.h"
 #import "FileDownloaderDelegate.h"
@@ -15,7 +15,7 @@
 static NSString * const FileItemsKey = @"downloadItems";
 static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitialize";
 
-@interface FileDownloaderModule()
+@interface FileDownloaderManager()
 
 @property (nonatomic, strong) FileDownloaderDelegate *downloadDelegate;
 /// 所有添加到下载中的热任务，包括除了未开始和成功状态的所有下载任务
@@ -26,7 +26,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 @end
 
 
-@implementation FileDownloaderModule
+@implementation FileDownloaderManager
 
 ////////////////////////////////////////////////////////////////////////
 #pragma mark - initialize
@@ -36,11 +36,11 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 @synthesize shouldAutoDownloadWhenInitialize = _shouldAutoDownloadWhenInitialize;
 
 
-+ (FileDownloaderModule *)sharedInstance {
-    static FileDownloaderModule *_sharedInstance;
++ (FileDownloaderManager *)sharedInstance {
+    static FileDownloaderManager *_sharedInstance;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _sharedInstance = [FileDownloaderModule new];
+        _sharedInstance = [FileDownloaderManager new];
     });
     return _sharedInstance;
 }
@@ -348,7 +348,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
     
 }
 
-- (NSArray<FileItem *> *)getAllSuccessItems {
+- (NSArray<FileItem *> *)downloadedItems {
     if (!self.downloadItems.count) {
         return nil;
     }
@@ -362,7 +362,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
     return allSuccessItems;
 }
 
-- (NSArray<FileItem *> *)getActiveDownloadItems {
+- (NSArray<FileItem *> *)activeDownloadItems {
     if (!self.downloadItems.count) {
         return @[];
     }
@@ -443,7 +443,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 
 - (void)applicationWillTerminate {
     if (!self.shouldAutoDownloadWhenInitialize) {
-        [[self getActiveDownloadItems] enumerateObjectsUsingBlock:^(FileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [[self activeDownloadItems] enumerateObjectsUsingBlock:^(FileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             [self pause:obj.urlPath];
         }];
     }
