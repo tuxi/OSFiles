@@ -9,6 +9,7 @@
 #import "OSDownloader.h"
 #import "OSDownloaderSessionPrivateDelegate.h"
 #import "OSDownloadOperation.h"
+#import "OSDownloadConst.h"
 
 // 后台任务的标识符
 #define kBackgroundDownloadSessionIdentifier [NSString stringWithFormat:@"%@.OSDownloader", [NSBundle mainBundle].bundleIdentifier]

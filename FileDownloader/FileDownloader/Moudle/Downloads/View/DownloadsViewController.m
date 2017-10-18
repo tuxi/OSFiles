@@ -13,6 +13,7 @@
 #import "OSDownloaderModule.h"
 #import "OSFileItem.h"
 #import "OSDownloaderModule.h"
+#import "OSDownloadConst.h"
 
 @interface DownloadsViewController () <OSFileDownloaderDataSource>
 

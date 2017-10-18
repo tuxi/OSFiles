@@ -11,6 +11,7 @@
 #import "OSFileDownloadCell.h"
 #import "FilesTableViewModel.h"
 #import "OSDownloaderModule.h"
+#import "OSDownloadConst.h"
 
 @interface FilesViewController ()
 

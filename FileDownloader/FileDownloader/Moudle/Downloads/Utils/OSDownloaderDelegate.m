@@ -11,6 +11,7 @@
 #import "OSDownloaderModule.h"
 #import "OSDownloadProgress.h"
 #import "OSFileItem.h"
+#import "OSDownloadConst.h"
 
 #define dispatch_main_async_safe(block)\
 if (strcmp(dispatch_queue_get_label(DISPATCH_CURRENT_QUEUE_LABEL), dispatch_queue_get_label(dispatch_get_main_queue())) == 0) {\

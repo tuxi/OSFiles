@@ -10,6 +10,7 @@
 #import "OSFileItem.h"
 #import "UIApplication+ActivityIndicator.h"
 #import "OSDownloaderDelegate.h"
+#import "OSDownloadConst.h"
 
 static NSString * const OSFileItemsKey = @"downloadItems";
 static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitialize";
@@ -174,11 +175,10 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
             }
         } else {
             OSFileItem * downloadItem = [self.downloadItems objectAtIndex:foundIndexInDownloadItems];
-            if ((downloadItem.status != OSFileDownloadStatusCancelled) && (downloadItem.status != OSFileDownloadStatusSuccess)) {
+            if (downloadItem.status != OSFileDownloadStatusSuccess) {
                 BOOL isDownloading = [self.downloader isDownloading:downloadItem.urlPath];
                 if (isDownloading == NO){
                     downloadItem.status = OSFileDownloadStatusDownloading;
-//                    [self.downloader downloadWithURL:downloadItem.urlPath];
                     [self.downloader downloadTaskWithURLPath:downloadItem.urlPath progress:nil completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
                         if (error) {
                             NSLog(@"%@", error);
@@ -257,7 +257,6 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
                     downloadItem.progressObj = progress;
                 }
                 if (downloadItem.progressObj.nativeProgress) {
-//                    [downloadItem.progressObj.nativeProgress resume];
                     [downloadItem resume];
                     
                     BOOL isWaiting = [self.downloader isWaiting:downloadItem.urlPath];

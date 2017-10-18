@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "OSDownloadConst.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -22,12 +21,12 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
     OSFileDownloadStatusPaused,
     /// 等待下载
     OSFileDownloadStatusWaiting,
-    /// 取消下载
-    OSFileDownloadStatusCancelled,
     /// 下载失败
     OSFileDownloadStatusFailure,
     /// 下载完成
     OSFileDownloadStatusSuccess,
+    /// 取消下载
+    OSFileDownloadStatusCancelled = OSFileDownloadStatusNotStarted,
 };
 
 
