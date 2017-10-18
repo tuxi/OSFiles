@@ -94,7 +94,7 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
 ////////////////////////////////////////////////////////////////////////
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
