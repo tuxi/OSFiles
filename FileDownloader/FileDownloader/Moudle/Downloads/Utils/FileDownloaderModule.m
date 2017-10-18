@@ -83,7 +83,8 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
                             ^BOOL(FileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                                 return
                                 obj.status == FileDownloadStatusDownloading |
-                                obj.status == FileDownloadStatusWaiting;
+                                obj.status == FileDownloadStatusWaiting |
+                                obj.status == FileDownloadStatusFailure;
                             }];
     NSArray *needDownloads = [self.downloadItems objectsAtIndexes:indexSet];
     if (self.shouldAutoDownloadWhenInitialize) {

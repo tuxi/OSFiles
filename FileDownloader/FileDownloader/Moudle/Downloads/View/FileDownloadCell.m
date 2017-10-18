@@ -149,7 +149,7 @@ static CGFloat const FileDownloadCellGloabMargin = 10.0;
 
 - (void)setDownloadViewByStatus:(FileDownloadStatus)aStatus {
     
-    
+    self.cycleView.tintColor = [UIColor grayColor];
     switch (aStatus) {
             
         case FileDownloadStatusNotStarted:
@@ -186,6 +186,7 @@ static CGFloat const FileDownloadCellGloabMargin = 10.0;
             break;
             
         case FileDownloadStatusFailure:
+            self.cycleView.tintColor = [UIColor redColor];
             self.cycleView.circularState = FFCircularStateStopSpinning;
             break;
         case FileDownloadStatusWaiting:

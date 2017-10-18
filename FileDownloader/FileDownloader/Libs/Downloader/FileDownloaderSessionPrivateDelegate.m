@@ -363,7 +363,7 @@
         }
     } else if (error){
         // 下载失败
-        NSString *errorString = [NSString stringWithFormat:@"Invalid http status code: %@", @(httpStatusCode)];
+        NSString *errorString = error.localizedDescription;
         NSMutableArray<NSString *> *errorMessagesStackArray = [downloadItem.errorMessagesStack mutableCopy];
         if (errorMessagesStackArray == nil) {
             errorMessagesStackArray = [NSMutableArray array];
@@ -371,8 +371,7 @@
         [errorMessagesStackArray insertObject:errorString atIndex:0];
         [downloadItem setErrorMessagesStack:errorMessagesStackArray];
         
-        NSError *finalError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorBadServerResponse userInfo:nil];
-        [self handleDownloadFailureWithError:finalError downloadItem:downloadItem taskIdentifier:task.taskIdentifier response:task.response];
+        [self handleDownloadFailureWithError:error downloadItem:downloadItem taskIdentifier:task.taskIdentifier response:task.response];
     }
     
     // 关闭流
