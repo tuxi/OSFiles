@@ -145,13 +145,11 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 
 - (id<OSDownloadOperationProtocol>)downloadWithURL:(NSString *)urlPath {
     NSURL *remoteURL = [NSURL URLWithString:urlPath];
-    NSURL *cacheURL = [self.sessionDelegate _getLocalFolderURLWithRemoteURL:remoteURL];
+    
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:remoteURL
                                                            cachePolicy:NSURLRequestReloadIgnoringCacheData
                                                        timeoutInterval:30.0];
-    long long cacheFileSize = [self getCacheFileSizeWithPath:cacheURL.path];
-    NSString *range = [NSString stringWithFormat:@"bytes=%zd-", cacheFileSize];
-    [request setValue:range forHTTPHeaderField:@"Range"];
+   
     return [self downloadWithRequest:request];
 }
 
@@ -162,31 +160,45 @@ static void *ProgressObserverContext = &ProgressObserverContext;
     NSUInteger taskIdentifier = 0;
     NSURL *remoteURL = request.URL;
     NSString *urlPath = remoteURL.absoluteString;
-    if (self.maxConcurrentDownloads == NSIntegerMax || self.activeDownloadsDictionary.count < self.maxConcurrentDownloads) {
-        
-        @synchronized (_activeDownloadsDictionary) {
-            OSDownloadOperation *downloadItem = [self getDownloadItemByURL:urlPath];
-            if (!downloadItem) {
+    OSDownloadOperation *downloadItem = [self getDownloadItemByURL:urlPath];
+    if (downloadItem) {
+        /*
+         此处为了解决当前request对应的url已存在activeDownloadsDictionary中，但是不符合下面条件时(也就是超出最大可下载数量时)，会导致当前request一直在等待中，无法执行下载，
+         进入这里你不必担心会超出最大下载数量，因为在activeDownloadsDictionary中肯定没有超出数量
+         (self.maxConcurrentDownloads == NSIntegerMax || self.activeDownloadsDictionary.count < self.maxConcurrentDownloads)
+         */
+        NSURLSessionDataTask *dataTask = downloadItem.sessionTask;
+        // 将下载任务保存到activeDownloadsDictionary中
+        [self.activeDownloadsDictionary setObject:downloadItem
+                                           forKey:@(dataTask.taskIdentifier)];
+        [self initializeDownloadCallBack:downloadItem];
+        [self.sessionDelegate _anDownloadTaskWillBeginWithDownloadItem:downloadItem];
+        [dataTask resume];
+        return downloadItem;
+    }
+    else {
+        if (self.maxConcurrentDownloads == NSIntegerMax || self.activeDownloadsDictionary.count < self.maxConcurrentDownloads) {
+            
+            @synchronized (_activeDownloadsDictionary) {
                 self.totalProgress.totalUnitCount++;
                 [self.totalProgress becomeCurrentWithPendingUnitCount:1];
-                NSURL *cacheURL = [self.sessionDelegate _getLocalFolderURLWithRemoteURL:remoteURL];
-                NSOutputStream *stream = [NSOutputStream outputStreamWithURL:cacheURL append:YES];
-                NSURLSessionDataTask *dataTask = [self.backgroundSeesion dataTaskWithRequest:request];
+                
+                NSURL *localFolderURL = [self.sessionDelegate _getLocalFolderURLWithRemoteURL:remoteURL];
+                
+                OSDownloadOperation *downloadItem = [[OSDownloadOperation alloc] initWithURL:urlPath sessionDataTask:nil];
+                downloadItem.localFolderURL = localFolderURL;
+                
+                NSMutableURLRequest *requestM = request.mutableCopy;
+                long long cacheFileSize = [self getCacheFileSizeWithPath:downloadItem.localURL.path];
+                NSString *range = [NSString stringWithFormat:@"bytes=%zd-", cacheFileSize];
+                [requestM setValue:range forHTTPHeaderField:@"Range"];
+                
+                NSOutputStream *stream = [NSOutputStream outputStreamWithURL:downloadItem.localURL append:YES];
+                NSURLSessionDataTask *dataTask = [self.backgroundSeesion dataTaskWithRequest:requestM];
                 taskIdentifier = dataTask.taskIdentifier;
                 dataTask.taskDescription = urlPath;
-                downloadItem = [[OSDownloadOperation alloc] initWithURL:urlPath sessionDataTask:dataTask];
-                downloadItem.localFolderURL = cacheURL;
+                downloadItem.sessionTask = dataTask;
                 downloadItem.outputStream = stream;
-                
-                long long cacheFileSize = 0;
-                NSString *range = [request valueForHTTPHeaderField:@"Range"];
-                if ([range hasPrefix:@"bytes"]) {
-                    NSArray *bytes = [range componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"="]];
-                    if ([bytes count] == 2) {
-                        NSString *cacheSize = [bytes objectAtIndex:1];
-                        cacheFileSize = [[cacheSize componentsSeparatedByString:@"-"].firstObject longLongValue];
-                    }
-                }
                 
                 if (cacheFileSize > 0) {
                     downloadItem.progressObj.resumedFileSizeInBytes = cacheFileSize;
@@ -198,29 +210,27 @@ static void *ProgressObserverContext = &ProgressObserverContext;
                 
                 
                 [self.totalProgress resignCurrent];
-            } else {
-                DLog(@"INFO: download item exit");
+                // 将下载任务保存到activeDownloadsDictionary中
+                [self.activeDownloadsDictionary setObject:downloadItem
+                                                   forKey:@(dataTask.taskIdentifier)];
+                [self initializeDownloadCallBack:downloadItem];
+                [self.sessionDelegate _anDownloadTaskWillBeginWithDownloadItem:downloadItem];
+                [dataTask resume];
+                return downloadItem;
             }
-            NSURLSessionDataTask *dataTask = downloadItem.sessionTask;
-            // 将下载任务保存到activeDownloadsDictionary中
-            [self.activeDownloadsDictionary setObject:downloadItem
-                                               forKey:@(dataTask.taskIdentifier)];
-            [self initializeDownloadCallBack:downloadItem];
-            [self.sessionDelegate _anDownloadTaskWillBeginWithDownloadItem:downloadItem];
-            [dataTask resume];
-            return downloadItem;
+        } else {
+            
+            @synchronized (_waitingDownloadArray) {
+                // 超出同时的最大下载数量时，将新的任务的aResumeData或者aRemoteURL添加到等待下载数组中
+                NSMutableDictionary *waitingDownloadDict = [NSMutableDictionary dictionary];
+                if (urlPath) {
+                    [waitingDownloadDict setObject:urlPath forKey:OSDownloadURLKey];
+                }
+                [self.waitingDownloadArray addObject:waitingDownloadDict];
+                [self.sessionDelegate _didWaitingDownloadForUrlPath:urlPath];
+            }
         }
-    } else {
         
-        @synchronized (_waitingDownloadArray) {
-            // 超出同时的最大下载数量时，将新的任务的aResumeData或者aRemoteURL添加到等待下载数组中
-            NSMutableDictionary *waitingDownloadDict = [NSMutableDictionary dictionary];
-            if (urlPath) {
-                [waitingDownloadDict setObject:urlPath forKey:OSDownloadURLKey];
-            }
-            [self.waitingDownloadArray addObject:waitingDownloadDict];
-            [self.sessionDelegate _didWaitingDownloadForUrlPath:urlPath];
-        }
     }
     return nil;
 }
@@ -416,8 +426,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 /// 判断该文件是否下载完成
 - (BOOL)isCompletionByRemoteUrlPath:(NSString *)url {
     OSDownloadOperation *item = [self getDownloadItemByURL:url];
-    NSURL *localURL = [self.sessionDelegate _getLocalFolderURLWithRemoteURL:[NSURL URLWithString:url]];
-    if (item.progressObj.expectedFileTotalSize && [self getCacheFileSizeWithPath:localURL.path] == item.progressObj.expectedFileTotalSize) {
+    if (item.progressObj.expectedFileTotalSize && [self getCacheFileSizeWithPath:item.localURL.path] == item.progressObj.expectedFileTotalSize) {
         return YES;
     }
     return NO;
@@ -638,7 +647,6 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     OSDownloadOperation *downloadItem = [self.activeDownloadsDictionary objectForKey:@(identifier)];
     return downloadItem;
 }
-
 
 ////////////////////////////////////////////////////////////////////////
 #pragma mark -

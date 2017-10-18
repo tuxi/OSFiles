@@ -224,7 +224,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
             }
             // 将其从downloadItem中移除，并添加到display中 重新归档
             NSUInteger founIdxInDisplay = [self foundItemIndxInDisplayItemsByURL:urlPath];
-            [self deleteFile:downloadItem.localFolderURL.path];
+            [self deleteFile:downloadItem.localURL.path];
             [self.downloadItems removeObject:downloadItem];
             OSFileItem *cancelItem = [[OSFileItem alloc] initWithURL:urlPath];
             cancelItem.status = OSFileDownloadStatusNotStarted;
@@ -338,7 +338,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
             if (obj.status == OSFileDownloadStatusDownloading) {
                 [self cancel:obj.urlPath];
             }
-            [weakSelf deleteFile:obj.localFolderURL.path];
+            [weakSelf deleteFile:obj.localURL.path];
         }];
         [self.downloadItems removeAllObjects];
         [self storedDownloadItems];

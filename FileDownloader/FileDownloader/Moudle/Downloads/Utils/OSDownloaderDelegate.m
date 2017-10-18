@@ -68,7 +68,6 @@ dispatch_async(dispatch_get_main_queue(), block);\
         fileItem.downloadError = error;
         fileItem.errorMessagesStack = downloadItem.errorMessagesStack;
         fileItem.localFolderURL = downloadItem.localFolderURL;
-        
         // 更新此下载失败的item的状态
         if (fileItem.status != OSFileDownloadStatusPaused) {
             if ([error.domain isEqualToString:NSURLErrorDomain] &&

@@ -179,7 +179,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
             self.cycleView.circularState = FFCircularStateCompleted;
             DLog(@"MIMEType:(%@)", self.downloadItem.MIMEType);
             if ([self.downloadItem.MIMEType isEqualToString:@"image/jpeg"] || [self.downloadItem.MIMEType isEqualToString:@"image/png"]) {
-                NSData *data = [NSData dataWithContentsOfURL:self.downloadItem.localFolderURL];
+                NSData *data = [NSData dataWithContentsOfURL:self.downloadItem.localURL];
                 self.iconView.image = [UIImage imageWithData:data];
             }
         }

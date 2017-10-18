@@ -10,10 +10,9 @@
 
 @interface OSFileItem ()
 
-@property (nonatomic, strong) NSURL *localFolderURL;
+@property (nonatomic, strong) NSURL *localURL;
 
 @end
-
 
 @implementation OSFileItem
 
@@ -57,6 +56,9 @@
     if (self.MIMEType) {
         [aCoder encodeObject:self.MIMEType forKey:NSStringFromSelector(@selector(MIMEType))];
     }
+    if (self.localURL) {
+        [aCoder encodeObject:self.localURL forKey:NSStringFromSelector(@selector(localURL))];
+    }
 }
 
 
@@ -74,49 +76,12 @@
         self.localFolderURL = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(localFolderURL))];
         self.fileName = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(fileName))];
         self.MIMEType = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(MIMEType))];
+        self.localURL = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(localURL))];
     }
     return self;
 }
 
 
-- (NSURL *)localFolderURL {
-    @synchronized (self) {
-        // 处理下载完成后保存的本地路径，由于归档之前获取到的绝对路径，而沙盒路径发送改变时，根据绝对路径是找到文件的
-        NSString *documentPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
-        NSString *documentDirectoryName = [documentPath lastPathComponent];
-        NSString *cachesPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) firstObject];
-        NSString *cacheDirectoryName = [cachesPath lastPathComponent];
-        
-        NSArray *pathComponents = [_localFolderURL pathComponents];
-        
-        if ([pathComponents containsObject:documentDirectoryName]) {
-            NSString *urlPath = _localFolderURL.path;
-            NSArray *subList = [urlPath componentsSeparatedByString:documentDirectoryName];
-            NSString *relativePath = [subList lastObject];
-            NSString *newPath = [documentPath stringByAppendingString:relativePath];
-            _localFolderURL = [NSURL fileURLWithPath:newPath];
-        } else if ([pathComponents componentsJoinedByString:cacheDirectoryName]) {
-            NSString *urlPath = _localFolderURL.path;
-            NSArray *subList = [urlPath componentsSeparatedByString:cacheDirectoryName];
-            NSString *relativePath = [subList lastObject];
-            NSString *newPath = [cachesPath stringByAppendingString:relativePath];
-            _localFolderURL = [NSURL fileURLWithPath:newPath];
-        }
-        
-        return _localFolderURL;
-        
-    }
-}
-
-- (NSString *)fileName {
-    @synchronized (self) {
-        if (!_fileName.length) {
-            return _fileName = self.urlPath.lastPathComponent;
-        };
-        return _fileName;
-    }
-    
-}
 
 - (void)setStatus:(OSFileDownloadStatus)status {
     if (_status == status) {
@@ -146,7 +111,10 @@
         [descriptionDict setObject:self.progressObj forKey:@"progressObj"];
     }
     if (self.localFolderURL) {
-        [descriptionDict setObject:self.localFolderURL forKey:@"localFileURL"];
+        [descriptionDict setObject:self.localFolderURL forKey:@"localFolderURL"];
+    }
+    if (self.localURL) {
+        [descriptionDict setObject:self.localURL forKey:@"localURL"];
     }
     if (self.fileName) {
         [descriptionDict setObject:self.fileName forKey:@"fileName"];

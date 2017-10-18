@@ -296,8 +296,7 @@
     [downloadItem.outputStream open];
     
     // 获得服务器这次请求 返回数据的总长度
-    NSURL *cacheURL = [self _getLocalFolderURLWithRemoteURL:dataTask.currentRequest.URL];
-    long long cacheFileSize = [self.downloader getCacheFileSizeWithPath:cacheURL.path];
+    long long cacheFileSize = [self.downloader getCacheFileSizeWithPath:downloadItem.localURL.path];
     NSInteger totalLength = [response.allHeaderFields[@"Content-Length"] integerValue] + cacheFileSize;
     downloadItem.progressObj.expectedFileTotalSize = totalLength;
     

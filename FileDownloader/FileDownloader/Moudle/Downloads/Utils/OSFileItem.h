@@ -14,7 +14,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface OSFileItem : OSDownloadOperation
 
 @property (nonatomic, assign) OSFileDownloadStatus status;
-@property (nonatomic, copy) NSString *fileName;
 @property (nonatomic, strong) NSError *downloadError;
 @property (nonatomic, copy) void (^statusChangeHandler)(OSFileDownloadStatus status);
 

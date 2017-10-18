@@ -52,8 +52,14 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 - (void)setErrorMessagesStack:(NSArray<NSString *> *)errorMessagesStack;
 
 /// 最终文件存储的本地路径
+- (NSURL * _Nonnull)localURL;
+
+/// 最终文件存储的目录
 - (NSURL * _Nonnull)localFolderURL;
 - (void)setLocalFolderURL:(NSURL * _Nonnull)localFolderURL;
+
+- (void)setFileName:(NSString * _Nonnull)fileName;
+- (NSString * _Nonnull)fileName;
 
 @optional
 /// 最后的HTTP状态码
