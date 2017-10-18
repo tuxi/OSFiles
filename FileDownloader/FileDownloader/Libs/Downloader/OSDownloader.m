@@ -113,24 +113,24 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 #pragma mark - Download
 ////////////////////////////////////////////////////////////////////////
 
-- (NSURLSessionDataTask *)downloadTaskWithURLPath:(NSString *)urlPath
+- (id<OSDownloadOperation>)downloadTaskWithURLPath:(NSString *)urlPath
                                              progress:(void (^)(NSProgress * _Nonnull))downloadProgressBlock
                                     completionHandler:(void (^)(NSURLResponse * _Nonnull, NSURL * _Nullable, NSError * _Nullable))completionHandler {
     
     id<OSDownloadOperation> item = [self downloadWithURL:urlPath];
     item.progressHandler = downloadProgressBlock;
     item.completionHandler = completionHandler;
-    return item.sessionTask;
+    return item;
     
 }
 
-- (NSURLSessionDataTask *)downloadTaskWithRequest:(NSURLRequest *)request
+- (id<OSDownloadOperation>)downloadTaskWithRequest:(NSURLRequest *)request
                                          progress:(void (^)(NSProgress * _Nonnull))downloadProgressBlock
                                 completionHandler:(void (^)(NSURLResponse * _Nonnull, NSURL * _Nullable, NSError * _Nullable))completionHandler {
     id<OSDownloadOperation> item = [self downloadWithRequest:request];
     item.progressHandler = downloadProgressBlock;
     item.completionHandler = completionHandler;
-    return item.sessionTask;
+    return item;
 }
 
 - (id<OSDownloadOperation>)downloadWithURL:(NSString *)urlPath {

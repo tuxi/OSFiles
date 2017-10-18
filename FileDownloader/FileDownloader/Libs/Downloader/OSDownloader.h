@@ -34,10 +34,11 @@ FOUNDATION_EXTERN NSString * const OSDownloaderFolderNameKey;
 /// @param urlPath 下载任务的remote url path
 /// @param downloadProgressBlock 进度回调
 /// @param completionHandler 下载完成回调，不管成功失败
-- (NSURLSessionDataTask *)downloadTaskWithURLPath:(NSString *)urlPath
+/// @return A cancellable OSDownloadOperation
+- (id<OSDownloadOperation>)downloadTaskWithURLPath:(NSString *)urlPath
                                              progress:(nullable void (^)(NSProgress *downloadProgress))downloadProgressBlock
                                     completionHandler:(nullable void (^)(NSURLResponse *response, NSURL * _Nullable filePath, NSError * _Nullable error))completionHandler;
-- (NSURLSessionDataTask *)downloadTaskWithRequest:(NSURLRequest *)request
+- (id<OSDownloadOperation>)downloadTaskWithRequest:(NSURLRequest *)request
                                          progress:(nullable void (^)(NSProgress *downloadProgress))downloadProgressBlock
                                 completionHandler:(nullable void (^)(NSURLResponse *response, NSURL * _Nullable filePath, NSError * _Nullable error))completionHandler;
 

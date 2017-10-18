@@ -36,8 +36,8 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 - (nullable NSOutputStream *)outputStream;
 - (void)setOutputStream:(nullable NSOutputStream *)outputStream;
 
-- (OSDownloadProgress * _Nonnull)progressObj;
-- (void)setProgressObj:(OSDownloadProgress * _Nonnull)progressObj;
+- (OSDownloadProgress *)progressObj;
+- (void)setProgressObj:(OSDownloadProgress *)progressObj;
 
 /// 下载的url
 - (NSString *)urlPath;
@@ -52,14 +52,16 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 - (void)setErrorMessagesStack:(NSArray<NSString *> *)errorMessagesStack;
 
 /// 最终文件存储的本地路径
-- (NSURL * _Nonnull)localURL;
+- (NSURL *)localURL;
 
 /// 最终文件存储的目录
-- (NSURL * _Nonnull)localFolderURL;
-- (void)setLocalFolderURL:(NSURL * _Nonnull)localFolderURL;
+- (NSURL *)localFolderURL;
+- (void)setLocalFolderURL:(NSURL *)localFolderURL;
 
-- (void)setFileName:(NSString * _Nonnull)fileName;
-- (NSString * _Nonnull)fileName;
+- (void)setFileName:(NSString *)fileName;
+- (NSString *)fileName;
+
+- (void)cancel;
 
 @optional
 /// 最后的HTTP状态码
