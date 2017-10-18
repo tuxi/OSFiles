@@ -35,7 +35,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
 #pragma mark - OSDownloaderDelegate
 ////////////////////////////////////////////////////////////////////////
 
-- (void)downloadSuccessnWithDownloadItem:(id<OSDownloadOperationProtocol>)downloadItem {
+- (void)downloadSuccessnWithDownloadItem:(id<OSDownloadOperation>)downloadItem {
     
     // 根据aIdentifier在downloadItems中查找对应的DownloadItem，更改其下载状态，发送通知
     NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:downloadItem.urlPath];
@@ -56,7 +56,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
     })
 }
 
-- (void)downloadFailureWithDownloadItem:(id<OSDownloadOperationProtocol>)downloadItem
+- (void)downloadFailureWithDownloadItem:(id<OSDownloadOperation>)downloadItem
                                   error:(NSError *)error {
     
     // 根据aIdentifier在downloadItems中查找对应的DownloadItem
@@ -86,7 +86,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
     })
 }
 
-- (void)downloadTaskWillBeginWithDownloadItem:(id<OSDownloadOperationProtocol>)downloadItem {
+- (void)downloadTaskWillBeginWithDownloadItem:(id<OSDownloadOperation>)downloadItem {
     [self toggleNetworkActivityIndicatorVisible:YES];
     NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:downloadItem.urlPath];
      OSFileItem *fileItem = nil;
@@ -100,7 +100,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
     [[OSDownloaderModule sharedInstance] storedDownloadItems];
 }
 
-- (void)downloadTaskDidEndWithDownloadItem:(id<OSDownloadOperationProtocol>)downloadItem {
+- (void)downloadTaskDidEndWithDownloadItem:(id<OSDownloadOperation>)downloadItem {
     [self toggleNetworkActivityIndicatorVisible:NO];
 }
 

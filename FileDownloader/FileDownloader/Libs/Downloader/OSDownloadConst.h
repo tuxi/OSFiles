@@ -15,6 +15,20 @@ block();\
 dispatch_async(dispatch_get_main_queue(), block);\
 }
 
+#ifdef DEBUG
+#define DLog(fmt, ...) NSLog((@"<%s : %d> %s  " fmt), [[[NSString stringWithUTF8String:__FILE__] lastPathComponent]   UTF8String], __LINE__, __PRETTY_FUNCTION__,  ##__VA_ARGS__);
+#else
+#define DLog(...)
+#endif
+
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#define OSPerformSelectorLeakWarning(Stuff) \
+do { \
+_Pragma("clang diagnostic push") \
+_Pragma("clang diagnostic ignored \"-Warc-performSelector-leaks\"") \
+Stuff; \
+_Pragma("clang diagnostic pop") \
+} while (0)
 
 
 FOUNDATION_EXTERN NSString * const OSFileDownloadProgressChangeNotification;

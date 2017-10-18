@@ -13,16 +13,6 @@
 // 后台任务的标识符
 #define kBackgroundDownloadSessionIdentifier [NSString stringWithFormat:@"%@.OSDownloader", [NSBundle mainBundle].bundleIdentifier]
 
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#define OSPerformSelectorLeakWarning(Stuff) \
-do { \
-_Pragma("clang diagnostic push") \
-_Pragma("clang diagnostic ignored \"-Warc-performSelector-leaks\"") \
-Stuff; \
-_Pragma("clang diagnostic pop") \
-} while (0)
-
-
 static NSString * const OSDownloadURLKey = @"downloadURLPath";
 NSString * const OSDownloaderFolderNameKey = @"OSDownloaderFolder";
 static void *ProgressObserverContext = &ProgressObserverContext;
@@ -127,7 +117,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
                                              progress:(void (^)(NSProgress * _Nonnull))downloadProgressBlock
                                     completionHandler:(void (^)(NSURLResponse * _Nonnull, NSURL * _Nullable, NSError * _Nullable))completionHandler {
     
-    id<OSDownloadOperationProtocol> item = [self downloadWithURL:urlPath];
+    id<OSDownloadOperation> item = [self downloadWithURL:urlPath];
     item.progressHandler = downloadProgressBlock;
     item.completionHandler = completionHandler;
     return item.sessionTask;
@@ -137,13 +127,13 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 - (NSURLSessionDataTask *)downloadTaskWithRequest:(NSURLRequest *)request
                                          progress:(void (^)(NSProgress * _Nonnull))downloadProgressBlock
                                 completionHandler:(void (^)(NSURLResponse * _Nonnull, NSURL * _Nullable, NSError * _Nullable))completionHandler {
-    id<OSDownloadOperationProtocol> item = [self downloadWithRequest:request];
+    id<OSDownloadOperation> item = [self downloadWithRequest:request];
     item.progressHandler = downloadProgressBlock;
     item.completionHandler = completionHandler;
     return item.sessionTask;
 }
 
-- (id<OSDownloadOperationProtocol>)downloadWithURL:(NSString *)urlPath {
+- (id<OSDownloadOperation>)downloadWithURL:(NSString *)urlPath {
     NSURL *remoteURL = [NSURL URLWithString:urlPath];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:remoteURL
@@ -153,7 +143,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
     return [self downloadWithRequest:request];
 }
 
-- (id<OSDownloadOperationProtocol>)downloadWithRequest:(NSURLRequest *)request  {
+- (id<OSDownloadOperation>)downloadWithRequest:(NSURLRequest *)request  {
     NSAssert(request, @"Error: request do't is nil");
     // 无任务下载时，重置总进度
     [self resetProgressIfNoActiveDownloadsRunning];
@@ -643,7 +633,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 
 
 /// 通过downloadToken获取下载任务的downloadItem
-- (id<OSDownloadOperationProtocol>)getDownloadItemByURL:(nonnull NSString *)urlPath {
+- (id<OSDownloadOperation>)getDownloadItemByURL:(nonnull NSString *)urlPath {
     NSInteger identifier = [self getDownloadTaskIdentifierByURL:urlPath];
     OSDownloadOperation *downloadItem = [self.activeDownloadsDictionary objectForKey:@(identifier)];
     return downloadItem;
@@ -697,7 +687,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     return _backgroundSeesionQueue;
 }
 
-- (NSMutableDictionary<NSNumber *,id<OSDownloadOperationProtocol>> *)activeDownloadsDictionary {
+- (NSMutableDictionary<NSNumber *,id<OSDownloadOperation>> *)activeDownloadsDictionary {
     if (!_activeDownloadsDictionary) {
         _activeDownloadsDictionary = [NSMutableDictionary dictionaryWithCapacity:0];
     }

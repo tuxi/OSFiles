@@ -12,7 +12,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface OSDownloadOperation : NSObject <OSDownloadOperationProtocol>
+@interface OSDownloadOperation : NSObject <OSDownloadOperation>
 
 @property (nullable, copy) void (^cancellationHandler)(void);
 @property (nullable, copy) void (^pausingHandler)(void);

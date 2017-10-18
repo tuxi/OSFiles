@@ -69,14 +69,14 @@
 
 
 /// 即将开始下载时调用
-- (void)_anDownloadTaskWillBeginWithDownloadItem:(id<OSDownloadOperationProtocol>)downloadItem {
+- (void)_anDownloadTaskWillBeginWithDownloadItem:(id<OSDownloadOperation>)downloadItem {
     if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadTaskWillBeginWithDownloadItem:)]) {
         [self.downloadDelegate downloadTaskWillBeginWithDownloadItem:downloadItem];
     }
 }
 
 /// 已经结束某个任务，不管是否成功都会调用
-- (void)_anDownloadTaskDidEndWithDownloadItem:(id<OSDownloadOperationProtocol>)downloadItem {
+- (void)_anDownloadTaskDidEndWithDownloadItem:(id<OSDownloadOperation>)downloadItem {
     if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadTaskDidEndWithDownloadItem:)]) {
         [self.downloadDelegate downloadTaskDidEndWithDownloadItem:downloadItem];
     }
@@ -291,7 +291,7 @@
 /// 接收到响应
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSHTTPURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler {
     
-    id<OSDownloadOperationProtocol> downloadItem = [self.downloader getDownloadItemByTask:dataTask];
+    id<OSDownloadOperation> downloadItem = [self.downloader getDownloadItemByTask:dataTask];
     
     // 打开流
     [downloadItem.outputStream open];
@@ -307,7 +307,7 @@
 
 /// 接收到服务器返回的数据
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data {
-    id<OSDownloadOperationProtocol> downloadItem = [self.downloader getDownloadItemByTask:dataTask];
+    id<OSDownloadOperation> downloadItem = [self.downloader getDownloadItemByTask:dataTask];
     [downloadItem.outputStream write:data.bytes maxLength:data.length];
     if (downloadItem) {
         if (!downloadItem.progressObj.downloadStartDate) {
@@ -325,7 +325,7 @@
 /// 请求完毕（成功|失败）
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
     
-    id<OSDownloadOperationProtocol> downloadItem = [self.downloader getDownloadItemByTask:(NSURLSessionDataTask *)task];
+    id<OSDownloadOperation> downloadItem = [self.downloader getDownloadItemByTask:(NSURLSessionDataTask *)task];
     if (!downloadItem) {
         [self handleDownloadFailureWithError:error downloadItem:downloadItem taskIdentifier:task.taskIdentifier response:task.response];
         return;

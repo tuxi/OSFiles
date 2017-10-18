@@ -12,13 +12,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-#ifdef DEBUG
-#define DLog(fmt, ...) NSLog((@"<%s : %d> %s  " fmt), [[[NSString stringWithUTF8String:__FILE__] lastPathComponent]   UTF8String], __LINE__, __PRETTY_FUNCTION__,  ##__VA_ARGS__);
-#else
-#define DLog(...)
-#endif
-
-
 FOUNDATION_EXTERN NSString * const OSDownloaderFolderNameKey;
 
 @interface OSDownloader : NSObject
@@ -27,18 +20,20 @@ FOUNDATION_EXTERN NSString * const OSDownloaderFolderNameKey;
 /// 完成一个后台任务时回调
 @property (nonatomic, copy) void (^backgroundSessionCompletionHandler)();
 /// 下载的任务(包括正在下载的、暂停的) key 为 taskIdentifier， value 为 OSDownloadOperation, 下载完成后会从此集合中移除
-@property (nonatomic, strong) NSMutableDictionary<NSNumber *, id<OSDownloadOperationProtocol>> *activeDownloadsDictionary;
+@property (nonatomic, strong) NSMutableDictionary<NSNumber *, id<OSDownloadOperation>> *activeDownloadsDictionary;
 /// 等待下载的任务数组 每个元素 字典 为一个等待的任务
 @property (nonatomic, strong) NSMutableArray<NSDictionary <NSString *, NSObject *> *> *waitingDownloadArray;
 @property (nonatomic, weak) id<OSDownloaderDelegate> downloadDelegate;
 
-- (id<OSDownloadOperationProtocol>)getDownloadItemByTask:(NSURLSessionDataTask *)task;
-- (id<OSDownloadOperationProtocol>)getDownloadItemByURL:(nonnull NSString *)urlPath;
+- (id<OSDownloadOperation>)getDownloadItemByTask:(NSURLSessionDataTask *)task;
+- (id<OSDownloadOperation>)getDownloadItemByURL:(nonnull NSString *)urlPath;
+
 - (long long)getCacheFileSizeWithPath:(NSString *)url;
+
 /// 执行开始下载任务
 /// @param urlPath 下载任务的remote url path
-- (id<OSDownloadOperationProtocol>)downloadWithURL:(NSString *)urlPath;
-
+/// @param downloadProgressBlock 进度回调
+/// @param completionHandler 下载完成回调，不管成功失败
 - (NSURLSessionDataTask *)downloadTaskWithURLPath:(NSString *)urlPath
                                              progress:(nullable void (^)(NSProgress *downloadProgress))downloadProgressBlock
                                     completionHandler:(nullable void (^)(NSURLResponse *response, NSURL * _Nullable filePath, NSError * _Nullable error))completionHandler;

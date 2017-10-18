@@ -29,10 +29,10 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 };
 
 
-@protocol OSDownloadOperationProtocol <NSObject>
-
+@protocol OSDownloadOperation <NSObject>
 
 @required
+
 - (nullable NSOutputStream *)outputStream;
 - (void)setOutputStream:(nullable NSOutputStream *)outputStream;
 
@@ -83,23 +83,23 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 
 /// 下载成功回调
 /// @param downloadItem 下载的OSDownloadOperation
-- (void)downloadSuccessnWithDownloadItem:(id<OSDownloadOperationProtocol>)downloadItem;
+- (void)downloadSuccessnWithDownloadItem:(id<OSDownloadOperation>)downloadItem;
 
 /// 一个任务下载时候时调用
 /// @param downloadItem 下载的OSDownloadOperation
 /// @prram error 下载错误信息
-- (void)downloadFailureWithDownloadItem:(id<OSDownloadOperationProtocol>)downloadItem
+- (void)downloadFailureWithDownloadItem:(id<OSDownloadOperation>)downloadItem
                                   error:(nullable NSError *)error;
 
 @optional
 
 /// 一个任务即将开始下载时调用，当需要显示网络活动指示器的时候调用
 /// 此时应该在此回调中使用 UIApplication's setNetworkActivityIndicatorVisible: 去设置状态栏网络活动的可见性
-- (void)downloadTaskWillBeginWithDownloadItem:(id<OSDownloadOperationProtocol>)downloadItem;
+- (void)downloadTaskWillBeginWithDownloadItem:(id<OSDownloadOperation>)downloadItem;
 
 /// 一个任务下载结束时调用，当需要隐藏网络活动指示器即将结束的时候调用,不管是否成功都会调用
 /// 此时应该在此回调中使用 UIApplication's setNetworkActivityIndicatorVisible: 去设置状态栏网络活动的可见性
-- (void)downloadTaskDidEndWithDownloadItem:(id<OSDownloadOperationProtocol>)downloadItem;
+- (void)downloadTaskDidEndWithDownloadItem:(id<OSDownloadOperation>)downloadItem;
 
 
 /// 下载进度改变的时候调用
