@@ -12,4 +12,6 @@ NSString * const OSFileDownloadProgressChangeNotification = @"OSFileDownloadProg
 NSString * const OSFileDownloadSussessNotification = @"OSFileDownloadSussessNotification";
 NSString * const OSFileDownloadFailureNotification = @"OSFileDownloadFailureNotification";
 NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNotification";
+NSString * const OSFileDownloadStartedNotification = @"OSFileDownloadStartedNotification";
+NSString * const OSFileDownloadPausedNotification = @"OSFileDownloadPausedNotification";
 NSString * const OSFileDownloadTotalProgressCanceldNotification = @"OSFileDownloadTotalProgressCanceldNotification";

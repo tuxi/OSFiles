@@ -562,7 +562,6 @@
 			isa = PBXGroup;
 			children = (
 				18DCFC3E1F263D8F00AC21CA /* Utils */,
-				18517C4B1EEBD8D400B148C8 /* Model */,
 				18517C4C1EEBD8D400B148C8 /* View */,
 				18517C4D1EEBD8D400B148C8 /* ViewModel */,
 			);
@@ -674,13 +673,6 @@
 			children = (
 			);
 			path = ViewModel;
-			sourceTree = "<group>";
-		};
-		18517C4B1EEBD8D400B148C8 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Model;
 			sourceTree = "<group>";
 		};
 		18517C4C1EEBD8D400B148C8 /* View */ = {

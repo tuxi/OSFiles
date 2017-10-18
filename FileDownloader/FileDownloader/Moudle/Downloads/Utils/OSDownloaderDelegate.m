@@ -45,7 +45,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
         
         fileItem = [[OSDownloaderModule sharedInstance].downloadItems objectAtIndex:foundItemIdx];
         fileItem.status = OSFileDownloadStatusSuccess;
-        fileItem.finalLocalFileURL = downloadItem.finalLocalFileURL;
+        fileItem.localFolderURL = downloadItem.localFolderURL;
         fileItem.MIMEType = downloadItem.MIMEType;
         [[OSDownloaderModule sharedInstance] storedDownloadItems];
     } else {
@@ -67,13 +67,13 @@ dispatch_async(dispatch_get_main_queue(), block);\
         fileItem.lastHttpStatusCode = downloadItem.lastHttpStatusCode;
         fileItem.downloadError = error;
         fileItem.errorMessagesStack = downloadItem.errorMessagesStack;
-        fileItem.finalLocalFileURL = downloadItem.finalLocalFileURL;
+        fileItem.localFolderURL = downloadItem.localFolderURL;
         
         // 更新此下载失败的item的状态
         if (fileItem.status != OSFileDownloadStatusPaused) {
             if ([error.domain isEqualToString:NSURLErrorDomain] &&
                 (error.code == NSURLErrorCancelled)) {
-                fileItem.status = OSFileDownloadStatusCancelled;
+                fileItem.status = OSFileDownloadStatusNotStarted;
             } else {
                 fileItem.status = OSFileDownloadStatusFailure;
             }
@@ -94,8 +94,8 @@ dispatch_async(dispatch_get_main_queue(), block);\
     if (foundItemIdx != NSNotFound) {
         fileItem = [[OSDownloaderModule sharedInstance].downloadItems objectAtIndex:foundItemIdx];
         fileItem.status = OSFileDownloadStatusDownloading;
-        if (!fileItem.finalLocalFileURL) {
-            fileItem.finalLocalFileURL = downloadItem.finalLocalFileURL;
+        if (!fileItem.localFolderURL) {
+            fileItem.localFolderURL = downloadItem.localFolderURL;
         }
     }
     [[OSDownloaderModule sharedInstance] storedDownloadItems];
@@ -146,7 +146,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
     [[OSDownloaderModule sharedInstance] start:url];
 }
 
-- (BOOL)downloadFinalLocalFileURL:(NSURL *)aLocalFileURL isVaildByURL:(NSString *)url {
+- (BOOL)downloadLocalFolderURL:(NSURL *)aLocalFileURL isVaildByURL:(NSString *)url {
     
     // 检测文件大小,项目中有时需要检测下载的文件的类型是否相匹配，这里就仅仅检测文件大小
     // 根据文件的大小判断下载的文件是否有效,比如可以设定当文件超过多少kb就视为无效
@@ -199,7 +199,11 @@ dispatch_async(dispatch_get_main_queue(), block);\
     }
 }
 
-
+- (NSURL *)localFolderURLWithRemoteURL:(NSURL *)remoteURL {
+    NSString *documentPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
+    NSURL *folderURL = [NSURL fileURLWithPath:documentPath];
+    return folderURL;
+}
 
 ////////////////////////////////////////////////////////////////////////
 #pragma mark - Other

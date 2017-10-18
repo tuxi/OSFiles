@@ -25,10 +25,10 @@
 
 
 /// 获取下载后文件最终存放的本地路径,若代理实现了则设置使用代理的，没实现则使用默认设定的LocalURL
-- (NSURL *)_getFinalLocalFileURLWithRemoteURL:(NSURL *)remoteURL {
+- (NSURL *)_getLocalFolderURLWithRemoteURL:(NSURL *)remoteURL {
     NSURL *finalUrl = nil;
-    if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(finalLocalFileURLWithRemoteURL:)]) {
-        finalUrl = [self.downloadDelegate finalLocalFileURLWithRemoteURL:remoteURL];
+    if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(localFolderURLWithRemoteURL:)]) {
+        finalUrl = [self.downloadDelegate localFolderURLWithRemoteURL:remoteURL];
     } else {
         finalUrl = [self getDefaultLocalFilePathWithRemoteURL:remoteURL];
     }
@@ -93,7 +93,7 @@
     
     downloadItem.progressObj.nativeProgress.completedUnitCount = downloadItem.progressObj.nativeProgress.totalUnitCount;
     if (downloadItem.completionHandler) {
-        downloadItem.completionHandler(response, downloadItem.finalLocalFileURL, nil);
+        downloadItem.completionHandler(response, downloadItem.localFolderURL, nil);
     }
     [self.downloader.activeDownloadsDictionary removeObjectForKey:@(taskIdentifier)];
     [self _anDownloadTaskDidEndWithDownloadItem:downloadItem];
@@ -176,15 +176,15 @@
 
 /// 验证下载的文件是否有效
 - (BOOL)_isVaildDownloadFileByDownloadIdentifier:(NSString *)identifier
-                               finalLocalFileURL:(NSURL *)finalLocalFileURL errorStr:(NSString **)errorStr {
+                               localFolderURL:(NSURL *)localFolderURL errorStr:(NSString **)errorStr {
     BOOL isVaild = YES;
     
     // 移动到最终位置成功
     NSError *error = nil;
     // 获取最终文件的属性
-    NSDictionary *finalFileAttributesDictionary = [[NSFileManager defaultManager] attributesOfItemAtPath:finalLocalFileURL.path error:&error];
+    NSDictionary *finalFileAttributesDictionary = [[NSFileManager defaultManager] attributesOfItemAtPath:localFolderURL.path error:&error];
     if (error && errorStr) {
-        *errorStr = [NSString stringWithFormat:@"Error: Error on getting file size for item at %@: %@", finalLocalFileURL, error.localizedDescription];
+        *errorStr = [NSString stringWithFormat:@"Error: Error on getting file size for item at %@: %@", localFolderURL, error.localizedDescription];
         DLog(@"%@", *errorStr);
         isVaild = NO;
     } else {
@@ -194,14 +194,14 @@
         if (fileSize == 0) {
             // 文件大小字节数为0 不正常
             NSError *fileSizeZeroError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorZeroByteResource userInfo:nil];
-            *errorStr = [NSString stringWithFormat:@"Error: Zero file size for item at %@: %@", finalLocalFileURL, fileSizeZeroError.localizedDescription];
+            *errorStr = [NSString stringWithFormat:@"Error: Zero file size for item at %@: %@", localFolderURL, fileSizeZeroError.localizedDescription];
             DLog(@"%@", *errorStr);
             isVaild = NO;
         } else {
-            if ([self.downloadDelegate respondsToSelector:@selector(downloadFinalLocalFileURL:isVaildByURL:)]) {
-                BOOL isVaild = [self.downloadDelegate downloadFinalLocalFileURL:finalLocalFileURL isVaildByURL:identifier];
+            if ([self.downloadDelegate respondsToSelector:@selector(downloadLocalFolderURL:isVaildByURL:)]) {
+                BOOL isVaild = [self.downloadDelegate downloadLocalFolderURL:localFolderURL isVaildByURL:identifier];
                 if (isVaild == NO) {
-                    *errorStr = [NSString stringWithFormat:@"Error: Download check failed for item at %@", finalLocalFileURL];
+                    *errorStr = [NSString stringWithFormat:@"Error: Download check failed for item at %@", localFolderURL];
                     DLog(@"%@", *errorStr);
                 }
             }
@@ -215,7 +215,7 @@
 #pragma mark - Private delegate methods
 ////////////////////////////////////////////////////////////////////////
 
-/// 有一个任务等待下载时调用
+/// 一个任务进入等待时调用
 - (void)_didWaitingDownloadForUrlPath:(NSString *)url {
     if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadDidWaitingWithURLPath:progress:)]) {
         OSDownloadProgress *progress = [self.downloader getDownloadProgressByURL:url];
@@ -296,7 +296,7 @@
     [downloadItem.outputStream open];
     
     // 获得服务器这次请求 返回数据的总长度
-    NSURL *cacheURL = [self _getFinalLocalFileURLWithRemoteURL:dataTask.currentRequest.URL];
+    NSURL *cacheURL = [self _getLocalFolderURLWithRemoteURL:dataTask.currentRequest.URL];
     long long cacheFileSize = [self.downloader getCacheFileSizeWithPath:cacheURL.path];
     NSInteger totalLength = [response.allHeaderFields[@"Content-Length"] integerValue] + cacheFileSize;
     downloadItem.progressObj.expectedFileTotalSize = totalLength;
@@ -338,7 +338,7 @@
         // 下载完成
         BOOL httpStatusCodeIsCorrectFlag = [self _isVaildHTTPStatusCode:httpStatusCode url:downloadItem.urlPath];
         if (httpStatusCodeIsCorrectFlag == YES) {
-            NSURL *finalLocalFileURL = downloadItem.finalLocalFileURL;
+            NSURL *finalLocalFileURL = downloadItem.localFolderURL;
             if (finalLocalFileURL) {
                 
                 [self handleDownloadSuccessWithDownloadItem:downloadItem taskIdentifier:task.taskIdentifier response:task.response];

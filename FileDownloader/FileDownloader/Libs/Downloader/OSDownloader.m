@@ -9,7 +9,6 @@
 #import "OSDownloader.h"
 #import "OSDownloaderSessionPrivateDelegate.h"
 #import "OSDownloadOperation.h"
-#import "OSDownloadConst.h"
 
 // 后台任务的标识符
 #define kBackgroundDownloadSessionIdentifier [NSString stringWithFormat:@"%@.OSDownloader", [NSBundle mainBundle].bundleIdentifier]
@@ -146,7 +145,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 
 - (id<OSDownloadOperationProtocol>)downloadWithURL:(NSString *)urlPath {
     NSURL *remoteURL = [NSURL URLWithString:urlPath];
-    NSURL *cacheURL = [self.sessionDelegate _getFinalLocalFileURLWithRemoteURL:remoteURL];
+    NSURL *cacheURL = [self.sessionDelegate _getLocalFolderURLWithRemoteURL:remoteURL];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:remoteURL
                                                            cachePolicy:NSURLRequestReloadIgnoringCacheData
                                                        timeoutInterval:30.0];
@@ -170,13 +169,13 @@ static void *ProgressObserverContext = &ProgressObserverContext;
             if (!downloadItem) {
                 self.totalProgress.totalUnitCount++;
                 [self.totalProgress becomeCurrentWithPendingUnitCount:1];
-                NSURL *cacheURL = [self.sessionDelegate _getFinalLocalFileURLWithRemoteURL:remoteURL];
+                NSURL *cacheURL = [self.sessionDelegate _getLocalFolderURLWithRemoteURL:remoteURL];
                 NSOutputStream *stream = [NSOutputStream outputStreamWithURL:cacheURL append:YES];
                 NSURLSessionDataTask *dataTask = [self.backgroundSeesion dataTaskWithRequest:request];
                 taskIdentifier = dataTask.taskIdentifier;
                 dataTask.taskDescription = urlPath;
                 downloadItem = [[OSDownloadOperation alloc] initWithURL:urlPath sessionDataTask:dataTask];
-                downloadItem.finalLocalFileURL = cacheURL;
+                downloadItem.localFolderURL = cacheURL;
                 downloadItem.outputStream = stream;
                 
                 long long cacheFileSize = 0;
@@ -417,7 +416,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 /// 判断该文件是否下载完成
 - (BOOL)isCompletionByRemoteUrlPath:(NSString *)url {
     OSDownloadOperation *item = [self getDownloadItemByURL:url];
-    NSURL *localURL = [self.sessionDelegate _getFinalLocalFileURLWithRemoteURL:[NSURL URLWithString:url]];
+    NSURL *localURL = [self.sessionDelegate _getLocalFolderURLWithRemoteURL:[NSURL URLWithString:url]];
     if (item.progressObj.expectedFileTotalSize && [self getCacheFileSizeWithPath:localURL.path] == item.progressObj.expectedFileTotalSize) {
         return YES;
     }

@@ -212,7 +212,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
         if (itemIdx != NSNotFound) {
             // 根据索引在self.downloadItems中取出OSFileItem，修改状态，并进行归档
             OSFileItem *downloadItem = [self.downloadItems objectAtIndex:itemIdx];
-            downloadItem.status = OSFileDownloadStatusCancelled;
+            downloadItem.status = OSFileDownloadStatusNotStarted;
             if (!downloadItem.progressObj) {
                 OSDownloadProgress *progress = [self.downloader getDownloadProgressByURL:urlPath];
                 downloadItem.progressObj = progress;
@@ -224,10 +224,10 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
             }
             // 将其从downloadItem中移除，并添加到display中 重新归档
             NSUInteger founIdxInDisplay = [self foundItemIndxInDisplayItemsByURL:urlPath];
-            [self deleteFile:downloadItem.finalLocalFileURL.path];
+            [self deleteFile:downloadItem.localFolderURL.path];
             [self.downloadItems removeObject:downloadItem];
             OSFileItem *cancelItem = [[OSFileItem alloc] initWithURL:urlPath];
-            cancelItem.status = OSFileDownloadStatusCancelled;
+            cancelItem.status = OSFileDownloadStatusNotStarted;
             if (founIdxInDisplay == NSNotFound) {
                 [self.displayItems addObject:cancelItem];
             } else {
@@ -338,7 +338,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
             if (obj.status == OSFileDownloadStatusDownloading) {
                 [self cancel:obj.urlPath];
             }
-            [weakSelf deleteFile:obj.finalLocalFileURL.path];
+            [weakSelf deleteFile:obj.localFolderURL.path];
         }];
         [self.downloadItems removeAllObjects];
         [self storedDownloadItems];

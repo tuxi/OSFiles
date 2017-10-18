@@ -28,7 +28,7 @@
                                      response:(NSURLResponse *)response;
 
 /// 获取下载后文件最终存放的本地路径,若代理实现了则设置使用代理的，没实现则使用默认设定的LocalURL
-- (NSURL *)_getFinalLocalFileURLWithRemoteURL:(NSURL *)remoteURL;
+- (NSURL *)_getLocalFolderURLWithRemoteURL:(NSURL *)remoteURL;
 
 /// 即将开始下载时调用
 - (void)_anDownloadTaskWillBeginWithDownloadItem:(id<OSDownloadOperationProtocol>)downloadItem;

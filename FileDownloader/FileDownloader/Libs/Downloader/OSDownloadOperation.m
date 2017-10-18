@@ -22,7 +22,7 @@
 /** 最后的HTTP状态码 */
 @property (nonatomic, assign) NSInteger lastHttpStatusCode;
 /** 最终文件存储的本地路径 */
-@property (nonatomic, strong) NSURL *finalLocalFileURL;
+@property (nonatomic, strong) NSURL *localFolderURL;
 /** 文件的类型 */
 @property (nonatomic, copy) NSString *MIMEType;
 /** 流 */

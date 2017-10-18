@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "OSDownloadConst.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -25,13 +26,13 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
     OSFileDownloadStatusFailure,
     /// 下载完成
     OSFileDownloadStatusSuccess,
-    /// 取消下载
-    OSFileDownloadStatusCancelled = OSFileDownloadStatusNotStarted,
 };
 
 
 @protocol OSDownloadOperationProtocol <NSObject>
 
+
+@required
 - (nullable NSOutputStream *)outputStream;
 - (void)setOutputStream:(nullable NSOutputStream *)outputStream;
 
@@ -50,13 +51,14 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 - (NSArray<NSString *> *)errorMessagesStack;
 - (void)setErrorMessagesStack:(NSArray<NSString *> *)errorMessagesStack;
 
+/// 最终文件存储的本地路径
+- (NSURL * _Nonnull)localFolderURL;
+- (void)setLocalFolderURL:(NSURL * _Nonnull)localFolderURL;
+
+@optional
 /// 最后的HTTP状态码
 - (NSInteger)lastHttpStatusCode;
 - (void)setLastHttpStatusCode:(NSInteger)lastHttpStatusCode;
-
-/// 最终文件存储的本地路径
-- (NSURL *)finalLocalFileURL;
-- (void)setFinalLocalFileURL:(NSURL *)finalLocalFileURL;
 
 /// 文件的类型
 - (NSString *)MIMEType;
@@ -111,14 +113,14 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 /// @param remoteURL 下载文件的服务器地址
 /// @return 设置本地存储的路径
 /// @discussion 使用下载的url配置下载完成存储的本地路径
-- (NSURL *)finalLocalFileURLWithRemoteURL:(NSURL *)remoteURL;
+- (NSURL *)localFolderURLWithRemoteURL:(NSURL *)remoteURL;
 
 /// 回调此方法，验证下载数据
 /// @param aLocalFileURL 下载文件的本地路径
 /// @param url 当前下载任务的url
 /// @return 如果本地文件中下载的数据通过验证测试，则应该renturn YES
 /// @discussion 有时下载的数据可能是错误的， 此方法可用于检查下载的数据是否为预期的内容和数据类型，default YES
-- (BOOL)downloadFinalLocalFileURL:(NSURL *)aLocalFileURL isVaildByURL:(NSString *)url;
+- (BOOL)downloadLocalFolderURL:(NSURL *)aLocalFileURL isVaildByURL:(NSString *)url;
 
 /// 回调此方法，验证HTTP 状态码 是否有效
 /// @param aHttpStatusCode 当前服务器响应的HTTP 状态码
@@ -137,10 +139,10 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
               completionHandler:(void (^)(NSURLCredential * aCredential, NSURLSessionAuthChallengeDisposition disposition))aCompletionHandler;
 
 
-/// 有一个任务等待下载时调用
+/// 一个任务进入等待时调用
 - (void)downloadDidWaitingWithURLPath:(NSString *)url progress:(OSDownloadProgress *)progress;
 
-/// 从等待队列中开始下载一个任务
+/// 从等待队列中开始下载一个任务时调用
 - (void)downloadStartFromWaitingQueueWithURLpath:(NSString *)url progress:(OSDownloadProgress *)progress;
 @end
 
