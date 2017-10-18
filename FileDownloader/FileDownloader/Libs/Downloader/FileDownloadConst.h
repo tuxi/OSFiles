@@ -1,5 +1,5 @@
 //
-//  OSDownloadConst.h
+//  FileDownloadConst.h
 //  Boobuz
 //
 //  Created by xiaoyuan on 18/10/2017.
@@ -31,10 +31,10 @@ _Pragma("clang diagnostic pop") \
 } while (0)
 
 
-FOUNDATION_EXTERN NSString * const OSFileDownloadProgressChangeNotification;
-FOUNDATION_EXTERN NSString * const OSFileDownloadSussessNotification;
-FOUNDATION_EXTERN NSString * const OSFileDownloadFailureNotification;
-FOUNDATION_EXTERN NSString * const OSFileDownloadCanceldNotification;
-FOUNDATION_EXTERN NSString * const OSFileDownloadStartedNotification;
-FOUNDATION_EXTERN NSString * const OSFileDownloadPausedNotification;
-FOUNDATION_EXTERN NSString * const OSFileDownloadTotalProgressCanceldNotification;
+FOUNDATION_EXTERN NSNotificationName const FileDownloadProgressChangeNotification;
+FOUNDATION_EXTERN NSNotificationName const FileDownloadSussessNotification;
+FOUNDATION_EXTERN NSNotificationName const FileDownloadFailureNotification;
+FOUNDATION_EXTERN NSNotificationName const FileDownloadCanceldNotification;
+FOUNDATION_EXTERN NSNotificationName const FileDownloadStartedNotification;
+FOUNDATION_EXTERN NSNotificationName const FileDownloadPausedNotification;
+FOUNDATION_EXTERN NSNotificationName const FileDownloadTotalProgressCanceldNotification;

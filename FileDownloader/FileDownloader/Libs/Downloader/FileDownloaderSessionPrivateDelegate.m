@@ -1,22 +1,22 @@
 //
-//  OSDownloaderSessionPrivateDelegate.m
+//  FileDownloaderSessionPrivateDelegate.m
 //  FileDownloader
 //
 //  Created by Ossey on 2017/7/9.
 //  Copyright © 2017年 Ossey. All rights reserved.
 //
 
-#import "OSDownloaderSessionPrivateDelegate.h"
-#import "OSDownloadOperation.h"
-#import "OSDownloader.h"
+#import "FileDownloaderSessionPrivateDelegate.h"
+#import "FileDownloadOperation.h"
+#import "FileDownloader.h"
 
-@interface OSDownloaderSessionPrivateDelegate ()
+@interface FileDownloaderSessionPrivateDelegate ()
 
 @end
 
-@implementation OSDownloaderSessionPrivateDelegate
+@implementation FileDownloaderSessionPrivateDelegate
 
-- (instancetype)initWithDownloader:(OSDownloader *)downloader {
+- (instancetype)initWithDownloader:(FileDownloader *)downloader {
     if (self = [super init]) {
         _downloader = downloader;
     }
@@ -69,14 +69,14 @@
 
 
 /// 即将开始下载时调用
-- (void)_anDownloadTaskWillBeginWithDownloadItem:(id<OSDownloadOperation>)downloadItem {
+- (void)_anDownloadTaskWillBeginWithDownloadItem:(id<FileDownloadOperation>)downloadItem {
     if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadTaskWillBeginWithDownloadItem:)]) {
         [self.downloadDelegate downloadTaskWillBeginWithDownloadItem:downloadItem];
     }
 }
 
 /// 已经结束某个任务，不管是否成功都会调用
-- (void)_anDownloadTaskDidEndWithDownloadItem:(id<OSDownloadOperation>)downloadItem {
+- (void)_anDownloadTaskDidEndWithDownloadItem:(id<FileDownloadOperation>)downloadItem {
     if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadTaskDidEndWithDownloadItem:)]) {
         [self.downloadDelegate downloadTaskDidEndWithDownloadItem:downloadItem];
     }
@@ -88,7 +88,7 @@
 
 
 /// 下载成功并已成功保存到本地
-- (void)handleDownloadSuccessWithDownloadItem:(OSDownloadOperation *)downloadItem
+- (void)handleDownloadSuccessWithDownloadItem:(FileDownloadOperation *)downloadItem
                                taskIdentifier:(NSUInteger)taskIdentifier
                                      response:(NSURLResponse *)response {
     
@@ -107,7 +107,7 @@
 
 /// 下载取消、失败时回调
 - (void)handleDownloadFailureWithError:(NSError *)error
-                          downloadItem:(OSDownloadOperation *)downloadItem
+                          downloadItem:(FileDownloadOperation *)downloadItem
                         taskIdentifier:(NSUInteger)taskIdentifier
                               response:(NSURLResponse *)response {
     downloadItem.progressObj.nativeProgress.completedUnitCount = downloadItem.progressObj.nativeProgress.totalUnitCount;
@@ -167,7 +167,7 @@
     
     if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadProgressChangeWithURL:progress:)]) {
         if (urlPath) {
-            OSDownloadProgress *progress = [self.downloader getDownloadProgressByURL:urlPath];
+            FileDownloadProgress *progress = [self.downloader getDownloadProgressByURL:urlPath];
             [self.downloadDelegate downloadProgressChangeWithURL:urlPath progress:progress];
         }
         
@@ -219,7 +219,7 @@
 /// 一个任务进入等待时调用
 - (void)_didWaitingDownloadForUrlPath:(NSString *)url {
     if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadDidWaitingWithURLPath:progress:)]) {
-        OSDownloadProgress *progress = [self.downloader getDownloadProgressByURL:url];
+        FileDownloadProgress *progress = [self.downloader getDownloadProgressByURL:url];
         [self.downloadDelegate downloadDidWaitingWithURLPath:url progress:progress];
     }
 }
@@ -227,7 +227,7 @@
 /// 从等待队列中开始下载一个任务
 - (void)_startDownloadTaskFromTheWaitingQueue:(NSString *)url {
     if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadStartFromWaitingQueueWithURLpath:progress:)]) {
-        OSDownloadProgress *progress = [self.downloader getDownloadProgressByURL:url];
+        FileDownloadProgress *progress = [self.downloader getDownloadProgressByURL:url];
         [self.downloadDelegate downloadStartFromWaitingQueueWithURLpath:url progress:progress];
     }
 }
@@ -251,7 +251,7 @@
 - (void)_cancelWithURL:(NSString *)urlPath {
     NSError *cancelError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:nil];
     if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadFailureWithDownloadItem:error:)]) {
-        OSDownloadOperation *item = [[OSDownloadOperation alloc] initWithURL:urlPath sessionDataTask:nil];
+        FileDownloadOperation *item = [[FileDownloadOperation alloc] initWithURL:urlPath sessionDataTask:nil];
         [self.downloadDelegate downloadFailureWithDownloadItem:item error:cancelError];
     }
     
@@ -265,7 +265,7 @@
     NSArray *documentDirectoryURLsArray = [[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];
     NSURL *documentsDirectoryURL = [documentDirectoryURLsArray firstObject];
     if (documentsDirectoryURL) {
-        fileDownloadDirectoryURL = [documentsDirectoryURL URLByAppendingPathComponent:OSDownloaderFolderNameKey isDirectory:YES];
+        fileDownloadDirectoryURL = [documentsDirectoryURL URLByAppendingPathComponent:FileDownloaderFolderNameKey isDirectory:YES];
         if ([[NSFileManager defaultManager] fileExistsAtPath:fileDownloadDirectoryURL.path] == NO) {
             BOOL aCreateDirectorySuccess = [[NSFileManager defaultManager] createDirectoryAtPath:fileDownloadDirectoryURL.path withIntermediateDirectories:YES attributes:nil error:&anError];
             if (aCreateDirectorySuccess == NO) {
@@ -291,7 +291,7 @@
 /// 接收到响应
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSHTTPURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler {
     
-    id<OSDownloadOperation> downloadItem = [self.downloader getDownloadItemByTask:dataTask];
+    id<FileDownloadOperation> downloadItem = [self.downloader getDownloadItemByTask:dataTask];
     
     // 打开流
     [downloadItem.outputStream open];
@@ -307,7 +307,7 @@
 
 /// 接收到服务器返回的数据
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data {
-    id<OSDownloadOperation> downloadItem = [self.downloader getDownloadItemByTask:dataTask];
+    id<FileDownloadOperation> downloadItem = [self.downloader getDownloadItemByTask:dataTask];
     [downloadItem.outputStream write:data.bytes maxLength:data.length];
     if (downloadItem) {
         if (!downloadItem.progressObj.downloadStartDate) {
@@ -325,7 +325,7 @@
 /// 请求完毕（成功|失败）
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
     
-    id<OSDownloadOperation> downloadItem = [self.downloader getDownloadItemByTask:(NSURLSessionDataTask *)task];
+    id<FileDownloadOperation> downloadItem = [self.downloader getDownloadItemByTask:(NSURLSessionDataTask *)task];
     if (!downloadItem) {
         [self handleDownloadFailureWithError:error downloadItem:downloadItem taskIdentifier:task.taskIdentifier response:task.response];
         return;

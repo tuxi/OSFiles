@@ -1,5 +1,5 @@
 //
-//  OSFileDownloadCell.h
+//  FileDownloadCell.h
 //  DownloaderManager
 //
 //  Created by xiaoyuan on 2017/6/5.
@@ -9,11 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "UITableViewCell+XYConfigure.h"
 
-@class OSFileItem;
+@class FileItem;
 
-@interface OSFileDownloadCell : UITableViewCell
+@interface FileDownloadCell : UITableViewCell
 
-@property (nonatomic, strong) OSFileItem *downloadItem;
+@property (nonatomic, strong) FileItem *downloadItem;
 
 - (void)setLongPressGestureRecognizer:(void (^)(UILongPressGestureRecognizer *longPres))block;
 

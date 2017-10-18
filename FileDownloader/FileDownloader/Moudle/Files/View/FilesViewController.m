@@ -8,10 +8,10 @@
 
 #import "FilesViewController.h"
 #import "AppDelegate.h"
-#import "OSFileDownloadCell.h"
+#import "FileDownloadCell.h"
 #import "FilesTableViewModel.h"
-#import "OSDownloaderModule.h"
-#import "OSDownloadConst.h"
+#import "FileDownloaderModule.h"
+#import "FileDownloadConst.h"
 
 @interface FilesViewController ()
 
@@ -48,7 +48,7 @@
     
     
     [self.tableViewModel getDataSourceBlock:^id{
-         return [[OSDownloaderModule sharedInstance] getAllSuccessItems];
+         return [[FileDownloaderModule sharedInstance] getAllSuccessItems];
     } completion:^{
         [weakSelf.tableView reloadData];
     }];
@@ -60,11 +60,11 @@
 
 /// 重新下载全部
 - (void)resertDownlod {
-    [[OSDownloaderModule sharedInstance] clearAllDownloadTask];
+    [[FileDownloaderModule sharedInstance] clearAllDownloadTask];
     __weak typeof(self) weakSelf = self;
     [self.tableViewModel getDataSourceBlock:^id{
         
-        return [[OSDownloaderModule sharedInstance] getAllSuccessItems];
+        return [[FileDownloaderModule sharedInstance] getAllSuccessItems];
     } completion:^{
         [weakSelf.tableView reloadData];
     }];
@@ -79,7 +79,7 @@
 
 - (void)addObservers {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadSuccess:)
-                                                 name:OSFileDownloadSussessNotification
+                                                 name:FileDownloadSussessNotification
                                                object:nil];
 }
 
@@ -91,7 +91,7 @@
     __weak typeof(self) weakSelf = self;
     [self.tableViewModel getDataSourceBlock:^id{
         
-        return [[OSDownloaderModule sharedInstance] getAllSuccessItems];
+        return [[FileDownloaderModule sharedInstance] getAllSuccessItems];
     } completion:^{
         [weakSelf.tableView reloadData];
     }];

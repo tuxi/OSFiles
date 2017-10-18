@@ -1,21 +1,21 @@
 //
-//  OSFileItem.h
+//  FileItem.h
 //  DownloaderManager
 //
 //  Created by Ossey on 2017/6/5.
 //  Copyright © 2017年 Ossey. All rights reserved.
 //
 
-#import "OSDownloaderDelegate.h"
-#import "OSDownloadOperation.h"
+#import "FileDownloaderDelegate.h"
+#import "FileDownloadOperation.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface OSFileItem : OSDownloadOperation
+@interface FileItem : FileDownloadOperation
 
-@property (nonatomic, assign) OSFileDownloadStatus status;
+@property (nonatomic, assign) FileDownloadStatus status;
 @property (nonatomic, strong) NSError *downloadError;
-@property (nonatomic, copy) void (^statusChangeHandler)(OSFileDownloadStatus status);
+@property (nonatomic, copy) void (^statusChangeHandler)(FileDownloadStatus status);
 
 - (instancetype)initWithURL:(NSString *)urlPath NS_DESIGNATED_INITIALIZER;
 - (instancetype)initWithURL:(NSString *)urlPath sessionDataTask:(nullable NSURLSessionDataTask *)sessionDownloadTask NS_UNAVAILABLE;

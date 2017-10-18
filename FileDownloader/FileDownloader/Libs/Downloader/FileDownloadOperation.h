@@ -1,5 +1,5 @@
 //
-//  OSDownloadOperation.h
+//  FileDownloadOperation.h
 //  DownloaderManager
 //
 //  Created by Ossey on 2017/6/4.
@@ -7,12 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "OSDownloadProgress.h"
-#import "OSDownloadProtocol.h"
+#import "FileDownloadProgress.h"
+#import "FileDownloadProtocol.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface OSDownloadOperation : NSObject <OSDownloadOperation>
+@interface FileDownloadOperation : NSObject <FileDownloadOperation>
 
 @property (nullable, copy) void (^cancellationHandler)(void);
 @property (nullable, copy) void (^pausingHandler)(void);

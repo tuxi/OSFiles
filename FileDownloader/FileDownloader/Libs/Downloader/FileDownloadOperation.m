@@ -1,15 +1,15 @@
 //
-//  OSDownloadOperation.m
+//  FileDownloadOperation.m
 //  DownloaderManager
 //
 //  Created by Ossey on 2017/6/4.
 //  Copyright © 2017年 Ossey. All rights reserved.
 //
 
-#import "OSDownloadOperation.h"
+#import "FileDownloadOperation.h"
 
 
-@interface OSDownloadOperation ()
+@interface FileDownloadOperation ()
 
 /** 恢复下载时所在文件的字节数 */
 @property (nonatomic, assign) ino64_t resumedFileSizeInBytes;
@@ -32,11 +32,11 @@
 /** 流 */
 @property (nonatomic, strong) NSOutputStream *outputStream;
 
-@property (nonatomic, strong) OSDownloadProgress *progressObj;
+@property (nonatomic, strong) FileDownloadProgress *progressObj;
 
 @end
 
-@implementation OSDownloadOperation
+@implementation FileDownloadOperation
 
 ////////////////////////////////////////////////////////////////////////
 #pragma mark - initialize
@@ -64,7 +64,7 @@ resumingHandler = _resumingHandler;
         progress.totalUnitCount = NSURLSessionTransferSizeUnknown;
         progress.completedUnitCount = 0;
         
-        self.progressObj = [[OSDownloadProgress alloc] initWithDownloadProgress:0
+        self.progressObj = [[FileDownloadProgress alloc] initWithDownloadProgress:0
                                                                expectedFileSize:0
                                                                receivedFileSize:0
                                                          estimatedRemainingTime:0

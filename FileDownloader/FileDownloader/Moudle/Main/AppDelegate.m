@@ -8,8 +8,8 @@
 
 #import "AppDelegate.h"
 #import "MainTabBarController.h"
-#import "OSDownloader.h"
-#import "OSDownloaderModule.h"
+#import "FileDownloader.h"
+#import "FileDownloaderModule.h"
 #import "NetworkTypeUtils.h"
 #import "ExceptionUtils.h"
 
@@ -59,7 +59,7 @@
 
 - (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)())completionHandler {
     
-    [[OSDownloaderModule sharedInstance].downloader setBackgroundSessionCompletionHandler:completionHandler];
+    [[FileDownloaderModule sharedInstance].downloader setBackgroundSessionCompletionHandler:completionHandler];
 }
 
 

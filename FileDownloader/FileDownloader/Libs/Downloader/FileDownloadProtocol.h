@@ -1,5 +1,5 @@
 //
-//  OSDownloaderDelegate.h
+//  FileDownloaderDelegate.h
 //  DownloaderManager
 //
 //  Created by Ossey on 2017/6/4.
@@ -7,37 +7,37 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "OSDownloadConst.h"
+#import "FileDownloadConst.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OSDownloadProgress;
+@class FileDownloadProgress;
 
 
-typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
-    OSFileDownloadStatusNotStarted = 0,
+typedef NS_ENUM(NSUInteger, FileDownloadStatus) {
+    FileDownloadStatusNotStarted = 0,
     /// 下载中
-    OSFileDownloadStatusDownloading,
+    FileDownloadStatusDownloading,
     /// 暂停下载
-    OSFileDownloadStatusPaused,
+    FileDownloadStatusPaused,
     /// 等待下载
-    OSFileDownloadStatusWaiting,
+    FileDownloadStatusWaiting,
     /// 下载失败
-    OSFileDownloadStatusFailure,
+    FileDownloadStatusFailure,
     /// 下载完成
-    OSFileDownloadStatusSuccess,
+    FileDownloadStatusSuccess,
 };
 
 
-@protocol OSDownloadOperation <NSObject>
+@protocol FileDownloadOperation <NSObject>
 
 @required
 
 - (nullable NSOutputStream *)outputStream;
 - (void)setOutputStream:(nullable NSOutputStream *)outputStream;
 
-- (OSDownloadProgress *)progressObj;
-- (void)setProgressObj:(OSDownloadProgress *)progressObj;
+- (FileDownloadProgress *)progressObj;
+- (void)setProgressObj:(FileDownloadProgress *)progressObj;
 
 /// 下载的url
 - (NSString *)urlPath;
@@ -80,34 +80,34 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 
 @end
 
-@protocol OSDownloaderDelegate <NSObject>
+@protocol FileDownloaderDelegate <NSObject>
 
 
 /// 下载成功回调
-/// @param downloadItem 下载的OSDownloadOperation
-- (void)downloadSuccessnWithDownloadItem:(id<OSDownloadOperation>)downloadItem;
+/// @param downloadItem 下载的FileDownloadOperation
+- (void)downloadSuccessnWithDownloadItem:(id<FileDownloadOperation>)downloadItem;
 
 /// 一个任务下载时候时调用
-/// @param downloadItem 下载的OSDownloadOperation
+/// @param downloadItem 下载的FileDownloadOperation
 /// @prram error 下载错误信息
-- (void)downloadFailureWithDownloadItem:(id<OSDownloadOperation>)downloadItem
+- (void)downloadFailureWithDownloadItem:(id<FileDownloadOperation>)downloadItem
                                   error:(nullable NSError *)error;
 
 @optional
 
 /// 一个任务即将开始下载时调用，当需要显示网络活动指示器的时候调用
 /// 此时应该在此回调中使用 UIApplication's setNetworkActivityIndicatorVisible: 去设置状态栏网络活动的可见性
-- (void)downloadTaskWillBeginWithDownloadItem:(id<OSDownloadOperation>)downloadItem;
+- (void)downloadTaskWillBeginWithDownloadItem:(id<FileDownloadOperation>)downloadItem;
 
 /// 一个任务下载结束时调用，当需要隐藏网络活动指示器即将结束的时候调用,不管是否成功都会调用
 /// 此时应该在此回调中使用 UIApplication's setNetworkActivityIndicatorVisible: 去设置状态栏网络活动的可见性
-- (void)downloadTaskDidEndWithDownloadItem:(id<OSDownloadOperation>)downloadItem;
+- (void)downloadTaskDidEndWithDownloadItem:(id<FileDownloadOperation>)downloadItem;
 
 
 /// 下载进度改变的时候调用
 /// @param url 当前下载任务的url
 /// @param progress 当前下载任务的进度对象(包含下载进度的信息、下载速度、下载剩余时间)
-- (void)downloadProgressChangeWithURL:(NSString *)url progress:(OSDownloadProgress *)progress;
+- (void)downloadProgressChangeWithURL:(NSString *)url progress:(FileDownloadProgress *)progress;
 
 /// 下载暂停时调用
 /// @param url 当前下载任务的url
@@ -148,10 +148,10 @@ typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
 
 
 /// 一个任务进入等待时调用
-- (void)downloadDidWaitingWithURLPath:(NSString *)url progress:(OSDownloadProgress *)progress;
+- (void)downloadDidWaitingWithURLPath:(NSString *)url progress:(FileDownloadProgress *)progress;
 
 /// 从等待队列中开始下载一个任务时调用
-- (void)downloadStartFromWaitingQueueWithURLpath:(NSString *)url progress:(OSDownloadProgress *)progress;
+- (void)downloadStartFromWaitingQueueWithURLpath:(NSString *)url progress:(FileDownloadProgress *)progress;
 @end
 
 

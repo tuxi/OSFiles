@@ -1,5 +1,5 @@
 //
-//  OSDownloaderModule.h
+//  FileDownloaderModule.h
 //  DownloaderManager
 //
 //  Created by Ossey on 2017/6/4.
@@ -7,10 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "OSDownloadProtocol.h"
-#import "OSDownloader.h"
+#import "FileDownloadProtocol.h"
+#import "FileDownloader.h"
 
-@protocol OSFileDownloaderDataSource <NSObject>
+@protocol FileDownloaderDataSource <NSObject>
 
 @optional
 /// 需要下载的任务, 默认按照url在数组中的索引顺序下载
@@ -20,17 +20,17 @@
 @end
 
 
-@class OSFileItem;
+@class FileItem;
 
-@interface OSDownloaderModule : NSObject
+@interface FileDownloaderModule : NSObject
 
-@property (nonatomic, class) OSDownloaderModule *sharedInstance;
+@property (nonatomic, class) FileDownloaderModule *sharedInstance;
 
 @property (nonatomic, strong, readonly) NSMutableArray *downloadItems;
 
-@property (nonatomic, weak) id<OSFileDownloaderDataSource> dataSource;
+@property (nonatomic, weak) id<FileDownloaderDataSource> dataSource;
 
-@property (nonatomic, strong) OSDownloader *downloader;
+@property (nonatomic, strong) FileDownloader *downloader;
 
 @property (nonatomic, assign) BOOL shouldAutoDownloadWhenInitialize;
 

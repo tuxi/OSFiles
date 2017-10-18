@@ -1,35 +1,35 @@
 //
-//  OSDownloader.m
+//  FileDownloader.m
 //  DownloaderManager
 //
 //  Created by Ossey on 2017/6/4.
 //  Copyright © 2017年 Ossey. All rights reserved.
 //
 
-#import "OSDownloader.h"
-#import "OSDownloaderSessionPrivateDelegate.h"
-#import "OSDownloadOperation.h"
+#import "FileDownloader.h"
+#import "FileDownloaderSessionPrivateDelegate.h"
+#import "FileDownloadOperation.h"
 
 // 后台任务的标识符
-#define kBackgroundDownloadSessionIdentifier [NSString stringWithFormat:@"%@.OSDownloader", [NSBundle mainBundle].bundleIdentifier]
+#define kBackgroundDownloadSessionIdentifier [NSString stringWithFormat:@"%@.FileDownloader", [NSBundle mainBundle].bundleIdentifier]
 
-static NSString * const OSDownloadURLKey = @"downloadURLPath";
-NSString * const OSDownloaderFolderNameKey = @"OSDownloaderFolder";
+static NSString * const FileDownloadURLKey = @"downloadURLPath";
+NSString * const FileDownloaderFolderNameKey = @"FileDownloaderFolder";
 static void *ProgressObserverContext = &ProgressObserverContext;
 
 
 
-@interface OSDownloader () <NSURLSessionDelegate, NSURLSessionDataDelegate, NSURLSessionTaskDelegate>
+@interface FileDownloader () <NSURLSessionDelegate, NSURLSessionDataDelegate, NSURLSessionTaskDelegate>
 
 @property (nonatomic, strong) NSURLSession *backgroundSeesion;
 @property (nonatomic, strong) NSOperationQueue *backgroundSeesionQueue;
 @property (nonatomic, strong) NSURL *downloaderFolderPath;
-@property (nonatomic, strong) OSDownloaderSessionPrivateDelegate *sessionDelegate;
+@property (nonatomic, strong) FileDownloaderSessionPrivateDelegate *sessionDelegate;
 @property (nonatomic, strong) NSProgress *totalProgress;
 
 @end
 
-@implementation OSDownloader
+@implementation FileDownloader
 
 @synthesize maxConcurrentDownloads = _maxConcurrentDownloads;
 
@@ -52,15 +52,15 @@ static void *ProgressObserverContext = &ProgressObserverContext;
                                 options:NSKeyValueObservingOptionInitial
                                 context:ProgressObserverContext];
         
-        _sessionDelegate = [[OSDownloaderSessionPrivateDelegate alloc] initWithDownloader:self];
+        _sessionDelegate = [[FileDownloaderSessionPrivateDelegate alloc] initWithDownloader:self];
         _backgroundSeesion = [NSURLSession sessionWithConfiguration:[self createBackgroundSessionConfig] delegate:self delegateQueue:self.backgroundSeesionQueue];
-        _backgroundSeesion.sessionDescription = @"OSDownload_BackgroundSession";
+        _backgroundSeesion.sessionDescription = @"FileDownload_BackgroundSession";
     }
     return self;
 }
 
 
-- (void)setDownloadDelegate:(id<OSDownloaderDelegate>)downloadDelegate {
+- (void)setDownloadDelegate:(id<FileDownloaderDelegate>)downloadDelegate {
     if (_downloadDelegate == downloadDelegate) {
         return;
     }
@@ -78,9 +78,9 @@ static void *ProgressObserverContext = &ProgressObserverContext;
     }];
 }
 
-- (OSDownloadOperation *)getDownloadItemByTask:(NSURLSessionDataTask *)task {
+- (FileDownloadOperation *)getDownloadItemByTask:(NSURLSessionDataTask *)task {
     @synchronized (_activeDownloadsDictionary) {
-        OSDownloadOperation *downloadItem = nil;
+        FileDownloadOperation *downloadItem = nil;
         downloadItem = [self.activeDownloadsDictionary objectForKey:@(task.taskIdentifier)];
         if (downloadItem) {
             return downloadItem;
@@ -92,7 +92,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
             // 将此totalProgress注册为当前线程任务的根进度管理对象，向下分支出一个子任务 比如子任务进度总数为10个单元 即当子任务完成时 父progerss对象进度走1个单元
             [self.totalProgress becomeCurrentWithPendingUnitCount:1];
             
-            downloadItem = [[OSDownloadOperation alloc] initWithURL:urlPath sessionDataTask:task];
+            downloadItem = [[FileDownloadOperation alloc] initWithURL:urlPath sessionDataTask:task];
             // 注意: 必须和becomeCurrentWithPendingUnitCount成对使用,必须在同一个线程
             [self.totalProgress resignCurrent];
             
@@ -113,27 +113,27 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 #pragma mark - Download
 ////////////////////////////////////////////////////////////////////////
 
-- (id<OSDownloadOperation>)downloadTaskWithURLPath:(NSString *)urlPath
+- (id<FileDownloadOperation>)downloadTaskWithURLPath:(NSString *)urlPath
                                              progress:(void (^)(NSProgress * _Nonnull))downloadProgressBlock
                                     completionHandler:(void (^)(NSURLResponse * _Nonnull, NSURL * _Nullable, NSError * _Nullable))completionHandler {
     
-    id<OSDownloadOperation> item = [self downloadWithURL:urlPath];
+    id<FileDownloadOperation> item = [self downloadWithURL:urlPath];
     item.progressHandler = downloadProgressBlock;
     item.completionHandler = completionHandler;
     return item;
     
 }
 
-- (id<OSDownloadOperation>)downloadTaskWithRequest:(NSURLRequest *)request
+- (id<FileDownloadOperation>)downloadTaskWithRequest:(NSURLRequest *)request
                                          progress:(void (^)(NSProgress * _Nonnull))downloadProgressBlock
                                 completionHandler:(void (^)(NSURLResponse * _Nonnull, NSURL * _Nullable, NSError * _Nullable))completionHandler {
-    id<OSDownloadOperation> item = [self downloadWithRequest:request];
+    id<FileDownloadOperation> item = [self downloadWithRequest:request];
     item.progressHandler = downloadProgressBlock;
     item.completionHandler = completionHandler;
     return item;
 }
 
-- (id<OSDownloadOperation>)downloadWithURL:(NSString *)urlPath {
+- (id<FileDownloadOperation>)downloadWithURL:(NSString *)urlPath {
     NSURL *remoteURL = [NSURL URLWithString:urlPath];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:remoteURL
@@ -143,7 +143,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
     return [self downloadWithRequest:request];
 }
 
-- (id<OSDownloadOperation>)downloadWithRequest:(NSURLRequest *)request  {
+- (id<FileDownloadOperation>)downloadWithRequest:(NSURLRequest *)request  {
     NSAssert(request, @"Error: request do't is nil");
     // 无任务下载时，重置总进度
     [self resetProgressIfNoActiveDownloadsRunning];
@@ -151,7 +151,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
     NSUInteger taskIdentifier = 0;
     NSURL *remoteURL = request.URL;
     NSString *urlPath = remoteURL.absoluteString;
-    OSDownloadOperation *downloadItem = [self getDownloadItemByURL:urlPath];
+    FileDownloadOperation *downloadItem = [self getDownloadItemByURL:urlPath];
     if (downloadItem) {
         /*
          此处为了解决当前request对应的url已存在activeDownloadsDictionary中，但是不符合下面条件时(也就是超出最大可下载数量时)，会导致当前request一直在等待中，无法执行下载，
@@ -176,7 +176,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
                 
                 NSURL *localFolderURL = [self.sessionDelegate _getLocalFolderURLWithRemoteURL:remoteURL];
                 
-                OSDownloadOperation *downloadItem = [[OSDownloadOperation alloc] initWithURL:urlPath sessionDataTask:nil];
+                FileDownloadOperation *downloadItem = [[FileDownloadOperation alloc] initWithURL:urlPath sessionDataTask:nil];
                 downloadItem.localFolderURL = localFolderURL;
                 
                 NSMutableURLRequest *requestM = request.mutableCopy;
@@ -215,7 +215,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
                 // 超出同时的最大下载数量时，将新的任务的aResumeData或者aRemoteURL添加到等待下载数组中
                 NSMutableDictionary *waitingDownloadDict = [NSMutableDictionary dictionary];
                 if (urlPath) {
-                    [waitingDownloadDict setObject:urlPath forKey:OSDownloadURLKey];
+                    [waitingDownloadDict setObject:urlPath forKey:FileDownloadURLKey];
                 }
                 [self.waitingDownloadArray addObject:waitingDownloadDict];
                 [self.sessionDelegate _didWaitingDownloadForUrlPath:urlPath];
@@ -242,7 +242,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
     }
 }
 
-- (void)initializeDownloadCallBack:(OSDownloadOperation *)downloadItem  {
+- (void)initializeDownloadCallBack:(FileDownloadOperation *)downloadItem  {
     
     if (downloadItem) {
         
@@ -301,8 +301,8 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 
 - (void)pauseWithTaskIdentifier:(NSUInteger)taskIdentifier completionHandler:(void (^)())completion {
     
-    // 从正在下载的集合中根据taskIdentifier获取到OSDownloadOperation
-    OSDownloadOperation *downloadItem = [self.activeDownloadsDictionary objectForKey:@(taskIdentifier)];
+    // 从正在下载的集合中根据taskIdentifier获取到FileDownloadOperation
+    FileDownloadOperation *downloadItem = [self.activeDownloadsDictionary objectForKey:@(taskIdentifier)];
     if (downloadItem) {
         NSURLSessionDataTask *downloadTask = (NSURLSessionDataTask *)downloadItem.sessionTask;
         if (downloadTask) {
@@ -333,14 +333,14 @@ static void *ProgressObserverContext = &ProgressObserverContext;
         if (res) {
             
             NSError *cancelError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:nil];
-            OSDownloadOperation *item = [[OSDownloadOperation alloc] initWithURL:urlPath sessionDataTask:nil];
+            FileDownloadOperation *item = [[FileDownloadOperation alloc] initWithURL:urlPath sessionDataTask:nil];
             [self.sessionDelegate handleDownloadFailureWithError:cancelError downloadItem:item taskIdentifier:NSNotFound response:nil];
         }
     }
 }
 
 - (void)cancelWithTaskIdentifier:(NSUInteger)taskIdentifier {
-    OSDownloadOperation *downloadItem = [self.activeDownloadsDictionary objectForKey:@(taskIdentifier)];
+    FileDownloadOperation *downloadItem = [self.activeDownloadsDictionary objectForKey:@(taskIdentifier)];
     if (downloadItem) {
         NSURLSessionTask *dataTask = downloadItem.sessionTask;
         if (dataTask) {
@@ -364,7 +364,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
     @synchronized (_waitingDownloadArray) {
         NSInteger foundIdx = [self.waitingDownloadArray indexOfObjectPassingTest:
                               ^BOOL(NSDictionary<NSString *,NSObject *> * _Nonnull waitingDownloadDict, NSUInteger idx, BOOL * _Nonnull stop) {
-                                  NSString *waitingUrlPath = (NSString *)waitingDownloadDict[OSDownloadURLKey];
+                                  NSString *waitingUrlPath = (NSString *)waitingDownloadDict[FileDownloadURLKey];
                                   return [url isKindOfClass:[NSString class]] && [url isEqualToString:waitingUrlPath];
                               }];
         if (foundIdx != NSNotFound) {
@@ -385,7 +385,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
         __block BOOL isDownloading = NO;
         NSInteger taskIdentifier = [self getDownloadTaskIdentifierByURL:urlPath];
         if (taskIdentifier != NSNotFound) {
-            OSDownloadOperation *downloadItem = [self.activeDownloadsDictionary objectForKey:@(taskIdentifier)];
+            FileDownloadOperation *downloadItem = [self.activeDownloadsDictionary objectForKey:@(taskIdentifier)];
             if (downloadItem) {
                 isDownloading = downloadItem.sessionTask.state == NSURLSessionTaskStateRunning;
             }
@@ -401,8 +401,8 @@ static void *ProgressObserverContext = &ProgressObserverContext;
         __block BOOL isWaiting = NO;
         
         [self.waitingDownloadArray enumerateObjectsUsingBlock:^(NSDictionary<NSString *,NSObject *> * _Nonnull waitingDownloadDict, NSUInteger idx, BOOL * _Nonnull stop) {
-            if ([waitingDownloadDict[OSDownloadURLKey] isKindOfClass:[NSString class]]) {
-                NSString *waitingUrlPath = (NSString *)waitingDownloadDict[OSDownloadURLKey];
+            if ([waitingDownloadDict[FileDownloadURLKey] isKindOfClass:[NSString class]]) {
+                NSString *waitingUrlPath = (NSString *)waitingDownloadDict[FileDownloadURLKey];
                 if ([waitingUrlPath isEqualToString:urlPath]) {
                     isWaiting = YES;
                     *stop = YES;
@@ -416,7 +416,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 
 /// 判断该文件是否下载完成
 - (BOOL)isCompletionByRemoteUrlPath:(NSString *)url {
-    OSDownloadOperation *item = [self getDownloadItemByURL:url];
+    FileDownloadOperation *item = [self getDownloadItemByURL:url];
     if (item.progressObj.expectedFileTotalSize && [self getCacheFileSizeWithPath:item.localURL.path] == item.progressObj.expectedFileTotalSize) {
         return YES;
     }
@@ -439,9 +439,9 @@ static void *ProgressObserverContext = &ProgressObserverContext;
         if (self.maxConcurrentDownloads == NSIntegerMax || self.activeDownloadsDictionary.count < self.maxConcurrentDownloads) {
             if (self.waitingDownloadArray.count) {
                 NSDictionary *waitingDownTaskDict = [self.waitingDownloadArray firstObject];
-                [self downloadWithURL:waitingDownTaskDict[OSDownloadURLKey]];
+                [self downloadWithURL:waitingDownTaskDict[FileDownloadURLKey]];
                 [self.waitingDownloadArray removeObjectAtIndex:0];
-                [self.sessionDelegate _startDownloadTaskFromTheWaitingQueue:waitingDownTaskDict[OSDownloadURLKey]];
+                [self.sessionDelegate _startDownloadTaskFromTheWaitingQueue:waitingDownTaskDict[FileDownloadURLKey]];
             }
         }
     }
@@ -454,8 +454,8 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 
 
 
-- (OSDownloadProgress *)getDownloadProgressByURL:(NSString *)urlPath {
-    OSDownloadProgress *downloadProgress = nil;
+- (FileDownloadProgress *)getDownloadProgressByURL:(NSString *)urlPath {
+    FileDownloadProgress *downloadProgress = nil;
     NSInteger taskIdentifier = [self getDownloadTaskIdentifierByURL:urlPath];
     if (taskIdentifier != NSNotFound) {
         downloadProgress = [self downloadProgressByTaskIdentifier:taskIdentifier];
@@ -464,10 +464,10 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 }
 
 
-/// 根据taskIdentifier 创建 OSDownloadProgress 对象
-- (OSDownloadProgress *)downloadProgressByTaskIdentifier:(NSUInteger)taskIdentifier {
-    OSDownloadProgress *progressObj = nil;
-    OSDownloadOperation *downloadItem = [self.activeDownloadsDictionary objectForKey:@(taskIdentifier)];
+/// 根据taskIdentifier 创建 FileDownloadProgress 对象
+- (FileDownloadProgress *)downloadProgressByTaskIdentifier:(NSUInteger)taskIdentifier {
+    FileDownloadProgress *progressObj = nil;
+    FileDownloadOperation *downloadItem = [self.activeDownloadsDictionary objectForKey:@(taskIdentifier)];
     if (downloadItem) {
         progressObj = downloadItem.progressObj;
     }
@@ -489,7 +489,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
         if ([keyPath isEqualToString:NSStringFromSelector(@selector(fractionCompleted))]) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 
-                [[NSNotificationCenter defaultCenter] postNotificationName:OSFileDownloadTotalProgressCanceldNotification object:progress];
+                [[NSNotificationCenter defaultCenter] postNotificationName:FileDownloadTotalProgressCanceldNotification object:progress];
             });
             
         } else {
@@ -622,7 +622,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     NSArray *aDownloadKeysArray = [self.activeDownloadsDictionary allKeys];
     for (NSNumber *identifier in aDownloadKeysArray)
     {
-        OSDownloadOperation *downloadItem = [self.activeDownloadsDictionary objectForKey:identifier];
+        FileDownloadOperation *downloadItem = [self.activeDownloadsDictionary objectForKey:identifier];
         if ([downloadItem.urlPath isEqualToString:urlPath]) {
             taskIdentifier = [identifier unsignedIntegerValue];
             break;
@@ -633,9 +633,9 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 
 
 /// 通过downloadToken获取下载任务的downloadItem
-- (id<OSDownloadOperation>)getDownloadItemByURL:(nonnull NSString *)urlPath {
+- (id<FileDownloadOperation>)getDownloadItemByURL:(nonnull NSString *)urlPath {
     NSInteger identifier = [self getDownloadTaskIdentifierByURL:urlPath];
-    OSDownloadOperation *downloadItem = [self.activeDownloadsDictionary objectForKey:@(identifier)];
+    FileDownloadOperation *downloadItem = [self.activeDownloadsDictionary objectForKey:@(identifier)];
     return downloadItem;
 }
 
@@ -687,7 +687,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     return _backgroundSeesionQueue;
 }
 
-- (NSMutableDictionary<NSNumber *,id<OSDownloadOperation>> *)activeDownloadsDictionary {
+- (NSMutableDictionary<NSNumber *,id<FileDownloadOperation>> *)activeDownloadsDictionary {
     if (!_activeDownloadsDictionary) {
         _activeDownloadsDictionary = [NSMutableDictionary dictionaryWithCapacity:0];
     }

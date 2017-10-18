@@ -7,12 +7,12 @@
 //
 
 #import "DownloadsTableViewModel.h"
-#import "OSFileDownloadCell.h"
+#import "FileDownloadCell.h"
 #import "AppDelegate.h"
-#import "OSFileItem.h"
+#import "FileItem.h"
 #import "UITableViewCell+XYConfigure.h"
 #import "UIView+Extend.h"
-#import "OSDownloaderModule.h"
+#import "FileDownloaderModule.h"
 
 static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
 
@@ -25,7 +25,7 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
 - (void)prepareTableView:(UITableView *)tableView {
     tableView.delegate = self;
     tableView.dataSource = self;
-    [OSFileDownloadCell xy_registerTableViewCell:tableView classIdentifier:DownloadCellIdentifierKey];
+    [FileDownloadCell xy_registerTableViewCell:tableView classIdentifier:DownloadCellIdentifierKey];
 }
 
 - (void)getDataSourceBlock:(id (^)())dataSource completion:(void (^)())completion {
@@ -53,16 +53,16 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    OSFileDownloadCell *cell = [tableView dequeueReusableCellWithIdentifier:DownloadCellIdentifierKey forIndexPath:indexPath];
+    FileDownloadCell *cell = [tableView dequeueReusableCellWithIdentifier:DownloadCellIdentifierKey forIndexPath:indexPath];
     NSArray *items = self.dataSource[indexPath.section];
-    OSFileItem *downloadItem = items[indexPath.row];
+    FileItem *downloadItem = items[indexPath.row];
     [cell xy_configCellByModel:downloadItem indexPath:indexPath];
     [cell setLongPressGestureRecognizer:^(UILongPressGestureRecognizer *longPres) {
         if (longPres.state == UIGestureRecognizerStateBegan) {
             UIAlertController *alVc = [UIAlertController alertControllerWithTitle:@"delete download" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
             UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"ok" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 
-                [[OSDownloaderModule sharedInstance] cancel:downloadItem.urlPath];
+                [[FileDownloaderModule sharedInstance] cancel:downloadItem.urlPath];
                 [tableView reloadData];
                 
             }];

@@ -1,5 +1,5 @@
 //
-//  OSDownloaderSessionPrivateDelegate.h
+//  FileDownloaderSessionPrivateDelegate.h
 //  FileDownloader
 //
 //  Created by Ossey on 2017/7/9.
@@ -7,23 +7,23 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "OSDownloadProtocol.h"
+#import "FileDownloadProtocol.h"
 
-@class OSDownloader;
+@class FileDownloader;
 
-@interface OSDownloaderSessionPrivateDelegate : NSObject  <NSURLSessionDelegate, NSURLSessionDataDelegate, NSURLSessionTaskDelegate>
-@property (nonatomic, weak) id<OSDownloaderDelegate> downloadDelegate;
-@property (nonatomic, weak) OSDownloader *downloader;
+@interface FileDownloaderSessionPrivateDelegate : NSObject  <NSURLSessionDelegate, NSURLSessionDataDelegate, NSURLSessionTaskDelegate>
+@property (nonatomic, weak) id<FileDownloaderDelegate> downloadDelegate;
+@property (nonatomic, weak) FileDownloader *downloader;
 
 
-- (instancetype)initWithDownloader:(OSDownloader *)downloader;
+- (instancetype)initWithDownloader:(FileDownloader *)downloader;
 /// 取消下载、下载失败时调用
 - (void)handleDownloadFailureWithError:(NSError *)error
-                          downloadItem:(id<OSDownloadOperation>)downloadItem
+                          downloadItem:(id<FileDownloadOperation>)downloadItem
                         taskIdentifier:(NSUInteger)taskIdentifier
                             response:(NSURLResponse *)response;
 /// 下载成功后调用 并已成功保存到本地
-- (void)handleDownloadSuccessWithDownloadItem:(id<OSDownloadOperation>)downloadItem
+- (void)handleDownloadSuccessWithDownloadItem:(id<FileDownloadOperation>)downloadItem
                                taskIdentifier:(NSUInteger)taskIdentifier
                                      response:(NSURLResponse *)response;
 
@@ -31,9 +31,9 @@
 - (NSURL *)_getLocalFolderURLWithRemoteURL:(NSURL *)remoteURL;
 
 /// 即将开始下载时调用
-- (void)_anDownloadTaskWillBeginWithDownloadItem:(id<OSDownloadOperation>)downloadItem;
+- (void)_anDownloadTaskWillBeginWithDownloadItem:(id<FileDownloadOperation>)downloadItem;
 /// 已经结束某个任务，不管是否成功都会调用
-- (void)_anDownloadTaskDidEndWithDownloadItem:(id<OSDownloadOperation>)downloadItem;
+- (void)_anDownloadTaskDidEndWithDownloadItem:(id<FileDownloadOperation>)downloadItem;
 /// 任务已经添加到等待队列时调用
 - (void)_didWaitingDownloadForUrlPath:(NSString *)url;
 /// 从等待队列中开始下载一个任务

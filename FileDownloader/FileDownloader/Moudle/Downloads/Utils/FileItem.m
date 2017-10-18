@@ -1,14 +1,14 @@
 //
-//  OSFileItem.m
+//  FileItem.m
 //  DownloaderManager
 //
 //  Created by Ossey on 2017/6/5.
 //  Copyright © 2017年 Ossey. All rights reserved.
 //
 
-#import "OSFileItem.h"
+#import "FileItem.h"
 
-@implementation OSFileItem
+@implementation FileItem
 
 - (instancetype)init {
     NSAssert(NO, @"use - initWithURL:");
@@ -22,7 +22,7 @@
 - (instancetype)initWithURL:(NSString *)urlPath {
     
     if (self = [super initWithURL:urlPath sessionDataTask:nil]) {
-        self.status = OSFileDownloadStatusNotStarted;
+        self.status = FileDownloadStatusNotStarted;
     }
     return self;
 }
@@ -77,7 +77,7 @@
 
 
 
-- (void)setStatus:(OSFileDownloadStatus)status {
+- (void)setStatus:(FileDownloadStatus)status {
     if (_status == status) {
         return;
     }

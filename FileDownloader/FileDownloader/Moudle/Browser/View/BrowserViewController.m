@@ -8,8 +8,8 @@
 
 #import "BrowserViewController.h"
 #import "UITextField+Blocks.h"
-#import "OSDownloaderModule.h"
-#import "OSFileItem.h"
+#import "FileDownloaderModule.h"
+#import "FileItem.h"
 
 @interface BrowserViewController ()
 @property (weak, nonatomic) IBOutlet UITextField *textField;
@@ -26,7 +26,7 @@
     
     self.textField.shouldReturnBlock = ^BOOL(UITextField *textField) {
       
-        [[OSDownloaderModule sharedInstance] start:textField.text];
+        [[FileDownloaderModule sharedInstance] start:textField.text];
         return YES;
     };
     
