@@ -7,16 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "OSDownloadConst.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @class OSDownloadProgress;
 
-FOUNDATION_EXTERN NSString * const OSFileDownloadProgressChangeNotification;
-FOUNDATION_EXTERN NSString * const OSFileDownloadSussessNotification;
-FOUNDATION_EXTERN NSString * const OSFileDownloadFailureNotification;
-FOUNDATION_EXTERN NSString * const OSFileDownloadCanceldNotification;
-FOUNDATION_EXTERN NSString * const OSFileDownloadTotalProgressCanceldNotification;
 
 typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
     OSFileDownloadStatusNotStarted = 0,

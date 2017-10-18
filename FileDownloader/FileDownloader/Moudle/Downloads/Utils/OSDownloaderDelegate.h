@@ -14,10 +14,6 @@
  主要对下载状态的更新、下载进度的更新、发送通知、下载信息的规则
  */
 
-FOUNDATION_EXTERN NSString * const OSFileDownloadProgressChangeNotification;
-FOUNDATION_EXTERN NSString * const OSFileDownloadSussessNotification;
-FOUNDATION_EXTERN NSString * const OSFileDownloadFailureNotification;
-FOUNDATION_EXTERN NSString * const OSFileDownloadCanceldNotification;
 
 @interface OSDownloaderDelegate : NSObject <OSDownloaderDelegate>
 

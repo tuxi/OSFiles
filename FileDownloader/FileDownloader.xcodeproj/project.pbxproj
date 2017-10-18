@@ -106,6 +106,7 @@
 		18DCFC451F263D8F00AC21CA /* OSDownloaderDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 18DCFC401F263D8F00AC21CA /* OSDownloaderDelegate.m */; };
 		18DCFC461F263D8F00AC21CA /* OSDownloaderModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 18DCFC421F263D8F00AC21CA /* OSDownloaderModule.m */; };
 		18DCFC471F263D8F00AC21CA /* OSFileItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 18DCFC441F263D8F00AC21CA /* OSFileItem.m */; };
+		D08AA3A91F9715D300391F03 /* OSDownloadConst.m in Sources */ = {isa = PBXBuildFile; fileRef = D08AA3A81F9715D300391F03 /* OSDownloadConst.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -314,6 +315,8 @@
 		18DCFC421F263D8F00AC21CA /* OSDownloaderModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSDownloaderModule.m; sourceTree = "<group>"; };
 		18DCFC431F263D8F00AC21CA /* OSFileItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSFileItem.h; sourceTree = "<group>"; };
 		18DCFC441F263D8F00AC21CA /* OSFileItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSFileItem.m; sourceTree = "<group>"; };
+		D08AA3A71F9715D300391F03 /* OSDownloadConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSDownloadConst.h; sourceTree = "<group>"; };
+		D08AA3A81F9715D300391F03 /* OSDownloadConst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSDownloadConst.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -340,6 +343,8 @@
 		18300F5C1EEC54570035D6EE /* Downloader */ = {
 			isa = PBXGroup;
 			children = (
+				D08AA3A71F9715D300391F03 /* OSDownloadConst.h */,
+				D08AA3A81F9715D300391F03 /* OSDownloadConst.m */,
 				18300F5D1EEC54570035D6EE /* OSDownloader.h */,
 				18300F5E1EEC54570035D6EE /* OSDownloader.m */,
 				18300F5F1EEC54570035D6EE /* OSDownloadOperation.h */,
@@ -1012,6 +1017,7 @@
 				18300FAA1EECE79F0035D6EE /* MASLayoutConstraint.m in Sources */,
 				18517C741EEBE08700B148C8 /* UIScrollView+NoDataPlaceholder.m in Sources */,
 				18517C5F1EEBD98200B148C8 /* MoreViewController.m in Sources */,
+				D08AA3A91F9715D300391F03 /* OSDownloadConst.m in Sources */,
 				18878A511EF022B6005C0185 /* UIImage+MultiFormat.m in Sources */,
 				18DCFC471F263D8F00AC21CA /* OSFileItem.m in Sources */,
 				18300FA91EECE79F0035D6EE /* MASConstraintMaker.m in Sources */,
@@ -1201,6 +1207,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.sey.FileDownloader;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Debug;
 		};
@@ -1216,6 +1223,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.sey.FileDownloader;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Release;
 		};

@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "OSDownloaderDelegate.h"
+#import "OSDownloadProtocol.h"
 
 @class OSDownloader;
 

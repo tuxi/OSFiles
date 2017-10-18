@@ -20,11 +20,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
 }
 
 
-NSString * const OSFileDownloadProgressChangeNotification = @"OSFileDownloadProgressChangeNotification";
-NSString * const OSFileDownloadSussessNotification = @"OSFileDownloadSussessNotification";
-NSString * const OSFileDownloadFailureNotification = @"OSFileDownloadFailureNotification";
-NSString * const OSFileDownloadCanceldNotification = @"OSFileDownloadCanceldNotification";
-NSString * const OSFileDownloadTotalProgressCanceldNotification = @"OSFileDownloadTotalProgressCanceldNotification";
+
 
 @interface OSDownloaderDelegate ()
 

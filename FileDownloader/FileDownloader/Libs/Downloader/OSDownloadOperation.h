@@ -6,11 +6,9 @@
 //  Copyright © 2017年 Ossey. All rights reserved.
 //
 
-
-
 #import <Foundation/Foundation.h>
-#import "OSDownloaderDelegate.h"
 #import "OSDownloadProgress.h"
+#import "OSDownloadProtocol.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

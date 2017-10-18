@@ -54,7 +54,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
         self.downloadDelegate = [OSDownloaderDelegate new];
         self.downloader = [OSDownloader new];
         self.downloader.downloadDelegate = self.downloadDelegate;
-        self.downloader.maxConcurrentDownloads = NSIntegerMax;
+        self.downloader.maxConcurrentDownloads = 1;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate) name:UIApplicationWillTerminateNotification object:nil];
         self.downloadItems = [self restoredDownloadItems];
     }
@@ -293,7 +293,6 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
                     downloadItem.progressObj = progress;
                 }
                 if (downloadItem.progressObj.nativeProgress) {
-//                    [downloadItem.progressObj.nativeProgress pause];
                     [downloadItem pause];
                 }
             } else {
@@ -443,11 +442,11 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 ////////////////////////////////////////////////////////////////////////
 
 - (void)applicationWillTerminate {
-    
-    [[self getActiveDownloadItems] enumerateObjectsUsingBlock:^(OSFileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        [self pause:obj.urlPath];
-    }];
-    
+    if (!self.shouldAutoDownloadWhenInitialize) {
+        [[self getActiveDownloadItems] enumerateObjectsUsingBlock:^(OSFileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            [self pause:obj.urlPath];
+        }];
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////

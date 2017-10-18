@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "E043D7D624E62A38EDE6780DF32A47FF5D743FB1",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "E043D7D624E62A38EDE6780DF32A47FF5D743FB1" : 9223372036854775807,
+    "97615FC228629C792C6626569BE0E328EAF6124E" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "32873BC3-E420-46E5-AE8E-47798ECEC1B4",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "E043D7D624E62A38EDE6780DF32A47FF5D743FB1" : "FileDownloader\/",
+    "97615FC228629C792C6626569BE0E328EAF6124E" : ""
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "FileDownloader",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "FileDownloader\/FileDownloader.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Ossey\/XYRearrangeCell.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "97615FC228629C792C6626569BE0E328EAF6124E"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Ossey\/FileDownloader.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "E043D7D624E62A38EDE6780DF32A47FF5D743FB1"
+    }
+  ]
+}
