@@ -26,14 +26,15 @@
 
 /// 获取下载后文件最终存放的本地路径,若代理实现了则设置使用代理的，没实现则使用默认设定的LocalURL
 - (NSURL *)_getLocalFolderURLWithRemoteURL:(NSURL *)remoteURL {
-    NSURL *finalUrl = nil;
+    NSURL *localFolderURL = nil;
     if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(localFolderURLWithRemoteURL:)]) {
-        finalUrl = [self.downloadDelegate localFolderURLWithRemoteURL:remoteURL];
-    } else {
-        finalUrl = [self getDefaultLocalFilePathWithRemoteURL:remoteURL];
+        localFolderURL = [self.downloadDelegate localFolderURLWithRemoteURL:remoteURL];
+    }
+    if (!localFolderURL) {
+        localFolderURL = [self getDefaultLocalFilePathWithRemoteURL:remoteURL];
     }
     
-    return finalUrl;
+    return localFolderURL;
 }
 
 /// 根据服务器响应的HttpStatusCode验证服务器响应状态

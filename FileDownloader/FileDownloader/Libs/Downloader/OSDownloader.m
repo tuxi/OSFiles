@@ -154,6 +154,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 }
 
 - (id<OSDownloadOperationProtocol>)downloadWithRequest:(NSURLRequest *)request  {
+    NSAssert(request, @"Error: request do't is nil");
     // 无任务下载时，重置总进度
     [self resetProgressIfNoActiveDownloadsRunning];
     
@@ -192,7 +193,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
                 long long cacheFileSize = [self getCacheFileSizeWithPath:downloadItem.localURL.path];
                 NSString *range = [NSString stringWithFormat:@"bytes=%zd-", cacheFileSize];
                 [requestM setValue:range forHTTPHeaderField:@"Range"];
-                
+                NSAssert(downloadItem.localURL, @"Error: local file path do't is nil");
                 NSOutputStream *stream = [NSOutputStream outputStreamWithURL:downloadItem.localURL append:YES];
                 NSURLSessionDataTask *dataTask = [self.backgroundSeesion dataTaskWithRequest:requestM];
                 taskIdentifier = dataTask.taskIdentifier;

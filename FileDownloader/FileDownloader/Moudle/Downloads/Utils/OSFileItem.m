@@ -8,12 +8,6 @@
 
 #import "OSFileItem.h"
 
-@interface OSFileItem ()
-
-@property (nonatomic, strong) NSURL *localURL;
-
-@end
-
 @implementation OSFileItem
 
 - (instancetype)init {
@@ -46,9 +40,9 @@
     if (self.errorMessagesStack) {
         [aCoder encodeObject:self.errorMessagesStack forKey:NSStringFromSelector(@selector(errorMessagesStack))];
     }
-    if (self.localFolderURL) {
-        [aCoder encodeObject:self.localFolderURL forKey:NSStringFromSelector(@selector(localFolderURL))];
-    }
+//    if (self.localFolderURL) {
+//        [aCoder encodeObject:self.localFolderURL forKey:NSStringFromSelector(@selector(localFolderURL))];
+//    }
     [aCoder encodeObject:@(self.lastHttpStatusCode) forKey:NSStringFromSelector(@selector(lastHttpStatusCode))];
     if (self.fileName) {
         [aCoder encodeObject:self.fileName forKey:NSStringFromSelector(@selector(fileName))];
@@ -56,9 +50,9 @@
     if (self.MIMEType) {
         [aCoder encodeObject:self.MIMEType forKey:NSStringFromSelector(@selector(MIMEType))];
     }
-    if (self.localURL) {
-        [aCoder encodeObject:self.localURL forKey:NSStringFromSelector(@selector(localURL))];
-    }
+//    if (self.localURL) {
+//        [aCoder encodeObject:self.localURL forKey:NSStringFromSelector(@selector(localURL))];
+//    }
 }
 
 
@@ -73,10 +67,10 @@
         self.downloadError = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(downloadError))];
         self.errorMessagesStack = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(errorMessagesStack))];
         self.lastHttpStatusCode = [[aCoder decodeObjectForKey:NSStringFromSelector(@selector(lastHttpStatusCode))] integerValue];
-        self.localFolderURL = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(localFolderURL))];
+//        self.localFolderURL = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(localFolderURL))];
         self.fileName = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(fileName))];
         self.MIMEType = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(MIMEType))];
-        self.localURL = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(localURL))];
+//        self.localURL = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(localURL))];
     }
     return self;
 }
@@ -98,6 +92,10 @@
     
 }
 
+- (NSURL *)localURL {
+    NSURL *url = [super localURL];
+    return url;
+}
 
 #pragma mark - Description
 
