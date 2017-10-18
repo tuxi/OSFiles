@@ -53,6 +53,7 @@ typedef NS_ENUM(NSUInteger, FileDownloadStatus) {
 
 /// 最终文件存储的本地路径
 - (NSURL *)localURL;
+- (void)setLocalURL:(NSURL *)localURL;
 
 /// 最终文件存储的目录
 - (NSURL *)localFolderURL;
@@ -151,7 +152,7 @@ typedef NS_ENUM(NSUInteger, FileDownloadStatus) {
 - (void)downloadDidWaitingWithURLPath:(NSString *)url progress:(FileDownloadProgress *)progress;
 
 /// 从等待队列中开始下载一个任务时调用
-- (void)downloadStartFromWaitingQueueWithURLpath:(NSString *)url progress:(FileDownloadProgress *)progress;
+- (void)downloadStartFromWaitingQueueWithURLPath:(NSString *)url progress:(FileDownloadProgress *)progress;
 @end
 
 

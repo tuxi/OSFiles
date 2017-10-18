@@ -73,43 +73,40 @@
     
     [self.tableView reloadData];
     
-    [self reloadBlock]();
+    [self reloadTableData];
     
-    self.tableView.reloadButtonClickBlock = [self reloadBlock];
+    __weak typeof(self) weakSelf = self;
+    self.tableView.reloadButtonClickBlock = ^{
+        [weakSelf reloadTableData];
+    };
     
 }
 
-- (void (^)())reloadBlock {
+- (void)reloadTableData {
     
     __weak typeof(self) weakSelf = self;
     __weak FileDownloaderModule *weakMoudle = [FileDownloaderModule sharedInstance];
-    void (^reloadBlock)() = ^{
-        
-        [weakSelf.tableViewModel getDataSourceBlock:^id{
-            NSArray *activeDownloadItems = [weakMoudle getActiveDownloadItems];
-            NSArray *displayItems = [weakMoudle displayItems];
-            return @[activeDownloadItems, displayItems];
-        } completion:^{
-            [weakSelf.tableView reloadData];
-        }];
-        
-    };
-    return reloadBlock;
+    [weakSelf.tableViewModel getDataSourceBlock:^id{
+        NSArray *activeDownloadItems = [weakMoudle getActiveDownloadItems];
+        NSArray *displayItems = [weakMoudle displayItems];
+        return @[activeDownloadItems, displayItems];
+    } completion:^{
+        [weakSelf.tableView reloadData];
+    }];
 }
 
-- (void)reloadTableView {
-    [self reloadBlock]();
-}
 
 - (void)addObservers {
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadSuccess:)
-//                                                 name:FileDownloadSussessNotification
-//                                               object:nil];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadFailure:) name:FileDownloadFailureNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadSuccess:)
+                                                 name:FileDownloadSussessNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadFailure:) name:FileDownloadFailureNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadProgressChange:) name:FileDownloadProgressChangeNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadCanceld) name:FileDownloadCanceldNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableView) name:FileDownloaderResetDownloadsNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableData) name:FileDownloaderResetDownloadsNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(totalProgressChange:) name:FileDownloadTotalProgressCanceldNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableData) name:FileDownloadStartedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableData) name:FileDownloadWaittingNotification object:nil];
 }
 
 
@@ -122,21 +119,48 @@
 
 - (void)downloadSuccess:(NSNotification *)note {
     
-    [self reloadBlock]();
+    [self reloadTableData];
 }
 
 - (void)downloadFailure:(NSNotification *)note {
-    [self reloadBlock]();
+    [self reloadTableData];
 }
 
 - (void)downloadProgressChange:(NSNotification *)note {
     
-    [self reloadBlock]();
+    FileItem *item = note.object;
+    NSArray *downloadingArray = [[FileDownloaderModule sharedInstance] getActiveDownloadItems];
+    NSUInteger foundIdxInDownloading = [downloadingArray indexOfObjectPassingTest:^BOOL(FileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        BOOL res = [obj.urlPath isEqualToString:item.urlPath];
+        if (res) {
+            *stop = YES;
+        }
+        return res;
+    }];
+    
+    NSArray *displayArray = [[FileDownloaderModule sharedInstance] displayItems];
+    NSUInteger foundIdxInDisplay = [displayArray indexOfObjectPassingTest:^BOOL(FileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        BOOL res = [obj.urlPath isEqualToString:item.urlPath];
+        if (res) {
+            *stop = YES;
+        }
+        return res;
+    }];
+    
+    if (foundIdxInDownloading == NSNotFound && foundIdxInDisplay == NSNotFound) {
+        return;
+    }
+    NSInteger row = foundIdxInDownloading != NSNotFound ? foundIdxInDownloading : foundIdxInDisplay;
+    NSInteger section = foundIdxInDownloading != NSNotFound ? 0 : 1;
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
+    DownloadsTableViewModel *tableViewModel = self.tableViewModel;
+    FileDownloadCell *cell = [tableViewModel getDownloadCellByIndexPath:indexPath];
+    cell.downloadItem = item;
     
 }
 
 - (void)downloadCanceld {
-    [self reloadBlock]();
+    [self reloadTableData];
 }
 
 - (void)totalProgressChange:(NSNotification *)note {

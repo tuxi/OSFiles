@@ -226,9 +226,9 @@
 
 /// 从等待队列中开始下载一个任务
 - (void)_startDownloadTaskFromTheWaitingQueue:(NSString *)url {
-    if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadStartFromWaitingQueueWithURLpath:progress:)]) {
+    if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadStartFromWaitingQueueWithURLPath:progress:)]) {
         FileDownloadProgress *progress = [self.downloader getDownloadProgressByURL:url];
-        [self.downloadDelegate downloadStartFromWaitingQueueWithURLpath:url progress:progress];
+        [self.downloadDelegate downloadStartFromWaitingQueueWithURLPath:url progress:progress];
     }
 }
 
@@ -331,7 +331,13 @@
         return;
     };
     NSHTTPURLResponse *aHttpResponse = (NSHTTPURLResponse *)task.response;
-    NSInteger httpStatusCode = aHttpResponse.statusCode;
+    NSInteger httpStatusCode = 0;
+    if (aHttpResponse) {
+         httpStatusCode = aHttpResponse.statusCode;
+    }
+    else {
+        httpStatusCode = error.code;
+    }
     downloadItem.lastHttpStatusCode = httpStatusCode;
     downloadItem.MIMEType = task.response.MIMEType;
     if (error == nil && [self.downloader isCompletionByRemoteUrlPath:downloadItem.urlPath]) {

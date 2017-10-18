@@ -14,4 +14,5 @@ NSNotificationName const FileDownloadFailureNotification = @"FileDownloadFailure
 NSNotificationName const FileDownloadCanceldNotification = @"FileDownloadCanceldNotification";
 NSNotificationName const FileDownloadStartedNotification = @"FileDownloadStartedNotification";
 NSNotificationName const FileDownloadPausedNotification = @"FileDownloadPausedNotification";
+NSNotificationName const FileDownloadWaittingNotification = @"FileDownloadWaittingNotification";
 NSNotificationName const FileDownloadTotalProgressCanceldNotification = @"FileDownloadTotalProgressCanceldNotification";

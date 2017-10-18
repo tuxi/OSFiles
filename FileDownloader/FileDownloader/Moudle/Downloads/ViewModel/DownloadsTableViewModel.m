@@ -7,7 +7,6 @@
 //
 
 #import "DownloadsTableViewModel.h"
-#import "FileDownloadCell.h"
 #import "AppDelegate.h"
 #import "FileItem.h"
 #import "UITableViewCell+XYConfigure.h"
@@ -15,6 +14,12 @@
 #import "FileDownloaderModule.h"
 
 static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
+
+@interface DownloadsTableViewModel ()
+
+@property (nonatomic, weak) UITableView *tableView;
+
+@end
 
 @implementation DownloadsTableViewModel
 
@@ -25,6 +30,7 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
 - (void)prepareTableView:(UITableView *)tableView {
     tableView.delegate = self;
     tableView.dataSource = self;
+    _tableView = tableView;
     [FileDownloadCell xy_registerTableViewCell:tableView classIdentifier:DownloadCellIdentifierKey];
 }
 
@@ -107,6 +113,14 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
         }
     }
     return @"";
+}
+
+////////////////////////////////////////////////////////////////////////
+#pragma mark -
+////////////////////////////////////////////////////////////////////////
+
+- (FileDownloadCell *)getDownloadCellByIndexPath:(NSIndexPath *)indexPath {
+    return [self.tableView cellForRowAtIndexPath:indexPath];
 }
 
 

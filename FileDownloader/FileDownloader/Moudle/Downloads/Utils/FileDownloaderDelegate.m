@@ -102,6 +102,10 @@ dispatch_async(dispatch_get_main_queue(), block);\
 
 - (void)downloadTaskDidEndWithDownloadItem:(id<FileDownloadOperation>)downloadItem {
     [self toggleNetworkActivityIndicatorVisible:NO];
+    dispatch_main_async_safe(^{
+        // 发送失败通知
+        [[NSNotificationCenter defaultCenter] postNotificationName:FileDownloadStartedNotification object:downloadItem];
+    })
 }
 
 - (void)downloadProgressChangeWithURL:(NSString *)url progress:(FileDownloadProgress *)progress {
@@ -167,8 +171,8 @@ dispatch_async(dispatch_get_main_queue(), block);\
 }
 
 
-/// 有一个任务等待下载时调用
-- (void)downloadDidWaitingWithUrlPath:(NSString *)url progress:(FileDownloadProgress *)progress {
+/// 一个任务进入等待时调用
+- (void)downloadDidWaitingWithURLPath:(NSString *)url progress:(FileDownloadProgress *)progress {
     NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:url];
     
      FileItem *downloadItem = nil;
@@ -181,10 +185,14 @@ dispatch_async(dispatch_get_main_queue(), block);\
             downloadItem.progressObj.lastLocalizedAdditionalDescription = downloadItem.progressObj.nativeProgress.localizedAdditionalDescription;
         }
     }
+    
+    dispatch_main_async_safe(^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:FileDownloadWaittingNotification object:downloadItem];
+    })
 }
 
 /// 从等待队列中开始下载一个任务
-- (void)downloadStartFromWaitingQueueWithURLpath:(NSString *)url progress:(FileDownloadProgress *)progress {
+- (void)downloadStartFromWaitingQueueWithURLPath:(NSString *)url progress:(FileDownloadProgress *)progress {
     NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:url];
     
      FileItem *downloadItem = nil;
