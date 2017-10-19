@@ -225,17 +225,9 @@ static CGFloat const FileDownloadCellGloabMargin = 10.0;
     
 }
 
-- (void)resume:(NSString *)urlPath {
+- (void)start:(NSString *)urlPath {
     if ([NetworkTypeUtils networkType] == NetworkTypeWIFI) {
         [[FileDownloaderManager sharedInstance] start:urlPath];
-    } else {
-        [[[UIAlertView alloc] initWithTitle:@"非Wifi环境下不能下载" message:nil delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil, nil] show];
-    }
-}
-
-- (void)start:(FileItem *)fileItem {
-    if ([NetworkTypeUtils networkType] == NetworkTypeWIFI) {
-        [[FileDownloaderManager sharedInstance] start:fileItem.urlPath];
     } else {
         [[[UIAlertView alloc] initWithTitle:@"非Wifi环境下不能下载" message:nil delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil, nil] show];
     }
@@ -251,7 +243,7 @@ static CGFloat const FileDownloadCellGloabMargin = 10.0;
             
         case FileDownloadStatusNotStarted:
         {
-            [self start:self.fileItem];
+            [self start:self.fileItem.urlPath];
         }
             break;
             
@@ -262,7 +254,7 @@ static CGFloat const FileDownloadCellGloabMargin = 10.0;
             break;
         case FileDownloadStatusPaused:
         {
-            [self resume:self.fileItem.urlPath];
+            [self start:self.fileItem.urlPath];
         }
             break;
             
@@ -280,7 +272,7 @@ static CGFloat const FileDownloadCellGloabMargin = 10.0;
             
         case FileDownloadStatusFailure:
         {
-            [self resume:self.fileItem.urlPath];
+            [self start:self.fileItem.urlPath];
         }
             break;
             

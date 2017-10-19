@@ -288,18 +288,16 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 
 - (BOOL)deleteFile:(NSString *)localPath {
     NSAssert(localPath, @"localPath is not nil");
-    @synchronized (_downloadItems) {
-        NSError *error = nil;
-        BOOL isExist = [[NSFileManager defaultManager] fileExistsAtPath:localPath];
-        if (isExist) {
-            BOOL isRemoveSuccess = [[NSFileManager defaultManager] removeItemAtPath:localPath error:&error];
-            if (isRemoveSuccess) {
-                DLog(@"remove localFile success");
-                return YES;
-            }
+    NSError *error = nil;
+    BOOL isExist = [[NSFileManager defaultManager] fileExistsAtPath:localPath];
+    if (isExist) {
+        BOOL isRemoveSuccess = [[NSFileManager defaultManager] removeItemAtPath:localPath error:&error];
+        if (isRemoveSuccess) {
+            DLog(@"remove localFile success");
+            return YES;
         }
-        return NO;
     }
+    return NO;
 }
 
 - (void)clearAllDownloadTask {
@@ -307,7 +305,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
         typeof(self) weakSelf = self;
         [self.downloadItems enumerateObjectsUsingBlock:^(FileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             
-            if (obj.status == FileDownloadStatusDownloading) {
+            if (obj.status == FileDownloadStatusDownloading || obj.status == FileDownloadStatusWaiting) {
                 [self cancel:obj.urlPath];
             }
             [weakSelf deleteFile:obj.localPath];

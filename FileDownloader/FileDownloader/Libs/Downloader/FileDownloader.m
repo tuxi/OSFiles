@@ -293,10 +293,12 @@ static void *ProgressObserverContext = &ProgressObserverContext;
         }];
         
     }
-    
+    // 当任务没有在(activeDownloadsDictionary)下载中是无法直接取消的
+    // 所以这里判断如果在等待中就移除等待中任务，并通知代码
     BOOL isWaiting = [self isWaiting:urlPath];
     if (isWaiting) {
         [self removeDownloadTaskFromWaitingDownloadArrayByUrlPath:urlPath];
+        [self.sessionDelegate _pauseWithURL:urlPath];
     }
 }
 
@@ -341,6 +343,8 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 }
 
 - (void)cancelWithURL:(NSString *)urlPath {
+    // 取消任务时，如果在activeDownloadsDictionary(下载中)，就直接取消
+    // 否则就判断是否在waitingDownloadArray(等待中)，若在就移除，并通知代理
     NSInteger taskIdentifier = [self getDownloadTaskIdentifierByURL:urlPath];
     if (taskIdentifier != NSNotFound) {
         [self cancelWithTaskIdentifier:taskIdentifier];
