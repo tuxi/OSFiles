@@ -51,16 +51,16 @@
 
 
 /// 即将开始下载时调用
-- (void)_anDownloadTaskWillBeginWithDownloadItem:(id<FileDownloadOperation>)downloadItem {
-    if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadTaskWillBeginWithDownloadItem:)]) {
-        [self.downloadDelegate downloadTaskWillBeginWithDownloadItem:downloadItem];
+- (void)_anDownloadTaskWillBeginWithDownloadOperation:(id<FileDownloadOperation>)downloadOperation {
+    if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadTaskWillBeginWithDownloadOperation:)]) {
+        [self.downloadDelegate downloadTaskWillBeginWithDownloadOperation:downloadOperation];
     }
 }
 
 /// 已经结束某个任务，不管是否成功都会调用
-- (void)_anDownloadTaskDidEndWithDownloadItem:(id<FileDownloadOperation>)downloadItem {
-    if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadTaskDidEndWithDownloadItem:)]) {
-        [self.downloadDelegate downloadTaskDidEndWithDownloadItem:downloadItem];
+- (void)_anDownloadTaskDidEndWithDownloadOperation:(id<FileDownloadOperation>)downloadOperation {
+    if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadTaskDidEndWithDownloadOperation:)]) {
+        [self.downloadDelegate downloadTaskDidEndWithDownloadOperation:downloadOperation];
     }
 }
 
@@ -70,18 +70,18 @@
 
 
 /// 下载成功并已成功保存到本地
-- (void)handleDownloadSuccessWithDownloadItem:(FileDownloadOperation *)downloadItem
+- (void)handleDownloadSuccessWithDownloadOperation:(FileDownloadOperation *)downloadOperation
                                taskIdentifier:(NSUInteger)taskIdentifier
                                      response:(NSURLResponse *)response {
     
-    downloadItem.progressObj.nativeProgress.completedUnitCount = downloadItem.progressObj.nativeProgress.totalUnitCount;
-    if (downloadItem.completionHandler) {
-        downloadItem.completionHandler(response, downloadItem.localURL, nil);
+    downloadOperation.progressObj.nativeProgress.completedUnitCount = downloadOperation.progressObj.nativeProgress.totalUnitCount;
+    if (downloadOperation.completionHandler) {
+        downloadOperation.completionHandler(response, downloadOperation.localURL, nil);
     }
     [self.downloader.activeDownloadsDictionary removeObjectForKey:@(taskIdentifier)];
-    [self _anDownloadTaskDidEndWithDownloadItem:downloadItem];
+    [self _anDownloadTaskDidEndWithDownloadOperation:downloadOperation];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.downloadDelegate downloadSuccessnWithDownloadItem:downloadItem];
+        [self.downloadDelegate downloadSuccessnWithDownloadOperation:downloadOperation];
     });
     [self.downloader checkMaxConcurrentDownloadCountThenDownloadWaitingQueueIfExceeded];
 }
@@ -89,17 +89,17 @@
 
 /// 下载取消、失败时回调
 - (void)handleDownloadFailureWithError:(NSError *)error
-                          downloadItem:(FileDownloadOperation *)downloadItem
+                          downloadOperation:(FileDownloadOperation *)downloadOperation
                         taskIdentifier:(NSUInteger)taskIdentifier
                               response:(NSURLResponse *)response {
-    downloadItem.progressObj.nativeProgress.completedUnitCount = downloadItem.progressObj.nativeProgress.totalUnitCount;
-    if (downloadItem.completionHandler) {
-        downloadItem.completionHandler(response, nil, error);
+    downloadOperation.progressObj.nativeProgress.completedUnitCount = downloadOperation.progressObj.nativeProgress.totalUnitCount;
+    if (downloadOperation.completionHandler) {
+        downloadOperation.completionHandler(response, nil, error);
     }
     [self.downloader.activeDownloadsDictionary removeObjectForKey:@(taskIdentifier)];
-    [self _anDownloadTaskDidEndWithDownloadItem:downloadItem];
+    [self _anDownloadTaskDidEndWithDownloadOperation:downloadOperation];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.downloadDelegate downloadFailureWithDownloadItem:downloadItem error:error];
+        [self.downloadDelegate downloadFailureWithDownloadOperation:downloadOperation error:error];
     });
     
     [self.downloader checkMaxConcurrentDownloadCountThenDownloadWaitingQueueIfExceeded];
@@ -147,10 +147,10 @@
 /// 进度改变时更新进度
 - (void)_progressChangeWithURL:(NSString *)urlPath {
     
-    if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadProgressChangeWithURL:progress:)]) {
+    if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadProgressChangeWithDownloadOperation:)]) {
         if (urlPath) {
-            FileDownloadProgress *progress = [self.downloader getDownloadProgressByURL:urlPath];
-            [self.downloadDelegate downloadProgressChangeWithURL:urlPath progress:progress];
+            id<FileDownloadOperation> opeartion = [self.downloader getDownloadOperationByURL:urlPath];
+            [self.downloadDelegate downloadProgressChangeWithDownloadOperation:opeartion];
         }
         
     }
@@ -224,9 +224,9 @@
 
 - (void)_cancelWithURL:(NSString *)urlPath {
     NSError *cancelError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:nil];
-    if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadFailureWithDownloadItem:error:)]) {
+    if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadFailureWithDownloadOperation:error:)]) {
         FileDownloadOperation *item = [[FileDownloadOperation alloc] initWithURL:urlPath sessionDataTask:nil];
-        [self.downloadDelegate downloadFailureWithDownloadItem:item error:cancelError];
+        [self.downloadDelegate downloadFailureWithDownloadOperation:item error:cancelError];
     }
     
 }
@@ -239,15 +239,15 @@
 /// 接收到响应
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSHTTPURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler {
     
-    id<FileDownloadOperation> downloadItem = [self.downloader getDownloadItemByTask:dataTask];
+    id<FileDownloadOperation> downloadOperation = [self.downloader getDownloadOperationByTask:dataTask];
     
     // 打开流
-    [downloadItem.outputStream open];
+    [downloadOperation.outputStream open];
     
     // 获得服务器这次请求 返回数据的总长度
-    long long cacheFileSize = [self.downloader getCacheFileSizeWithPath:downloadItem.localURL.path];
+    long long cacheFileSize = [self.downloader getCacheFileSizeWithPath:downloadOperation.localURL.path];
     NSInteger totalLength = [response.allHeaderFields[@"Content-Length"] integerValue] + cacheFileSize;
-    downloadItem.progressObj.expectedFileTotalSize = totalLength;
+    downloadOperation.progressObj.expectedFileTotalSize = totalLength;
     
     // 接收这个请求，允许接收服务器的数据
     completionHandler(NSURLSessionResponseAllow);
@@ -255,14 +255,14 @@
 
 /// 接收到服务器返回的数据
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data {
-    id<FileDownloadOperation> downloadItem = [self.downloader getDownloadItemByTask:dataTask];
-    [downloadItem.outputStream write:data.bytes maxLength:data.length];
-    if (downloadItem) {
-        if (!downloadItem.progressObj.downloadStartDate) {
-            downloadItem.progressObj.downloadStartDate = [NSDate date];
-            downloadItem.progressObj.bytesPerSecondSpeed = 0;
+    id<FileDownloadOperation> downloadOperation = [self.downloader getDownloadOperationByTask:dataTask];
+    [downloadOperation.outputStream write:data.bytes maxLength:data.length];
+    if (downloadOperation) {
+        if (!downloadOperation.progressObj.downloadStartDate) {
+            downloadOperation.progressObj.downloadStartDate = [NSDate date];
+            downloadOperation.progressObj.bytesPerSecondSpeed = 0;
         }
-        downloadItem.progressObj.receivedFileSize += data.length;
+        downloadOperation.progressObj.receivedFileSize += data.length;
         NSString *taskDescription = [dataTask.taskDescription copy];
         [self _progressChangeWithURL:taskDescription];
     }
@@ -273,9 +273,9 @@
 /// 请求完毕（成功|失败）
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
     
-    id<FileDownloadOperation> downloadItem = [self.downloader getDownloadItemByTask:(NSURLSessionDataTask *)task];
-    if (!downloadItem) {
-        [self handleDownloadFailureWithError:error downloadItem:downloadItem taskIdentifier:task.taskIdentifier response:task.response];
+    id<FileDownloadOperation> downloadOperation = [self.downloader getDownloadOperationByTask:(NSURLSessionDataTask *)task];
+    if (!downloadOperation) {
+        [self handleDownloadFailureWithError:error downloadOperation:downloadOperation taskIdentifier:task.taskIdentifier response:task.response];
         return;
     };
     NSHTTPURLResponse *aHttpResponse = (NSHTTPURLResponse *)task.response;
@@ -286,51 +286,51 @@
     else {
         httpStatusCode = error.code;
     }
-    downloadItem.lastHttpStatusCode = httpStatusCode;
-    downloadItem.MIMEType = task.response.MIMEType;
-    if (error == nil && [self.downloader isCompletionByRemoteUrlPath:downloadItem.urlPath]) {
+    downloadOperation.lastHttpStatusCode = httpStatusCode;
+    downloadOperation.MIMEType = task.response.MIMEType;
+    if (error == nil && [self.downloader isCompletionByRemoteUrlPath:downloadOperation.urlPath]) {
         // 下载完成
-        BOOL httpStatusCodeIsCorrectFlag = [self _isVaildHTTPStatusCode:httpStatusCode url:downloadItem.urlPath];
+        BOOL httpStatusCodeIsCorrectFlag = [self _isVaildHTTPStatusCode:httpStatusCode url:downloadOperation.urlPath];
         if (httpStatusCodeIsCorrectFlag == YES) {
-            NSURL *finalLocalFileURL = downloadItem.localFolderURL;
+            NSURL *finalLocalFileURL = downloadOperation.localFolderURL;
             if (finalLocalFileURL) {
                 
-                [self handleDownloadSuccessWithDownloadItem:downloadItem taskIdentifier:task.taskIdentifier response:task.response];
+                [self handleDownloadSuccessWithDownloadOperation:downloadOperation taskIdentifier:task.taskIdentifier response:task.response];
             } else {
                 NSError *finalError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorResourceUnavailable userInfo:nil];
-                [self handleDownloadFailureWithError:finalError downloadItem:downloadItem taskIdentifier:task.taskIdentifier response:task.response];
+                [self handleDownloadFailureWithError:finalError downloadOperation:downloadOperation taskIdentifier:task.taskIdentifier response:task.response];
             }
         } else {
             NSString *errorString = [NSString stringWithFormat:@"Invalid http status code: %@", @(httpStatusCode)];
-            NSMutableArray<NSString *> *errorMessagesStackArray = [downloadItem.errorMessagesStack mutableCopy];
+            NSMutableArray<NSString *> *errorMessagesStackArray = [downloadOperation.errorMessagesStack mutableCopy];
             if (errorMessagesStackArray == nil) {
                 errorMessagesStackArray = [NSMutableArray array];
             }
             [errorMessagesStackArray insertObject:errorString atIndex:0];
-            [downloadItem setErrorMessagesStack:errorMessagesStackArray];
+            [downloadOperation setErrorMessagesStack:errorMessagesStackArray];
             
             NSError *finalError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorBadServerResponse userInfo:nil];
-            if (downloadItem.completionHandler) {
-                downloadItem.completionHandler(task.response, nil, finalError);
+            if (downloadOperation.completionHandler) {
+                downloadOperation.completionHandler(task.response, nil, finalError);
             }
-            [self handleDownloadFailureWithError:finalError downloadItem:downloadItem taskIdentifier:task.taskIdentifier response:task.response];
+            [self handleDownloadFailureWithError:finalError downloadOperation:downloadOperation taskIdentifier:task.taskIdentifier response:task.response];
         }
     } else if (error){
         // 下载失败
         NSString *errorString = error.localizedDescription;
-        NSMutableArray<NSString *> *errorMessagesStackArray = [downloadItem.errorMessagesStack mutableCopy];
+        NSMutableArray<NSString *> *errorMessagesStackArray = [downloadOperation.errorMessagesStack mutableCopy];
         if (errorMessagesStackArray == nil) {
             errorMessagesStackArray = [NSMutableArray array];
         }
         [errorMessagesStackArray insertObject:errorString atIndex:0];
-        [downloadItem setErrorMessagesStack:errorMessagesStackArray];
+        [downloadOperation setErrorMessagesStack:errorMessagesStackArray];
         
-        [self handleDownloadFailureWithError:error downloadItem:downloadItem taskIdentifier:task.taskIdentifier response:task.response];
+        [self handleDownloadFailureWithError:error downloadOperation:downloadOperation taskIdentifier:task.taskIdentifier response:task.response];
     }
     
     // 关闭流
-    [downloadItem.outputStream close];
-    downloadItem.outputStream = nil;
+    [downloadOperation.outputStream close];
+    downloadOperation.outputStream = nil;
 }
 
 /// SSL / TLS 验证

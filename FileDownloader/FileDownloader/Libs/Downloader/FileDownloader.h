@@ -26,8 +26,8 @@ FOUNDATION_EXTERN NSString * const FileDownloaderDefaultFolderNameKey;
 @property (nonatomic, strong) NSMutableArray<NSDictionary <NSString *, NSObject *> *> *waitingDownloadArray;
 @property (nonatomic, weak) id<FileDownloaderDelegate> downloadDelegate;
 
-- (id<FileDownloadOperation>)getDownloadItemByTask:(NSURLSessionDataTask *)task;
-- (id<FileDownloadOperation>)getDownloadItemByURL:(nonnull NSString *)urlPath;
+- (id<FileDownloadOperation>)getDownloadOperationByTask:(NSURLSessionDataTask *)task;
+- (id<FileDownloadOperation>)getDownloadOperationByURL:(nonnull NSString *)urlPath;
 
 - (long long)getCacheFileSizeWithPath:(NSString *)url;
 

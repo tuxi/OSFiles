@@ -36,12 +36,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "FileDownloader/Moudle/Downloads/Utils/FileDownloaderDelegate.m"
-            timestampString = "530115657.342725"
+            timestampString = "530116838.988059"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "77"
-            endingLineNumber = "77"
-            landmarkName = "-downloadTaskWillBeginWithDownloadItem:"
+            startingLineNumber = "76"
+            endingLineNumber = "76"
+            landmarkName = "-downloadTaskWillBeginWithDownloadOperation:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -52,12 +52,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "FileDownloader/Moudle/Downloads/Utils/FileDownloaderDelegate.m"
-            timestampString = "530115657.343035"
+            timestampString = "530116838.988349"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "90"
-            endingLineNumber = "90"
-            landmarkName = "-downloadTaskDidEndWithDownloadItem:"
+            startingLineNumber = "89"
+            endingLineNumber = "89"
+            landmarkName = "-downloadTaskDidEndWithDownloadOperation:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -84,7 +84,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "FileDownloader/Moudle/Downloads/Utils/FileDownloaderManager.m"
-            timestampString = "530115657.343328"
+            timestampString = "530116838.988437"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "193"
@@ -100,7 +100,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "FileDownloader/Libs/Downloader/FileDownloader.m"
-            timestampString = "530115657.343851"
+            timestampString = "530116838.988636"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "162"
@@ -115,24 +115,8 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "FileDownloader/Libs/Downloader/FileDownloader.m"
-            timestampString = "530115657.344055"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "192"
-            endingLineNumber = "192"
-            landmarkName = "-downloadWithRequest:localFolderPath:fileName:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "FileDownloader/Moudle/Downloads/Utils/FileDownloaderManager.m"
-            timestampString = "530115657.344113"
+            timestampString = "530116838.988827"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "259"
@@ -148,28 +132,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "FileDownloader/Moudle/Downloads/Utils/FileDownloaderDelegate.m"
-            timestampString = "530115657.344352"
+            timestampString = "530116838.988878"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "49"
-            endingLineNumber = "49"
-            landmarkName = "-downloadFailureWithDownloadItem:error:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "FileDownloader/Libs/Downloader/FileDownloader.m"
-            timestampString = "530115657.344406"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "195"
-            endingLineNumber = "195"
-            landmarkName = "-downloadWithRequest:localFolderPath:fileName:"
+            startingLineNumber = "48"
+            endingLineNumber = "48"
+            landmarkName = "-downloadFailureWithDownloadOperation:error:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

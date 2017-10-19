@@ -225,7 +225,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
             // 根据索引在self.downloadItems中取出FileDownloadOperation，修改状态，并进行归档
             FileItem *item = [self.downloadItems objectAtIndex:itemIdx];
             item.status = FileDownloadStatusNotStarted;
-            id<FileDownloadOperation> operation = [self.downloader getDownloadItemByURL:urlPath];
+            id<FileDownloadOperation> operation = [self.downloader getDownloadOperationByURL:urlPath];
             if (operation.progressObj.nativeProgress) {
                 [operation.progressObj.nativeProgress cancel];
             } else {
@@ -261,7 +261,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
         if (foundItemIdx != NSNotFound) {
             FileItem *item = [self.downloadItems objectAtIndex:foundItemIdx];
             BOOL isDownloading = [self.downloader isDownloading:urlPath];
-            FileDownloadOperation *operation = [self.downloader getDownloadItemByURL:urlPath];
+            FileDownloadOperation *operation = [self.downloader getDownloadOperationByURL:urlPath];
             if (isDownloading) {
                 item.status = FileDownloadStatusPaused;
                 if (operation.progressObj.nativeProgress) {
