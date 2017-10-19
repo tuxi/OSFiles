@@ -84,14 +84,14 @@
         }
     }
     [[FileDownloaderManager sharedInstance] storedDownloadItems];
+    XYDispatch_main_async_safe(^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:FileDownloadStartedNotification object:downloadItem];
+    })
 }
 
 - (void)downloadTaskDidEndWithDownloadItem:(id<FileDownloadOperation>)downloadItem {
     [self toggleNetworkActivityIndicatorVisible:NO];
-    XYDispatch_main_async_safe(^{
-        // 发送失败通知
-        [[NSNotificationCenter defaultCenter] postNotificationName:FileDownloadStartedNotification object:downloadItem];
-    })
+
 }
 
 - (void)downloadProgressChangeWithURL:(NSString *)url progress:(FileDownloadProgress *)progress {
@@ -119,15 +119,20 @@
     
     NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:url];
     
+    FileDownloadOperation *downloadItem = nil;
     if (foundItemIdx != NSNotFound) {
         DLog(@"INFO: Download paused - id: %@", url);
         
-        FileDownloadOperation *downloadItem = [[FileDownloaderManager sharedInstance].downloadItems objectAtIndex:foundItemIdx];
+        downloadItem = [[FileDownloaderManager sharedInstance].downloadItems objectAtIndex:foundItemIdx];
         downloadItem.status = FileDownloadStatusPaused;
         [[FileDownloaderManager sharedInstance] storedDownloadItems];
     } else {
         DLog(@"Error: Paused download item not found (id: %@)", url);
     }
+    
+    XYDispatch_main_async_safe(^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:FileDownloadPausedNotification object:downloadItem];
+    })
 }
 
 

@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "FileDownloadProtocol.h"
 #import "FileDownloader.h"
+#import "FileItem.h"
 
 @protocol FileDownloaderDataSource <NSObject>
 
@@ -19,8 +20,6 @@
 
 @end
 
-
-@class FileItem;
 
 @interface FileDownloaderManager : NSObject
 
