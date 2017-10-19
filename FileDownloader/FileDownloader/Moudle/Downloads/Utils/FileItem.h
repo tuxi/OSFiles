@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "FileDownloadConst.h"
+#import "FileDownloadProgress.h"
 
 @interface FileItem : NSObject <NSCoding>
 
@@ -15,5 +16,12 @@
 @property (nonatomic, assign) FileDownloadStatus status;
 @property (nonatomic, copy) NSString *urlPath;
 @property (nonatomic, copy) NSString *MIMEType;
+@property (nonatomic, copy) NSString *fileName;
+@property (nonatomic, copy) NSString *localFolderPath;
+@property (nonatomic, copy) NSString *localPath;
+@property (nonatomic, assign) NSInteger lastHttpStatusCode;
+@property (nonatomic, strong) NSError *downloadError;
+@property (nonatomic, strong) NSArray *errorMessagesStack;
+@property (nonatomic, strong) FileDownloadProgress *progressObj;
 
 @end

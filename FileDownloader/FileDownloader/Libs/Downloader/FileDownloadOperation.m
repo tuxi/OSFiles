@@ -122,9 +122,6 @@ resumingHandler = _resumingHandler;
     if (self.progressObj) {
         [aCoder encodeObject:self.progressObj forKey:NSStringFromSelector(@selector(progressObj))];
     }
-    if (self.downloadError) {
-        [aCoder encodeObject:self.downloadError forKey:NSStringFromSelector(@selector(downloadError))];
-    }
     if (self.errorMessagesStack) {
         [aCoder encodeObject:self.errorMessagesStack forKey:NSStringFromSelector(@selector(errorMessagesStack))];
     }
@@ -151,7 +148,6 @@ resumingHandler = _resumingHandler;
         self.urlPath = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(urlPath))];
         self.status = [[aCoder decodeObjectForKey:NSStringFromSelector(@selector(status))] unsignedIntegerValue];
         self.progressObj = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(progressObj))];
-        self.downloadError = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(downloadError))];
         self.errorMessagesStack = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(errorMessagesStack))];
         self.lastHttpStatusCode = [[aCoder decodeObjectForKey:NSStringFromSelector(@selector(lastHttpStatusCode))] integerValue];
         self.localFolderURL = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(localFolderURL))];

@@ -53,7 +53,7 @@ static NSString * const FilesViewControllerViewCellID = @"FilesViewController";
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     FileDownloadCell *cell = [tableView dequeueReusableCellWithIdentifier:FilesViewControllerViewCellID forIndexPath:indexPath];
-    cell.downloadItem = self.dataSource[indexPath.row];
+    cell.fileItem = self.dataSource[indexPath.row];
     
     return cell;
 }

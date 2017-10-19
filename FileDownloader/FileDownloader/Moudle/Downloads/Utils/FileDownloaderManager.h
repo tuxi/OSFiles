@@ -25,7 +25,7 @@
 
 @property (nonatomic, class) FileDownloaderManager *sharedInstance;
 
-@property (nonatomic, strong, readonly) NSMutableArray *downloadItems;
+@property (nonatomic, strong, readonly) NSMutableArray<FileItem *> *downloadItems;
 
 @property (nonatomic, weak) id<FileDownloaderDataSource> dataSource;
 
@@ -42,13 +42,12 @@
 
 - (void)start:(NSString *)url;
 - (void)cancel:(NSString *)url;
-- (void)resume:(NSString *)url;
 - (void)pause:(NSString *)url;
 
-- (NSArray *)downloadedItems;
-- (NSArray *)activeDownloadItems;
+- (NSArray<FileItem *> *)downloadedItems;
+- (NSArray<FileItem *> *)activeDownloadItems;
 /// 所有展示中的文件，还未开始下载时存放的，当文件取消下载时也会存放到此数组
-- (NSMutableArray *)displayItems;
+- (NSMutableArray<FileItem *> *)displayItems;
 
 - (BOOL)removeDownloadItemByPackageId:(NSString *)packageId;
 @end

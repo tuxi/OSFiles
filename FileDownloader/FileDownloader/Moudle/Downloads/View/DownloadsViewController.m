@@ -11,7 +11,6 @@
 #import "NSObject+XYHUD.h"
 #import "DownloadsTableViewModel.h"
 #import "FileDownloaderManager.h"
-#import "FileDownloadOperation.h"
 #import "FileDownloaderManager.h"
 #import "FileDownloadConst.h"
 
@@ -127,9 +126,9 @@
 
 - (void)downloadProgressChange:(NSNotification *)note {
     
-    FileDownloadOperation *item = note.object;
+    FileItem *item = note.object;
     NSArray *downloadingArray = [[FileDownloaderManager sharedInstance] activeDownloadItems];
-    NSUInteger foundIdxInDownloading = [downloadingArray indexOfObjectPassingTest:^BOOL(FileDownloadOperation *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    NSUInteger foundIdxInDownloading = [downloadingArray indexOfObjectPassingTest:^BOOL(FileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         BOOL res = [obj.urlPath isEqualToString:item.urlPath];
         if (res) {
             *stop = YES;
@@ -138,7 +137,7 @@
     }];
     
     NSArray *displayArray = [[FileDownloaderManager sharedInstance] displayItems];
-    NSUInteger foundIdxInDisplay = [displayArray indexOfObjectPassingTest:^BOOL(FileDownloadOperation *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    NSUInteger foundIdxInDisplay = [displayArray indexOfObjectPassingTest:^BOOL(FileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         BOOL res = [obj.urlPath isEqualToString:item.urlPath];
         if (res) {
             *stop = YES;
@@ -154,7 +153,7 @@
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
     DownloadsTableViewModel *tableViewModel = self.tableViewModel;
     FileDownloadCell *cell = [tableViewModel getDownloadCellByIndexPath:indexPath];
-    cell.downloadItem = item;
+    cell.fileItem = item;
     
 }
 

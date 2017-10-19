@@ -9,11 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "UITableViewCell+XYConfigure.h"
 
-@class FileDownloadOperation;
+@class FileItem;
 
 @interface FileDownloadCell : UITableViewCell
 
-@property (nonatomic, strong) FileDownloadOperation *downloadItem;
+@property (nonatomic, strong) FileItem *fileItem;
 
 - (void)setLongPressGestureRecognizer:(void (^)(UILongPressGestureRecognizer *longPres))block;
 

@@ -13,7 +13,6 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface FileDownloadOperation : NSObject <FileDownloadOperation>
-@property (nonatomic, strong) NSError *downloadError;
 @property (nonatomic, copy) void (^statusChangeHandler)(FileDownloadStatus status);
 @property (nullable, copy) void (^cancellationHandler)(void);
 @property (nullable, copy) void (^pausingHandler)(void);

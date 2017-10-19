@@ -80,7 +80,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 
 - (void)initDownloadTasks {
     NSIndexSet *indexSet = [self.downloadItems indexesOfObjectsPassingTest:
-                            ^BOOL(FileDownloadOperation *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                            ^BOOL(FileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                                 return
                                 obj.status == FileDownloadStatusDownloading |
                                 obj.status == FileDownloadStatusWaiting |
@@ -88,16 +88,16 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
                             }];
     NSArray *needDownloads = [self.downloadItems objectsAtIndexes:indexSet];
     if (self.shouldAutoDownloadWhenInitialize) {
-        needDownloads = [needDownloads sortedArrayUsingComparator:^NSComparisonResult(FileDownloadOperation *  _Nonnull obj1, FileDownloadOperation *  _Nonnull obj2) {
+        needDownloads = [needDownloads sortedArrayUsingComparator:^NSComparisonResult(FileItem *  _Nonnull obj1, FileItem *  _Nonnull obj2) {
             NSComparisonResult result = [@(obj1.status) compare:@(obj2.status)];
             return result == NSOrderedDescending;
         }];
         
-        [needDownloads enumerateObjectsUsingBlock:^(FileDownloadOperation *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            [self resume:obj.urlPath];
+        [needDownloads enumerateObjectsUsingBlock:^(FileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            [self start:obj.urlPath];
         }];
     } else {
-        [needDownloads enumerateObjectsUsingBlock:^(FileDownloadOperation *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [needDownloads enumerateObjectsUsingBlock:^(FileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             obj.status = FileDownloadStatusPaused;
         }];
     }
@@ -125,15 +125,17 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 }
 
 /// 根据url创建或获取一个FileDownloadIem 返回
-- (BOOL)addUrlPathToDisplayItemArray:(NSString *)urlPath downloadItem:(FileDownloadOperation * *)downloadItem {
+- (BOOL)addUrlPathToDisplayItemArray:(NSString *)urlPath downloadItem:(FileItem * *)downloadItem {
     @synchronized (self) {
-        FileDownloadOperation *item = nil;
+        FileItem *item = nil;
         // 下载任务中没有
         NSUInteger downloadItemIdx = [self foundItemIndxInDownloadItemsByURL:urlPath];
         // 显示的队列中也没有
         NSUInteger displayItemIdx = [self foundItemIndxInDisplayItemsByURL:urlPath];
         if (downloadItemIdx == NSNotFound && displayItemIdx == NSNotFound) {
-            item = [[FileDownloadOperation alloc] initWithURL:urlPath sessionDataTask:nil];
+            item = [[FileItem alloc] init];
+            item.urlPath = urlPath;
+            item.fileName = urlPath.lastPathComponent;
             [self.displayItems addObject:item];
             if (downloadItem) {
                 *downloadItem = item;
@@ -158,30 +160,34 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 
 
 - (void)start:(NSString *)urlPath {
+    
+    NSAssert(urlPath, @"urlPath is not nil");
+    
     @synchronized (_downloadItems) {
         
         NSUInteger foundIndexInDownloadItems = [self foundItemIndxInDownloadItemsByURL:urlPath];
         if (foundIndexInDownloadItems == NSNotFound) {
             NSUInteger foundIndexInDisplay = [self foundItemIndxInDisplayItemsByURL:urlPath];
             if (foundIndexInDisplay != NSNotFound) {
-                FileDownloadOperation * item = [self.displayItems objectAtIndex:foundIndexInDisplay];
+                FileItem * item = [self.displayItems objectAtIndex:foundIndexInDisplay];
                 item.status = FileDownloadStatusNotStarted;
                 [self.downloadItems addObject:item];
                 [self.displayItems removeObjectAtIndex:foundIndexInDisplay];
                 [self start:urlPath];
             } else {
-                FileDownloadOperation * item = [[FileDownloadOperation alloc] initWithURL:urlPath sessionDataTask:nil];
+                FileItem * item = [[FileItem alloc] init];
+                item.urlPath = urlPath;
+                item.fileName = urlPath.lastPathComponent;
                 [self.downloadItems addObject:item];
                 [self start:urlPath];
             }
         } else {
-            FileDownloadOperation * downloadItem = [self.downloadItems objectAtIndex:foundIndexInDownloadItems];
-            if (downloadItem.status != FileDownloadStatusSuccess) {
-                BOOL isDownloading = [self.downloader isDownloading:downloadItem.urlPath];
+            FileItem * item = [self.downloadItems objectAtIndex:foundIndexInDownloadItems];
+            if (item.status != FileDownloadStatusSuccess) {
+                BOOL isDownloading = [self.downloader isDownloading:item.urlPath];
                 if (isDownloading == NO){
-                    downloadItem.status = FileDownloadStatusDownloading;
-                    NSString *localFolderPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
-                   id<FileDownloadOperation> opeation = [self.downloader downloadTaskWithURLPath:urlPath localFolderPath:localFolderPath fileName:urlPath.lastPathComponent progress:^(NSProgress * _Nonnull progress) {
+                    item.status = FileDownloadStatusDownloading;
+                   id<FileDownloadOperation> opeation = [self.downloader downloadTaskWithURLPath:urlPath localFolderPath:item.localFolderPath fileName:item.fileName progress:^(NSProgress * _Nonnull progress) {
                         
                     } completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable localURL, NSError * _Nullable error) {
                         if (error) {
@@ -190,12 +196,9 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
                             NSLog(@"%@ 任务下载完成", localURL);
                         }
                     }];
-                    BOOL isWaiting = [self.downloader isWaiting:downloadItem.urlPath];
+                    BOOL isWaiting = [self.downloader isWaiting:opeation.urlPath];
                     if (isWaiting) {
-                        downloadItem.status = FileDownloadStatusWaiting;
-                    }
-                    if (opeation) {
-                        [self.downloadItems replaceObjectAtIndex:foundIndexInDownloadItems withObject:opeation];
+                        item.status = FileDownloadStatusWaiting;
                     }
                     [self storedDownloadItems];
                 }
@@ -206,6 +209,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 }
 
 - (void)addDownloadItemByUrlPath:(NSString *)urlPath {
+    NSAssert(urlPath, @"urlPath is not nil");
     NSUInteger foundIdxInDispaly = [self foundItemIndxInDisplayItemsByURL:urlPath];
     if (foundIdxInDispaly != NSNotFound) {
         [self.displayItems removeObjectAtIndex:foundIdxInDispaly];
@@ -213,28 +217,27 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 }
 
 - (void)cancel:(NSString *)urlPath {
+    NSAssert(urlPath, @"urlPath is not nil");
     @synchronized (_downloadItems) {
         /// 根据downloadIdentifier 在self.downloadItems中找到对应的item
         NSUInteger itemIdx = [self foundItemIndxInDownloadItemsByURL:urlPath];
         if (itemIdx != NSNotFound) {
             // 根据索引在self.downloadItems中取出FileDownloadOperation，修改状态，并进行归档
-            FileDownloadOperation *downloadItem = [self.downloadItems objectAtIndex:itemIdx];
-            downloadItem.status = FileDownloadStatusNotStarted;
-            if (!downloadItem.progressObj) {
-                FileDownloadProgress *progress = [self.downloader getDownloadProgressByURL:urlPath];
-                downloadItem.progressObj = progress;
-            }
-            if (downloadItem.progressObj.nativeProgress) {
-                [downloadItem.progressObj.nativeProgress cancel];
+            FileItem *item = [self.downloadItems objectAtIndex:itemIdx];
+            item.status = FileDownloadStatusNotStarted;
+            id<FileDownloadOperation> operation = [self.downloader getDownloadItemByURL:urlPath];
+            if (operation.progressObj.nativeProgress) {
+                [operation.progressObj.nativeProgress cancel];
             } else {
                 [self.downloader cancelWithURL:urlPath];
             }
             // 将其从downloadItem中移除，并添加到display中 重新归档
             NSUInteger founIdxInDisplay = [self foundItemIndxInDisplayItemsByURL:urlPath];
-            [self deleteFile:downloadItem.localURL.path];
-            [self.downloadItems removeObject:downloadItem];
-            FileDownloadOperation *cancelItem = [[FileDownloadOperation alloc] initWithURL:urlPath sessionDataTask:nil];
-            cancelItem.status = FileDownloadStatusNotStarted;
+            [self deleteFile:item.localPath];
+            [self.downloadItems removeObject:item];
+            FileItem *cancelItem = [[FileItem alloc] init];
+            cancelItem.urlPath = urlPath;
+            cancelItem.fileName = urlPath.lastPathComponent;
             if (founIdxInDisplay == NSNotFound) {
                 [self.displayItems addObject:cancelItem];
             } else {
@@ -250,71 +253,32 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
     }
 }
 
-- (void)resume:(NSString *)urlPath {
-    
-    @synchronized (_downloadItems) {
-        NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:urlPath];
-        if (foundItemIdx != NSNotFound) {
-            FileDownloadOperation *downloadItem = [self.downloadItems objectAtIndex:foundItemIdx];
-            if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_8_4) {
-                // iOS9以上执行NSProgress 的 resume，resumingHandler会得到回调
-                // FileDownloader中已经对其回调时使用了执行了恢复任务
-                if (!downloadItem.progressObj) {
-                    FileDownloadProgress *progress = [self.downloader getDownloadProgressByURL:urlPath];
-                    downloadItem.progressObj = progress;
-                }
-                if (downloadItem.progressObj.nativeProgress) {
-                    [downloadItem resume];
-                    
-                    BOOL isWaiting = [self.downloader isWaiting:downloadItem.urlPath];
-                    if (isWaiting) {
-                        downloadItem.status = FileDownloadStatusWaiting;
-                    }
-                    
-                } else {
-                    [self start:urlPath];
-                }
-            } else {
-                [self start:urlPath];
-            }
-        } else {
-            [self start:urlPath];
-        }
-        [self storedDownloadItems];
-    }
-    
-}
 
 - (void)pause:(NSString *)urlPath {
-    
+    NSAssert(urlPath, @"urlPath is not nil");
     @synchronized (self) {
         NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:urlPath];
         if (foundItemIdx != NSNotFound) {
-            FileDownloadOperation *downloadItem = [self.downloadItems objectAtIndex:foundItemIdx];
-            BOOL isDownloading = [self.downloader isDownloading:downloadItem.urlPath];
+            FileItem *item = [self.downloadItems objectAtIndex:foundItemIdx];
+            BOOL isDownloading = [self.downloader isDownloading:urlPath];
+            FileDownloadOperation *operation = [self.downloader getDownloadItemByURL:urlPath];
             if (isDownloading) {
-                downloadItem.status = FileDownloadStatusPaused;
-                if (!downloadItem.progressObj) {
-                    FileDownloadProgress *progress = [self.downloader getDownloadProgressByURL:urlPath];
-                    downloadItem.progressObj = progress;
-                }
-                if (downloadItem.progressObj.nativeProgress) {
-                    [downloadItem pause];
+                item.status = FileDownloadStatusPaused;
+                if (operation.progressObj.nativeProgress) {
+                    [operation pause];
                 }
             } else {
                 BOOL isWaiting = [self.downloader isWaiting:urlPath];
                 if (isWaiting) {
-                    FileDownloadProgress *progress = [self.downloader getDownloadProgressByURL:urlPath];
-                    if (progress.nativeProgress) {
-                        [progress.nativeProgress pause];
-                        downloadItem.progressObj = progress;
+                    if (operation.progressObj.nativeProgress) {
+                        [operation.progressObj.nativeProgress pause];
                     } else {
                         [self.downloader pauseWithURL:urlPath];
                     }
-                    downloadItem.status = FileDownloadStatusPaused;
+                    item.status = FileDownloadStatusPaused;
                 } else {
                     // 不在下载队列中，也不在等待队列中，就标记为取消
-                    downloadItem.status = FileDownloadStatusFailure;
+                    item.status = FileDownloadStatusFailure;
                 }
             }
             [self storedDownloadItems];
@@ -323,6 +287,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 }
 
 - (BOOL)deleteFile:(NSString *)localPath {
+    NSAssert(localPath, @"localPath is not nil");
     @synchronized (_downloadItems) {
         NSError *error = nil;
         BOOL isExist = [[NSFileManager defaultManager] fileExistsAtPath:localPath];
@@ -340,12 +305,12 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 - (void)clearAllDownloadTask {
     @synchronized (_downloadItems) {
         typeof(self) weakSelf = self;
-        [self.downloadItems enumerateObjectsUsingBlock:^(FileDownloadOperation *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [self.downloadItems enumerateObjectsUsingBlock:^(FileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             
             if (obj.status == FileDownloadStatusDownloading) {
                 [self cancel:obj.urlPath];
             }
-            [weakSelf deleteFile:obj.localURL.path];
+            [weakSelf deleteFile:obj.localPath];
         }];
         [self.downloadItems removeAllObjects];
         [self storedDownloadItems];
@@ -354,13 +319,13 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
     
 }
 
-- (NSArray<FileDownloadOperation *> *)downloadedItems {
+- (NSArray<FileItem *> *)downloadedItems {
     if (!self.downloadItems.count) {
         return nil;
     }
     
     NSMutableArray *allSuccessItems = [NSMutableArray array];
-    [self.downloadItems enumerateObjectsUsingBlock:^(FileDownloadOperation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self.downloadItems enumerateObjectsUsingBlock:^(FileItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if (obj.status == FileDownloadStatusSuccess) {
             [allSuccessItems addObject:obj];
         }
@@ -368,12 +333,12 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
     return allSuccessItems;
 }
 
-- (NSArray<FileDownloadOperation *> *)activeDownloadItems {
+- (NSArray<FileItem *> *)activeDownloadItems {
     if (!self.downloadItems.count) {
         return @[];
     }
     NSMutableArray *downloadingItems = [NSMutableArray array];
-    [self.downloadItems enumerateObjectsUsingBlock:^(FileDownloadOperation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self.downloadItems enumerateObjectsUsingBlock:^(FileItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if (obj.status != FileDownloadStatusSuccess) {
             [downloadingItems addObject:obj];
         }
@@ -423,7 +388,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
     
     NSMutableArray<NSData *> *downloadItemsArchiveArray = [NSMutableArray arrayWithCapacity:self.downloadItems.count];
     
-    [self.downloadItems enumerateObjectsUsingBlock:^(FileDownloadOperation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self.downloadItems enumerateObjectsUsingBlock:^(FileItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSData *itemData = nil;
         @try {
             itemData = [NSKeyedArchiver archivedDataWithRootObject:obj];
@@ -449,7 +414,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 
 - (void)applicationWillTerminate {
     if (!self.shouldAutoDownloadWhenInitialize) {
-        [[self activeDownloadItems] enumerateObjectsUsingBlock:^(FileDownloadOperation *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [[self activeDownloadItems] enumerateObjectsUsingBlock:^(FileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             [self pause:obj.urlPath];
         }];
     }
@@ -465,7 +430,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
         return NSNotFound;
     }
     return [self.displayItems indexOfObjectPassingTest:
-            ^BOOL(FileDownloadOperation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            ^BOOL(FileItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 return [urlPath isEqualToString:obj.urlPath];
             }];
 }
@@ -477,7 +442,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
         return NSNotFound;
     }
     return [self.downloadItems indexOfObjectPassingTest:
-            ^BOOL(FileDownloadOperation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            ^BOOL(FileItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 return [urlPath isEqualToString:obj.urlPath];
             }];
 }
@@ -488,7 +453,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
         return NO;
     }
     @synchronized (_downloadItems) {
-        NSIndexSet *indexSet = [self.downloadItems indexesOfObjectsPassingTest:^BOOL(FileDownloadOperation *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSIndexSet *indexSet = [self.downloadItems indexesOfObjectsPassingTest:^BOOL(FileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             return [obj.fileName isEqualToString:packageId];
         }];
         if (!indexSet.count) {

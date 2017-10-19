@@ -109,16 +109,8 @@ static CGFloat const FileDownloadCellGloabMargin = 10.0;
 ////////////////////////////////////////////////////////////////////////
 
 - (void)xy_configCellByModel:(id)model indexPath:(NSIndexPath *)indexPath {
-    self.downloadItem = model;
-    
-    typeof(self) weakSelf = self;
-//    self.downloadItem.progressHandler = ^(NSProgress * _Nonnull progress) {
-//        [weakSelf setProgress];
-//    };
-    
-    self.downloadItem.statusChangeHandler = ^(FileDownloadStatus status) {
-        [weakSelf setDownloadViewByStatus:status];
-    };
+    self.fileItem = model;
+
 }
 
 
@@ -126,9 +118,8 @@ static CGFloat const FileDownloadCellGloabMargin = 10.0;
 ////////////////////////////////////////////////////////////////////////
 #pragma mark -
 ////////////////////////////////////////////////////////////////////////
-- (void)setDownloadItem:(FileDownloadOperation *)downloadItem {
-    _downloadItem = downloadItem;
-    
+- (void)setFileItem:(FileItem *)fileItem {
+    _fileItem = fileItem;
     self.downloadStatusLabel.hidden = NO;
     self.speedLabel.hidden = NO;
     self.remainTimeLabel.hidden = NO;
@@ -136,16 +127,15 @@ static CGFloat const FileDownloadCellGloabMargin = 10.0;
     self.fileSizeLabel.hidden = YES;
     self.iconView.hidden = YES;
     self.iconView.image = [UIImage imageNamed:@"TabBrowser"];
-
+    
     self.cycleView.circularState = FFCircularStateIcon;
     
-    [self.fileNameLabel setText:self.downloadItem.fileName];
+    [self.fileNameLabel setText:fileItem.fileName];
     
     [self setProgress];
-    [self setDownloadViewByStatus:downloadItem.status];
-    
-    
+    [self setDownloadViewByStatus:fileItem.status];
 }
+
 
 - (void)setDownloadViewByStatus:(FileDownloadStatus)aStatus {
     
@@ -174,12 +164,12 @@ static CGFloat const FileDownloadCellGloabMargin = 10.0;
             self.cycleView.hidden = YES;
             self.fileSizeLabel.hidden = NO;
             self.iconView.hidden = NO;
-            NSString *expectedFileTotalSize = [NSString transformedFileSizeValue:@(self.downloadItem.progressObj.expectedFileTotalSize)];
+            NSString *expectedFileTotalSize = [NSString transformedFileSizeValue:@(self.fileItem.progressObj.expectedFileTotalSize)];
             [self.fileSizeLabel setText:expectedFileTotalSize];
             self.cycleView.circularState = FFCircularStateCompleted;
-            DLog(@"MIMEType:(%@)", self.downloadItem.MIMEType);
-            if ([self.downloadItem.MIMEType isEqualToString:@"image/jpeg"] || [self.downloadItem.MIMEType isEqualToString:@"image/png"]) {
-                NSData *data = [NSData dataWithContentsOfURL:self.downloadItem.localURL];
+            DLog(@"MIMEType:(%@)", self.fileItem.MIMEType);
+            if ([self.fileItem.MIMEType isEqualToString:@"image/jpeg"] || [self.fileItem.MIMEType isEqualToString:@"image/png"]) {
+                NSData *data = [NSData dataWithContentsOfFile:self.fileItem.localPath];
                 self.iconView.image = [UIImage imageWithData:data];
             }
         }
@@ -202,21 +192,21 @@ static CGFloat const FileDownloadCellGloabMargin = 10.0;
 - (void)setProgress {
     
     
-    NSString *receivedFileSize = [NSString transformedFileSizeValue:@(self.downloadItem.progressObj.receivedFileSize)];
-    NSString *expectedFileTotalSize = [NSString transformedFileSizeValue:@(self.downloadItem.progressObj.expectedFileTotalSize)];
+    NSString *receivedFileSize = [NSString transformedFileSizeValue:@(self.fileItem.progressObj.receivedFileSize)];
+    NSString *expectedFileTotalSize = [NSString transformedFileSizeValue:@(self.fileItem.progressObj.expectedFileTotalSize)];
     
     NSString *downloadFileSizeStr = [NSString stringWithFormat:@"%@ of %@", receivedFileSize, expectedFileTotalSize];
     [self.downloadStatusLabel setText:downloadFileSizeStr];
     
-    [self.remainTimeLabel setText:[NSString stringWithRemainingTime:self.downloadItem.progressObj.estimatedRemainingTime]];
-    [self.speedLabel setText:[NSString stringWithFormat:@"%@/s", [NSString transformedFileSizeValue:@(self.downloadItem.progressObj.bytesPerSecondSpeed)]]];
+    [self.remainTimeLabel setText:[NSString stringWithRemainingTime:self.fileItem.progressObj.estimatedRemainingTime]];
+    [self.speedLabel setText:[NSString stringWithFormat:@"%@/s", [NSString transformedFileSizeValue:@(self.fileItem.progressObj.bytesPerSecondSpeed)]]];
     
-    FileDownloadProgress *progress = self.downloadItem.progressObj;
+    FileDownloadProgress *progress = self.fileItem.progressObj;
     if (progress) {
         self.cycleView.progress = progress.progress;
         [self.cycleView stopSpinProgressBackgroundLayer];
     } else {
-        if (self.downloadItem.status == FileDownloadStatusSuccess) {
+        if (self.fileItem.status == FileDownloadStatusSuccess) {
             self.cycleView.progress = 1.0;
             [self.cycleView stopSpinProgressBackgroundLayer];
         } else {
@@ -237,15 +227,15 @@ static CGFloat const FileDownloadCellGloabMargin = 10.0;
 
 - (void)resume:(NSString *)urlPath {
     if ([NetworkTypeUtils networkType] == NetworkTypeWIFI) {
-        [[FileDownloaderManager sharedInstance] resume:urlPath];
+        [[FileDownloaderManager sharedInstance] start:urlPath];
     } else {
         [[[UIAlertView alloc] initWithTitle:@"非Wifi环境下不能下载" message:nil delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil, nil] show];
     }
 }
 
-- (void)start:(FileDownloadOperation *)downloadItem {
+- (void)start:(FileItem *)fileItem {
     if ([NetworkTypeUtils networkType] == NetworkTypeWIFI) {
-        [[FileDownloaderManager sharedInstance] start:downloadItem.urlPath];
+        [[FileDownloaderManager sharedInstance] start:fileItem.urlPath];
     } else {
         [[[UIAlertView alloc] initWithTitle:@"非Wifi环境下不能下载" message:nil delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil, nil] show];
     }
@@ -257,22 +247,22 @@ static CGFloat const FileDownloadCellGloabMargin = 10.0;
 
 - (void)cycleViewClick:(FFCircularProgressView *)cycleView {
     
-    switch (self.downloadItem.status) {
+    switch (self.fileItem.status) {
             
         case FileDownloadStatusNotStarted:
         {
-            [self start:self.downloadItem];
+            [self start:self.fileItem];
         }
             break;
             
         case FileDownloadStatusDownloading:
         {
-            [self pause:self.downloadItem.urlPath];
+            [self pause:self.fileItem.urlPath];
         }
             break;
         case FileDownloadStatusPaused:
         {
-            [self resume:self.downloadItem.urlPath];
+            [self resume:self.fileItem.urlPath];
         }
             break;
             
@@ -284,13 +274,13 @@ static CGFloat const FileDownloadCellGloabMargin = 10.0;
             
         case FileDownloadStatusWaiting:
         {
-            [self pause:self.downloadItem.urlPath];
+            [self pause:self.fileItem.urlPath];
         }
             break;
             
         case FileDownloadStatusFailure:
         {
-            [self resume:self.downloadItem.urlPath];
+            [self resume:self.fileItem.urlPath];
         }
             break;
             
