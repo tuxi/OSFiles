@@ -12,15 +12,14 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-FOUNDATION_EXTERN NSString * const FileDownloaderDefaultFolderNameKey;
+FOUNDATION_EXTERN NSString * const FileDownloaderFolderNameKey;
 
 @interface FileDownloader : NSObject
 
-/// 同时允许的最大下载数量
 @property (nonatomic, assign) NSInteger maxConcurrentDownloads;
 /// 完成一个后台任务时回调
 @property (nonatomic, copy) void (^backgroundSessionCompletionHandler)();
-/// 下载的任务(包括正在下载的、暂停的) key 为 taskIdentifier， value 为 FileDownloadOperation, 下载完成后会从此字典中移除
+/// 下载的任务(包括正在下载的、暂停的) key 为 taskIdentifier， value 为 FileDownloadOperation, 下载完成后会从此集合中移除
 @property (nonatomic, strong) NSMutableDictionary<NSNumber *, id<FileDownloadOperation>> *activeDownloadsDictionary;
 /// 等待下载的任务数组 每个元素 字典 为一个等待的任务
 @property (nonatomic, strong) NSMutableArray<NSDictionary <NSString *, NSObject *> *> *waitingDownloadArray;
@@ -31,24 +30,17 @@ FOUNDATION_EXTERN NSString * const FileDownloaderDefaultFolderNameKey;
 
 - (long long)getCacheFileSizeWithPath:(NSString *)url;
 
-/// 执行下载任务，若当前下载数量超出maxConcurrentDownloads则添加到等待队列，并且return nil
+/// 执行开始下载任务
 /// @param urlPath 下载任务的remote url path
-/// @param localFolderPath 文件下载时存储到这个文件夹中
-/// @param fileName 写入文件的名称
 /// @param downloadProgressBlock 进度回调
 /// @param completionHandler 下载完成回调，不管成功失败
-/// @return FileDownloadOperation 实例
+/// @return A cancellable FileDownloadOperation
 - (id<FileDownloadOperation>)downloadTaskWithURLPath:(NSString *)urlPath
-                                      localFolderPath:(NSString *)localFolderPath
-                                            fileName:(NSString *)fileName
-                                            progress:(void (^)(NSProgress * _Nonnull progress))downloadProgressBlock
-                                   completionHandler:(void (^)(NSURLResponse * _Nonnull response, NSURL * _Nullable localURL, NSError * _Nullable error))completionHandler;
-
+                                             progress:(nullable void (^)(NSProgress *downloadProgress))downloadProgressBlock
+                                    completionHandler:(nullable void (^)(NSURLResponse *response, NSURL * _Nullable filePath, NSError * _Nullable error))completionHandler;
 - (id<FileDownloadOperation>)downloadTaskWithRequest:(NSURLRequest *)request
-                                      localFolderPath:(NSString *)localFolderPath
-                                            fileName:(NSString *)fileName
-                                            progress:(void (^)(NSProgress * _Nonnull progress))downloadProgressBlock
-                                   completionHandler:(void (^)(NSURLResponse * _Nonnull response, NSURL * _Nullable localURL, NSError * _Nullable error))completionHandler;
+                                         progress:(nullable void (^)(NSProgress *downloadProgress))downloadProgressBlock
+                                completionHandler:(nullable void (^)(NSURLResponse *response, NSURL * _Nullable filePath, NSError * _Nullable error))completionHandler;
 
 /// 取消下载, 取消下载后任务不可恢复
 /// @param urlPath 下载任务

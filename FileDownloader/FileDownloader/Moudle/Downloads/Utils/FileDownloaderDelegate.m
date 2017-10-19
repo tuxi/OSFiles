@@ -10,26 +10,10 @@
 #import "UIApplication+ActivityIndicator.h"
 #import "FileDownloaderManager.h"
 #import "FileDownloadProgress.h"
-#import "FileItem.h"
 #import "FileDownloadConst.h"
-
-#define dispatch_main_async_safe(block)\
-if (strcmp(dispatch_queue_get_label(DISPATCH_CURRENT_QUEUE_LABEL), dispatch_queue_get_label(dispatch_get_main_queue())) == 0) {\
-block();\
-} else {\
-dispatch_async(dispatch_get_main_queue(), block);\
-}
-
-
-
-
-@interface FileDownloaderDelegate ()
-
-@end
+#import "FileDownloadOperation.h"
 
 @implementation FileDownloaderDelegate
-
-
 
 ////////////////////////////////////////////////////////////////////////
 #pragma mark - FileDownloaderDelegate
@@ -39,7 +23,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
     
     // 根据aIdentifier在downloadItems中查找对应的DownloadItem，更改其下载状态，发送通知
     NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:downloadItem.urlPath];
-    FileItem *fileItem = nil;
+    FileDownloadOperation *fileItem = nil;
     if (foundItemIdx != NSNotFound) {
         DLog(@"INFO: Download success (id: %@)", downloadItem.urlPath);
         
@@ -51,7 +35,9 @@ dispatch_async(dispatch_get_main_queue(), block);\
     } else {
         DLog(@"Error: Completed download item not found (id: %@)", downloadItem.urlPath);
     }
-    dispatch_main_async_safe(^{
+    
+    [[FileDownloaderManager sharedInstance] removeDownloadItemByPackageId:downloadItem.fileName];
+    XYDispatch_main_async_safe(^{
         [[NSNotificationCenter defaultCenter] postNotificationName:FileDownloadSussessNotification object:downloadItem];
     })
 }
@@ -61,7 +47,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
     
     // 根据aIdentifier在downloadItems中查找对应的DownloadItem
     NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:downloadItem.urlPath];
-     FileItem *fileItem = nil;
+    FileDownloadOperation *fileItem = nil;
     if (foundItemIdx != NSNotFound) {
         fileItem = [[FileDownloaderManager sharedInstance].downloadItems objectAtIndex:foundItemIdx];
         fileItem.lastHttpStatusCode = downloadItem.lastHttpStatusCode;
@@ -80,7 +66,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
         [[FileDownloaderManager sharedInstance] storedDownloadItems];
         
     }
-    dispatch_main_async_safe(^{
+    XYDispatch_main_async_safe(^{
         // 发送失败通知
         [[NSNotificationCenter defaultCenter] postNotificationName:FileDownloadFailureNotification object:downloadItem];
     })
@@ -89,7 +75,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
 - (void)downloadTaskWillBeginWithDownloadItem:(id<FileDownloadOperation>)downloadItem {
     [self toggleNetworkActivityIndicatorVisible:YES];
     NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:downloadItem.urlPath];
-     FileItem *fileItem = nil;
+    FileDownloadOperation *fileItem = nil;
     if (foundItemIdx != NSNotFound) {
         fileItem = [[FileDownloaderManager sharedInstance].downloadItems objectAtIndex:foundItemIdx];
         fileItem.status = FileDownloadStatusDownloading;
@@ -102,7 +88,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
 
 - (void)downloadTaskDidEndWithDownloadItem:(id<FileDownloadOperation>)downloadItem {
     [self toggleNetworkActivityIndicatorVisible:NO];
-    dispatch_main_async_safe(^{
+    XYDispatch_main_async_safe(^{
         // 发送失败通知
         [[NSNotificationCenter defaultCenter] postNotificationName:FileDownloadStartedNotification object:downloadItem];
     })
@@ -112,7 +98,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
     
     NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:url];
     
-     FileItem *downloadItem = nil;
+    FileDownloadOperation *downloadItem = nil;
     if (foundItemIdx != NSNotFound) {
         downloadItem = [[FileDownloaderManager sharedInstance].downloadItems objectAtIndex:foundItemIdx];
         if (progress) {
@@ -123,7 +109,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
         }
     }
     [[FileDownloaderManager sharedInstance] storedDownloadItems];
-    dispatch_main_async_safe(^{
+    XYDispatch_main_async_safe(^{
         [[NSNotificationCenter defaultCenter] postNotificationName:FileDownloadProgressChangeNotification object:downloadItem];
     })
     
@@ -136,7 +122,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
     if (foundItemIdx != NSNotFound) {
         DLog(@"INFO: Download paused - id: %@", url);
         
-         FileItem *downloadItem = [[FileDownloaderManager sharedInstance].downloadItems objectAtIndex:foundItemIdx];
+        FileDownloadOperation *downloadItem = [[FileDownloaderManager sharedInstance].downloadItems objectAtIndex:foundItemIdx];
         downloadItem.status = FileDownloadStatusPaused;
         [[FileDownloaderManager sharedInstance] storedDownloadItems];
     } else {
@@ -144,10 +130,6 @@ dispatch_async(dispatch_get_main_queue(), block);\
     }
 }
 
-- (void)downloadResumeDownloadWithURL:(NSString *)url {
-    
-    [[FileDownloaderManager sharedInstance] start:url];
-}
 
 - (BOOL)downloadLocalFolderURL:(NSURL *)aLocalFileURL isVaildByURL:(NSString *)url {
     
@@ -175,7 +157,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
 - (void)downloadDidWaitingWithURLPath:(NSString *)url progress:(FileDownloadProgress *)progress {
     NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:url];
     
-     FileItem *downloadItem = nil;
+    FileDownloadOperation *downloadItem = nil;
     if (foundItemIdx != NSNotFound) {
         downloadItem = [[FileDownloaderManager sharedInstance].downloadItems objectAtIndex:foundItemIdx];
         downloadItem.status = FileDownloadStatusWaiting;
@@ -186,7 +168,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
         }
     }
     
-    dispatch_main_async_safe(^{
+    XYDispatch_main_async_safe(^{
         [[NSNotificationCenter defaultCenter] postNotificationName:FileDownloadWaittingNotification object:downloadItem];
     })
 }
@@ -195,7 +177,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
 - (void)downloadStartFromWaitingQueueWithURLPath:(NSString *)url progress:(FileDownloadProgress *)progress {
     NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:url];
     
-     FileItem *downloadItem = nil;
+    FileDownloadOperation *downloadItem = nil;
     if (foundItemIdx != NSNotFound) {
         downloadItem = [[FileDownloaderManager sharedInstance].downloadItems objectAtIndex:foundItemIdx];
         if (progress) {
@@ -204,12 +186,6 @@ dispatch_async(dispatch_get_main_queue(), block);\
             downloadItem.progressObj.lastLocalizedAdditionalDescription = downloadItem.progressObj.nativeProgress.localizedAdditionalDescription;
         }
     }
-}
-
-- (NSURL *)localFolderURLWithRemoteURL:(NSURL *)remoteURL {
-    NSString *documentPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
-    NSURL *folderURL = [NSURL fileURLWithPath:documentPath];
-    return folderURL;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -223,7 +199,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
         return NSNotFound;
     }
     return [[FileDownloaderManager sharedInstance].downloadItems indexOfObjectPassingTest:
-            ^BOOL(FileItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            ^BOOL(FileDownloadOperation * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 return [urlPath isEqualToString:obj.urlPath];
             }];
 }
@@ -237,7 +213,5 @@ dispatch_async(dispatch_get_main_queue(), block);\
     }
 }
 
-
-
-
 @end
+

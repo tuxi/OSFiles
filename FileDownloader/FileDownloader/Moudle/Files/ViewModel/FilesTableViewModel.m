@@ -9,7 +9,7 @@
 #import "FilesTableViewModel.h"
 #import "FileDownloadCell.h"
 #import "XYImageViewer.h"
-#import "FileItem.h"
+#import "FileDownloadOperation.h"
 #import "XYCutVideoController.h"
 #import "UIView+Extend.h"
 
@@ -81,7 +81,7 @@ static NSString * const FilesViewControllerViewCellID = @"FilesViewController";
 
 - (void)cutVideoWithIndexPath:(NSIndexPath *)indexPath {
     
-    FileItem *item = (FileItem *)self.dataSource[indexPath.row];
+    FileDownloadOperation *item = (FileDownloadOperation *)self.dataSource[indexPath.row];
     // _MIMEType	NSTaggedPointerString *	@"video/mp4"	0xa2304a003f0625c9
     if ([item.MIMEType isEqualToString:@"video/mp4"]) {
         XYCutVideoController *vc = [XYCutVideoController new];
@@ -99,15 +99,15 @@ static NSString * const FilesViewControllerViewCellID = @"FilesViewController";
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
 //    NSMutableArray *imageURLs = [NSMutableArray array];
 //    [self.dataSource enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-//        FileItem *item = (FileItem *)obj;
-//        if ([item isKindOfClass:[FileItem class]]) {
+//        FileDownloadOperation *item = (FileDownloadOperation *)obj;
+//        if ([item isKindOfClass:[FileDownloadOperation class]]) {
 //            if ([item.MIMEType isEqualToString:@"image/jpeg"] || [item.MIMEType isEqualToString:@"image/png"]) {
 //                [imageURLs addObject:item.urlPath];
 //            }
 //        }
 //    }];
     
-    FileItem *item = (FileItem *)self.dataSource[indexPath.row];
+    FileDownloadOperation *item = (FileDownloadOperation *)self.dataSource[indexPath.row];
     
     if ([item.MIMEType isEqualToString:@"image/jpeg"] || [item.MIMEType isEqualToString:@"image/png"]) {
         [[XYImageViewer prepareImages:@[item.localURL.path] pageTextList:nil endView:^UIView *(NSIndexPath *indexPath) {

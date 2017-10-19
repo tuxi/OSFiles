@@ -13,6 +13,22 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class FileDownloadProgress;
 
+
+typedef NS_ENUM(NSUInteger, FileDownloadStatus) {
+    FileDownloadStatusNotStarted = 0,
+    /// 下载中
+    FileDownloadStatusDownloading,
+    /// 暂停下载
+    FileDownloadStatusPaused,
+    /// 等待下载
+    FileDownloadStatusWaiting,
+    /// 下载失败
+    FileDownloadStatusFailure,
+    /// 下载完成
+    FileDownloadStatusSuccess,
+};
+
+
 @protocol FileDownloadOperation <NSObject>
 
 @required
@@ -45,9 +61,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)setFileName:(NSString *)fileName;
 - (NSString *)fileName;
-
-- (FileDownloadStatus)status;
-- (void)setStatus:(FileDownloadStatus)status;
 
 - (void)cancel;
 
@@ -100,6 +113,16 @@ NS_ASSUME_NONNULL_BEGIN
 /// 下载暂停时调用
 /// @param url 当前下载任务的url
 - (void)downloadPausedWithURL:(NSString *)url;
+
+/// 恢复下载时调用
+/// @param url 当前下载任务的url
+- (void)downloadResumeDownloadWithURL:(NSString *)url;
+
+/// 当下载的文件需要存储到本地时调用，并设置本地的路径
+/// @param remoteURL 下载文件的服务器地址
+/// @return 设置本地存储的路径
+/// @discussion 使用下载的url配置下载完成存储的本地路径
+- (NSURL *)localFolderURLWithRemoteURL:(NSURL *)remoteURL;
 
 /// 回调此方法，验证下载数据
 /// @param aLocalFileURL 下载文件的本地路径

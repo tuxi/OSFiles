@@ -13,10 +13,8 @@
 // 后台任务的标识符
 #define kBackgroundDownloadSessionIdentifier [NSString stringWithFormat:@"%@.FileDownloader", [NSBundle mainBundle].bundleIdentifier]
 
-static NSString * const FileDownloadRemoteURLPathKey = @"FileDownloadRemoteURLPathKey";
-static NSString * const FileDownloadLocalFolderURLPathKey = @"FileDownloadLocalFolderURLPathKey";
-static NSString * const FileDownloadLocalFileNameKey = @"FileDownloadLocalFileNameKey";
-NSString * const FileDownloaderDefaultFolderNameKey = @"FileDownloaderDefaultFolderNameKey";
+static NSString * const FileDownloadURLKey = @"downloadURLPath";
+NSString * const FileDownloaderFolderNameKey = @"FileDownloaderFolder";
 static void *ProgressObserverContext = &ProgressObserverContext;
 
 
@@ -25,6 +23,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 
 @property (nonatomic, strong) NSURLSession *backgroundSeesion;
 @property (nonatomic, strong) NSOperationQueue *backgroundSeesionQueue;
+@property (nonatomic, strong) NSURL *downloaderFolderPath;
 @property (nonatomic, strong) FileDownloaderSessionPrivateDelegate *sessionDelegate;
 @property (nonatomic, strong) NSProgress *totalProgress;
 
@@ -115,12 +114,10 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 ////////////////////////////////////////////////////////////////////////
 
 - (id<FileDownloadOperation>)downloadTaskWithURLPath:(NSString *)urlPath
-                                      localFolderPath:(NSString *)localFolderPath
-                                            fileName:(NSString *)fileName
-                                            progress:(void (^)(NSProgress * _Nonnull))downloadProgressBlock
-                                   completionHandler:(void (^)(NSURLResponse * _Nonnull, NSURL * _Nullable, NSError * _Nullable))completionHandler {
+                                             progress:(void (^)(NSProgress * _Nonnull))downloadProgressBlock
+                                    completionHandler:(void (^)(NSURLResponse * _Nonnull, NSURL * _Nullable, NSError * _Nullable))completionHandler {
     
-    id<FileDownloadOperation> item = [self downloadWithURL:urlPath localFolderPath:localFolderPath fileName:fileName];
+    id<FileDownloadOperation> item = [self downloadWithURL:urlPath];
     item.progressHandler = downloadProgressBlock;
     item.completionHandler = completionHandler;
     return item;
@@ -128,44 +125,33 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 }
 
 - (id<FileDownloadOperation>)downloadTaskWithRequest:(NSURLRequest *)request
-                                      localFolderPath:(NSString *)localFolderPath
-                                            fileName:(NSString *)fileName
-                                            progress:(void (^)(NSProgress * _Nonnull))downloadProgressBlock
-                                   completionHandler:(void (^)(NSURLResponse * _Nonnull, NSURL * _Nullable, NSError * _Nullable))completionHandler {
-    id<FileDownloadOperation> item = [self downloadWithRequest:request localFolderPath:localFolderPath fileName:fileName];
+                                         progress:(void (^)(NSProgress * _Nonnull))downloadProgressBlock
+                                completionHandler:(void (^)(NSURLResponse * _Nonnull, NSURL * _Nullable, NSError * _Nullable))completionHandler {
+    id<FileDownloadOperation> item = [self downloadWithRequest:request];
     item.progressHandler = downloadProgressBlock;
     item.completionHandler = completionHandler;
     return item;
 }
 
-- (id<FileDownloadOperation>)downloadWithURL:(NSString *)urlPath localFolderPath:(NSString *)localFolderPath fileName:(NSString *)fileName {
+- (id<FileDownloadOperation>)downloadWithURL:(NSString *)urlPath {
     NSURL *remoteURL = [NSURL URLWithString:urlPath];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:remoteURL
                                                            cachePolicy:NSURLRequestReloadIgnoringCacheData
                                                        timeoutInterval:30.0];
-    
-    return [self downloadWithRequest:request localFolderPath:localFolderPath fileName:fileName];
+   
+    return [self downloadWithRequest:request];
 }
 
-- (id<FileDownloadOperation>)downloadWithRequest:(NSURLRequest *)request localFolderPath:(NSString *)localFolderPath fileName:(NSString *)fileName  {
-    
+- (id<FileDownloadOperation>)downloadWithRequest:(NSURLRequest *)request  {
     NSAssert(request, @"Error: request do't is nil");
-    
-    NSUInteger taskIdentifier = 0;
-    NSURL *remoteURL = request.URL;
-    NSURL *localFolderURL = [NSURL fileURLWithPath:localFolderPath];
-    NSString *urlPath = remoteURL.absoluteString;
-    FileDownloadOperation *downloadItem = [self getDownloadItemByURL:urlPath];
-    // 若已经在下载中，则返回其实例对象
-    BOOL isDownloading = [self isDownloading:urlPath];
-    if (isDownloading) {
-        return downloadItem;
-    }
-    
     // 无任务下载时，重置总进度
     [self resetProgressIfNoActiveDownloadsRunning];
     
+    NSUInteger taskIdentifier = 0;
+    NSURL *remoteURL = request.URL;
+    NSString *urlPath = remoteURL.absoluteString;
+    FileDownloadOperation *downloadItem = [self getDownloadItemByURL:urlPath];
     if (downloadItem) {
         /*
          此处为了解决当前request对应的url已存在activeDownloadsDictionary中，但是不符合下面条件时(也就是超出最大可下载数量时)，会导致当前request一直在等待中，无法执行下载，
@@ -188,15 +174,11 @@ static void *ProgressObserverContext = &ProgressObserverContext;
                 self.totalProgress.totalUnitCount++;
                 [self.totalProgress becomeCurrentWithPendingUnitCount:1];
                 
+                NSURL *localFolderURL = [self.sessionDelegate _getLocalFolderURLWithRemoteURL:remoteURL];
+                
                 FileDownloadOperation *downloadItem = [[FileDownloadOperation alloc] initWithURL:urlPath sessionDataTask:nil];
-                if (!localFolderURL) {
-                    localFolderURL = [self getDefaultLocalFilePathWithRemoteURL:remoteURL];
-                }
                 downloadItem.localFolderURL = localFolderURL;
-                if (!fileName.length) {
-                    fileName = urlPath.lastPathComponent;
-                }
-                downloadItem.fileName = fileName;
+                
                 NSMutableURLRequest *requestM = request.mutableCopy;
                 long long cacheFileSize = [self getCacheFileSizeWithPath:downloadItem.localURL.path];
                 NSString *range = [NSString stringWithFormat:@"bytes=%zd-", cacheFileSize];
@@ -232,9 +214,9 @@ static void *ProgressObserverContext = &ProgressObserverContext;
             @synchronized (_waitingDownloadArray) {
                 // 超出同时的最大下载数量时，将新的任务的aResumeData或者aRemoteURL添加到等待下载数组中
                 NSMutableDictionary *waitingDownloadDict = [NSMutableDictionary dictionary];
-                [waitingDownloadDict setValue:urlPath forKey:FileDownloadRemoteURLPathKey];
-                [waitingDownloadDict setValue:localFolderURL.path forKey:FileDownloadLocalFolderURLPathKey];
-                [waitingDownloadDict setValue:fileName forKey:FileDownloadLocalFileNameKey];
+                if (urlPath) {
+                    [waitingDownloadDict setObject:urlPath forKey:FileDownloadURLKey];
+                }
                 [self.waitingDownloadArray addObject:waitingDownloadDict];
                 [self.sessionDelegate _didWaitingDownloadForUrlPath:urlPath];
             }
@@ -253,34 +235,36 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 }
 
 /// 通过urlPath恢复下载
-- (void)resumeWithURL:(FileDownloadOperation *)downloadItem {
-    BOOL isDownloading = [self isDownloading:downloadItem.urlPath];
+- (void)resumeWithURL:(NSString *)urlPath {
+    BOOL isDownloading = [self isDownloading:urlPath];
     if (!isDownloading) {
-        [self downloadWithURL:downloadItem.urlPath localFolderPath:downloadItem.localFolderURL.path fileName:downloadItem.fileName];
+        [self.sessionDelegate _resumeWithURL:urlPath];
     }
 }
 
 - (void)initializeDownloadCallBack:(FileDownloadOperation *)downloadItem  {
     
-    if (!downloadItem) {
+    if (downloadItem) {
+        
+        NSString *urlPath = [downloadItem.urlPath copy];
+        __weak typeof(self) weakSelf = self;
+        
+        downloadItem.pausingHandler = ^{
+            [weakSelf pauseWithURL:urlPath];
+        };
+        
+        downloadItem.cancellationHandler = ^{
+            [weakSelf cancelWithURL:urlPath];
+        };
+        
+        downloadItem.resumingHandler = ^{
+            [weakSelf resumeWithURL:urlPath];
+        };
+        
+        
+    } else {
         DLog(@"Error: No download item");
-        return;
     }
-    
-    NSString *urlPath = [downloadItem.urlPath copy];
-    __weak typeof(self) weakSelf = self;
-    __weak typeof(downloadItem) weakOperation = downloadItem;
-    downloadItem.pausingHandler = ^{
-        [weakSelf pauseWithURL:urlPath];
-    };
-    
-    downloadItem.cancellationHandler = ^{
-        [weakSelf cancelWithURL:urlPath];
-    };
-    
-    downloadItem.resumingHandler = ^{
-        [weakSelf resumeWithURL:weakOperation];
-    };
 }
 
 
@@ -380,7 +364,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
     @synchronized (_waitingDownloadArray) {
         NSInteger foundIdx = [self.waitingDownloadArray indexOfObjectPassingTest:
                               ^BOOL(NSDictionary<NSString *,NSObject *> * _Nonnull waitingDownloadDict, NSUInteger idx, BOOL * _Nonnull stop) {
-                                  NSString *waitingUrlPath = (NSString *)waitingDownloadDict[FileDownloadRemoteURLPathKey];
+                                  NSString *waitingUrlPath = (NSString *)waitingDownloadDict[FileDownloadURLKey];
                                   return [url isKindOfClass:[NSString class]] && [url isEqualToString:waitingUrlPath];
                               }];
         if (foundIdx != NSNotFound) {
@@ -417,8 +401,8 @@ static void *ProgressObserverContext = &ProgressObserverContext;
         __block BOOL isWaiting = NO;
         
         [self.waitingDownloadArray enumerateObjectsUsingBlock:^(NSDictionary<NSString *,NSObject *> * _Nonnull waitingDownloadDict, NSUInteger idx, BOOL * _Nonnull stop) {
-            if ([waitingDownloadDict[FileDownloadRemoteURLPathKey] isKindOfClass:[NSString class]]) {
-                NSString *waitingUrlPath = (NSString *)waitingDownloadDict[FileDownloadRemoteURLPathKey];
+            if ([waitingDownloadDict[FileDownloadURLKey] isKindOfClass:[NSString class]]) {
+                NSString *waitingUrlPath = (NSString *)waitingDownloadDict[FileDownloadURLKey];
                 if ([waitingUrlPath isEqualToString:urlPath]) {
                     isWaiting = YES;
                     *stop = YES;
@@ -455,9 +439,9 @@ static void *ProgressObserverContext = &ProgressObserverContext;
         if (self.maxConcurrentDownloads == NSIntegerMax || self.activeDownloadsDictionary.count < self.maxConcurrentDownloads) {
             if (self.waitingDownloadArray.count) {
                 NSDictionary *waitingDownTaskDict = [self.waitingDownloadArray firstObject];
-                [self downloadWithURL:waitingDownTaskDict[FileDownloadRemoteURLPathKey] localFolderPath:waitingDownTaskDict[FileDownloadLocalFolderURLPathKey] fileName:waitingDownTaskDict[FileDownloadLocalFileNameKey]];
+                [self downloadWithURL:waitingDownTaskDict[FileDownloadURLKey]];
                 [self.waitingDownloadArray removeObjectAtIndex:0];
-                [self.sessionDelegate _startDownloadTaskFromTheWaitingQueue:waitingDownTaskDict[FileDownloadRemoteURLPathKey]];
+                [self.sessionDelegate _startDownloadTaskFromTheWaitingQueue:waitingDownTaskDict[FileDownloadURLKey]];
             }
         }
     }
@@ -654,39 +638,6 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     FileDownloadOperation *downloadItem = [self.activeDownloadsDictionary objectForKey:@(identifier)];
     return downloadItem;
 }
-
-/// 获取下载的文件默认存储的的位置，若代理未实现时则使用此默认的
-- (NSURL *)getDefaultLocalFilePathWithRemoteURL:(NSURL *)remoteURL {
-    NSURL *localFileURL = [[self.class getDefaultLocalFolderPath] URLByAppendingPathComponent:remoteURL.lastPathComponent isDirectory:NO];
-    return localFileURL;
-}
-
-/// 默认缓存下载文件的本地文件夹
-+ (NSURL *)getDefaultLocalFolderPath {
-    NSURL *fileDownloadDirectoryURL = nil;
-    NSError *anError = nil;
-    NSArray *documentDirectoryURLsArray = [[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];
-    NSURL *documentsDirectoryURL = [documentDirectoryURLsArray firstObject];
-    if (documentsDirectoryURL) {
-        fileDownloadDirectoryURL = [documentsDirectoryURL URLByAppendingPathComponent:FileDownloaderDefaultFolderNameKey isDirectory:YES];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:fileDownloadDirectoryURL.path] == NO) {
-            BOOL aCreateDirectorySuccess = [[NSFileManager defaultManager] createDirectoryAtPath:fileDownloadDirectoryURL.path withIntermediateDirectories:YES attributes:nil error:&anError];
-            if (aCreateDirectorySuccess == NO) {
-                DLog(@"Error on create directory: %@", anError);
-            } else {
-                // 排除备份，即使文件存储在document中，该目录下载的文件也不会被备份到itunes或上传的iCloud中
-                BOOL aSetResourceValueSuccess = [fileDownloadDirectoryURL setResourceValue:@YES forKey:NSURLIsExcludedFromBackupKey error:&anError];
-                if (aSetResourceValueSuccess == NO) {
-                    DLog(@"Error on set resource value (NSURLIsExcludedFromBackupKey): %@", anError);
-                }
-            }
-        }
-        return fileDownloadDirectoryURL;
-    }
-    return nil;
-    
-}
-
 
 ////////////////////////////////////////////////////////////////////////
 #pragma mark -

@@ -11,7 +11,7 @@
 #import "NSObject+XYHUD.h"
 #import "DownloadsTableViewModel.h"
 #import "FileDownloaderManager.h"
-#import "FileItem.h"
+#import "FileDownloadOperation.h"
 #import "FileDownloaderManager.h"
 #import "FileDownloadConst.h"
 
@@ -127,9 +127,9 @@
 
 - (void)downloadProgressChange:(NSNotification *)note {
     
-    FileItem *item = note.object;
+    FileDownloadOperation *item = note.object;
     NSArray *downloadingArray = [[FileDownloaderManager sharedInstance] activeDownloadItems];
-    NSUInteger foundIdxInDownloading = [downloadingArray indexOfObjectPassingTest:^BOOL(FileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    NSUInteger foundIdxInDownloading = [downloadingArray indexOfObjectPassingTest:^BOOL(FileDownloadOperation *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         BOOL res = [obj.urlPath isEqualToString:item.urlPath];
         if (res) {
             *stop = YES;
@@ -138,7 +138,7 @@
     }];
     
     NSArray *displayArray = [[FileDownloaderManager sharedInstance] displayItems];
-    NSUInteger foundIdxInDisplay = [displayArray indexOfObjectPassingTest:^BOOL(FileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    NSUInteger foundIdxInDisplay = [displayArray indexOfObjectPassingTest:^BOOL(FileDownloadOperation *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         BOOL res = [obj.urlPath isEqualToString:item.urlPath];
         if (res) {
             *stop = YES;

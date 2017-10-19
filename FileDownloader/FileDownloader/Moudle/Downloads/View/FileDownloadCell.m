@@ -7,7 +7,7 @@
 //
 
 #import "FileDownloadCell.h"
-#import "FileItem.h"
+#import "FileDownloadOperation.h"
 #import "AppDelegate.h"
 #import "FileDownloaderManager.h"
 #import "FFCircularProgressView.h"
@@ -126,7 +126,7 @@ static CGFloat const FileDownloadCellGloabMargin = 10.0;
 ////////////////////////////////////////////////////////////////////////
 #pragma mark -
 ////////////////////////////////////////////////////////////////////////
-- (void)setDownloadItem:(FileItem *)downloadItem {
+- (void)setDownloadItem:(FileDownloadOperation *)downloadItem {
     _downloadItem = downloadItem;
     
     self.downloadStatusLabel.hidden = NO;
@@ -243,7 +243,7 @@ static CGFloat const FileDownloadCellGloabMargin = 10.0;
     }
 }
 
-- (void)start:(FileItem *)downloadItem {
+- (void)start:(FileDownloadOperation *)downloadItem {
     if ([NetworkTypeUtils networkType] == NetworkTypeWIFI) {
         [[FileDownloaderManager sharedInstance] start:downloadItem.urlPath];
     } else {

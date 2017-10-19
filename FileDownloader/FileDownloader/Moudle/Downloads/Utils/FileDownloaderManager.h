@@ -50,4 +50,6 @@
 - (NSArray *)activeDownloadItems;
 /// 所有展示中的文件，还未开始下载时存放的，当文件取消下载时也会存放到此数组
 - (NSMutableArray *)displayItems;
+
+- (BOOL)removeDownloadItemByPackageId:(NSString *)packageId;
 @end

@@ -105,7 +105,6 @@
 		18D6ABD11F12295E001DF350 /* FileDownloaderSessionPrivateDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D6ABD01F12295E001DF350 /* FileDownloaderSessionPrivateDelegate.m */; };
 		18DCFC451F263D8F00AC21CA /* FileDownloaderDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 18DCFC401F263D8F00AC21CA /* FileDownloaderDelegate.m */; };
 		18DCFC461F263D8F00AC21CA /* FileDownloaderManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 18DCFC421F263D8F00AC21CA /* FileDownloaderManager.m */; };
-		18DCFC471F263D8F00AC21CA /* FileItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 18DCFC441F263D8F00AC21CA /* FileItem.m */; };
 		D08AA3A91F9715D300391F03 /* FileDownloadConst.m in Sources */ = {isa = PBXBuildFile; fileRef = D08AA3A81F9715D300391F03 /* FileDownloadConst.m */; };
 /* End PBXBuildFile section */
 
@@ -313,8 +312,6 @@
 		18DCFC401F263D8F00AC21CA /* FileDownloaderDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileDownloaderDelegate.m; sourceTree = "<group>"; };
 		18DCFC411F263D8F00AC21CA /* FileDownloaderManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileDownloaderManager.h; sourceTree = "<group>"; };
 		18DCFC421F263D8F00AC21CA /* FileDownloaderManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileDownloaderManager.m; sourceTree = "<group>"; };
-		18DCFC431F263D8F00AC21CA /* FileItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileItem.h; sourceTree = "<group>"; };
-		18DCFC441F263D8F00AC21CA /* FileItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileItem.m; sourceTree = "<group>"; };
 		D08AA3A71F9715D300391F03 /* FileDownloadConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileDownloadConst.h; sourceTree = "<group>"; };
 		D08AA3A81F9715D300391F03 /* FileDownloadConst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileDownloadConst.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -509,9 +506,7 @@
 		18517BEC1EEBCB2C00B148C8 /* Browser */ = {
 			isa = PBXGroup;
 			children = (
-				18517C481EEBD8CB00B148C8 /* Model */,
 				18517C491EEBD8CB00B148C8 /* View */,
-				18517C4A1EEBD8CB00B148C8 /* ViewModel */,
 			);
 			path = Browser;
 			sourceTree = "<group>";
@@ -551,7 +546,6 @@
 		18517BF61EEBD11300B148C8 /* Files */ = {
 			isa = PBXGroup;
 			children = (
-				18517C4E1EEBD8DC00B148C8 /* Model */,
 				18517C4F1EEBD8DC00B148C8 /* View */,
 				18517C501EEBD8DC00B148C8 /* ViewModel */,
 			);
@@ -651,13 +645,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		18517C481EEBD8CB00B148C8 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
 		18517C491EEBD8CB00B148C8 /* View */ = {
 			isa = PBXGroup;
 			children = (
@@ -666,13 +653,6 @@
 				1819EFAE1EF2E29300208A20 /* BrowserViewController.xib */,
 			);
 			path = View;
-			sourceTree = "<group>";
-		};
-		18517C4A1EEBD8CB00B148C8 /* ViewModel */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = ViewModel;
 			sourceTree = "<group>";
 		};
 		18517C4C1EEBD8D400B148C8 /* View */ = {
@@ -693,13 +673,6 @@
 				1871ACF41EEEEE8C00ABC452 /* DownloadsTableViewModel.m */,
 			);
 			path = ViewModel;
-			sourceTree = "<group>";
-		};
-		18517C4E1EEBD8DC00B148C8 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Model;
 			sourceTree = "<group>";
 		};
 		18517C4F1EEBD8DC00B148C8 /* View */ = {
@@ -906,8 +879,6 @@
 				18DCFC401F263D8F00AC21CA /* FileDownloaderDelegate.m */,
 				18DCFC411F263D8F00AC21CA /* FileDownloaderManager.h */,
 				18DCFC421F263D8F00AC21CA /* FileDownloaderManager.m */,
-				18DCFC431F263D8F00AC21CA /* FileItem.h */,
-				18DCFC441F263D8F00AC21CA /* FileItem.m */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1011,7 +982,6 @@
 				18517C5F1EEBD98200B148C8 /* MoreViewController.m in Sources */,
 				D08AA3A91F9715D300391F03 /* FileDownloadConst.m in Sources */,
 				18878A511EF022B6005C0185 /* UIImage+MultiFormat.m in Sources */,
-				18DCFC471F263D8F00AC21CA /* FileItem.m in Sources */,
 				18300FA91EECE79F0035D6EE /* MASConstraintMaker.m in Sources */,
 				18878A501EF022B6005C0185 /* UIImage+GIF.m in Sources */,
 				18878A4A1EF022B6005C0185 /* SDWebImageDecoder.m in Sources */,

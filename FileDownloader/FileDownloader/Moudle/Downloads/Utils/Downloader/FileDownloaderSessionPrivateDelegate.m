@@ -23,6 +23,20 @@
     return self;
 }
 
+
+/// 获取下载后文件最终存放的本地路径,若代理实现了则设置使用代理的，没实现则使用默认设定的LocalURL
+- (NSURL *)_getLocalFolderURLWithRemoteURL:(NSURL *)remoteURL {
+    NSURL *localFolderURL = nil;
+    if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(localFolderURLWithRemoteURL:)]) {
+        localFolderURL = [self.downloadDelegate localFolderURLWithRemoteURL:remoteURL];
+    }
+    if (!localFolderURL) {
+        localFolderURL = [self getDefaultLocalFilePathWithRemoteURL:remoteURL];
+    }
+    
+    return localFolderURL;
+}
+
 /// 根据服务器响应的HttpStatusCode验证服务器响应状态
 - (BOOL)_isVaildHTTPStatusCode:(NSUInteger)httpStatusCode
                            url:(NSString *)urlPath {
@@ -47,7 +61,11 @@
     return anIsCorrectFlag;
 }
 
-
+/// 获取下载的文件默认存储的的位置，若代理未实现时则使用此默认的
+- (NSURL *)getDefaultLocalFilePathWithRemoteURL:(NSURL *)remoteURL {
+    NSURL *localFileURL = [[[self class] getDefaultLocalFolderPath] URLByAppendingPathComponent:remoteURL.lastPathComponent isDirectory:NO];
+    return localFileURL;
+}
 
 
 /// 即将开始下载时调用
@@ -76,7 +94,7 @@
     
     downloadItem.progressObj.nativeProgress.completedUnitCount = downloadItem.progressObj.nativeProgress.totalUnitCount;
     if (downloadItem.completionHandler) {
-        downloadItem.completionHandler(response, downloadItem.localURL, nil);
+        downloadItem.completionHandler(response, downloadItem.localFolderURL, nil);
     }
     [self.downloader.activeDownloadsDictionary removeObjectForKey:@(taskIdentifier)];
     [self _anDownloadTaskDidEndWithDownloadItem:downloadItem];
@@ -214,6 +232,14 @@
     }
 }
 
+/// 通过urlPath恢复下载
+- (void)_resumeWithURL:(NSString *)urlPath {
+    if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadResumeDownloadWithURL:)]) {
+        [self.downloadDelegate downloadResumeDownloadWithURL:urlPath];
+    } else {
+        DLog(@"Error: Resume action called without implementation");
+    }
+}
 
 - (void)_pauseWithURL:(NSString *)urlPath {
     if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadPausedWithURL:)]) {
@@ -231,6 +257,32 @@
     
 }
 
+
+/// 默认缓存下载文件的本地文件夹
++ (NSURL *)getDefaultLocalFolderPath {
+    NSURL *fileDownloadDirectoryURL = nil;
+    NSError *anError = nil;
+    NSArray *documentDirectoryURLsArray = [[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];
+    NSURL *documentsDirectoryURL = [documentDirectoryURLsArray firstObject];
+    if (documentsDirectoryURL) {
+        fileDownloadDirectoryURL = [documentsDirectoryURL URLByAppendingPathComponent:FileDownloaderFolderNameKey isDirectory:YES];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:fileDownloadDirectoryURL.path] == NO) {
+            BOOL aCreateDirectorySuccess = [[NSFileManager defaultManager] createDirectoryAtPath:fileDownloadDirectoryURL.path withIntermediateDirectories:YES attributes:nil error:&anError];
+            if (aCreateDirectorySuccess == NO) {
+                DLog(@"Error on create directory: %@", anError);
+            } else {
+                // 排除备份，即使文件存储在document中，该目录下载的文件也不会被备份到itunes或上传的iCloud中
+                BOOL aSetResourceValueSuccess = [fileDownloadDirectoryURL setResourceValue:@YES forKey:NSURLIsExcludedFromBackupKey error:&anError];
+                if (aSetResourceValueSuccess == NO) {
+                    DLog(@"Error on set resource value (NSURLIsExcludedFromBackupKey): %@", anError);
+                }
+            }
+        }
+        return fileDownloadDirectoryURL;
+    }
+    return nil;
+    
+}
 
 ////////////////////////////////////////////////////////////////////////
 #pragma mark - NSURLSessionDataDelegate

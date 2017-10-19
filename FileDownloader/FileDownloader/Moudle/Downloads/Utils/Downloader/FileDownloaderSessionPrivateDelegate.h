@@ -27,6 +27,9 @@
                                taskIdentifier:(NSUInteger)taskIdentifier
                                      response:(NSURLResponse *)response;
 
+/// 获取下载后文件最终存放的本地路径,若代理实现了则设置使用代理的，没实现则使用默认设定的LocalURL
+- (NSURL *)_getLocalFolderURLWithRemoteURL:(NSURL *)remoteURL;
+
 /// 即将开始下载时调用
 - (void)_anDownloadTaskWillBeginWithDownloadItem:(id<FileDownloadOperation>)downloadItem;
 /// 已经结束某个任务，不管是否成功都会调用
@@ -35,6 +38,9 @@
 - (void)_didWaitingDownloadForUrlPath:(NSString *)url;
 /// 从等待队列中开始下载一个任务
 - (void)_startDownloadTaskFromTheWaitingQueue:(NSString *)url;
+
+/// 收到恢复下载的回调
+- (void)_resumeWithURL:(NSString *)urlPath;
 /// 收到暂停下载的回调
 - (void)_pauseWithURL:(NSString *)urlPath;
 /// 进度改变时更新进度

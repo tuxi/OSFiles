@@ -29,8 +29,6 @@
 @property (nonatomic, copy) NSString *MIMEType;
 /** 文件名称，默认就是下载的url的后缀 */
 @property (nonatomic, copy) NSString *fileName;
-/** 文件下载状态 */
-@property (nonatomic, assign) FileDownloadStatus status;
 /** 流 */
 @property (nonatomic, strong) NSOutputStream *outputStream;
 
@@ -52,7 +50,6 @@ resumingHandler = _resumingHandler;
 - (instancetype)initWithURL:(NSString *)urlPath
             sessionDataTask:(NSURLSessionDataTask *)sessionDownloadTask {
     if (self = [super init]) {
-        self.status = FileDownloadStatusNotStarted;
         self.urlPath = urlPath;
         self.sessionTask = sessionDownloadTask;
         self.resumedFileSizeInBytes = 0;
@@ -77,7 +74,6 @@ resumingHandler = _resumingHandler;
     }
     return self;
 }
-
 
 - (void)pause {
     if (self.progressObj.nativeProgress) {
@@ -108,58 +104,9 @@ resumingHandler = _resumingHandler;
 
 
 
+
 - (void)dealloc {
     
-}
-
-////////////////////////////////////////////////////////////////////////
-#pragma mark -
-////////////////////////////////////////////////////////////////////////
-
-- (void)encodeWithCoder:(NSCoder *)aCoder {
-    [aCoder encodeObject:self.urlPath forKey:NSStringFromSelector(@selector(urlPath))];
-    [aCoder encodeObject:@(self.status) forKey:NSStringFromSelector(@selector(status))];
-    if (self.progressObj) {
-        [aCoder encodeObject:self.progressObj forKey:NSStringFromSelector(@selector(progressObj))];
-    }
-    if (self.downloadError) {
-        [aCoder encodeObject:self.downloadError forKey:NSStringFromSelector(@selector(downloadError))];
-    }
-    if (self.errorMessagesStack) {
-        [aCoder encodeObject:self.errorMessagesStack forKey:NSStringFromSelector(@selector(errorMessagesStack))];
-    }
-    if (self.localFolderURL) {
-        [aCoder encodeObject:self.localFolderURL forKey:NSStringFromSelector(@selector(localFolderURL))];
-    }
-    [aCoder encodeObject:@(self.lastHttpStatusCode) forKey:NSStringFromSelector(@selector(lastHttpStatusCode))];
-    if (self.fileName) {
-        [aCoder encodeObject:self.fileName forKey:NSStringFromSelector(@selector(fileName))];
-    }
-    if (self.MIMEType) {
-        [aCoder encodeObject:self.MIMEType forKey:NSStringFromSelector(@selector(MIMEType))];
-    }
-    if (self.localURL) {
-        [aCoder encodeObject:self.localURL forKey:NSStringFromSelector(@selector(localURL))];
-    }
-}
-
-- (id)initWithCoder:(NSCoder *)aCoder
-{
-    self = [super init];
-    if (self)
-    {
-        self.urlPath = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(urlPath))];
-        self.status = [[aCoder decodeObjectForKey:NSStringFromSelector(@selector(status))] unsignedIntegerValue];
-        self.progressObj = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(progressObj))];
-        self.downloadError = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(downloadError))];
-        self.errorMessagesStack = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(errorMessagesStack))];
-        self.lastHttpStatusCode = [[aCoder decodeObjectForKey:NSStringFromSelector(@selector(lastHttpStatusCode))] integerValue];
-        self.localFolderURL = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(localFolderURL))];
-        self.fileName = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(fileName))];
-        self.MIMEType = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(MIMEType))];
-        self.localURL = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(localURL))];
-    }
-    return self;
 }
 
 
@@ -199,21 +146,6 @@ resumingHandler = _resumingHandler;
 - (void)setProgressHandler:(void (^)(NSProgress * _Nonnull))progressHandler {
     _progressHandler = progressHandler;
     self.progressObj.progressHandler = progressHandler;
-}
-
-- (void)setStatus:(FileDownloadStatus)status {
-    if (_status == status) {
-        return;
-    }
-    [self willChangeValueForKey:@"status"];
-    _status = status;
-    if (self.statusChangeHandler) {
-        XYDispatch_main_async_safe(^{
-            self.statusChangeHandler(status);
-        })
-    }
-    [self didChangeValueForKey:@"status"];
-    
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -272,31 +204,22 @@ resumingHandler = _resumingHandler;
 #pragma mark - description
 ////////////////////////////////////////////////////////////////////////
 
+
+
 - (NSString *)description {
-    NSMutableDictionary *descriptionDict = [NSMutableDictionary dictionary];
-    [descriptionDict setObject:self.urlPath forKey:@"urlPath"];
-    [descriptionDict setObject:@(self.status) forKey:@"status"];
-    if (self.progressObj)
-    {
-        [descriptionDict setObject:self.progressObj forKey:@"progressObj"];
-    }
-    if (self.localFolderURL) {
-        [descriptionDict setObject:self.localFolderURL forKey:@"localFolderURL"];
-    }
-    if (self.localURL) {
-        [descriptionDict setObject:self.localURL forKey:@"localURL"];
-    }
-    if (self.fileName) {
-        [descriptionDict setObject:self.fileName forKey:@"fileName"];
+    
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    [dict setObject:self.urlPath forKey:@"urlPath"];
+    [dict setObject:self.progressObj.description forKey:@"progressObj"];
+    if (self.sessionTask) {
+        [dict setObject:[NSString stringWithFormat:@"sessionTask identifier:%ld", self.sessionTask.taskIdentifier] forKey:@"taskIdentifier"];
     }
     if (self.MIMEType) {
-        [descriptionDict setObject:self.MIMEType forKey:@"MIMEType"];
+        [dict setObject:self.MIMEType forKey:@"MIMEType"];
     }
-    
-    NSString *description = [NSString stringWithFormat:@"%@", descriptionDict];
+    NSString *description = [NSString stringWithFormat:@"%@", dict];
     
     return description;
 }
-
 
 @end

@@ -9,7 +9,7 @@
 #import "BrowserViewController.h"
 #import "UITextField+Blocks.h"
 #import "FileDownloaderManager.h"
-#import "FileItem.h"
+#import "FileDownloadOperation.h"
 
 @interface BrowserViewController ()
 @property (weak, nonatomic) IBOutlet UITextField *textField;
