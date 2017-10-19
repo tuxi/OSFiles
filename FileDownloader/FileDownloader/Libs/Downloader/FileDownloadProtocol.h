@@ -72,10 +72,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 /// 下载成功回调
+/// 当需要隐藏网络活动指示器，应该在此回调中使用 UIApplication's setNetworkActivityIndicatorVisible: 去设置状态栏网络活动的可见性
 /// @param downloadOperation 下载的FileDownloadOperation
 - (void)downloadSuccessnWithDownloadOperation:(id<FileDownloadOperation>)downloadOperation;
 
-/// 一个任务下载时候时调用
+/// 一个任务下载失败或者取消时调用
+/// 当需要隐藏网络活动指示器，应该在此回调中使用 UIApplication's setNetworkActivityIndicatorVisible: 去设置状态栏网络活动的可见性
 /// @param downloadOperation 下载的FileDownloadOperation
 /// @prram error 下载错误信息
 - (void)downloadFailureWithDownloadOperation:(id<FileDownloadOperation>)downloadOperation
@@ -86,10 +88,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// 一个任务即将开始下载时调用，当需要显示网络活动指示器的时候调用
 /// 此时应该在此回调中使用 UIApplication's setNetworkActivityIndicatorVisible: 去设置状态栏网络活动的可见性
 - (void)downloadTaskWillBeginWithDownloadOperation:(id<FileDownloadOperation>)downloadOperation;
-
-/// 一个任务下载结束时调用，当需要隐藏网络活动指示器即将结束的时候调用,不管是否成功都会调用
-/// 此时应该在此回调中使用 UIApplication's setNetworkActivityIndicatorVisible: 去设置状态栏网络活动的可见性
-- (void)downloadTaskDidEndWithDownloadOperation:(id<FileDownloadOperation>)downloadOperation;
 
 
 /// 下载进度改变的时候调用

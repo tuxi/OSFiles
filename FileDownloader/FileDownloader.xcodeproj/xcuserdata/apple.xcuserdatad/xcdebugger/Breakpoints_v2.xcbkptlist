@@ -36,91 +36,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "FileDownloader/Moudle/Downloads/Utils/FileDownloaderDelegate.m"
-            timestampString = "530117270.864507"
+            timestampString = "530120218.325718"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "76"
-            endingLineNumber = "76"
-            landmarkName = "-downloadTaskWillBeginWithDownloadOperation:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "FileDownloader/Moudle/Downloads/Utils/FileDownloaderDelegate.m"
-            timestampString = "530117270.864844"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "89"
-            endingLineNumber = "89"
-            landmarkName = "-downloadTaskDidEndWithDownloadOperation:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "FileDownloader/Libs/Downloader/FileDownloadOperation.m"
-            timestampString = "530115657.34311"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "201"
-            endingLineNumber = "201"
-            landmarkName = "-setStatus:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "FileDownloader/Moudle/Downloads/Utils/FileDownloaderManager.m"
-            timestampString = "530117270.864953"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "193"
-            endingLineNumber = "193"
-            landmarkName = "-start:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "FileDownloader/Moudle/Downloads/Utils/FileDownloaderManager.m"
-            timestampString = "530117270.865686"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "259"
-            endingLineNumber = "259"
-            landmarkName = "-pause:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "FileDownloader/Moudle/Downloads/Utils/FileDownloaderDelegate.m"
-            timestampString = "530117270.865745"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "48"
-            endingLineNumber = "48"
+            startingLineNumber = "49"
+            endingLineNumber = "49"
             landmarkName = "-downloadFailureWithDownloadOperation:error:"
             landmarkType = "7">
          </BreakpointContent>
@@ -131,13 +51,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "FileDownloader/Moudle/Downloads/Utils/FileDownloaderManager.m"
-            timestampString = "530117270.865801"
+            filePath = "FileDownloader/Moudle/Downloads/View/FileDownloadCell.m"
+            timestampString = "530120218.326102"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "323"
-            endingLineNumber = "323"
-            landmarkName = "-downloadedItems"
+            startingLineNumber = "250"
+            endingLineNumber = "250"
+            landmarkName = "-cycleViewClick:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -148,12 +68,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "FileDownloader/Moudle/Downloads/Utils/FileDownloaderManager.m"
-            timestampString = "530117270.86585"
+            timestampString = "530120218.32637"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "333"
-            endingLineNumber = "333"
-            landmarkName = "-downloadedItems"
+            startingLineNumber = "260"
+            endingLineNumber = "260"
+            landmarkName = "-pause:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -163,121 +83,46 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "FileDownloader/Moudle/Downloads/Utils/FileDownloaderDelegate.m"
-            timestampString = "530117270.865897"
+            filePath = "FileDownloader/Libs/Downloader/FileDownloaderSessionPrivateDelegate.m"
+            timestampString = "530120218.326568"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "39"
-            endingLineNumber = "39"
-            landmarkName = "-downloadSuccessnWithDownloadOperation:"
+            startingLineNumber = "222"
+            endingLineNumber = "222"
+            landmarkName = "-_pauseWithURL:"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[FileDownloaderDelegate downloadSuccessnWithDownloadOperation:]"
-                  moduleName = "FileDownloader"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mofeini/Documents/GitHub%20Code%20Repository/FileDownloader/FileDownloader/FileDownloader/Moudle/Downloads/Utils/FileDownloaderDelegate.m"
-                  timestampString = "530117230.801961"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "39"
-                  endingLineNumber = "39"
-                  offsetFromSymbolStart = "980">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__64-[FileDownloaderDelegate downloadSuccessnWithDownloadOperation:]_block_invoke"
-                  moduleName = "FileDownloader"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mofeini/Documents/GitHub%20Code%20Repository/FileDownloader/FileDownloader/FileDownloader/Moudle/Downloads/Utils/FileDownloaderDelegate.m"
-                  timestampString = "530117230.803297"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "39"
-                  endingLineNumber = "39"
-                  offsetFromSymbolStart = "32">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__copy_helper_block_"
-                  moduleName = "FileDownloader"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mofeini/Documents/GitHub%20Code%20Repository/FileDownloader/FileDownloader/FileDownloader/Moudle/Downloads/Utils/FileDownloaderDelegate.m"
-                  timestampString = "530117230.804639"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "39"
-                  endingLineNumber = "39"
-                  offsetFromSymbolStart = "64">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__destroy_helper_block_"
-                  moduleName = "FileDownloader"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mofeini/Documents/GitHub%20Code%20Repository/FileDownloader/FileDownloader/FileDownloader/Moudle/Downloads/Utils/FileDownloaderDelegate.m"
-                  timestampString = "530117230.805951"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "39"
-                  endingLineNumber = "39"
-                  offsetFromSymbolStart = "36">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__64-[FileDownloaderDelegate downloadSuccessnWithDownloadOperation:]_block_invoke.35"
-                  moduleName = "FileDownloader"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mofeini/Documents/GitHub%20Code%20Repository/FileDownloader/FileDownloader/FileDownloader/Moudle/Downloads/Utils/FileDownloaderDelegate.m"
-                  timestampString = "530117230.807248"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "39"
-                  endingLineNumber = "39"
-                  offsetFromSymbolStart = "32">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__copy_helper_block_.36"
-                  moduleName = "FileDownloader"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mofeini/Documents/GitHub%20Code%20Repository/FileDownloader/FileDownloader/FileDownloader/Moudle/Downloads/Utils/FileDownloaderDelegate.m"
-                  timestampString = "530117230.808551"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "39"
-                  endingLineNumber = "39"
-                  offsetFromSymbolStart = "64">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__destroy_helper_block_.37"
-                  moduleName = "FileDownloader"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mofeini/Documents/GitHub%20Code%20Repository/FileDownloader/FileDownloader/FileDownloader/Moudle/Downloads/Utils/FileDownloaderDelegate.m"
-                  timestampString = "530117230.809857"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "39"
-                  endingLineNumber = "39"
-                  offsetFromSymbolStart = "36">
-               </Location>
-            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "FileDownloader/Libs/Downloader/FileDownloader.m"
+            timestampString = "530120286.072154"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "180"
+            endingLineNumber = "180"
+            landmarkName = "-downloadWithRequest:localFolderPath:fileName:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "FileDownloader/Libs/Downloader/FileDownloader.m"
+            timestampString = "530120298.429452"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "155"
+            endingLineNumber = "155"
+            landmarkName = "-downloadWithRequest:localFolderPath:fileName:"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

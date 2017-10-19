@@ -17,7 +17,7 @@
 
 
 - (instancetype)initWithDownloader:(FileDownloader *)downloader;
-/// 取消下载、下载失败时调用
+/// 下载取消(或暂停)、失败时回调
 - (void)handleDownloadFailureWithError:(NSError *)error
                           downloadOperation:(id<FileDownloadOperation>)downloadOperation
                         taskIdentifier:(NSUInteger)taskIdentifier
@@ -29,8 +29,6 @@
 
 /// 即将开始下载时调用
 - (void)_anDownloadTaskWillBeginWithDownloadOperation:(id<FileDownloadOperation>)downloadOperation;
-/// 已经结束某个任务，不管是否成功都会调用
-- (void)_anDownloadTaskDidEndWithDownloadOperation:(id<FileDownloadOperation>)downloadOperation;
 /// 任务已经添加到等待队列时调用
 - (void)_didWaitingDownloadForUrlPath:(NSString *)url;
 /// 从等待队列中开始下载一个任务

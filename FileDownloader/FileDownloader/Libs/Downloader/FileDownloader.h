@@ -20,7 +20,7 @@ FOUNDATION_EXTERN NSString * const FileDownloaderDefaultFolderNameKey;
 @property (nonatomic, assign) NSInteger maxConcurrentDownloads;
 /// 完成一个后台任务时回调
 @property (nonatomic, copy) void (^backgroundSessionCompletionHandler)();
-/// 下载的任务(包括正在下载的、暂停的) key 为 taskIdentifier， value 为 FileDownloadOperation, 下载完成后会从此字典中移除
+/// 下载中的任务 key 为 taskIdentifier， value 为 FileDownloadOperation, 下载完成、取消、暂停都会从此字典中移除
 @property (nonatomic, strong) NSMutableDictionary<NSNumber *, id<FileDownloadOperation>> *activeDownloadsDictionary;
 /// 等待下载的任务数组 每个元素 字典 为一个等待的任务
 @property (nonatomic, strong) NSMutableArray<NSDictionary <NSString *, NSObject *> *> *waitingDownloadArray;
@@ -36,7 +36,7 @@ FOUNDATION_EXTERN NSString * const FileDownloaderDefaultFolderNameKey;
 /// @param localFolderPath 文件下载时存储到这个文件夹中
 /// @param fileName 写入文件的名称
 /// @param downloadProgressBlock 进度回调
-/// @param completionHandler 下载完成回调，不管成功失败
+/// @param completionHandler 下载完成回调，不管成功失败都会回调
 /// @return FileDownloadOperation 实例
 - (id<FileDownloadOperation>)downloadTaskWithURLPath:(NSString *)urlPath
                                       localFolderPath:(NSString *)localFolderPath

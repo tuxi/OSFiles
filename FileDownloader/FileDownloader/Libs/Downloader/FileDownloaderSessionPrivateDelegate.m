@@ -52,15 +52,9 @@
 
 /// 即将开始下载时调用
 - (void)_anDownloadTaskWillBeginWithDownloadOperation:(id<FileDownloadOperation>)downloadOperation {
+    downloadOperation.status = FileDownloadStatusDownloading;
     if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadTaskWillBeginWithDownloadOperation:)]) {
         [self.downloadDelegate downloadTaskWillBeginWithDownloadOperation:downloadOperation];
-    }
-}
-
-/// 已经结束某个任务，不管是否成功都会调用
-- (void)_anDownloadTaskDidEndWithDownloadOperation:(id<FileDownloadOperation>)downloadOperation {
-    if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadTaskDidEndWithDownloadOperation:)]) {
-        [self.downloadDelegate downloadTaskDidEndWithDownloadOperation:downloadOperation];
     }
 }
 
@@ -78,30 +72,38 @@
     if (downloadOperation.completionHandler) {
         downloadOperation.completionHandler(response, downloadOperation.localURL, nil);
     }
+    downloadOperation.status = FileDownloadStatusSuccess;
+    XYDispatch_main_async_safe(^{
+      [self.downloadDelegate downloadSuccessnWithDownloadOperation:downloadOperation];
+    })
     [self.downloader.activeDownloadsDictionary removeObjectForKey:@(taskIdentifier)];
-    [self _anDownloadTaskDidEndWithDownloadOperation:downloadOperation];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.downloadDelegate downloadSuccessnWithDownloadOperation:downloadOperation];
-    });
     [self.downloader checkMaxConcurrentDownloadCountThenDownloadWaitingQueueIfExceeded];
 }
 
 
-/// 下载取消、失败时回调
+/// 下载取消(或暂停)、失败时回调
 - (void)handleDownloadFailureWithError:(NSError *)error
                           downloadOperation:(FileDownloadOperation *)downloadOperation
                         taskIdentifier:(NSUInteger)taskIdentifier
                               response:(NSURLResponse *)response {
     downloadOperation.progressObj.nativeProgress.completedUnitCount = downloadOperation.progressObj.nativeProgress.totalUnitCount;
-    if (downloadOperation.completionHandler) {
-        downloadOperation.completionHandler(response, nil, error);
-    }
+    XYDispatch_main_async_safe(^{
+        // 非用户手动触发暂停时才修改，因为此方法暂停时也会回调
+        if (downloadOperation.status != FileDownloadStatusPaused) {
+            if ([error.domain isEqualToString:NSURLErrorDomain] &&
+                (error.code == NSURLErrorCancelled)) {
+                downloadOperation.status = FileDownloadStatusNotStarted;
+            } else {
+                downloadOperation.status = FileDownloadStatusFailure;
+            }
+            [self.downloadDelegate downloadFailureWithDownloadOperation:downloadOperation error:error];
+        }
+        if (downloadOperation.completionHandler) {
+            downloadOperation.completionHandler(response, nil, error);
+        }
+    })
+    // 暂停、取消、失败时都要将downloadOperation从activeDownloadsDictionary中移除，
     [self.downloader.activeDownloadsDictionary removeObjectForKey:@(taskIdentifier)];
-    [self _anDownloadTaskDidEndWithDownloadOperation:downloadOperation];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.downloadDelegate downloadFailureWithDownloadOperation:downloadOperation error:error];
-    });
-    
     [self.downloader checkMaxConcurrentDownloadCountThenDownloadWaitingQueueIfExceeded];
 }
 
@@ -152,9 +154,7 @@
             id<FileDownloadOperation> opeartion = [self.downloader getDownloadOperationByURL:urlPath];
             [self.downloadDelegate downloadProgressChangeWithDownloadOperation:opeartion];
         }
-        
     }
-    
 }
 
 /// 验证下载的文件是否有效
@@ -216,6 +216,8 @@
 
 
 - (void)_pauseWithURL:(NSString *)urlPath {
+    id<FileDownloadOperation> downloadOpeartion = [self.downloader getDownloadOperationByURL:urlPath];
+    downloadOpeartion.status = FileDownloadStatusPaused;
     if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadPausedWithURL:)]) {
         [self.downloadDelegate downloadPausedWithURL:urlPath];
     }
@@ -316,7 +318,7 @@
             [self handleDownloadFailureWithError:finalError downloadOperation:downloadOperation taskIdentifier:task.taskIdentifier response:task.response];
         }
     } else if (error){
-        // 下载失败
+        // 下载失败，注意用户暂停(即为取消时)也会回调这里，但是这里如果是暂停时就不再对私有代理方法进行回调了
         NSString *errorString = error.localizedDescription;
         NSMutableArray<NSString *> *errorMessagesStackArray = [downloadOperation.errorMessagesStack mutableCopy];
         if (errorMessagesStackArray == nil) {
@@ -324,8 +326,8 @@
         }
         [errorMessagesStackArray insertObject:errorString atIndex:0];
         [downloadOperation setErrorMessagesStack:errorMessagesStackArray];
-        
         [self handleDownloadFailureWithError:error downloadOperation:downloadOperation taskIdentifier:task.taskIdentifier response:task.response];
+        
     }
     
     // 关闭流

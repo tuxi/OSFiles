@@ -105,6 +105,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(totalProgressChange:) name:FileDownloadTotalProgressCanceldNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableData) name:FileDownloadStartedNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableData) name:FileDownloadWaittingNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableData) name:FileDownloadPausedNotification object:nil];
 }
 
 

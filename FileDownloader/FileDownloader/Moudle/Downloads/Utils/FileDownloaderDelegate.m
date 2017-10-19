@@ -38,6 +38,7 @@
 //    [[FileDownloaderManager sharedInstance] removeDownloadItemByPackageId:fileItem.fileName];
     XYDispatch_main_async_safe(^{
         [[NSNotificationCenter defaultCenter] postNotificationName:FileDownloadSussessNotification object:fileItem];
+        [self downloadTaskDidEnd];
     })
 }
 
@@ -52,7 +53,7 @@
         fileItem.lastHttpStatusCode = downloadOperation.lastHttpStatusCode;
         fileItem.downloadError = error;
         fileItem.errorMessagesStack = downloadOperation.errorMessagesStack;
-        // 更新此下载失败的item的状态
+        // 更新此下载失败或下载取消的item的状态，如果不是用户暂停的，并且error.code!=NSURLErrorCancelled 那就是下载失败
         if (fileItem.status != FileDownloadStatusPaused) {
             if ([error.domain isEqualToString:NSURLErrorDomain] &&
                 (error.code == NSURLErrorCancelled)) {
@@ -67,6 +68,7 @@
     XYDispatch_main_async_safe(^{
         // 发送失败通知
         [[NSNotificationCenter defaultCenter] postNotificationName:FileDownloadFailureNotification object:fileItem];
+        [self downloadTaskDidEnd];
     })
 }
 
@@ -83,11 +85,6 @@
     XYDispatch_main_async_safe(^{
         [[NSNotificationCenter defaultCenter] postNotificationName:FileDownloadStartedNotification object:fileItem];
     })
-}
-
-- (void)downloadTaskDidEndWithDownloadOperation:(id<FileDownloadOperation>)downloadItem {
-    [self toggleNetworkActivityIndicatorVisible:NO];
-
 }
 
 - (void)downloadProgressChangeWithDownloadOperation:(id<FileDownloadOperation>)downloadOperation  {
@@ -123,6 +120,7 @@
     
     XYDispatch_main_async_safe(^{
         [[NSNotificationCenter defaultCenter] postNotificationName:FileDownloadPausedNotification object:item];
+        [self downloadTaskDidEnd];
     })
 }
 
@@ -179,6 +177,12 @@
 ////////////////////////////////////////////////////////////////////////
 #pragma mark - Other
 ////////////////////////////////////////////////////////////////////////
+
+/// 一个任务下载结束时调用，当需要隐藏网络活动指示器即将结束的时候调用,不管是否成功都会调用
+/// 此时应该在此回调中使用 UIApplication's setNetworkActivityIndicatorVisible: 去设置状态栏网络活动的可见性
+- (void)downloadTaskDidEnd {
+    [self toggleNetworkActivityIndicatorVisible:NO];
+}
 
 // 查找数组中第一个符合条件的对象（代码块过滤），返回对应索引
 // 查找urlPath在downloadItems中对应的FileDownloadOperation的索引
