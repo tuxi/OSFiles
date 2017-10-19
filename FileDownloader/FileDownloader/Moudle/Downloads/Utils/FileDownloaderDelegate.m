@@ -35,7 +35,7 @@
         DLog(@"Error: Completed download item not found (id: %@)", downloadOperation.urlPath);
     }
     
-    [[FileDownloaderManager sharedInstance] removeDownloadItemByPackageId:fileItem.fileName];
+//    [[FileDownloaderManager sharedInstance] removeDownloadItemByPackageId:fileItem.fileName];
     XYDispatch_main_async_safe(^{
         [[NSNotificationCenter defaultCenter] postNotificationName:FileDownloadSussessNotification object:fileItem];
     })
