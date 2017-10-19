@@ -12,9 +12,9 @@
 #import "FileDownloaderManager.h"
 #import "NetworkTypeUtils.h"
 #import "ExceptionUtils.h"
+#import "AppDelegate+NotificationExtension.h"
 
 @interface AppDelegate () 
-
 
 @end
 
@@ -27,6 +27,34 @@
     self.window.rootViewController = [MainTabBarController new];
     [self.window makeKeyAndVisible];
     [ExceptionUtils configExceptionHandler];
+    
+    /// 注册本地通知
+    [self registerLocalNotificationWithBlock:^(UILocalNotification *localNotification) {
+        /// 注册完成后回调
+        
+        NSLog(@"%@", localNotification);
+        
+        // ios8后，需要添加这个注册，才能得到授权
+        if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
+            UIUserNotificationType type =  UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound;
+            UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:type
+                                                                                     categories:nil];
+            [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+            // 通知重复提示的单位，可以是天、周、月
+            localNotification.repeatInterval = 0;
+        } else {
+            // 通知重复提示的单位，可以是天、周、月
+            localNotification.repeatInterval = 0;
+        }
+        
+    }];
+    
+    UILocalNotification *localNotification = [launchOptions valueForKey:UIApplicationLaunchOptionsLocalNotificationKey];
+    if (localNotification) {
+        // 当程序启动时，就有本地通知需要推送，就手动调用一次didReceiveLocalNotification
+        [self application:application didReceiveLocalNotification:localNotification];
+    }
+    
     return YES;
 }
 
@@ -57,7 +85,7 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
-- (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)())completionHandler {
+- (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)(void))completionHandler {
     
     [[FileDownloaderManager sharedInstance].downloader setBackgroundSessionCompletionHandler:completionHandler];
 }

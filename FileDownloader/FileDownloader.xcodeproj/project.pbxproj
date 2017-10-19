@@ -10,6 +10,7 @@
 		180CBDDC1F11269E006D2871 /* ExceptionUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 180CBDDB1F11269E006D2871 /* ExceptionUtils.m */; };
 		180CBDE01F1126E0006D2871 /* SuspensionControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 180CBDDF1F1126E0006D2871 /* SuspensionControl.m */; };
 		1811B4691F98D7FB003A5847 /* FileItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1811B4681F98D7FB003A5847 /* FileItem.m */; };
+		1811B46C1F990550003A5847 /* AppDelegate+NotificationExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 1811B46B1F990550003A5847 /* AppDelegate+NotificationExtension.m */; };
 		1819EFAF1EF2E29300208A20 /* BrowserViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1819EFAE1EF2E29300208A20 /* BrowserViewController.xib */; };
 		1819EFB51EF2E3FE00208A20 /* UITextField+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 1819EFB41EF2E3FE00208A20 /* UITextField+Blocks.m */; };
 		18300F641EEC54570035D6EE /* FileDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300F5E1EEC54570035D6EE /* FileDownloader.m */; };
@@ -116,6 +117,8 @@
 		180CBDDF1F1126E0006D2871 /* SuspensionControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SuspensionControl.m; sourceTree = "<group>"; };
 		1811B4671F98D7FB003A5847 /* FileItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FileItem.h; sourceTree = "<group>"; };
 		1811B4681F98D7FB003A5847 /* FileItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FileItem.m; sourceTree = "<group>"; };
+		1811B46A1F990550003A5847 /* AppDelegate+NotificationExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AppDelegate+NotificationExtension.h"; sourceTree = "<group>"; };
+		1811B46B1F990550003A5847 /* AppDelegate+NotificationExtension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "AppDelegate+NotificationExtension.m"; sourceTree = "<group>"; };
 		1819EFAE1EF2E29300208A20 /* BrowserViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BrowserViewController.xib; sourceTree = "<group>"; };
 		1819EFB31EF2E3FE00208A20 /* UITextField+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITextField+Blocks.h"; sourceTree = "<group>"; };
 		1819EFB41EF2E3FE00208A20 /* UITextField+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextField+Blocks.m"; sourceTree = "<group>"; };
@@ -527,6 +530,8 @@
 				1871AD0C1EEEF15100ABC452 /* BaseTableViewModel.m */,
 				18517BF01EEBCB2C00B148C8 /* AppDelegate.h */,
 				18517BF11EEBCB2C00B148C8 /* AppDelegate.m */,
+				1811B46A1F990550003A5847 /* AppDelegate+NotificationExtension.h */,
+				1811B46B1F990550003A5847 /* AppDelegate+NotificationExtension.m */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -1049,6 +1054,7 @@
 				18878A481EF022B6005C0185 /* SDImageCache.m in Sources */,
 				18300F7F1EEC57280035D6EE /* UIViewController+XYHUD.m in Sources */,
 				18300F641EEC54570035D6EE /* FileDownloader.m in Sources */,
+				1811B46C1F990550003A5847 /* AppDelegate+NotificationExtension.m in Sources */,
 				18300FAD1EECE79F0035D6EE /* NSArray+MASAdditions.m in Sources */,
 				18517C261EEBD64800B148C8 /* AFURLResponseSerialization.m in Sources */,
 				18517C391EEBD66A00B148C8 /* README.markdown in Sources */,
