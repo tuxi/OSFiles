@@ -10,7 +10,7 @@
 #import "UITextField+Blocks.h"
 #import "FileDownloaderManager.h"
 
-@interface BrowserViewController ()
+@interface BrowserViewController () <UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UITextField *textField;
 
 @end
@@ -22,7 +22,7 @@
     // Do any additional setup after loading the view.
     
     self.view.backgroundColor = [UIColor whiteColor];
-    
+    self.textField.delegate = self;
     self.textField.shouldReturnBlock = ^BOOL(UITextField *textField) {
       
         [[FileDownloaderManager sharedInstance] start:textField.text];
@@ -38,6 +38,13 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    
+    if ([textField.text hasPrefix:@"http"]) {
+        [[FileDownloaderManager sharedInstance] start:textField.text];
+    }
 }
 
 /*
