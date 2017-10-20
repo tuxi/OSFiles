@@ -157,7 +157,9 @@ static void *ProgressObserverContext = &ProgressObserverContext;
     NSURL *localFolderURL = [NSURL fileURLWithPath:localFolderPath];
     NSString *urlPath = remoteURL.absoluteString;
     
-    BOOL res = [self.sessionDelegate _shouldAllowedDownloadTaskWithURL:urlPath fileName:fileName];
+    BOOL res = [self.sessionDelegate _shouldAllowedDownloadTaskWithURL:urlPath
+                                                       localFolderPath:localFolderPath
+                                                              fileName:fileName ];
     if (!res) {
         return nil;
     }

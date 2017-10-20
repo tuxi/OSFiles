@@ -58,9 +58,13 @@
     }
 }
 
-- (BOOL)_shouldAllowedDownloadTaskWithURL:(NSString *)urlPath fileName:(NSString *)fileName {
-    if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(shouldAllowedDownloadTaskWithURL:fileName:)]) {
-        return [self.downloadDelegate shouldAllowedDownloadTaskWithURL:urlPath fileName:fileName];
+- (BOOL)_shouldAllowedDownloadTaskWithURL:(NSString *)urlPath
+                          localFolderPath:(NSString *)localFolderPath
+                                 fileName:(NSString *)fileName {
+    if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(shouldAllowedDownloadTaskWithURL:localFolderPath:fileName:)]) {
+        return [self.downloadDelegate shouldAllowedDownloadTaskWithURL:urlPath
+                                                       localFolderPath:localFolderPath
+                                                              fileName:fileName];
     }
     return YES;
 }

@@ -30,7 +30,9 @@
 /// 开始下载时调用
 - (void)_beginDownloadTaskWithDownloadOperation:(id<FileDownloadOperation>)downloadOperation;
 /// 是否允许此下载任务
-- (BOOL)_shouldAllowedDownloadTaskWithURL:(NSString *)urlPath fileName:(NSString *)fileName;
+- (BOOL)_shouldAllowedDownloadTaskWithURL:(NSString *)urlPath
+                          localFolderPath:(NSString *)localFolderPath
+                                 fileName:(NSString *)fileName;
 /// 任务已经添加到等待队列时调用
 - (void)_didWaitingDownloadForUrlPath:(NSString *)url;
 /// 从等待队列中开始下载一个任务

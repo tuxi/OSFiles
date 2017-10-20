@@ -90,7 +90,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)beginDownloadTaskWithDownloadOperation:(id<FileDownloadOperation>)downloadOperation;
 
 /// 是否允许此下载任务
-- (BOOL)shouldAllowedDownloadTaskWithURL:(NSString *)urlPath fileName:(NSString *)fileName;
+- (BOOL)shouldAllowedDownloadTaskWithURL:(NSString *)urlPath
+                          localFolderPath:(NSString *)localFolderPath
+                                fileName:(NSString *)fileName;
 
 /// 下载进度改变的时候调用
 /// @param downloadOperation 当前下载任务

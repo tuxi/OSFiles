@@ -77,7 +77,7 @@
     }))
 }
 
-- (void)downloadTaskWillBeginWithDownloadOperation:(id<FileDownloadOperation>)downloadOperation {
+- (void)beginDownloadTaskWithDownloadOperation:(id<FileDownloadOperation>)downloadOperation {
     [self toggleNetworkActivityIndicatorVisible:YES];
     NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:downloadOperation.urlPath];
     FileItem *fileItem = nil;
@@ -90,6 +90,11 @@
     XYDispatch_main_async_safe(^{
         [[NSNotificationCenter defaultCenter] postNotificationName:FileDownloadStartedNotification object:fileItem];
     })
+}
+
+- (BOOL)shouldAllowedDownloadTaskWithURL:(NSString *)urlPath localFolderPath:(NSString *)localFolderPath fileName:(NSString *)fileName {
+    
+    return YES;
 }
 
 - (void)downloadProgressChangeWithDownloadOperation:(id<FileDownloadOperation>)downloadOperation  {
