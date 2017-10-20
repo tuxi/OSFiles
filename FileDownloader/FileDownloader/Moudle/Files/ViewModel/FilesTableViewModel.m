@@ -9,7 +9,7 @@
 #import "FilesTableViewModel.h"
 #import "FileDownloadCell.h"
 #import "XYImageViewer.h"
-#import "FileDownloadOperation.h"
+#import "FileItem.h"
 #import "XYCutVideoController.h"
 #import "UIView+Extend.h"
 
@@ -81,11 +81,11 @@ static NSString * const FilesViewControllerViewCellID = @"FilesViewController";
 
 - (void)cutVideoWithIndexPath:(NSIndexPath *)indexPath {
     
-    FileDownloadOperation *item = (FileDownloadOperation *)self.dataSource[indexPath.row];
+    FileItem *item = (FileItem *)self.dataSource[indexPath.row];
     // _MIMEType	NSTaggedPointerString *	@"video/mp4"	0xa2304a003f0625c9
     if ([item.MIMEType isEqualToString:@"video/mp4"]) {
         XYCutVideoController *vc = [XYCutVideoController new];
-        vc.videoURL = item.localURL;
+        vc.videoURL = [NSURL fileURLWithPath:item.localPath];
         [[self.tableView visibleViewController].navigationController pushViewController:vc animated:YES];
     }
     
@@ -99,18 +99,18 @@ static NSString * const FilesViewControllerViewCellID = @"FilesViewController";
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
 //    NSMutableArray *imageURLs = [NSMutableArray array];
 //    [self.dataSource enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-//        FileDownloadOperation *item = (FileDownloadOperation *)obj;
-//        if ([item isKindOfClass:[FileDownloadOperation class]]) {
+//        FileItem *item = (FileItem *)obj;
+//        if ([item isKindOfClass:[FileItem class]]) {
 //            if ([item.MIMEType isEqualToString:@"image/jpeg"] || [item.MIMEType isEqualToString:@"image/png"]) {
 //                [imageURLs addObject:item.urlPath];
 //            }
 //        }
 //    }];
     
-    FileDownloadOperation *item = (FileDownloadOperation *)self.dataSource[indexPath.row];
+    FileItem *item = (FileItem *)self.dataSource[indexPath.row];
     
     if ([item.MIMEType isEqualToString:@"image/jpeg"] || [item.MIMEType isEqualToString:@"image/png"]) {
-        [[XYImageViewer prepareImages:@[item.localURL.path] pageTextList:nil endView:^UIView *(NSIndexPath *indexPath) {
+        [[XYImageViewer prepareImages:@[item.localPath] pageTextList:nil endView:^UIView *(NSIndexPath *indexPath) {
             return [self.tableView cellForRowAtIndexPath:indexPath];
         }] show:cell currentIndex:0];
         
