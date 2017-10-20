@@ -38,7 +38,7 @@
 /// 归档items
 - (void)storedDownloadItems;
 /// 从本地获取所有的downloadItem
-- (NSMutableArray *)restoredDownloadItems;
+- (NSMutableArray<FileItem *> *)restoredDownloadItems;
 
 - (void)start:(NSString *)url;
 - (void)cancel:(NSString *)url;

@@ -352,16 +352,16 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 
 
 /// 从本地获取所有的downloadItem
-- (NSMutableArray<FileDownloadOperation *> *)restoredDownloadItems {
+- (NSMutableArray<FileItem *> *)restoredDownloadItems {
     
-    NSMutableArray<FileDownloadOperation *> *restoredDownloadItems = [NSMutableArray array];
+    NSMutableArray<FileItem *> *restoredDownloadItems = [NSMutableArray array];
     NSMutableArray<NSData *> *restoredMutableDataArray = [[NSUserDefaults standardUserDefaults] objectForKey:FileDownloadOperationsKey];
     if (!restoredMutableDataArray) {
         restoredMutableDataArray = [NSMutableArray array];
     }
     
     [restoredMutableDataArray enumerateObjectsUsingBlock:^(NSData * _Nonnull data, NSUInteger idx, BOOL * _Nonnull stop) {
-        FileDownloadOperation *item = nil;
+        FileItem *item = nil;
         if (data) {
             @try {
                 // 解档
