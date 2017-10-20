@@ -89,7 +89,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
         NSString *urlPath = [[task taskDescription] copy];
         if (urlPath) {
             self.totalProgress.totalUnitCount++;
-
+            
             // 将此totalProgress注册为当前线程任务的根进度管理对象，向下分支出一个子任务 比如子任务进度总数为10个单元 即当子任务完成时 父progerss对象进度走1个单元
             [self.totalProgress becomeCurrentWithPendingUnitCount:1];
             
@@ -115,10 +115,10 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 ////////////////////////////////////////////////////////////////////////
 
 - (id<FileDownloadOperation>)downloadTaskWithURLPath:(NSString *)urlPath
-                                      localFolderPath:(NSString *)localFolderPath
+                                     localFolderPath:(NSString *)localFolderPath
                                             fileName:(NSString *)fileName
-                                            progress:(void (^)(NSProgress * _Nonnull))downloadProgressBlock
-                                   completionHandler:(void (^)(NSURLResponse * _Nonnull, NSURL * _Nullable, NSError * _Nullable))completionHandler {
+                                            progress:(void (^ _Nullable)(NSProgress * _Nullable))downloadProgressBlock
+                                   completionHandler:(void (^ _Nullable)(NSURLResponse * _Nullable, NSURL * _Nullable, NSError * _Nullable))completionHandler {
     
     id<FileDownloadOperation> item = [self downloadWithURL:urlPath localFolderPath:localFolderPath fileName:fileName];
     item.progressHandler = downloadProgressBlock;
@@ -128,10 +128,10 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 }
 
 - (id<FileDownloadOperation>)downloadTaskWithRequest:(NSURLRequest *)request
-                                      localFolderPath:(NSString *)localFolderPath
+                                     localFolderPath:(NSString *)localFolderPath
                                             fileName:(NSString *)fileName
-                                            progress:(void (^)(NSProgress * _Nonnull))downloadProgressBlock
-                                   completionHandler:(void (^)(NSURLResponse * _Nonnull, NSURL * _Nullable, NSError * _Nullable))completionHandler {
+                                            progress:(void (^ _Nullable)(NSProgress * _Nullable))downloadProgressBlock
+                                   completionHandler:(void (^ _Nullable)(NSURLResponse * _Nullable, NSURL * _Nullable, NSError * _Nullable))completionHandler {
     id<FileDownloadOperation> item = [self downloadWithRequest:request localFolderPath:localFolderPath fileName:fileName];
     item.progressHandler = downloadProgressBlock;
     item.completionHandler = completionHandler;

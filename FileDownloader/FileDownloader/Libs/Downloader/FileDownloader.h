@@ -39,16 +39,16 @@ FOUNDATION_EXTERN NSString * const FileDownloaderDefaultFolderNameKey;
 /// @param completionHandler 下载完成回调，不管成功失败都会回调
 /// @return FileDownloadOperation 实例
 - (id<FileDownloadOperation>)downloadTaskWithURLPath:(NSString *)urlPath
-                                      localFolderPath:(NSString *)localFolderPath
+                                     localFolderPath:(NSString *)localFolderPath
                                             fileName:(NSString *)fileName
-                                            progress:(void (^)(NSProgress * _Nonnull progress))downloadProgressBlock
-                                   completionHandler:(void (^)(NSURLResponse * _Nonnull response, NSURL * _Nullable localURL, NSError * _Nullable error))completionHandler;
+                                            progress:(void (^ _Nullable)(NSProgress * _Nullable progress))downloadProgressBlock
+                                   completionHandler:(void (^ _Nullable)(NSURLResponse * _Nullable response, NSURL * _Nullable localURL, NSError * _Nullable error))completionHandler;
 
 - (id<FileDownloadOperation>)downloadTaskWithRequest:(NSURLRequest *)request
-                                      localFolderPath:(NSString *)localFolderPath
+                                     localFolderPath:(NSString *)localFolderPath
                                             fileName:(NSString *)fileName
-                                            progress:(void (^)(NSProgress * _Nonnull progress))downloadProgressBlock
-                                   completionHandler:(void (^)(NSURLResponse * _Nonnull response, NSURL * _Nullable localURL, NSError * _Nullable error))completionHandler;
+                                            progress:(void (^ _Nullable)(NSProgress * _Nullable progress))downloadProgressBlock
+                                   completionHandler:(void (^ _Nullable)(NSURLResponse * _Nullable response, NSURL * _Nullable localURL, NSError * _Nullable error))completionHandler;
 
 /// 取消下载, 取消下载后任务不可恢复
 /// @param urlPath 下载任务
