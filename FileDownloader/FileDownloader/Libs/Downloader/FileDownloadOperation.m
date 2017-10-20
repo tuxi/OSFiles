@@ -119,25 +119,11 @@ resumingHandler = _resumingHandler;
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [aCoder encodeObject:self.urlPath forKey:NSStringFromSelector(@selector(urlPath))];
     [aCoder encodeObject:@(self.status) forKey:NSStringFromSelector(@selector(status))];
-    if (self.progressObj) {
-        [aCoder encodeObject:self.progressObj forKey:NSStringFromSelector(@selector(progressObj))];
-    }
-    if (self.errorMessagesStack) {
-        [aCoder encodeObject:self.errorMessagesStack forKey:NSStringFromSelector(@selector(errorMessagesStack))];
-    }
-    if (self.localFolderURL) {
-        [aCoder encodeObject:self.localFolderURL forKey:NSStringFromSelector(@selector(localFolderURL))];
-    }
+    [aCoder encodeObject:self.progressObj forKey:NSStringFromSelector(@selector(progressObj))];
+    [aCoder encodeObject:self.errorMessagesStack forKey:NSStringFromSelector(@selector(errorMessagesStack))];
     [aCoder encodeObject:@(self.lastHttpStatusCode) forKey:NSStringFromSelector(@selector(lastHttpStatusCode))];
-    if (self.fileName) {
-        [aCoder encodeObject:self.fileName forKey:NSStringFromSelector(@selector(fileName))];
-    }
-    if (self.MIMEType) {
-        [aCoder encodeObject:self.MIMEType forKey:NSStringFromSelector(@selector(MIMEType))];
-    }
-    if (self.localURL) {
-        [aCoder encodeObject:self.localURL forKey:NSStringFromSelector(@selector(localURL))];
-    }
+    [aCoder encodeObject:self.fileName forKey:NSStringFromSelector(@selector(fileName))];
+    [aCoder encodeObject:self.MIMEType forKey:NSStringFromSelector(@selector(MIMEType))];
 }
 
 - (id)initWithCoder:(NSCoder *)aCoder
@@ -150,10 +136,8 @@ resumingHandler = _resumingHandler;
         self.progressObj = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(progressObj))];
         self.errorMessagesStack = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(errorMessagesStack))];
         self.lastHttpStatusCode = [[aCoder decodeObjectForKey:NSStringFromSelector(@selector(lastHttpStatusCode))] integerValue];
-        self.localFolderURL = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(localFolderURL))];
         self.fileName = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(fileName))];
         self.MIMEType = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(MIMEType))];
-        self.localURL = [aCoder decodeObjectForKey:NSStringFromSelector(@selector(localURL))];
     }
     return self;
 }

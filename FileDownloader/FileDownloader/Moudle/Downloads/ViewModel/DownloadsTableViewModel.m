@@ -95,6 +95,16 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    FileDownloadCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    if (cell.fileItem.status == FileDownloadStatusNotStarted) {
+        [self performSelector:@selector(scrollToIndexPath:) withObject:[NSIndexPath indexPathForRow:0 inSection:0] afterDelay:0.0];
+    }
+    [cell cycleViewClick:nil];
+}
+
+- (void)scrollToIndexPath:(NSIndexPath *)indexpath {
+    [self.tableView scrollToRowAtIndexPath:indexpath atScrollPosition:UITableViewScrollPositionNone animated:YES];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {

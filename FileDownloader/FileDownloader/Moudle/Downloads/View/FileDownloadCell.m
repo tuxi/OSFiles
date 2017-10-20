@@ -241,41 +241,30 @@ static CGFloat const FileDownloadCellGloabMargin = 10.0;
     
     switch (self.fileItem.status) {
             
-        case FileDownloadStatusNotStarted:
-        {
+        case FileDownloadStatusNotStarted: {
             [self start:self.fileItem.urlPath];
-        }
             break;
-            
-        case FileDownloadStatusDownloading:
-        {
+        }
+        case FileDownloadStatusDownloading: {
             [self pause:self.fileItem.urlPath];
-        }
             break;
-        case FileDownloadStatusPaused:
-        {
+        }
+        case FileDownloadStatusPaused: {
             [self start:self.fileItem.urlPath];
-        }
             break;
-            
-        case FileDownloadStatusSuccess:
-        {
-            
         }
-            break;
+        case FileDownloadStatusSuccess: {
             
-        case FileDownloadStatusWaiting:
-        {
+            break;
+        }
+        case FileDownloadStatusWaiting: {
             [self pause:self.fileItem.urlPath];
-        }
             break;
-            
-        case FileDownloadStatusFailure:
-        {
+        }
+        case FileDownloadStatusFailure: {
             [self start:self.fileItem.urlPath];
-        }
             break;
-            
+        }
         default:
             break;
     }

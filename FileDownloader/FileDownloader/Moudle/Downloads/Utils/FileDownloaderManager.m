@@ -7,7 +7,6 @@
 //
 
 #import "FileDownloaderManager.h"
-#import "FileDownloadOperation.h"
 #import "UIApplication+ActivityIndicator.h"
 #import "FileDownloaderDelegate.h"
 #import "FileDownloadConst.h"
@@ -55,7 +54,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
         self.downloadDelegate = [FileDownloaderDelegate new];
         self.downloader = [FileDownloader new];
         self.downloader.downloadDelegate = self.downloadDelegate;
-        self.downloader.maxConcurrentDownloads = 1;
+        self.downloader.maxConcurrentDownloads = 3;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate) name:UIApplicationWillTerminateNotification object:nil];
         self.downloadItems = [self restoredDownloadItems];
     }
@@ -235,13 +234,12 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
             NSUInteger founIdxInDisplay = [self foundItemIndxInDisplayItemsByURL:urlPath];
             [self deleteFile:item.localPath];
             [self.downloadItems removeObject:item];
-            FileItem *cancelItem = [[FileItem alloc] init];
-            cancelItem.urlPath = urlPath;
-            cancelItem.fileName = urlPath.lastPathComponent;
+            item.urlPath = urlPath;
+            item.fileName = urlPath.lastPathComponent;
             if (founIdxInDisplay == NSNotFound) {
-                [self.displayItems addObject:cancelItem];
+                [self.displayItems addObject:item];
             } else {
-                [self.displayItems replaceObjectAtIndex:founIdxInDisplay withObject:cancelItem];
+                [self.displayItems replaceObjectAtIndex:founIdxInDisplay withObject:item];
             }
             [self storedDownloadItems];
             [[NSNotificationCenter defaultCenter] postNotificationName:FileDownloadCanceldNotification object:nil];
@@ -261,7 +259,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
         if (foundItemIdx != NSNotFound) {
             FileItem *item = [self.downloadItems objectAtIndex:foundItemIdx];
             BOOL isDownloading = [self.downloader isDownloading:urlPath];
-            FileDownloadOperation *operation = [self.downloader getDownloadOperationByURL:urlPath];
+            id<FileDownloadOperation> operation = [self.downloader getDownloadOperationByURL:urlPath];
             if (isDownloading) {
                 item.status = FileDownloadStatusPaused;
                 if (operation.progressObj.nativeProgress) {

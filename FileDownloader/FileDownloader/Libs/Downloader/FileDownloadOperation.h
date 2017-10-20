@@ -18,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, copy) void (^pausingHandler)(void);
 @property (nullable, copy) void (^resumingHandler)(void);
 @property (nonatomic, nullable, copy) void (^progressHandler)(NSProgress *progress);
-@property (nonatomic, copy) void (^completionHandler)(NSURLResponse *response, NSURL * _Nullable filePath, NSError * _Nullable error);
+@property (nonatomic, nullable, copy) void (^completionHandler)(NSURLResponse *response, NSURL * _Nullable filePath, NSError * _Nullable error);
 
 
 - (void)pause;

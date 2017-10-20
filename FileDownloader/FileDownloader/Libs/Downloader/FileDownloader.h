@@ -38,7 +38,7 @@ FOUNDATION_EXTERN NSString * const FileDownloaderDefaultFolderNameKey;
 /// @param fileName 写入文件的名称
 /// @param downloadProgressBlock 进度回调
 /// @param completionHandler 下载完成回调，不管成功失败都会回调
-/// @return FileDownloadOperation 实例
+/// @return 一个id<FileDownloadOperation> 实例
 - (id<FileDownloadOperation>)downloadTaskWithURLPath:(NSString *)urlPath
                                       localFolderPath:(NSString *)localFolderPath
                                             fileName:(NSString *)fileName

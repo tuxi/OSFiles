@@ -11,7 +11,6 @@
 #import "FileDownloaderManager.h"
 #import "FileDownloadProgress.h"
 #import "FileDownloadConst.h"
-#import "FileDownloadOperation.h"
 #import "AppDelegate+NotificationExtension.h"
 
 @implementation FileDownloaderDelegate

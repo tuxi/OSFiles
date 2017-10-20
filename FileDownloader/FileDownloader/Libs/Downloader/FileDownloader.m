@@ -235,8 +235,8 @@ static void *ProgressObserverContext = &ProgressObserverContext;
                 [dataTask resume];
                 return downloadOperation;
             }
-        } else {
-            
+        }
+        else {
             @synchronized (_waitingDownloadArray) {
                 // 超出同时的最大下载数量时，将新的任务的aResumeData或者aRemoteURL添加到等待下载数组中
                 NSMutableDictionary *waitingDownloadDict = [NSMutableDictionary dictionary];
@@ -261,7 +261,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 }
 
 /// 通过urlPath恢复下载
-- (void)resumeWithURL:(FileDownloadOperation *)downloadOperation {
+- (void)resumeWithDownloadOperation:(FileDownloadOperation *)downloadOperation {
     BOOL isDownloading = [self isDownloading:downloadOperation.urlPath];
     if (!isDownloading) {
         [self downloadWithURL:downloadOperation.urlPath localFolderPath:downloadOperation.localFolderURL.path fileName:downloadOperation.fileName];
@@ -287,7 +287,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
     };
     
     downloadOperation.resumingHandler = ^{
-        [weakSelf resumeWithURL:weakOperation];
+        [weakSelf resumeWithDownloadOperation:weakOperation];
     };
 }
 

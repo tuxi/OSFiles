@@ -49,6 +49,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (FileDownloadStatus)status;
 - (void)setStatus:(FileDownloadStatus)status;
 
+- (void)pause;
+- (void)resume;
 - (void)cancel;
 
 @optional

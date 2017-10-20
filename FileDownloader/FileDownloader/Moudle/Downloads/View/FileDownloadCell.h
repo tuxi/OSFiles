@@ -16,5 +16,6 @@
 @property (nonatomic, strong) FileItem *fileItem;
 
 - (void)setLongPressGestureRecognizer:(void (^)(UILongPressGestureRecognizer *longPres))block;
+- (void)cycleViewClick:(id)cycleView;
 
 @end
