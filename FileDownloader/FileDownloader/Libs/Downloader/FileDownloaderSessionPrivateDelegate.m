@@ -50,12 +50,19 @@
 
 
 
-/// 即将开始下载时调用
-- (void)_anDownloadTaskWillBeginWithDownloadOperation:(id<FileDownloadOperation>)downloadOperation {
+/// 开始下载时调用
+- (void)_beginDownloadTaskWithDownloadOperation:(id<FileDownloadOperation>)downloadOperation {
     downloadOperation.status = FileDownloadStatusDownloading;
-    if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadTaskWillBeginWithDownloadOperation:)]) {
-        [self.downloadDelegate downloadTaskWillBeginWithDownloadOperation:downloadOperation];
+    if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(beginDownloadTaskWithDownloadOperation:)]) {
+        [self.downloadDelegate beginDownloadTaskWithDownloadOperation:downloadOperation];
     }
+}
+
+- (BOOL)_shouldAllowedDownloadTaskWithURL:(NSString *)urlPath fileName:(NSString *)fileName {
+    if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(shouldAllowedDownloadTaskWithURL:fileName:)]) {
+        return [self.downloadDelegate shouldAllowedDownloadTaskWithURL:urlPath fileName:fileName];
+    }
+    return YES;
 }
 
 ////////////////////////////////////////////////////////////////////////

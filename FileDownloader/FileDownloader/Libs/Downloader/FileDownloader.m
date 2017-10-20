@@ -89,7 +89,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
         NSString *urlPath = [[task taskDescription] copy];
         if (urlPath) {
             self.totalProgress.totalUnitCount++;
-            
+
             // 将此totalProgress注册为当前线程任务的根进度管理对象，向下分支出一个子任务 比如子任务进度总数为10个单元 即当子任务完成时 父progerss对象进度走1个单元
             [self.totalProgress becomeCurrentWithPendingUnitCount:1];
             
@@ -101,7 +101,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
             [self.activeDownloadsDictionary setObject:downloadOperation
                                                forKey:@(task.taskIdentifier)];
             [self initializeDownloadCallBack:downloadOperation];
-            [self.sessionDelegate _anDownloadTaskWillBeginWithDownloadOperation:downloadOperation];
+            [self.sessionDelegate _beginDownloadTaskWithDownloadOperation:downloadOperation];
         }
         
         return downloadOperation;
@@ -115,7 +115,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 ////////////////////////////////////////////////////////////////////////
 
 - (id<FileDownloadOperation>)downloadTaskWithURLPath:(NSString *)urlPath
-                                     localFolderPath:(NSString *)localFolderPath
+                                      localFolderPath:(NSString *)localFolderPath
                                             fileName:(NSString *)fileName
                                             progress:(void (^ _Nullable)(NSProgress * _Nullable))downloadProgressBlock
                                    completionHandler:(void (^ _Nullable)(NSURLResponse * _Nullable, NSURL * _Nullable, NSError * _Nullable))completionHandler {
@@ -128,7 +128,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 }
 
 - (id<FileDownloadOperation>)downloadTaskWithRequest:(NSURLRequest *)request
-                                     localFolderPath:(NSString *)localFolderPath
+                                      localFolderPath:(NSString *)localFolderPath
                                             fileName:(NSString *)fileName
                                             progress:(void (^ _Nullable)(NSProgress * _Nullable))downloadProgressBlock
                                    completionHandler:(void (^ _Nullable)(NSURLResponse * _Nullable, NSURL * _Nullable, NSError * _Nullable))completionHandler {
@@ -151,11 +151,17 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 - (id<FileDownloadOperation>)downloadWithRequest:(NSURLRequest *)request localFolderPath:(NSString *)localFolderPath fileName:(NSString *)fileName  {
     
     NSAssert(request, @"Error: request do't is nil");
-    
+
     NSUInteger taskIdentifier = 0;
     NSURL *remoteURL = request.URL;
     NSURL *localFolderURL = [NSURL fileURLWithPath:localFolderPath];
     NSString *urlPath = remoteURL.absoluteString;
+    
+    BOOL res = [self.sessionDelegate _shouldAllowedDownloadTaskWithURL:urlPath fileName:fileName];
+    if (!res) {
+        return nil;
+    }
+    
     FileDownloadOperation *downloadOperation = [self getDownloadOperationByURL:urlPath];
     // 若已经在下载中，则返回其实例对象
     BOOL isDownloading = [self isDownloading:urlPath];
@@ -177,7 +183,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
         [self.activeDownloadsDictionary setObject:downloadOperation
                                            forKey:@(dataTask.taskIdentifier)];
         [self initializeDownloadCallBack:downloadOperation];
-        [self.sessionDelegate _anDownloadTaskWillBeginWithDownloadOperation:downloadOperation];
+        [self.sessionDelegate _beginDownloadTaskWithDownloadOperation:downloadOperation];
         [dataTask resume];
         return downloadOperation;
     }
@@ -223,7 +229,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
                 [self.activeDownloadsDictionary setObject:downloadOperation
                                                    forKey:@(dataTask.taskIdentifier)];
                 [self initializeDownloadCallBack:downloadOperation];
-                [self.sessionDelegate _anDownloadTaskWillBeginWithDownloadOperation:downloadOperation];
+                [self.sessionDelegate _beginDownloadTaskWithDownloadOperation:downloadOperation];
                 [dataTask resume];
                 return downloadOperation;
             }
@@ -636,7 +642,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 #pragma mark - Private methods
 ////////////////////////////////////////////////////////////////////////
 
-/// 通过downloadToken获取下载任务的TaskIdentifier
+/// 通过urlPath获取下载任务的TaskIdentifier
 - (NSInteger)getDownloadTaskIdentifierByURL:(nonnull NSString *)urlPath {
     NSInteger taskIdentifier = NSNotFound;
     NSArray *aDownloadKeysArray = [self.activeDownloadsDictionary allKeys];
@@ -651,13 +657,36 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     return taskIdentifier;
 }
 
+/// 通过fileName获取下载任务的TaskIdentifier
+- (NSInteger)getDownloadTaskIdentifierByFileName:(nonnull NSString *)fileName {
+    NSInteger taskIdentifier = NSNotFound;
+    NSArray *aDownloadKeysArray = [self.activeDownloadsDictionary allKeys];
+    for (NSNumber *identifier in aDownloadKeysArray)
+    {
+        FileDownloadOperation *downloadOperation = [self.activeDownloadsDictionary objectForKey:identifier];
+        if ([downloadOperation.fileName isEqualToString:fileName]) {
+            taskIdentifier = [identifier unsignedIntegerValue];
+            break;
+        }
+    }
+    return taskIdentifier;
+}
 
-/// 通过downloadToken获取下载任务的downloadOperation
+
+/// 通过url获取下载任务的downloadOperation
 - (id<FileDownloadOperation>)getDownloadOperationByURL:(nonnull NSString *)urlPath {
     NSInteger identifier = [self getDownloadTaskIdentifierByURL:urlPath];
     FileDownloadOperation *downloadOperation = [self.activeDownloadsDictionary objectForKey:@(identifier)];
     return downloadOperation;
 }
+
+/// 通过fileName获取下载任务的downloadOperation
+- (id<FileDownloadOperation>)getDownloadOperationByFileName:(nonnull NSString *)fileName {
+    NSInteger identifier = [self getDownloadTaskIdentifierByFileName:fileName];
+    FileDownloadOperation *downloadOperation = [self.activeDownloadsDictionary objectForKey:@(identifier)];
+    return downloadOperation;
+}
+
 
 /// 获取下载的文件默认存储的的位置，若代理未实现时则使用此默认的
 - (NSURL *)getDefaultLocalFilePathWithRemoteURL:(NSURL *)remoteURL {
@@ -753,6 +782,10 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
         _waitingDownloadArray = [NSMutableArray arrayWithCapacity:0];
     }
     return _waitingDownloadArray;
+}
+
+- (void)removeAllWaitingDownloadArray {
+    [self.waitingDownloadArray removeAllObjects];
 }
 
 @end

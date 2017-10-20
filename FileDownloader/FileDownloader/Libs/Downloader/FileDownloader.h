@@ -28,6 +28,7 @@ FOUNDATION_EXTERN NSString * const FileDownloaderDefaultFolderNameKey;
 
 - (id<FileDownloadOperation>)getDownloadOperationByTask:(NSURLSessionDataTask *)task;
 - (id<FileDownloadOperation>)getDownloadOperationByURL:(nonnull NSString *)urlPath;
+- (id<FileDownloadOperation>)getDownloadOperationByFileName:(nonnull NSString *)fileName;
 
 - (long long)getCacheFileSizeWithPath:(NSString *)url;
 
@@ -39,13 +40,13 @@ FOUNDATION_EXTERN NSString * const FileDownloaderDefaultFolderNameKey;
 /// @param completionHandler 下载完成回调，不管成功失败都会回调
 /// @return FileDownloadOperation 实例
 - (id<FileDownloadOperation>)downloadTaskWithURLPath:(NSString *)urlPath
-                                     localFolderPath:(NSString *)localFolderPath
+                                      localFolderPath:(NSString *)localFolderPath
                                             fileName:(NSString *)fileName
                                             progress:(void (^ _Nullable)(NSProgress * _Nullable progress))downloadProgressBlock
                                    completionHandler:(void (^ _Nullable)(NSURLResponse * _Nullable response, NSURL * _Nullable localURL, NSError * _Nullable error))completionHandler;
 
 - (id<FileDownloadOperation>)downloadTaskWithRequest:(NSURLRequest *)request
-                                     localFolderPath:(NSString *)localFolderPath
+                                      localFolderPath:(NSString *)localFolderPath
                                             fileName:(NSString *)fileName
                                             progress:(void (^ _Nullable)(NSProgress * _Nullable progress))downloadProgressBlock
                                    completionHandler:(void (^ _Nullable)(NSURLResponse * _Nullable response, NSURL * _Nullable localURL, NSError * _Nullable error))completionHandler;
@@ -85,6 +86,7 @@ FOUNDATION_EXTERN NSString * const FileDownloaderDefaultFolderNameKey;
 /// 如果当前没有正在下载中的就重置进度
 - (void)resetProgressIfNoActiveDownloadsRunning;
 
+- (void)removeAllWaitingDownloadArray;
 
 @end
 

@@ -85,10 +85,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @optional
 
-/// 一个任务即将开始下载时调用，当需要显示网络活动指示器的时候调用
+/// 一个任务开始下载时调用，当需要显示网络活动指示器的时候调用
 /// 此时应该在此回调中使用 UIApplication's setNetworkActivityIndicatorVisible: 去设置状态栏网络活动的可见性
-- (void)downloadTaskWillBeginWithDownloadOperation:(id<FileDownloadOperation>)downloadOperation;
+- (void)beginDownloadTaskWithDownloadOperation:(id<FileDownloadOperation>)downloadOperation;
 
+/// 是否允许此下载任务
+- (BOOL)shouldAllowedDownloadTaskWithURL:(NSString *)urlPath fileName:(NSString *)fileName;
 
 /// 下载进度改变的时候调用
 /// @param downloadOperation 当前下载任务
