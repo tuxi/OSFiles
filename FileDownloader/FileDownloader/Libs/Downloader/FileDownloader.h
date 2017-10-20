@@ -51,8 +51,8 @@ FOUNDATION_EXTERN NSString * const FileDownloaderDefaultFolderNameKey;
                                             progress:(void (^ _Nullable)(NSProgress * _Nullable progress))downloadProgressBlock
                                    completionHandler:(void (^ _Nullable)(NSURLResponse * _Nullable response, NSURL * _Nullable localURL, NSError * _Nullable error))completionHandler;
 
-/// 取消下载, 取消下载后任务不可恢复
-/// @param urlPath 下载任务
+/// 根据urlPath删除或取消下载中的任务，会删除本地文件，不可恢复
+/// @param urlPath 下载任务的url
 - (void)cancelWithURL:(NSString *)urlPath;
 
 /// 暂停下载，暂停后任务可恢复

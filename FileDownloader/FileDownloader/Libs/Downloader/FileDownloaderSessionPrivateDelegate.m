@@ -7,7 +7,6 @@
 //
 
 #import "FileDownloaderSessionPrivateDelegate.h"
-#import "FileDownloadOperation.h"
 #import "FileDownloader.h"
 
 @interface FileDownloaderSessionPrivateDelegate ()
@@ -75,7 +74,7 @@
 
 
 /// 下载成功并已成功保存到本地
-- (void)handleDownloadSuccessWithDownloadOperation:(FileDownloadOperation *)downloadOperation
+- (void)handleDownloadSuccessWithDownloadOperation:(id<FileDownloadOperation>)downloadOperation
                                taskIdentifier:(NSUInteger)taskIdentifier
                                      response:(NSURLResponse *)response {
     
@@ -94,7 +93,7 @@
 
 /// 下载取消(或暂停)、失败时回调
 - (void)handleDownloadFailureWithError:(NSError *)error
-                          downloadOperation:(FileDownloadOperation *)downloadOperation
+                          downloadOperation:(id<FileDownloadOperation>)downloadOperation
                         taskIdentifier:(NSUInteger)taskIdentifier
                               response:(NSURLResponse *)response {
     downloadOperation.progressObj.nativeProgress.completedUnitCount = downloadOperation.progressObj.nativeProgress.totalUnitCount;
@@ -234,16 +233,6 @@
     }
     
 }
-
-- (void)_cancelWithURL:(NSString *)urlPath {
-    NSError *cancelError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:nil];
-    if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadFailureWithDownloadOperation:error:)]) {
-        FileDownloadOperation *item = [[FileDownloadOperation alloc] initWithURL:urlPath sessionDataTask:nil];
-        [self.downloadDelegate downloadFailureWithDownloadOperation:item error:cancelError];
-    }
-    
-}
-
 
 ////////////////////////////////////////////////////////////////////////
 #pragma mark - NSURLSessionDataDelegate

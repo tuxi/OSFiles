@@ -7,7 +7,6 @@
 //
 
 #import "FileDownloadCell.h"
-#import "FileDownloadOperation.h"
 #import "AppDelegate.h"
 #import "FileDownloaderManager.h"
 #import "FFCircularProgressView.h"

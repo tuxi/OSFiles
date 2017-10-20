@@ -8,7 +8,6 @@
 
 #import "DownloadsTableViewModel.h"
 #import "AppDelegate.h"
-#import "FileDownloadOperation.h"
 #import "UITableViewCell+XYConfigure.h"
 #import "UIView+Extend.h"
 #import "FileDownloaderManager.h"
@@ -61,7 +60,7 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
     
     FileDownloadCell *cell = [tableView dequeueReusableCellWithIdentifier:DownloadCellIdentifierKey forIndexPath:indexPath];
     NSArray *items = self.dataSource[indexPath.section];
-    FileDownloadOperation *downloadItem = items[indexPath.row];
+    id<FileDownloadOperation> downloadItem = items[indexPath.row];
     [cell xy_configCellByModel:downloadItem indexPath:indexPath];
     [cell setLongPressGestureRecognizer:^(UILongPressGestureRecognizer *longPres) {
         if (longPres.state == UIGestureRecognizerStateBegan) {

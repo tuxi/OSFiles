@@ -226,7 +226,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
             item.status = FileDownloadStatusNotStarted;
             id<FileDownloadOperation> operation = [self.downloader getDownloadOperationByURL:urlPath];
             if (operation.progressObj.nativeProgress) {
-                [operation.progressObj.nativeProgress cancel];
+                [operation cancel];
             } else {
                 [self.downloader cancelWithURL:urlPath];
             }
@@ -269,7 +269,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
                 BOOL isWaiting = [self.downloader isWaiting:urlPath];
                 if (isWaiting) {
                     if (operation.progressObj.nativeProgress) {
-                        [operation.progressObj.nativeProgress pause];
+                        [operation pause];
                     } else {
                         [self.downloader pauseWithURL:urlPath];
                     }

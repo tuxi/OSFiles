@@ -14,7 +14,6 @@
 		1819EFAF1EF2E29300208A20 /* BrowserViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1819EFAE1EF2E29300208A20 /* BrowserViewController.xib */; };
 		1819EFB51EF2E3FE00208A20 /* UITextField+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 1819EFB41EF2E3FE00208A20 /* UITextField+Blocks.m */; };
 		18300F641EEC54570035D6EE /* FileDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300F5E1EEC54570035D6EE /* FileDownloader.m */; };
-		18300F651EEC54570035D6EE /* FileDownloadOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300F601EEC54570035D6EE /* FileDownloadOperation.m */; };
 		18300F661EEC54570035D6EE /* FileDownloadProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300F621EEC54570035D6EE /* FileDownloadProgress.m */; };
 		18300F7D1EEC57280035D6EE /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300F731EEC57280035D6EE /* MBProgressHUD.m */; };
 		18300F7E1EEC57280035D6EE /* NSObject+XYHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300F751EEC57280035D6EE /* NSObject+XYHUD.m */; };
@@ -124,8 +123,6 @@
 		1819EFB41EF2E3FE00208A20 /* UITextField+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextField+Blocks.m"; sourceTree = "<group>"; };
 		18300F5D1EEC54570035D6EE /* FileDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileDownloader.h; sourceTree = "<group>"; };
 		18300F5E1EEC54570035D6EE /* FileDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileDownloader.m; sourceTree = "<group>"; };
-		18300F5F1EEC54570035D6EE /* FileDownloadOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileDownloadOperation.h; sourceTree = "<group>"; };
-		18300F601EEC54570035D6EE /* FileDownloadOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileDownloadOperation.m; sourceTree = "<group>"; };
 		18300F611EEC54570035D6EE /* FileDownloadProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileDownloadProgress.h; sourceTree = "<group>"; };
 		18300F621EEC54570035D6EE /* FileDownloadProgress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileDownloadProgress.m; sourceTree = "<group>"; };
 		18300F631EEC54570035D6EE /* FileDownloadProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileDownloadProtocol.h; sourceTree = "<group>"; };
@@ -350,8 +347,6 @@
 				D08AA3A81F9715D300391F03 /* FileDownloadConst.m */,
 				18300F5D1EEC54570035D6EE /* FileDownloader.h */,
 				18300F5E1EEC54570035D6EE /* FileDownloader.m */,
-				18300F5F1EEC54570035D6EE /* FileDownloadOperation.h */,
-				18300F601EEC54570035D6EE /* FileDownloadOperation.m */,
 				18300F611EEC54570035D6EE /* FileDownloadProgress.h */,
 				18300F621EEC54570035D6EE /* FileDownloadProgress.m */,
 				18300F631EEC54570035D6EE /* FileDownloadProtocol.h */,
@@ -926,6 +921,11 @@
 						CreatedOnToolsVersion = 8.3.1;
 						DevelopmentTeam = NKW67GFDHM;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -1025,7 +1025,6 @@
 				18910A6C1F0D3472002BA292 /* PSPDFUIKitMainThreadGuard.m in Sources */,
 				18517C471EEBD81D00B148C8 /* MainTabBarController.m in Sources */,
 				1871AD251EEEF76E00ABC452 /* UIView+XYConfigure.m in Sources */,
-				18300F651EEC54570035D6EE /* FileDownloadOperation.m in Sources */,
 				18517C3E1EEBD66A00B148C8 /* FMResultSet.m in Sources */,
 				1871AD271EEEF76E00ABC452 /* XYNetworkRequest.m in Sources */,
 				18878A4C1EF022B6005C0185 /* SDWebImageDownloaderOperation.m in Sources */,

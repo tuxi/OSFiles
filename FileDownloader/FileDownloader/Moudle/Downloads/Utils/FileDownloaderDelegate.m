@@ -30,6 +30,7 @@
         fileItem = [[FileDownloaderManager sharedInstance].downloadItems objectAtIndex:foundItemIdx];
         fileItem.status = FileDownloadStatusSuccess;
         fileItem.MIMEType = downloadOperation.MIMEType;
+        fileItem.progressObj = downloadOperation.progressObj;
         [[FileDownloaderManager sharedInstance] storedDownloadItems];
     } else {
         DLog(@"Error: Completed download item not found (id: %@)", downloadOperation.urlPath);
@@ -55,6 +56,7 @@
         fileItem.lastHttpStatusCode = downloadOperation.lastHttpStatusCode;
         fileItem.downloadError = error;
         fileItem.errorMessagesStack = downloadOperation.errorMessagesStack;
+        fileItem.progressObj = downloadOperation.progressObj;
         // 更新此下载失败或下载取消的item的状态，如果不是用户暂停的，并且error.code!=NSURLErrorCancelled 那就是下载失败
         if (fileItem.status != FileDownloadStatusPaused) {
             if ([error.domain isEqualToString:NSURLErrorDomain] &&

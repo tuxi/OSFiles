@@ -20,16 +20,14 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable NSOutputStream *)outputStream;
 - (void)setOutputStream:(nullable NSOutputStream *)outputStream;
 
+/// 自定义的进度对象
 - (FileDownloadProgress *)progressObj;
-- (void)setProgressObj:(FileDownloadProgress *)progressObj;
 
 /// 下载的url
 - (NSString *)urlPath;
-- (void)setUrlPath:(NSString *)urlPath;
 
-/// 下载会话对象 NSURLSessionDownloadTask
+/// 下载会话对象 NSURLSessionDataTask
 - (NSURLSessionDataTask *)sessionTask;
-- (void)setSessionTask:(NSURLSessionDataTask *)sessionTask;
 
 /// 下载时发送的错误信息栈 错误信息栈(最新的错误信息初入在第一位)
 - (NSArray<NSString *> *)errorMessagesStack;
@@ -37,17 +35,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 最终文件存储的本地路径
 - (NSURL *)localURL;
-- (void)setLocalURL:(NSURL *)localURL;
 
 /// 最终文件存储的目录
 - (NSURL *)localFolderURL;
-- (void)setLocalFolderURL:(NSURL *)localFolderURL;
 
-- (void)setFileName:(NSString *)fileName;
+/// 本地文件名称
 - (NSString *)fileName;
 
 - (FileDownloadStatus)status;
 - (void)setStatus:(FileDownloadStatus)status;
+
+/** 状态改变回调 */
+- (void)setStatusChangeHandler:(void (^ _Nonnull)(FileDownloadStatus))statusChangeHandler;
 
 - (void)pause;
 - (void)resume;
