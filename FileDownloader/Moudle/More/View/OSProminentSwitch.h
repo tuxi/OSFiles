@@ -1,13 +1,13 @@
 //
-//  MoreViewController.h
+//  OSProminentSwitch.h
 //  FileDownloader
 //
-//  Created by Ossey on 2017/6/10.
+//  Created by Swae on 2017/10/21.
 //  Copyright © 2017年 Ossey. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
-@interface MoreViewController : UIViewController
+@interface OSProminentSwitch : UISwitch
 
 @end

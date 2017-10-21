@@ -344,6 +344,12 @@
     return uiImage;
 }
 
++ (UIImage *)xy_imageFlippedForRTLLayoutDirectionNamed:(NSString *)name {
+    if (floor(NSFoundationVersionNumber) >= NSFoundationVersionNumber_iOS_9_0) {
+        return [[UIImage imageNamed:name] imageFlippedForRightToLeftLayoutDirection];
+    }
+    return [UIImage imageNamed:name];
+}
 
 #pragma mark - private
 - (BOOL)isRetina

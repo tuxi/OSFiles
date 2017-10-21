@@ -8,7 +8,7 @@
 
 #import "MainTabBarController.h"
 #import "MainNavigationController.h"
-#import "MoreViewController.h"
+#import "OSSettingViewController.h"
 #import "BrowserViewController.h"
 #import "FilesViewController.h"
 #import "DownloadsViewController.h"
@@ -26,7 +26,7 @@
     [self addChildVC:[BrowserViewController new] imageNamed:@"TabBrowser" title:@"Browser"];
     [self addChildVC:[DownloadsViewController new] imageNamed:@"TabDownloads" title:@"Downloads"];
     [self addChildVC:[FilesViewController new] imageNamed:@"TabFiles" title:@"Files"];
-    [self addChildVC:[MoreViewController new] imageNamed:@"TabMore" title:@"More"];
+    [self addChildVC:[OSSettingViewController new] imageNamed:@"TabMore" title:@"More"];
     
     
 }

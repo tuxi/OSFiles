@@ -85,4 +85,6 @@ typedef NS_ENUM(NSInteger, GradientType) {
  *  @return 高斯模糊图片
  */
 + (UIImage *)blurImage:(UIImage *)image blur:(CGFloat)blur;
+
++ (UIImage *)xy_imageFlippedForRTLLayoutDirectionNamed:(NSString *)name;
 @end
