@@ -15,6 +15,8 @@
 		1813E7A71F9B6ACF002C661E /* FileDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E7A01F9B6ACF002C661E /* FileDownloader.m */; };
 		1813E7A81F9B6ACF002C661E /* FileDownloaderSessionPrivateDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E7A21F9B6ACF002C661E /* FileDownloaderSessionPrivateDelegate.m */; };
 		1813E7A91F9B6ACF002C661E /* FileDownloadProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E7A41F9B6ACF002C661E /* FileDownloadProgress.m */; };
+		1813E7AF1F9B6E74002C661E /* OSProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E7AC1F9B6E74002C661E /* OSProgressView.m */; };
+		1813E7B01F9B6E74002C661E /* UINavigationController+OSProgressBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E7AE1F9B6E74002C661E /* UINavigationController+OSProgressBar.m */; };
 		1819EFAF1EF2E29300208A20 /* BrowserViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1819EFAE1EF2E29300208A20 /* BrowserViewController.xib */; };
 		1819EFB51EF2E3FE00208A20 /* UITextField+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 1819EFB41EF2E3FE00208A20 /* UITextField+Blocks.m */; };
 		18300F7D1EEC57280035D6EE /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300F731EEC57280035D6EE /* MBProgressHUD.m */; };
@@ -127,6 +129,10 @@
 		1813E7A31F9B6ACF002C661E /* FileDownloadProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileDownloadProgress.h; sourceTree = "<group>"; };
 		1813E7A41F9B6ACF002C661E /* FileDownloadProgress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileDownloadProgress.m; sourceTree = "<group>"; };
 		1813E7A51F9B6ACF002C661E /* FileDownloadProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileDownloadProtocol.h; sourceTree = "<group>"; };
+		1813E7AB1F9B6E74002C661E /* OSProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSProgressView.h; sourceTree = "<group>"; };
+		1813E7AC1F9B6E74002C661E /* OSProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSProgressView.m; sourceTree = "<group>"; };
+		1813E7AD1F9B6E74002C661E /* UINavigationController+OSProgressBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+OSProgressBar.h"; sourceTree = "<group>"; };
+		1813E7AE1F9B6E74002C661E /* UINavigationController+OSProgressBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+OSProgressBar.m"; sourceTree = "<group>"; };
 		1819EFAE1EF2E29300208A20 /* BrowserViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BrowserViewController.xib; sourceTree = "<group>"; };
 		1819EFB31EF2E3FE00208A20 /* UITextField+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITextField+Blocks.h"; sourceTree = "<group>"; };
 		1819EFB41EF2E3FE00208A20 /* UITextField+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextField+Blocks.m"; sourceTree = "<group>"; };
@@ -356,6 +362,17 @@
 			path = Downloader;
 			sourceTree = "<group>";
 		};
+		1813E7AA1F9B6E74002C661E /* ProgressBar */ = {
+			isa = PBXGroup;
+			children = (
+				1813E7AB1F9B6E74002C661E /* OSProgressView.h */,
+				1813E7AC1F9B6E74002C661E /* OSProgressView.m */,
+				1813E7AD1F9B6E74002C661E /* UINavigationController+OSProgressBar.h */,
+				1813E7AE1F9B6E74002C661E /* UINavigationController+OSProgressBar.m */,
+			);
+			path = ProgressBar;
+			sourceTree = "<group>";
+		};
 		18300F711EEC57280035D6EE /* HUD */ = {
 			isa = PBXGroup;
 			children = (
@@ -467,6 +484,7 @@
 		18517BE91EEBCB2C00B148C8 /* Helper */ = {
 			isa = PBXGroup;
 			children = (
+				1813E7AA1F9B6E74002C661E /* ProgressBar */,
 				180CBDDD1F1126E0006D2871 /* SuspensionControl */,
 				180CBDDA1F11269E006D2871 /* ExceptionUtils.h */,
 				180CBDDB1F11269E006D2871 /* ExceptionUtils.m */,
@@ -977,6 +995,7 @@
 				18878A461EF022B6005C0185 /* README.md in Sources */,
 				18517C641EEBDB3E00B148C8 /* UIImage+XYImage.m in Sources */,
 				18878A981EF03908005C0185 /* ICGRulerView.m in Sources */,
+				1813E7B01F9B6E74002C661E /* UINavigationController+OSProgressBar.m in Sources */,
 				18517C3C1EEBD66A00B148C8 /* FMDatabasePool.m in Sources */,
 				18300FAB1EECE79F0035D6EE /* MASViewAttribute.m in Sources */,
 				18878A971EF03908005C0185 /* XYVideoPlayerView.m in Sources */,
@@ -1032,6 +1051,7 @@
 				1813E7A91F9B6ACF002C661E /* FileDownloadProgress.m in Sources */,
 				1871AD221EEEF76E00ABC452 /* NSObject+XYRequest.m in Sources */,
 				18878A521EF022B6005C0185 /* UIImageView+HighlightedWebCache.m in Sources */,
+				1813E7AF1F9B6E74002C661E /* OSProgressView.m in Sources */,
 				18878A4F1EF022B6005C0185 /* UIButton+WebCache.m in Sources */,
 				1813E7A61F9B6ACF002C661E /* FileDownloadConst.m in Sources */,
 				18878B281EF19EAC005C0185 /* UINavigationItem+MultipleItems.m in Sources */,
