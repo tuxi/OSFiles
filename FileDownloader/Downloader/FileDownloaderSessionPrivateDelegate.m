@@ -9,10 +9,6 @@
 #import "FileDownloaderSessionPrivateDelegate.h"
 #import "FileDownloader.h"
 
-@interface FileDownloaderSessionPrivateDelegate ()
-
-@end
-
 @implementation FileDownloaderSessionPrivateDelegate
 
 - (instancetype)initWithDownloader:(FileDownloader *)downloader {
