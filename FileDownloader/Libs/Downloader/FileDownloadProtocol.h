@@ -36,12 +36,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// 最终文件存储的本地路径
 - (NSURL *)localURL;
 
-/// 最终文件存储的目录
-- (NSURL *)localFolderURL;
-
-/// 本地文件名称
-- (NSString *)fileName;
-
 - (FileDownloadStatus)status;
 - (void)setStatus:(FileDownloadStatus)status;
 
@@ -92,8 +86,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 是否允许此下载任务
 - (BOOL)shouldAllowedDownloadTaskWithURL:(NSString *)urlPath
-                          localFolderPath:(NSString *)localFolderPath
-                                fileName:(NSString *)fileName;
+                               localPath:(NSString *)localPath;
 
 /// 下载进度改变的时候调用
 /// @param downloadOperation 当前下载任务

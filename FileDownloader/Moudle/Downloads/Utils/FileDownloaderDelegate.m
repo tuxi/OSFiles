@@ -41,7 +41,7 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:FileDownloadSussessNotification object:fileItem];
         [self downloadTaskDidEnd];
         AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-        [delegate sendLocalNotificationWithMessage:[NSString stringWithFormat:@"%@-下载成功", downloadOperation.fileName]];
+        [delegate sendLocalNotificationWithMessage:[NSString stringWithFormat:@"%@-下载成功", fileItem.fileName]];
     }))
 }
 
@@ -74,7 +74,7 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:FileDownloadFailureNotification object:fileItem];
         [self downloadTaskDidEnd];
         AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-        [delegate sendLocalNotificationWithMessage:[NSString stringWithFormat:@"%@-下载失败", downloadOperation.fileName]];
+        [delegate sendLocalNotificationWithMessage:[NSString stringWithFormat:@"%@-下载失败", fileItem.fileName]];
     }))
 }
 
@@ -93,7 +93,7 @@
     })
 }
 
-- (BOOL)shouldAllowedDownloadTaskWithURL:(NSString *)urlPath localFolderPath:(NSString *)localFolderPath fileName:(NSString *)fileName {
+- (BOOL)shouldAllowedDownloadTaskWithURL:(NSString *)urlPath localPath:(nonnull NSString *)localPath {
     
     return YES;
 }

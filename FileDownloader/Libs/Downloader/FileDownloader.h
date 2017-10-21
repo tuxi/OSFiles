@@ -28,26 +28,22 @@ FOUNDATION_EXTERN NSString * const FileDownloaderDefaultFolderNameKey;
 
 - (id<FileDownloadOperation>)getDownloadOperationByTask:(NSURLSessionDataTask *)task;
 - (id<FileDownloadOperation>)getDownloadOperationByURL:(nonnull NSString *)urlPath;
-- (id<FileDownloadOperation>)getDownloadOperationByFileName:(nonnull NSString *)fileName;
 
 - (long long)getCacheFileSizeWithPath:(NSString *)url;
 
 /// 执行下载任务，若当前下载数量超出maxConcurrentDownloads则添加到等待队列，并且return nil
 /// @param urlPath 下载任务的remote url path
-/// @param localFolderPath 文件下载时存储到这个文件夹中
-/// @param fileName 写入文件的名称
+/// @param localPath 文件下载时存储的完整路径
 /// @param downloadProgressBlock 进度回调
 /// @param completionHandler 下载完成回调，不管成功失败都会回调
 /// @return 一个id<FileDownloadOperation> 实例
 - (id<FileDownloadOperation>)downloadTaskWithURLPath:(NSString *)urlPath
-                                      localFolderPath:(NSString *)localFolderPath
-                                            fileName:(NSString *)fileName
+                                           localPath:(NSString *)localPath
                                             progress:(void (^ _Nullable)(NSProgress * _Nullable progress))downloadProgressBlock
                                    completionHandler:(void (^ _Nullable)(NSURLResponse * _Nullable response, NSURL * _Nullable localURL, NSError * _Nullable error))completionHandler;
 
 - (id<FileDownloadOperation>)downloadTaskWithRequest:(NSURLRequest *)request
-                                      localFolderPath:(NSString *)localFolderPath
-                                            fileName:(NSString *)fileName
+                                           localPath:(NSString *)localPath
                                             progress:(void (^ _Nullable)(NSProgress * _Nullable progress))downloadProgressBlock
                                    completionHandler:(void (^ _Nullable)(NSURLResponse * _Nullable response, NSURL * _Nullable localURL, NSError * _Nullable error))completionHandler;
 

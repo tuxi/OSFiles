@@ -23,8 +23,7 @@
 }
 
 /// 根据服务器响应的HttpStatusCode验证服务器响应状态
-- (BOOL)_isVaildHTTPStatusCode:(NSUInteger)httpStatusCode
-                           url:(NSString *)urlPath {
+- (BOOL)_isVaildHTTPStatusCode:(NSUInteger)httpStatusCode url:(NSString *)urlPath {
     BOOL httpStatusCodeIsCorrectFlag = NO;
     if ([self.downloadDelegate respondsToSelector:@selector(httpStatusCode:isVaildByURL:)]) {
         httpStatusCodeIsCorrectFlag = [self.downloadDelegate httpStatusCode:httpStatusCode isVaildByURL:urlPath];
@@ -57,13 +56,9 @@
     }
 }
 
-- (BOOL)_shouldAllowedDownloadTaskWithURL:(NSString *)urlPath
-                          localFolderPath:(NSString *)localFolderPath
-                                 fileName:(NSString *)fileName {
-    if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(shouldAllowedDownloadTaskWithURL:localFolderPath:fileName:)]) {
-        return [self.downloadDelegate shouldAllowedDownloadTaskWithURL:urlPath
-                                                       localFolderPath:localFolderPath
-                                                              fileName:fileName];
+- (BOOL)_shouldAllowedDownloadTaskWithURL:(NSString *)urlPath localPath:(NSString *)localPath {
+    if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(shouldAllowedDownloadTaskWithURL:localPath:)]) {
+        return [self.downloadDelegate shouldAllowedDownloadTaskWithURL:urlPath localPath:localPath];
     }
     return YES;
 }
@@ -124,38 +119,6 @@
 ////////////////////////////////////////////////////////////////////////
 
 
-/// 将文件从临时目录移动到最终的目录
-- (BOOL)_moveFileAtURL:(NSURL *)fromURL toURL:(NSURL *)toURL errorStr:(NSString **)errorStr {
-    
-    // 判断之前localFileURL的位置是否有文件存储，如果存在就删除掉
-    if ([[NSFileManager defaultManager] fileExistsAtPath:toURL.path]) {
-        NSError *removeError = nil;
-        [[NSFileManager defaultManager] removeItemAtURL:toURL error:&removeError];
-        if (removeError && errorStr) {
-            *errorStr = [NSString stringWithFormat:@"Error: Error on removing file at %@: %@", toURL, removeError];
-            DLog(@"%@", *errorStr);
-        }
-    }
-    
-    // 将服务器下载完保存的临时位置移动到最终存储的位置
-    NSError *error = nil;
-    BOOL successFlag = [[NSFileManager defaultManager] moveItemAtURL:fromURL toURL:toURL error:&error];
-    if (successFlag == NO) {
-        // 从location临时路径移动到最终路径失败
-        NSError *moveError = error;
-        if (moveError == nil) {
-            moveError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorCannotMoveFile userInfo:nil];
-        }
-        if (errorStr) {
-            *errorStr = [NSString stringWithFormat:@"Error: Unable to move file from %@ to %@ (%@)", fromURL, toURL, moveError.localizedDescription];
-        }
-        DLog(@"%@", *errorStr);
-    }
-    return successFlag;
-}
-
-
-
 /// 进度改变时更新进度
 - (void)_progressChangeWithURL:(NSString *)urlPath {
     
@@ -165,43 +128,6 @@
             [self.downloadDelegate downloadProgressChangeWithDownloadOperation:opeartion];
         }
     }
-}
-
-/// 验证下载的文件是否有效
-- (BOOL)_isVaildDownloadFileByDownloadIdentifier:(NSString *)identifier
-                               localFolderURL:(NSURL *)localFolderURL errorStr:(NSString **)errorStr {
-    BOOL isVaild = YES;
-    
-    // 移动到最终位置成功
-    NSError *error = nil;
-    // 获取最终文件的属性
-    NSDictionary *finalFileAttributesDictionary = [[NSFileManager defaultManager] attributesOfItemAtPath:localFolderURL.path error:&error];
-    if (error && errorStr) {
-        *errorStr = [NSString stringWithFormat:@"Error: Error on getting file size for item at %@: %@", localFolderURL, error.localizedDescription];
-        DLog(@"%@", *errorStr);
-        isVaild = NO;
-    } else {
-        // 成功获取到文件的属性
-        // 获取文件的尺寸 判断移动后的文件是否有效
-        unsigned long long fileSize = [finalFileAttributesDictionary fileSize];
-        if (fileSize == 0) {
-            // 文件大小字节数为0 不正常
-            NSError *fileSizeZeroError = [[NSError alloc] initWithDomain:NSURLErrorDomain code:NSURLErrorZeroByteResource userInfo:nil];
-            *errorStr = [NSString stringWithFormat:@"Error: Zero file size for item at %@: %@", localFolderURL, fileSizeZeroError.localizedDescription];
-            DLog(@"%@", *errorStr);
-            isVaild = NO;
-        } else {
-            if ([self.downloadDelegate respondsToSelector:@selector(downloadLocalFolderURL:isVaildByURL:)]) {
-                BOOL isVaild = [self.downloadDelegate downloadLocalFolderURL:localFolderURL isVaildByURL:identifier];
-                if (isVaild == NO) {
-                    *errorStr = [NSString stringWithFormat:@"Error: Download check failed for item at %@", localFolderURL];
-                    DLog(@"%@", *errorStr);
-                }
-            }
-        }
-    }
-    
-    return isVaild;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -294,7 +220,7 @@
         // 下载完成
         BOOL httpStatusCodeIsCorrectFlag = [self _isVaildHTTPStatusCode:httpStatusCode url:downloadOperation.urlPath];
         if (httpStatusCodeIsCorrectFlag == YES) {
-            NSURL *finalLocalFileURL = downloadOperation.localFolderURL;
+            NSURL *finalLocalFileURL = downloadOperation.localURL;
             if (finalLocalFileURL) {
                 
                 [self handleDownloadSuccessWithDownloadOperation:downloadOperation taskIdentifier:task.taskIdentifier response:task.response];
