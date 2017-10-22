@@ -11,7 +11,8 @@
 #define kPasswordLength 4
 #define kTouchIDIcon @"smile_Touch_ID"
 
-#define SmileTouchID_DispatchMainThread(block, ...) if(block) dispatch_async(dispatch_get_main_queue(), ^{ block(__VA_ARGS__); })
+#define OSTouchID_DispatchMainThread(block, ...) if(block) \
+        dispatch_async(dispatch_get_main_queue(), ^{ block(__VA_ARGS__); })
 
 @interface SmileAuthenticator()
 
@@ -236,7 +237,7 @@
     if ([SmileAuthenticator canAuthenticateWithError:&authError]) {
         [self.context evaluatePolicy:self.policy localizedReason:self.localizedReason reply:^(BOOL success, NSError *error) {
             if (success) {
-                SmileTouchID_DispatchMainThread(^(){
+                OSTouchID_DispatchMainThread(^(){
                     authSuccessBlock();
                 });
             }
@@ -289,7 +290,7 @@
                         break;
                 }
                 
-                SmileTouchID_DispatchMainThread(^(){
+                OSTouchID_DispatchMainThread(^(){
                     failureBlock((LAError) error.code);
                 });
             }

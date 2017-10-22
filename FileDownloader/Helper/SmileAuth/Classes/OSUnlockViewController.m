@@ -126,14 +126,14 @@
             break;
     }
     
-    //hide bar button
+    // 隐藏rightBarButtonItem
     if ([SmileAuthenticator sharedInstance].securityType == INPUT_TOUCHID) {
         if (self.navigationItem.rightBarButtonItem) {
             [self.navigationItem.rightBarButtonItem setTintColor:[UIColor clearColor]];
             [self.navigationItem.rightBarButtonItem setEnabled:NO];
         }
         
-        //begin check canAuthenticate
+        // 检测TouchID 权限
         NSError *error = nil;
         if ([SmileAuthenticator canAuthenticateWithError:&error]) {
             _needTouchID = YES;
@@ -144,7 +144,7 @@
         
     } else if ([SmileAuthenticator sharedInstance].securityType == INPUT_ONCE | [SmileAuthenticator sharedInstance].securityType == INPUT_THREE) {
         
-        //begin check canAuthenticate
+        // 检测TouchID 权限
         NSError *error = nil;
         if ([SmileAuthenticator canAuthenticateWithError:&error]) {
             _needTouchID = YES;
@@ -205,7 +205,7 @@
     });
 }
 
-- (void)touchIDForINPUT_TOUCHID{
+- (void)touchIDForINPUT_TOUCHID {
     [SmileAuthenticator sharedInstance].localizedReason = NSLocalizedString(@"轻触指纹", nil);
     [[SmileAuthenticator sharedInstance] authenticateWithSuccess:^{
         [[SmileAuthenticator sharedInstance] touchID_OR_PasswordAuthSuccess];
@@ -227,7 +227,7 @@
     }];
 }
 
--(void)touchIDForINPUT_THREE{
+- (void)touchIDForINPUT_THREE {
     [SmileAuthenticator sharedInstance].localizedReason = NSLocalizedString(@"请输入密码或使用指纹解锁", nil);
     [[SmileAuthenticator sharedInstance] authenticateWithSuccess:^{
         self.unlockBackgroundView.passwordView.smilePasswordView.dotCount = [SmileAuthenticator sharedInstance].passcodeDigit;
@@ -294,7 +294,7 @@
     self.unlockBackgroundView.passwordView.smilePasswordView.dotCount = 0;
 }
 
-- (void)passwordInputComplete{
+- (void)passwordInputComplete {
     [[SmileAuthenticator sharedInstance] userSetPassword: _newPassword];
     [self dismissSelf:nil];
 }
@@ -304,7 +304,7 @@
     [self dismissSelf:nil];
 }
 
-- (void)passwordWrong{
+- (void)passwordWrong {
     _inputCount = 0;
     
     [self clearText];
@@ -318,7 +318,7 @@
     self.unlockBackgroundView.descLabel.text = [NSString stringWithFormat:NSLocalizedString(@"输入的密码错误", nil), (long)_failCount];
 }
 
-- (void)passwordNotMatch{
+- (void)passwordNotMatch {
     
     _inputCount = _inputCount -2;
     
@@ -344,7 +344,7 @@
     self.unlockBackgroundView.descLabel.text = [NSString stringWithFormat:NSLocalizedString(@"请输入密码或使用指纹确认", nil), (long)[SmileAuthenticator sharedInstance].passcodeDigit];
 }
 
-- (void)handleINPUT_TOUCHID{
+- (void)handleINPUT_TOUCHID {
     if ([SmileAuthenticator isSamePassword:_newPassword]) {
         [[SmileAuthenticator sharedInstance] touchID_OR_PasswordAuthSuccess];
         [self passwordInputComplete];
