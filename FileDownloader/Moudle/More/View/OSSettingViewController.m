@@ -160,7 +160,7 @@
         if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
             self.pickerViewController = [[UIImagePickerController alloc] init];
             self.pickerViewController.delegate = self;//设置UIImagePickerController的代理，同时要遵循UIImagePickerControllerDelegate，UINavigationControllerDelegate协议
-            self.pickerViewController.allowsEditing = YES;//设置拍照之后图片是否可编辑，如果设置成可编辑的话会在代理方法返回的字典里面多一些键值。PS：如果在调用相机的时候允许照片可编辑，那么用户能编辑的照片的位置并不包括边角。
+//            self.pickerViewController.allowsEditing = YES;//设置拍照之后图片是否可编辑，如果设置成可编辑的话会在代理方法返回的字典里面多一些键值。PS：如果在调用相机的时候允许照片可编辑，那么用户能编辑的照片的位置并不包括边角。
             self.pickerViewController.sourceType = UIImagePickerControllerSourceTypeCamera;//UIImagePicker选择器的数据来源，UIImagePickerControllerSourceTypeCamera说明数据来源于摄像头
             [self presentViewController:self.pickerViewController animated:YES completion:nil];
         }else{
@@ -175,7 +175,7 @@
         if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum]) {
             self.pickerViewController = [[UIImagePickerController alloc]init];
             self.pickerViewController.delegate = self;
-            self.pickerViewController.allowsEditing = YES;//是否可以对原图进行编辑
+//            self.pickerViewController.allowsEditing = YES;//是否可以对原图进行编辑
             
             //设置图片选择器的数据来源为手机相册
             self.pickerViewController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
