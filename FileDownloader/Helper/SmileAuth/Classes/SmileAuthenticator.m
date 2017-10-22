@@ -118,11 +118,11 @@
         
         UIViewController *vc = nil;
         if (showNavigation) {
-            SmileSettingVC *settingVc = [SmileSettingVC new];
+            OSUnlockViewController *settingVc = [OSUnlockViewController new];
             vc = [[[[self currentNavigationController] class] alloc] initWithRootViewController:settingVc];;
         }
         else {
-            vc = [SmileSettingVC new];
+            vc = [OSUnlockViewController new];
         }
         
         [self.rootVC presentViewController:vc animated:animated completion:^{

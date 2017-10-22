@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <LocalAuthentication/LocalAuthentication.h>
 #import "SmileKeychainWrapper.h"
-#import "SmileSettingVC.h"
+#import "OSUnlockViewController.h"
 
 typedef void(^AuthCompletionBlock)(void);
 typedef void(^AuthErrorBlock)(LAError);

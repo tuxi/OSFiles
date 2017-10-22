@@ -13,6 +13,4 @@
 
 @property (nonatomic, strong) OSSettingsMenuItem *menuItem;
 
-@property (nonatomic, copy) void (^ disclosureSwitchChanged)(UISwitch *sw);
-
 @end

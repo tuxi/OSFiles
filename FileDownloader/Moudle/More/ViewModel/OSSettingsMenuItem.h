@@ -10,9 +10,9 @@
 
 typedef NS_ENUM(NSUInteger, OSSettingsMenuItemDisclosureType) {
     OSSettingsMenuItemDisclosureTypeNormal,
-    OSSettingsMenuItemDisclosureType_ViewController,
-    OSSettingsMenuItemDisclosureType_ViewControllerWithDisclosureText,
-    OSSettingsMenuItemDisclosureType_ExternalLink,
+    OSSettingsMenuItemDisclosureTypeViewController,
+    OSSettingsMenuItemDisclosureTypeViewControllerWithDisclosureText,
+    OSSettingsMenuItemDisclosureTypeExternalLink,
     OSSettingsMenuItemDisclosureTypeSwitch,
 };
 

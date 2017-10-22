@@ -18,14 +18,14 @@
 @property (strong, nonatomic) IBOutlet UIImageView *disclosureIcon;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *titleLabelLeadingWidth;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *imageLeadingWidth;
-/// Shown only if disclosureType is WMFSettingsMenuItemDisclosureType_Switch
+/// 只有当 disclosureType is OSSettingsMenuItemDisclosureTypeSwitch 的时候显示disclosureSwitch
 @property (strong, nonatomic) IBOutlet UISwitch *disclosureSwitch;
 @property (nonatomic) CGFloat titleLabelLeadingWidthForVisibleImage;
 
 @property (nonatomic) OSSettingsMenuItemDisclosureType disclosureType;
 @property (strong, nonatomic) NSString *title;
 @property (strong, nonatomic) NSString *iconName;
-/// Shown only if disclosureType is WMFSettingsMenuItemDisclosureType_ViewControllerWithDisclosureText
+/// 有当 disclosureType is OSSettingsMenuItemDisclosureTypeSwitch OSSettingsMenuItemDisclosureTypeViewControllerWithDisclosureText 才会显示disclosureText
 @property (strong, nonatomic) NSString *disclosureText;
 @property (strong, nonatomic) UIColor *iconColor;
 @property (strong, nonatomic) UIColor *iconBackgroundColor;
@@ -59,9 +59,6 @@
 
 - (void)disclosureSwitchChanged:(UISwitch *)disclosureSwitch {
     [self updateStateForMenuItemType:self.disclosureType isSwitchOnValue:disclosureSwitch.isOn];
-    if (self.disclosureSwitchChanged) {
-        self.disclosureSwitchChanged(disclosureSwitch);
-    }
 }
 
 #pragma mark - Switch tap handling
@@ -121,7 +118,7 @@
             self.disclosureSwitch.hidden = YES;
             break;
         }
-        case OSSettingsMenuItemDisclosureType_ExternalLink: {
+        case OSSettingsMenuItemDisclosureTypeExternalLink: {
             self.disclosureIcon.hidden = NO;
             self.disclosureLabel.hidden = YES;
             self.disclosureIcon.image = [self externalLinkImage];
@@ -135,14 +132,14 @@
             self.disclosureSwitch.hidden = NO;
             break;
         }
-        case OSSettingsMenuItemDisclosureType_ViewController: {
+        case OSSettingsMenuItemDisclosureTypeViewController: {
             self.disclosureIcon.hidden = NO;
             self.disclosureLabel.hidden = YES;
             self.disclosureIcon.image = [self backChevronImage];
             self.disclosureSwitch.hidden = YES;
             break;
         }
-        case OSSettingsMenuItemDisclosureType_ViewControllerWithDisclosureText: {
+        case OSSettingsMenuItemDisclosureTypeViewControllerWithDisclosureText: {
             self.disclosureIcon.hidden = NO;
             self.disclosureLabel.hidden = NO;
             self.disclosureIcon.image = [self backChevronImage];

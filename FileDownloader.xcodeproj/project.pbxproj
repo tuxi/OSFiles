@@ -28,10 +28,10 @@
 		1813E84B1F9BAE73002C661E /* SmileKeychainWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E8401F9BAE73002C661E /* SmileKeychainWrapper.m */; };
 		1813E84C1F9BAE73002C661E /* SmilePasswordContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E8421F9BAE73002C661E /* SmilePasswordContainerView.m */; };
 		1813E84D1F9BAE73002C661E /* SmilePasswordView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E8441F9BAE73002C661E /* SmilePasswordView.m */; };
-		1813E84E1F9BAE73002C661E /* SmileSettingVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E8461F9BAE73002C661E /* SmileSettingVC.m */; };
 		1813E8691F9BB717002C661E /* OSAuthenticatorHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E8681F9BB717002C661E /* OSAuthenticatorHelper.m */; };
 		1813E8D71F9C39D2002C661E /* OSLoaclNotificationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E8D61F9C39D2002C661E /* OSLoaclNotificationHelper.m */; };
 		1813E8DA1F9C3CE5002C661E /* OSUnlockBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E8D91F9C3CE5002C661E /* OSUnlockBackgroundView.m */; };
+		1813E8F41F9CE49F002C661E /* OSUnlockViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E8F31F9CE49F002C661E /* OSUnlockViewController.m */; };
 		1819EFAF1EF2E29300208A20 /* BrowserViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1819EFAE1EF2E29300208A20 /* BrowserViewController.xib */; };
 		1819EFB51EF2E3FE00208A20 /* UITextField+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 1819EFB41EF2E3FE00208A20 /* UITextField+Blocks.m */; };
 		18300F7D1EEC57280035D6EE /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300F731EEC57280035D6EE /* MBProgressHUD.m */; };
@@ -166,14 +166,14 @@
 		1813E8421F9BAE73002C661E /* SmilePasswordContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilePasswordContainerView.m; sourceTree = "<group>"; };
 		1813E8431F9BAE73002C661E /* SmilePasswordView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilePasswordView.h; sourceTree = "<group>"; };
 		1813E8441F9BAE73002C661E /* SmilePasswordView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilePasswordView.m; sourceTree = "<group>"; };
-		1813E8451F9BAE73002C661E /* SmileSettingVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmileSettingVC.h; sourceTree = "<group>"; };
-		1813E8461F9BAE73002C661E /* SmileSettingVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmileSettingVC.m; sourceTree = "<group>"; };
 		1813E8671F9BB717002C661E /* OSAuthenticatorHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSAuthenticatorHelper.h; sourceTree = "<group>"; };
 		1813E8681F9BB717002C661E /* OSAuthenticatorHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSAuthenticatorHelper.m; sourceTree = "<group>"; };
 		1813E8D51F9C39D2002C661E /* OSLoaclNotificationHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSLoaclNotificationHelper.h; sourceTree = "<group>"; };
 		1813E8D61F9C39D2002C661E /* OSLoaclNotificationHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSLoaclNotificationHelper.m; sourceTree = "<group>"; };
 		1813E8D81F9C3CE5002C661E /* OSUnlockBackgroundView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSUnlockBackgroundView.h; sourceTree = "<group>"; };
 		1813E8D91F9C3CE5002C661E /* OSUnlockBackgroundView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSUnlockBackgroundView.m; sourceTree = "<group>"; };
+		1813E8F21F9CE49F002C661E /* OSUnlockViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSUnlockViewController.h; sourceTree = "<group>"; };
+		1813E8F31F9CE49F002C661E /* OSUnlockViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSUnlockViewController.m; sourceTree = "<group>"; };
 		1819EFAE1EF2E29300208A20 /* BrowserViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BrowserViewController.xib; sourceTree = "<group>"; };
 		1819EFB31EF2E3FE00208A20 /* UITextField+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITextField+Blocks.h"; sourceTree = "<group>"; };
 		1819EFB41EF2E3FE00208A20 /* UITextField+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextField+Blocks.m"; sourceTree = "<group>"; };
@@ -441,8 +441,8 @@
 				1813E8421F9BAE73002C661E /* SmilePasswordContainerView.m */,
 				1813E8431F9BAE73002C661E /* SmilePasswordView.h */,
 				1813E8441F9BAE73002C661E /* SmilePasswordView.m */,
-				1813E8451F9BAE73002C661E /* SmileSettingVC.h */,
-				1813E8461F9BAE73002C661E /* SmileSettingVC.m */,
+				1813E8F21F9CE49F002C661E /* OSUnlockViewController.h */,
+				1813E8F31F9CE49F002C661E /* OSUnlockViewController.m */,
 				1813E8D81F9C3CE5002C661E /* OSUnlockBackgroundView.h */,
 				1813E8D91F9C3CE5002C661E /* OSUnlockBackgroundView.m */,
 			);
@@ -1077,7 +1077,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				18878A4D1EF022B6005C0185 /* SDWebImageManager.m in Sources */,
-				1813E84E1F9BAE73002C661E /* SmileSettingVC.m in Sources */,
 				1813E8171F9B8AA3002C661E /* OSSettingViewController.m in Sources */,
 				18878A4E1EF022B6005C0185 /* SDWebImagePrefetcher.m in Sources */,
 				18300FCA1EED38820035D6EE /* FFCircularProgressView.m in Sources */,
@@ -1168,6 +1167,7 @@
 				18517C251EEBD64800B148C8 /* AFURLRequestSerialization.m in Sources */,
 				18517BF51EEBCB2C00B148C8 /* AppDelegate.m in Sources */,
 				18517C221EEBD64800B148C8 /* AFHTTPSessionManager.m in Sources */,
+				1813E8F41F9CE49F002C661E /* OSUnlockViewController.m in Sources */,
 				18517C5C1EEBD97500B148C8 /* DownloadsViewController.m in Sources */,
 				18517C231EEBD64800B148C8 /* AFNetworkReachabilityManager.m in Sources */,
 				180CBDE01F1126E0006D2871 /* SuspensionControl.m in Sources */,

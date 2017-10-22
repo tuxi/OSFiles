@@ -1,23 +1,17 @@
 //
-//  SmileSettingVC.m
-//  TouchID
+//  OSUnlockViewController.m
+//  FileDownloader
 //
-//  Created by ryu-ushin on 5/25/15.
-//  Copyright (c) 2015 rain. All rights reserved.
+//  Created by Swae on 2017/10/22.
+//  Copyright © 2017年 Ossey. All rights reserved.
 //
 
-#import "SmileSettingVC.h"
+#import "OSUnlockViewController.h"
 #import "SmileAuthenticator.h"
 #import "SmilePasswordContainerView.h"
 #import "OSUnlockBackgroundView.h"
 
-@interface SmileSettingVC () <UITextFieldDelegate, SmileContainerLayoutDelegate>
-
-@property (nonatomic, strong) OSUnlockBackgroundView *unlockBackgroundView;
-
-@end
-
-@implementation SmileSettingVC{
+@interface OSUnlockViewController () <UITextFieldDelegate, SmileContainerLayoutDelegate> {
     BOOL _needTouchID;
     BOOL _isAnimating;
     NSInteger _inputCount;
@@ -27,96 +21,14 @@
     NSInteger _failCount;
 }
 
-#pragma mark - SmileContainerLayoutDelegate
--(void)smileContainerLayoutSubview{
-    self.unlockBackgroundView.passwordView.smilePasswordView.dotCount = self.unlockBackgroundView.passwordField.text.length;
-}
+@property (nonatomic, strong) OSUnlockBackgroundView *unlockBackgroundView;
 
-- (void)touchesEndedOnPasswordContainerView:(SmilePasswordContainerView *)passwordContainerView {
+@end
 
-    [self.unlockBackgroundView.passwordField becomeFirstResponder];
-}
+@implementation OSUnlockViewController
 
-- (void)dismissSelf:(id)sender {
-    
-    [[SmileAuthenticator sharedInstance] authViewControllerWillDismissed];
-    
-    [self dismissViewControllerAnimated:YES completion:^{
-        [[SmileAuthenticator sharedInstance] authViewControllerDidDismissed];
-    }];
-}
 
-- (void)useTouchID:(id)sender {
-    [self.unlockBackgroundView.passwordField resignFirstResponder];
-    [self touchIDHandle];
-}
-
-#pragma mark - TouchID handle
--(void)touchIDHandle{
-    switch ([SmileAuthenticator sharedInstance].securityType) {
-        case INPUT_ONCE:
-            
-            [self touchIDForINPUT_ONCE];
-            
-            break;
-            
-        case INPUT_THREE:
-            
-            [self touchIDForINPUT_THREE];
-            
-            break;
-            
-        case INPUT_TOUCHID:
-            
-            [self touchIDForINPUT_TOUCHID];
-            
-            break;
-            
-        default:
-            break;
-    }
-}
-
--(void)showKeyboard{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.unlockBackgroundView.passwordField performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:0.05];
-    });
-}
-
--(void)touchIDForINPUT_TOUCHID{
-    [SmileAuthenticator sharedInstance].localizedReason = NSLocalizedString(@"轻触指纹", nil);
-    [[SmileAuthenticator sharedInstance] authenticateWithSuccess:^{
-        [[SmileAuthenticator sharedInstance] touchID_OR_PasswordAuthSuccess];
-        self.unlockBackgroundView.passwordView.smilePasswordView.dotCount = [SmileAuthenticator sharedInstance].passcodeDigit;
-        [self performSelector:@selector(dismissSelf:) withObject:nil afterDelay:0.15];
-    } andFailure:^(LAError errorCode) {
-        [self showKeyboard];
-    }];
-}
-
--(void)touchIDForINPUT_ONCE{
-    [SmileAuthenticator sharedInstance].localizedReason = NSLocalizedString(@"请输入密码或使用指纹解锁", nil);
-    [[SmileAuthenticator sharedInstance] authenticateWithSuccess:^{
-        [[SmileAuthenticator sharedInstance] touchID_OR_PasswordTurnOff];
-        self.unlockBackgroundView.passwordView.smilePasswordView.dotCount = [SmileAuthenticator sharedInstance].passcodeDigit;
-        [self performSelector:@selector(passwordCancleComplete) withObject:nil afterDelay:0.15];
-    } andFailure:^(LAError errorCode) {
-        [self showKeyboard];
-    }];
-}
-
--(void)touchIDForINPUT_THREE{
-    [SmileAuthenticator sharedInstance].localizedReason = NSLocalizedString(@"请输入密码或使用指纹解锁", nil);
-    [[SmileAuthenticator sharedInstance] authenticateWithSuccess:^{
-        self.unlockBackgroundView.passwordView.smilePasswordView.dotCount = [SmileAuthenticator sharedInstance].passcodeDigit;
-        _inputCount ++;
-        [self performSelector:@selector(enterNewPassword) withObject:nil afterDelay:0.15];
-    } andFailure:^(LAError errorCode) {
-        [self showKeyboard];
-    }];
-}
-
--(void)viewDidAppear:(BOOL)animated{
+- (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     
     if (_needTouchID) {
@@ -124,14 +36,18 @@
     }
 }
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    
+- (void)setupViews {
     [self.view addSubview:self.unlockBackgroundView];
     NSDictionary *subviewsDict = @{@"unlockBackgroundView": self.unlockBackgroundView};
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|[unlockBackgroundView]|" options:kNilOptions metrics:nil views:subviewsDict]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[unlockBackgroundView]|" options:kNilOptions metrics:nil views:subviewsDict]];
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    [self setupViews];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dismissSelf:)];
     
@@ -156,7 +72,7 @@
     if ([SmileAuthenticator sharedInstance].descriptionTextColor) {
         self.unlockBackgroundView.descLabel.textColor = [SmileAuthenticator sharedInstance].descriptionTextColor;
     }
-
+    
     if ([SmileAuthenticator sharedInstance].backgroundImage) {
         self.unlockBackgroundView.backgroundImageView.image = [SmileAuthenticator sharedInstance].backgroundImage;
     }
@@ -165,7 +81,7 @@
     
     //for tint color
     if ([SmileAuthenticator sharedInstance].tintColor) {
-//        self.navigationController.navigationBar.tintColor = [SmileAuthenticator sharedInstance].tintColor;
+        //        self.navigationController.navigationBar.tintColor = [SmileAuthenticator sharedInstance].tintColor;
     }
     
     //for touchid image
@@ -256,14 +172,100 @@
     return appCurName;
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+
+#pragma mark *** TouchID handle ***
+- (void)touchIDHandle {
+    switch ([SmileAuthenticator sharedInstance].securityType) {
+        case INPUT_ONCE:
+            
+            [self touchIDForINPUT_ONCE];
+            
+            break;
+            
+        case INPUT_THREE:
+            
+            [self touchIDForINPUT_THREE];
+            
+            break;
+            
+        case INPUT_TOUCHID:
+            
+            [self touchIDForINPUT_TOUCHID];
+            
+            break;
+            
+        default:
+            break;
+    }
 }
 
-#pragma mark - animation
+- (void)showKeyboard{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.unlockBackgroundView.passwordField performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:0.05];
+    });
+}
 
--(void)slideAnimation{
+- (void)touchIDForINPUT_TOUCHID{
+    [SmileAuthenticator sharedInstance].localizedReason = NSLocalizedString(@"轻触指纹", nil);
+    [[SmileAuthenticator sharedInstance] authenticateWithSuccess:^{
+        [[SmileAuthenticator sharedInstance] touchID_OR_PasswordAuthSuccess];
+        self.unlockBackgroundView.passwordView.smilePasswordView.dotCount = [SmileAuthenticator sharedInstance].passcodeDigit;
+        [self performSelector:@selector(dismissSelf:) withObject:nil afterDelay:0.15];
+    } andFailure:^(LAError errorCode) {
+        [self showKeyboard];
+    }];
+}
+
+- (void)touchIDForINPUT_ONCE {
+    [SmileAuthenticator sharedInstance].localizedReason = NSLocalizedString(@"请输入密码或使用指纹解锁", nil);
+    [[SmileAuthenticator sharedInstance] authenticateWithSuccess:^{
+        [[SmileAuthenticator sharedInstance] touchID_OR_PasswordTurnOff];
+        self.unlockBackgroundView.passwordView.smilePasswordView.dotCount = [SmileAuthenticator sharedInstance].passcodeDigit;
+        [self performSelector:@selector(passwordCancleComplete) withObject:nil afterDelay:0.15];
+    } andFailure:^(LAError errorCode) {
+        [self showKeyboard];
+    }];
+}
+
+-(void)touchIDForINPUT_THREE{
+    [SmileAuthenticator sharedInstance].localizedReason = NSLocalizedString(@"请输入密码或使用指纹解锁", nil);
+    [[SmileAuthenticator sharedInstance] authenticateWithSuccess:^{
+        self.unlockBackgroundView.passwordView.smilePasswordView.dotCount = [SmileAuthenticator sharedInstance].passcodeDigit;
+        _inputCount ++;
+        [self performSelector:@selector(enterNewPassword) withObject:nil afterDelay:0.15];
+    } andFailure:^(LAError errorCode) {
+        [self showKeyboard];
+    }];
+}
+
+#pragma mark *** Actions ***
+- (void)dismissSelf:(id)sender {
+    
+    [[SmileAuthenticator sharedInstance] authViewControllerWillDismissed];
+    
+    [self dismissViewControllerAnimated:YES completion:^{
+        [[SmileAuthenticator sharedInstance] authViewControllerDidDismissed];
+    }];
+}
+
+- (void)useTouchID:(id)sender {
+    [self.unlockBackgroundView.passwordField resignFirstResponder];
+    [self touchIDHandle];
+}
+
+#pragma mark *** SmileContainerLayoutDelegate ***
+- (void)smileContainerLayoutSubview{
+    self.unlockBackgroundView.passwordView.smilePasswordView.dotCount = self.unlockBackgroundView.passwordField.text.length;
+}
+
+- (void)touchesEndedOnPasswordContainerView:(SmilePasswordContainerView *)passwordContainerView {
+    
+    [self.unlockBackgroundView.passwordField becomeFirstResponder];
+}
+
+#pragma mark *** animation ***
+
+- (void)slideAnimation{
     _isAnimating = YES;
     
     if (!self.unlockBackgroundView.touchIDBtn.hidden) {
@@ -279,20 +281,20 @@
     
 }
 
--(void)shakeAnimation{
+- (void)shakeAnimation{
     _isAnimating = YES;
     [self.unlockBackgroundView.passwordView.smilePasswordView shakeAnimationWithCompletion:^{
         _isAnimating = NO;
     }];
 }
 
-#pragma mark - handle user input
+#pragma mark *** Handle user input ***
 -(void)clearText {
     self.unlockBackgroundView.passwordField.text = @"";
     self.unlockBackgroundView.passwordView.smilePasswordView.dotCount = 0;
 }
 
--(void)passwordInputComplete{
+- (void)passwordInputComplete{
     [[SmileAuthenticator sharedInstance] userSetPassword: _newPassword];
     [self dismissSelf:nil];
 }
@@ -302,7 +304,7 @@
     [self dismissSelf:nil];
 }
 
--(void)passwordWrong{
+- (void)passwordWrong{
     _inputCount = 0;
     
     [self clearText];
@@ -316,7 +318,7 @@
     self.unlockBackgroundView.descLabel.text = [NSString stringWithFormat:NSLocalizedString(@"输入的密码错误", nil), (long)_failCount];
 }
 
--(void)passwordNotMatch{
+- (void)passwordNotMatch{
     
     _inputCount = _inputCount -2;
     
@@ -326,7 +328,7 @@
     self.unlockBackgroundView.descLabel.text = NSLocalizedString(@"密码或指纹不匹配", nil);
 }
 
--(void)reEnterPassword{
+- (void)reEnterPassword{
     
     _bufferPassword = _newPassword;
     [self clearText];
@@ -336,13 +338,13 @@
     self.unlockBackgroundView.descLabel.text = [NSString stringWithFormat:NSLocalizedString(@"请输入密码或使用指纹确认", nil), (long)[SmileAuthenticator sharedInstance].passcodeDigit];
 }
 
--(void)enterNewPassword{
+- (void)enterNewPassword{
     [self clearText];
     [self slideAnimation];
     self.unlockBackgroundView.descLabel.text = [NSString stringWithFormat:NSLocalizedString(@"请输入密码或使用指纹确认", nil), (long)[SmileAuthenticator sharedInstance].passcodeDigit];
 }
 
--(void)handleINPUT_TOUCHID{
+- (void)handleINPUT_TOUCHID{
     if ([SmileAuthenticator isSamePassword:_newPassword]) {
         [[SmileAuthenticator sharedInstance] touchID_OR_PasswordAuthSuccess];
         [self passwordInputComplete];
@@ -351,7 +353,7 @@
     }
 }
 
--(void)handleINPUT_ONCE{
+- (void)handleINPUT_ONCE{
     if ([SmileAuthenticator isSamePassword:_newPassword]) {
         [[SmileAuthenticator sharedInstance] touchID_OR_PasswordTurnOff];
         [self passwordCancleComplete];
@@ -360,7 +362,7 @@
     }
 }
 
--(void)handleINPUT_TWICE{
+- (void)handleINPUT_TWICE{
     if (_inputCount == 1) {
         [self reEnterPassword];
     } else if (_inputCount == 2) {
@@ -373,7 +375,7 @@
     }
 }
 
--(void)handleINPUT_THREE{
+- (void)handleINPUT_THREE{
     if (_inputCount == 1) {
         if ([SmileAuthenticator isSamePassword:_newPassword]) {
             [self enterNewPassword];
@@ -392,7 +394,7 @@
     }
 }
 
--(void)handleUserInput{
+- (void)handleUserInput {
     switch ([SmileAuthenticator sharedInstance].securityType) {
         case INPUT_ONCE:
             
@@ -425,12 +427,12 @@
         default:
             break;
     }
-
+    
 }
 
-#pragma mark - UITextFieldDelegate
+#pragma mark *** UITextFieldDelegate ***
 
--(void)textFieldDidChange:(UITextField*)textField{
+- (void)textFieldDidChange:(UITextField*)textField{
     
     self.unlockBackgroundView.passwordView.smilePasswordView.dotCount = textField.text.length;
     
@@ -442,7 +444,7 @@
     }
 }
 
--(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
     
     if (textField.text.length >= _passLength) {
         return NO;
@@ -452,10 +454,9 @@
 }
 
 
-#pragma mark - PrivateMethod - Parallax
+#pragma mark *** PrivateMethod - Parallax ***
 
-- (void)registerEffectForView:(UIView *)aView depth:(CGFloat)depth;
-{
+- (void)registerEffectForView:(UIView *)aView depth:(CGFloat)depth {
     UIInterpolatingMotionEffect *effectX;
     UIInterpolatingMotionEffect *effectY;
     effectX = [[UIInterpolatingMotionEffect alloc] initWithKeyPath:@"center.x"
@@ -475,7 +476,13 @@
     [aView addMotionEffect:group] ;
 }
 
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    [super touchesBegan:touches withEvent:event];
+    
+    [self.unlockBackgroundView.passwordField resignFirstResponder];
+}
 
+#pragma mark *** Lazy ***
 - (OSUnlockBackgroundView *)unlockBackgroundView {
     if (!_unlockBackgroundView) {
         _unlockBackgroundView = [OSUnlockBackgroundView new];
@@ -486,9 +493,4 @@
     return _unlockBackgroundView;
 }
 
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    [super touchesBegan:touches withEvent:event];
-    
-    [self.unlockBackgroundView.passwordField resignFirstResponder];
-}
 @end
