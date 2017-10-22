@@ -9,11 +9,14 @@
 #import "OSSettingViewController.h"
 #import "OSSettingsTableViewCell.h"
 #import "OSSettingsTableViewSection.h"
+#import "SmileAuthenticator.h"
+#import "OSAuthenticatorHelper.h"
 
-@interface OSSettingViewController () <UITableViewDelegate, UITableViewDataSource>
+@interface OSSettingViewController () <UITableViewDelegate, UITableViewDataSource, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
 @property (nonatomic, strong) UITableView *settingTableView;
 @property (nonatomic, strong) NSMutableArray<OSSettingsTableViewSection *> *sectionItems;
+@property (nonatomic, strong) UIImagePickerController *pickerViewController;
 
 @end
 
@@ -29,11 +32,13 @@
                              [NSLayoutConstraint constraintsWithVisualFormat:@"V:|[tableView]|" options:kNilOptions metrics:nil views:subviewsDict]
                              ];
     [self.view addConstraints:[constraints valueForKeyPath:@"@unionOfArrays.self"]];
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self loadSectionItems];
+    
 }
 
 - (UITableView *)settingTableView {
@@ -54,9 +59,14 @@
 }
 
 - (OSSettingsTableViewSection *)section_1 {
-    NSArray *items = @[
-                       [OSSettingsMenuItem itemForType:OSSettingsMenuItemTypePassword]
-                       ];
+    BOOL isSwitchOn = [SmileAuthenticator hasPassword];
+    NSMutableArray *items = @[
+                       [OSSettingsMenuItem switchCellForSel:@selector(disclosureSwitchChanged:) target:self title:@"设置启动密码" iconName:@"settings-zero" on:isSwitchOn]
+                       ].mutableCopy;
+    if (isSwitchOn) {
+        [items addObject:[OSSettingsMenuItem normalCellForSel:@selector(changePassword:) target:self title:@"修改密码" iconName:nil]];
+        [items addObject:[OSSettingsMenuItem normalCellForSel:@selector(setUnlockBackgroundImage:) target:self title:@"设置解锁背景图片" iconName:nil]];
+    }
     OSSettingsTableViewSection *section = [[OSSettingsTableViewSection alloc] initWithItem:items headerTitle:nil footerText:nil];
     return section;
 }
@@ -80,9 +90,6 @@
     OSSettingsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"OSSettingsTableViewCell" forIndexPath:indexPath];
     OSSettingsTableViewSection *section = self.sectionItems[indexPath.section];
     cell.menuItem = section.items[indexPath.row];
-    cell.disclosureSwitchChanged = ^(UISwitch *sw) {
-
-    };
     return cell;
 }
 
@@ -105,5 +112,95 @@
     }
     return nil;
 }
+
+////////////////////////////////////////////////////////////////////////
+#pragma mark - Switch
+////////////////////////////////////////////////////////////////////////
+
+
+/// 修改密码
+- (void)changePassword:(id)obj {
+    [SmileAuthenticator sharedInstance].securityType = INPUT_THREE;
+    [[SmileAuthenticator sharedInstance] presentAuthViewControllerAnimated:TRUE];
+}
+
+/// 打开密码
+- (void)passwordSwitch:(UISwitch*)passwordSwitch {
+    if (passwordSwitch.on) {
+        [SmileAuthenticator sharedInstance].securityType = INPUT_TWICE;
+    } else {
+        [SmileAuthenticator sharedInstance].securityType = INPUT_ONCE;
+    }
+    
+    [[SmileAuthenticator sharedInstance] presentAuthViewControllerAnimated:TRUE];
+}
+
+/// 设置解锁页背景图片
+- (void)setUnlockBackgroundImage:(id)obj {
+    UIAlertController *alertC = [UIAlertController alertControllerWithTitle:@"请选择图片来源" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    //从照相机拍照
+    UIAlertAction *cameraAction = [UIAlertAction actionWithTitle:@"照相机" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+            self.pickerViewController = [[UIImagePickerController alloc] init];
+            self.pickerViewController.delegate = self;//设置UIImagePickerController的代理，同时要遵循UIImagePickerControllerDelegate，UINavigationControllerDelegate协议
+            self.pickerViewController.allowsEditing = YES;//设置拍照之后图片是否可编辑，如果设置成可编辑的话会在代理方法返回的字典里面多一些键值。PS：如果在调用相机的时候允许照片可编辑，那么用户能编辑的照片的位置并不包括边角。
+            self.pickerViewController.sourceType = UIImagePickerControllerSourceTypeCamera;//UIImagePicker选择器的数据来源，UIImagePickerControllerSourceTypeCamera说明数据来源于摄像头
+            [self presentViewController:self.pickerViewController animated:YES completion:nil];
+        }else{
+            
+            NSLog(@"哎呀,没有摄像头");
+        }
+        
+    }];
+    
+    //从手机相册选取
+    UIAlertAction *photoAction = [UIAlertAction actionWithTitle:@"相册" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum]) {
+            self.pickerViewController = [[UIImagePickerController alloc]init];
+            self.pickerViewController.delegate = self;
+            self.pickerViewController.allowsEditing = YES;//是否可以对原图进行编辑
+            
+            //设置图片选择器的数据来源为手机相册
+            self.pickerViewController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+            [self presentViewController:self.pickerViewController animated:YES completion:nil];
+        }
+        else{
+            
+            NSLog(@"图片库不可用");
+            
+        }
+    }];
+    
+    //取消
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+    
+    [alertC addAction:cameraAction];
+    [alertC addAction:photoAction];
+    [alertC addAction:cancelAction];
+    [self presentViewController:alertC animated:YES completion:nil];
+}
+
+- (void)disclosureSwitchChanged:(UISwitch *)sw {
+    [self passwordSwitch:sw];
+}
+
+#pragma mark - UIImagePickerControllerDelegate
+/// 拍照/选择图片结束
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    //获取图片
+    //    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];//原始图片
+    UIImage *image = [info objectForKey:UIImagePickerControllerEditedImage];//编辑后的图片
+    
+    [[OSAuthenticatorHelper sharedInstance] saveImage:image withName:@"backgroundImage.png"];
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+/// 取消拍照/选择图片
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 
 @end

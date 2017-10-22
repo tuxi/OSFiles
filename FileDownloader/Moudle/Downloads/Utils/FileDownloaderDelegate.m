@@ -11,7 +11,7 @@
 #import "FileDownloaderManager.h"
 #import "FileDownloadProgress.h"
 #import "FileDownloadConst.h"
-#import "AppDelegate+NotificationExtension.h"
+#import "OSLoaclNotificationHelper.h"
 
 @implementation FileDownloaderDelegate
 
@@ -40,8 +40,7 @@
     XYDispatch_main_async_safe((^{
         [[NSNotificationCenter defaultCenter] postNotificationName:FileDownloadSussessNotification object:fileItem];
         [self downloadTaskDidEnd];
-        AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-        [delegate sendLocalNotificationWithMessage:[NSString stringWithFormat:@"%@-下载成功", fileItem.fileName]];
+        [[OSLoaclNotificationHelper sharedInstance] sendLocalNotificationWithMessage:[NSString stringWithFormat:@"%@-下载成功", fileItem.fileName]];
     }))
 }
 
@@ -73,8 +72,7 @@
         // 发送失败通知
         [[NSNotificationCenter defaultCenter] postNotificationName:FileDownloadFailureNotification object:fileItem];
         [self downloadTaskDidEnd];
-        AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-        [delegate sendLocalNotificationWithMessage:[NSString stringWithFormat:@"%@-下载失败", fileItem.fileName]];
+        [[OSLoaclNotificationHelper sharedInstance] sendLocalNotificationWithMessage:[NSString stringWithFormat:@"%@-下载失败", fileItem.fileName]];
     }))
 }
 

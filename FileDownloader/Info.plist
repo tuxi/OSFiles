@@ -25,8 +25,12 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>App需要相机权限</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string></string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>app 需要访问您的相册</string>
+	<string>App需要访问您的相册</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

@@ -12,7 +12,8 @@
 #import "FileDownloaderManager.h"
 #import "NetworkTypeUtils.h"
 #import "ExceptionUtils.h"
-#import "AppDelegate+NotificationExtension.h"
+#import "OSAuthenticatorHelper.h"
+#import "OSLoaclNotificationHelper.h"
 
 @interface AppDelegate ()  {
     UIBackgroundTaskIdentifier _bgTask;
@@ -30,9 +31,8 @@
     [ExceptionUtils configExceptionHandler];
     
     /// 注册本地通知
-    [self registerLocalNotificationWithBlock:^(UILocalNotification *localNotification) {
+    [[OSLoaclNotificationHelper sharedInstance] registerLocalNotificationWithBlock:^(UILocalNotification *localNotification) {
         /// 注册完成后回调
-        
         NSLog(@"%@", localNotification);
         
         // ios8后，需要添加这个注册，才能得到授权
@@ -56,15 +56,34 @@
         [self application:application didReceiveLocalNotification:localNotification];
     }
     
+    [[OSAuthenticatorHelper sharedInstance] initAuthenticator];
+    
     return YES;
 }
 
-
-- (void)applicationWillResignActive:(UIApplication *)application {
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
+/// 此方法是本地通知会触发的方法，当点击通知横幅进入app时会调用
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(nonnull UILocalNotification *)notification {
+    
+    // 取消所有通知
+    [application cancelAllLocalNotifications];
+    [[[UIAlertView alloc] initWithTitle:@"下载通知" message:[OSLoaclNotificationHelper sharedInstance].notifyMessage delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil, nil] show];
+    
+    // 点击通知后，就让图标上的数字减1
+    application.applicationIconBadgeNumber -= 1;
 }
 
+/// 当有电话进来或者锁屏，此时应用程会挂起，调用此方法，此方法一般做挂起前的工作，比如关闭网络，保存数据
+- (void)applicationWillResignActive:(UIApplication *)application {
+    // 图标上的数字减1
+    application.applicationIconBadgeNumber -= 1;
+    [[OSAuthenticatorHelper sharedInstance] applicationWillResignActiveWithShowCoverImageView];
+}
+
+
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    [[OSAuthenticatorHelper sharedInstance] applicationDidBecomeActiveWithRemoveCoverImageView];
+}
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     _bgTask = [application beginBackgroundTaskWithExpirationHandler:^{
@@ -110,11 +129,6 @@
 }
 
 
-- (void)applicationDidBecomeActive:(UIApplication *)application {
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-}
-
-
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
@@ -123,7 +137,6 @@
     
     [[FileDownloaderManager sharedInstance].downloader setBackgroundSessionCompletionHandler:completionHandler];
 }
-
 
 
 @end

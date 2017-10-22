@@ -10,7 +10,6 @@
 		180CBDDC1F11269E006D2871 /* ExceptionUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 180CBDDB1F11269E006D2871 /* ExceptionUtils.m */; };
 		180CBDE01F1126E0006D2871 /* SuspensionControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 180CBDDF1F1126E0006D2871 /* SuspensionControl.m */; };
 		1811B4691F98D7FB003A5847 /* FileItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1811B4681F98D7FB003A5847 /* FileItem.m */; };
-		1811B46C1F990550003A5847 /* AppDelegate+NotificationExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 1811B46B1F990550003A5847 /* AppDelegate+NotificationExtension.m */; };
 		1813E7A61F9B6ACF002C661E /* FileDownloadConst.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E79E1F9B6ACF002C661E /* FileDownloadConst.m */; };
 		1813E7A71F9B6ACF002C661E /* FileDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E7A01F9B6ACF002C661E /* FileDownloader.m */; };
 		1813E7A81F9B6ACF002C661E /* FileDownloaderSessionPrivateDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E7A21F9B6ACF002C661E /* FileDownloaderSessionPrivateDelegate.m */; };
@@ -23,6 +22,16 @@
 		1813E8301F9B96F5002C661E /* OSProminentSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E82F1F9B96F5002C661E /* OSProminentSwitch.m */; };
 		1813E8331F9B9E5F002C661E /* OSSettingsMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E8321F9B9E5F002C661E /* OSSettingsMenuItem.m */; };
 		1813E8361F9BA6A3002C661E /* OSSettingsTableViewSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E8351F9BA6A3002C661E /* OSSettingsTableViewSection.m */; };
+		1813E8471F9BAE73002C661E /* smile_Touch_ID@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1813E8391F9BAE73002C661E /* smile_Touch_ID@2x.png */; };
+		1813E8481F9BAE73002C661E /* smile_Touch_ID@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1813E83A1F9BAE73002C661E /* smile_Touch_ID@3x.png */; };
+		1813E84A1F9BAE73002C661E /* SmileAuthenticator.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E83E1F9BAE73002C661E /* SmileAuthenticator.m */; };
+		1813E84B1F9BAE73002C661E /* SmileKeychainWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E8401F9BAE73002C661E /* SmileKeychainWrapper.m */; };
+		1813E84C1F9BAE73002C661E /* SmilePasswordContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E8421F9BAE73002C661E /* SmilePasswordContainerView.m */; };
+		1813E84D1F9BAE73002C661E /* SmilePasswordView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E8441F9BAE73002C661E /* SmilePasswordView.m */; };
+		1813E84E1F9BAE73002C661E /* SmileSettingVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E8461F9BAE73002C661E /* SmileSettingVC.m */; };
+		1813E8691F9BB717002C661E /* OSAuthenticatorHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E8681F9BB717002C661E /* OSAuthenticatorHelper.m */; };
+		1813E8D71F9C39D2002C661E /* OSLoaclNotificationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E8D61F9C39D2002C661E /* OSLoaclNotificationHelper.m */; };
+		1813E8DA1F9C3CE5002C661E /* OSUnlockBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E8D91F9C3CE5002C661E /* OSUnlockBackgroundView.m */; };
 		1819EFAF1EF2E29300208A20 /* BrowserViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1819EFAE1EF2E29300208A20 /* BrowserViewController.xib */; };
 		1819EFB51EF2E3FE00208A20 /* UITextField+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 1819EFB41EF2E3FE00208A20 /* UITextField+Blocks.m */; };
 		18300F7D1EEC57280035D6EE /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300F731EEC57280035D6EE /* MBProgressHUD.m */; };
@@ -123,8 +132,6 @@
 		180CBDDF1F1126E0006D2871 /* SuspensionControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SuspensionControl.m; sourceTree = "<group>"; };
 		1811B4671F98D7FB003A5847 /* FileItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FileItem.h; sourceTree = "<group>"; };
 		1811B4681F98D7FB003A5847 /* FileItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FileItem.m; sourceTree = "<group>"; };
-		1811B46A1F990550003A5847 /* AppDelegate+NotificationExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AppDelegate+NotificationExtension.h"; sourceTree = "<group>"; };
-		1811B46B1F990550003A5847 /* AppDelegate+NotificationExtension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "AppDelegate+NotificationExtension.m"; sourceTree = "<group>"; };
 		1813E79D1F9B6ACF002C661E /* FileDownloadConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileDownloadConst.h; sourceTree = "<group>"; };
 		1813E79E1F9B6ACF002C661E /* FileDownloadConst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileDownloadConst.m; sourceTree = "<group>"; };
 		1813E79F1F9B6ACF002C661E /* FileDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileDownloader.h; sourceTree = "<group>"; };
@@ -149,6 +156,24 @@
 		1813E8321F9B9E5F002C661E /* OSSettingsMenuItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSSettingsMenuItem.m; sourceTree = "<group>"; };
 		1813E8341F9BA6A3002C661E /* OSSettingsTableViewSection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSSettingsTableViewSection.h; sourceTree = "<group>"; };
 		1813E8351F9BA6A3002C661E /* OSSettingsTableViewSection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSSettingsTableViewSection.m; sourceTree = "<group>"; };
+		1813E8391F9BAE73002C661E /* smile_Touch_ID@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "smile_Touch_ID@2x.png"; sourceTree = "<group>"; };
+		1813E83A1F9BAE73002C661E /* smile_Touch_ID@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "smile_Touch_ID@3x.png"; sourceTree = "<group>"; };
+		1813E83D1F9BAE73002C661E /* SmileAuthenticator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmileAuthenticator.h; sourceTree = "<group>"; };
+		1813E83E1F9BAE73002C661E /* SmileAuthenticator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmileAuthenticator.m; sourceTree = "<group>"; };
+		1813E83F1F9BAE73002C661E /* SmileKeychainWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmileKeychainWrapper.h; sourceTree = "<group>"; };
+		1813E8401F9BAE73002C661E /* SmileKeychainWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmileKeychainWrapper.m; sourceTree = "<group>"; };
+		1813E8411F9BAE73002C661E /* SmilePasswordContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilePasswordContainerView.h; sourceTree = "<group>"; };
+		1813E8421F9BAE73002C661E /* SmilePasswordContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilePasswordContainerView.m; sourceTree = "<group>"; };
+		1813E8431F9BAE73002C661E /* SmilePasswordView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmilePasswordView.h; sourceTree = "<group>"; };
+		1813E8441F9BAE73002C661E /* SmilePasswordView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmilePasswordView.m; sourceTree = "<group>"; };
+		1813E8451F9BAE73002C661E /* SmileSettingVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmileSettingVC.h; sourceTree = "<group>"; };
+		1813E8461F9BAE73002C661E /* SmileSettingVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmileSettingVC.m; sourceTree = "<group>"; };
+		1813E8671F9BB717002C661E /* OSAuthenticatorHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSAuthenticatorHelper.h; sourceTree = "<group>"; };
+		1813E8681F9BB717002C661E /* OSAuthenticatorHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSAuthenticatorHelper.m; sourceTree = "<group>"; };
+		1813E8D51F9C39D2002C661E /* OSLoaclNotificationHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSLoaclNotificationHelper.h; sourceTree = "<group>"; };
+		1813E8D61F9C39D2002C661E /* OSLoaclNotificationHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSLoaclNotificationHelper.m; sourceTree = "<group>"; };
+		1813E8D81F9C3CE5002C661E /* OSUnlockBackgroundView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSUnlockBackgroundView.h; sourceTree = "<group>"; };
+		1813E8D91F9C3CE5002C661E /* OSUnlockBackgroundView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSUnlockBackgroundView.m; sourceTree = "<group>"; };
 		1819EFAE1EF2E29300208A20 /* BrowserViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BrowserViewController.xib; sourceTree = "<group>"; };
 		1819EFB31EF2E3FE00208A20 /* UITextField+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITextField+Blocks.h"; sourceTree = "<group>"; };
 		1819EFB41EF2E3FE00208A20 /* UITextField+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextField+Blocks.m"; sourceTree = "<group>"; };
@@ -387,6 +412,43 @@
 			path = ProgressBar;
 			sourceTree = "<group>";
 		};
+		1813E8371F9BAE73002C661E /* SmileAuth */ = {
+			isa = PBXGroup;
+			children = (
+				1813E8381F9BAE73002C661E /* Assets */,
+				1813E83C1F9BAE73002C661E /* Classes */,
+			);
+			path = SmileAuth;
+			sourceTree = "<group>";
+		};
+		1813E8381F9BAE73002C661E /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				1813E8391F9BAE73002C661E /* smile_Touch_ID@2x.png */,
+				1813E83A1F9BAE73002C661E /* smile_Touch_ID@3x.png */,
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
+		1813E83C1F9BAE73002C661E /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				1813E83D1F9BAE73002C661E /* SmileAuthenticator.h */,
+				1813E83E1F9BAE73002C661E /* SmileAuthenticator.m */,
+				1813E83F1F9BAE73002C661E /* SmileKeychainWrapper.h */,
+				1813E8401F9BAE73002C661E /* SmileKeychainWrapper.m */,
+				1813E8411F9BAE73002C661E /* SmilePasswordContainerView.h */,
+				1813E8421F9BAE73002C661E /* SmilePasswordContainerView.m */,
+				1813E8431F9BAE73002C661E /* SmilePasswordView.h */,
+				1813E8441F9BAE73002C661E /* SmilePasswordView.m */,
+				1813E8451F9BAE73002C661E /* SmileSettingVC.h */,
+				1813E8461F9BAE73002C661E /* SmileSettingVC.m */,
+				1813E8D81F9C3CE5002C661E /* OSUnlockBackgroundView.h */,
+				1813E8D91F9C3CE5002C661E /* OSUnlockBackgroundView.m */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
 		18300F711EEC57280035D6EE /* HUD */ = {
 			isa = PBXGroup;
 			children = (
@@ -498,6 +560,7 @@
 		18517BE91EEBCB2C00B148C8 /* Helper */ = {
 			isa = PBXGroup;
 			children = (
+				1813E8371F9BAE73002C661E /* SmileAuth */,
 				1813E7AA1F9B6E74002C661E /* ProgressBar */,
 				180CBDDD1F1126E0006D2871 /* SuspensionControl */,
 				180CBDDA1F11269E006D2871 /* ExceptionUtils.h */,
@@ -508,6 +571,10 @@
 				18300F711EEC57280035D6EE /* HUD */,
 				18300F781EEC57280035D6EE /* Network */,
 				18517C611EEBDB3600B148C8 /* Category */,
+				1813E8671F9BB717002C661E /* OSAuthenticatorHelper.h */,
+				1813E8681F9BB717002C661E /* OSAuthenticatorHelper.m */,
+				1813E8D51F9C39D2002C661E /* OSLoaclNotificationHelper.h */,
+				1813E8D61F9C39D2002C661E /* OSLoaclNotificationHelper.m */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -557,8 +624,6 @@
 				1871AD0C1EEEF15100ABC452 /* BaseTableViewModel.m */,
 				18517BF01EEBCB2C00B148C8 /* AppDelegate.h */,
 				18517BF11EEBCB2C00B148C8 /* AppDelegate.m */,
-				1811B46A1F990550003A5847 /* AppDelegate+NotificationExtension.h */,
-				1811B46B1F990550003A5847 /* AppDelegate+NotificationExtension.m */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -995,6 +1060,8 @@
 			files = (
 				18517C381EEBD66A00B148C8 /* LICENSE.txt in Resources */,
 				18517BD61EEBC86600B148C8 /* LaunchScreen.storyboard in Resources */,
+				1813E8471F9BAE73002C661E /* smile_Touch_ID@2x.png in Resources */,
+				1813E8481F9BAE73002C661E /* smile_Touch_ID@3x.png in Resources */,
 				18878A451EF022B6005C0185 /* LICENSE in Resources */,
 				18517BD31EEBC86600B148C8 /* Assets.xcassets in Resources */,
 				1813E81C1F9B8FA5002C661E /* OSSettingsTableViewCell.xib in Resources */,
@@ -1010,6 +1077,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				18878A4D1EF022B6005C0185 /* SDWebImageManager.m in Sources */,
+				1813E84E1F9BAE73002C661E /* SmileSettingVC.m in Sources */,
 				1813E8171F9B8AA3002C661E /* OSSettingViewController.m in Sources */,
 				18878A4E1EF022B6005C0185 /* SDWebImagePrefetcher.m in Sources */,
 				18300FCA1EED38820035D6EE /* FFCircularProgressView.m in Sources */,
@@ -1019,10 +1087,12 @@
 				18878A471EF022B6005C0185 /* NSData+ImageContentType.m in Sources */,
 				18878A461EF022B6005C0185 /* README.md in Sources */,
 				18517C641EEBDB3E00B148C8 /* UIImage+XYImage.m in Sources */,
+				1813E8691F9BB717002C661E /* OSAuthenticatorHelper.m in Sources */,
 				18878A981EF03908005C0185 /* ICGRulerView.m in Sources */,
 				1813E7B01F9B6E74002C661E /* UINavigationController+OSProgressBar.m in Sources */,
 				18517C3C1EEBD66A00B148C8 /* FMDatabasePool.m in Sources */,
 				18300FAB1EECE79F0035D6EE /* MASViewAttribute.m in Sources */,
+				1813E8D71F9C39D2002C661E /* OSLoaclNotificationHelper.m in Sources */,
 				18878A971EF03908005C0185 /* XYVideoPlayerView.m in Sources */,
 				180CBDDC1F11269E006D2871 /* ExceptionUtils.m in Sources */,
 				1871AD241EEEF76E00ABC452 /* UITableViewCell+XYConfigure.m in Sources */,
@@ -1048,6 +1118,7 @@
 				1871AD211EEEF76E00ABC452 /* NSObject+XYProperties.m in Sources */,
 				18300FA81EECE79F0035D6EE /* MASConstraint.m in Sources */,
 				18300FA71EECE79F0035D6EE /* MASCompositeConstraint.m in Sources */,
+				1813E8DA1F9C3CE5002C661E /* OSUnlockBackgroundView.m in Sources */,
 				18300FAC1EECE79F0035D6EE /* MASViewConstraint.m in Sources */,
 				18517C561EEBD93800B148C8 /* BrowserViewController.m in Sources */,
 				18517C3D1EEBD66A00B148C8 /* FMDatabaseQueue.m in Sources */,
@@ -1057,6 +1128,7 @@
 				18517C3B1EEBD66A00B148C8 /* FMDatabaseAdditions.m in Sources */,
 				18517C461EEBD81D00B148C8 /* MainNavigationController.m in Sources */,
 				18517C751EEBE08700B148C8 /* UITableView+NoDataPlaceholderExtend.m in Sources */,
+				1813E84B1F9BAE73002C661E /* SmileKeychainWrapper.m in Sources */,
 				1871AD231EEEF76E00ABC452 /* UICollectionViewCell+XYConfigure.m in Sources */,
 				1871AD261EEEF76E00ABC452 /* XYDBUtil.m in Sources */,
 				18DCFC461F263D8F00AC21CA /* FileDownloaderManager.m in Sources */,
@@ -1070,6 +1142,7 @@
 				1871AD251EEEF76E00ABC452 /* UIView+XYConfigure.m in Sources */,
 				18517C3E1EEBD66A00B148C8 /* FMResultSet.m in Sources */,
 				1871AD271EEEF76E00ABC452 /* XYNetworkRequest.m in Sources */,
+				1813E84D1F9BAE73002C661E /* SmilePasswordView.m in Sources */,
 				18878A4C1EF022B6005C0185 /* SDWebImageDownloaderOperation.m in Sources */,
 				18878A9A1EF03908005C0185 /* ICGVideoTrimmerView.m in Sources */,
 				18300F851EEC57920035D6EE /* FileDownloadCell.m in Sources */,
@@ -1083,6 +1156,7 @@
 				1813E7A61F9B6ACF002C661E /* FileDownloadConst.m in Sources */,
 				18878B281EF19EAC005C0185 /* UINavigationItem+MultipleItems.m in Sources */,
 				18300F7D1EEC57280035D6EE /* MBProgressHUD.m in Sources */,
+				1813E84C1F9BAE73002C661E /* SmilePasswordContainerView.m in Sources */,
 				18878A961EF03908005C0185 /* XYMenuView.m in Sources */,
 				18878A811EF035DF005C0185 /* UIView+Extend.m in Sources */,
 				18300FB01EECE79F0035D6EE /* ViewController+MASAdditions.m in Sources */,
@@ -1098,8 +1172,8 @@
 				18517C231EEBD64800B148C8 /* AFNetworkReachabilityManager.m in Sources */,
 				180CBDE01F1126E0006D2871 /* SuspensionControl.m in Sources */,
 				18878A481EF022B6005C0185 /* SDImageCache.m in Sources */,
+				1813E84A1F9BAE73002C661E /* SmileAuthenticator.m in Sources */,
 				18300F7F1EEC57280035D6EE /* UIViewController+XYHUD.m in Sources */,
-				1811B46C1F990550003A5847 /* AppDelegate+NotificationExtension.m in Sources */,
 				18300FAD1EECE79F0035D6EE /* NSArray+MASAdditions.m in Sources */,
 				18517C261EEBD64800B148C8 /* AFURLResponseSerialization.m in Sources */,
 				18517C391EEBD66A00B148C8 /* README.markdown in Sources */,

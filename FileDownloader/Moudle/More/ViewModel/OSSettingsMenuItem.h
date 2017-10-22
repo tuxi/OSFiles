@@ -8,22 +8,17 @@
 
 #import <Foundation/Foundation.h>
 
-typedef NS_ENUM(NSUInteger, OSSettingsMenuItemType) {
-    OSSettingsMenuItemTypePassword
-};
-
 typedef NS_ENUM(NSUInteger, OSSettingsMenuItemDisclosureType) {
-    OSSettingsMenuItemDisclosureType_None,
+    OSSettingsMenuItemDisclosureTypeNormal,
     OSSettingsMenuItemDisclosureType_ViewController,
     OSSettingsMenuItemDisclosureType_ViewControllerWithDisclosureText,
     OSSettingsMenuItemDisclosureType_ExternalLink,
-    OSSettingsMenuItemDisclosureType_Switch,
-    OSSettingsMenuItemDisclosureType_Password
+    OSSettingsMenuItemDisclosureTypeSwitch,
 };
 
 @interface OSSettingsMenuItem : NSObject
 
-@property (nonatomic, assign, readonly) OSSettingsMenuItemType type;
+@property (nonatomic, assign, readonly) OSSettingsMenuItemDisclosureType disclosureType;
 
 @property (nonatomic, copy, readonly) NSString *title;
 
@@ -31,16 +26,26 @@ typedef NS_ENUM(NSUInteger, OSSettingsMenuItemDisclosureType) {
 
 @property (nonatomic, copy, readonly) UIColor *iconColor;
 
-@property (nonatomic, assign, readonly) OSSettingsMenuItemDisclosureType disclosureType;
-
 @property (nonatomic, copy, readonly) NSString *disclosureText;
 
 @property (nonatomic, assign, readwrite) BOOL isSwitchOn;
 
-+ (instancetype)itemForType:(OSSettingsMenuItemType)type;
+@property (nonatomic, assign) SEL actionSelector;
+@property (nonatomic, weak) id actionTarget;
 
-- (instancetype)initWithType:(OSSettingsMenuItemType)type
-                       title:(NSString *)title
++ (instancetype)switchCellForSel:(SEL)sel
+                          target:(id)target
+                           title:(NSString *)title
+                        iconName:(NSString *)iconName
+                              on:(BOOL)isOn;
+
+
++ (instancetype)normalCellForSel:(SEL)sel
+                          target:(id)target
+                           title:(NSString *)title
+                        iconName:(NSString *)iconName;
+
+- (instancetype)initWithTitle:(NSString *)title
                     iconName:(NSString *)iconName
                    iconColor:(UIColor *)iconColor
               disclosureType:(OSSettingsMenuItemDisclosureType)disclosureType

@@ -7,10 +7,9 @@
 //
 
 #import "OSSettingsMenuItem.h"
+#import "SmileAuthenticator.h"
 
 @interface OSSettingsMenuItem ()
-
-@property (nonatomic, assign, readwrite) OSSettingsMenuItemType type;
 
 @property (nonatomic, copy, readwrite) NSString *title;
 
@@ -26,29 +25,41 @@
 
 @implementation OSSettingsMenuItem
 
++ (instancetype)switchCellForSel:(SEL)sel
+                          target:(id)target
+                           title:(NSString *)title
+                        iconName:(NSString *)iconName
+                              on:(BOOL)isOn {
+    OSSettingsMenuItem *item = [[self alloc] initWithTitle:title
+                                                  iconName:iconName
+                                                 iconColor:UIColorFromRGB(0xFF1B33)
+                                            disclosureType:OSSettingsMenuItemDisclosureTypeSwitch
+                                            disclosureText:nil
+                                                isSwitchOn:isOn];
+    item.actionSelector = sel;
+    item.actionTarget = target;
+    
+    return item;
+    
+}
 
-+ (instancetype)itemForType:(OSSettingsMenuItemType)type {
-    OSSettingsMenuItem *item = nil;
-    switch (type) {
-        case OSSettingsMenuItemTypePassword: {
-            BOOL isSwitchOn = [[NSUserDefaults standardUserDefaults] boolForKey:@(OSSettingsMenuItemDisclosureType_Password).stringValue];
-           item = [[self alloc] initWithType:type
-                                       title:@"设置密码"
-                                    iconName:@"settings-zero"
-                                   iconColor:UIColorFromRGB(0xFF1B33)
-                              disclosureType:OSSettingsMenuItemDisclosureType_Password
-                              disclosureText:nil
-                                  isSwitchOn:isSwitchOn];
-            break;
-        }
-        default:
-            break;
-    }
++ (instancetype)normalCellForSel:(SEL)sel
+                          target:(id)target
+                           title:(NSString *)title
+                        iconName:(NSString *)iconName  {
+    OSSettingsMenuItem *item = [[self alloc] initWithTitle:title
+                                                  iconName:iconName
+                                                 iconColor:UIColorFromRGB(0xFF1B33)
+                                            disclosureType:OSSettingsMenuItemDisclosureTypeNormal
+                                            disclosureText:nil
+                                                isSwitchOn:NO];
+    item.actionSelector = sel;
+    item.actionTarget = target;
+    
     return item;
 }
 
-- (instancetype)initWithType:(OSSettingsMenuItemType)type
-                       title:(NSString *)title
+- (instancetype)initWithTitle:(NSString *)title
                     iconName:(NSString *)iconName
                    iconColor:(UIColor *)iconColor
               disclosureType:(OSSettingsMenuItemDisclosureType)disclosureType
@@ -56,7 +67,7 @@
                   isSwitchOn:(BOOL)isSwitchOn {
     self = [super init];
     if (self) {
-        self.type = type;
+        self.disclosureType = disclosureType;
         self.title = title;
         self.iconName = iconName;
         self.iconColor = iconColor;

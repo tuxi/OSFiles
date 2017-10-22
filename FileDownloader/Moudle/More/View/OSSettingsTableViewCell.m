@@ -8,6 +8,8 @@
 
 #import "OSSettingsTableViewCell.h"
 
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+
 @interface OSSettingsTableViewCell ()
 
 @property (strong, nonatomic) IBOutlet UIImageView *titleIcon;
@@ -39,18 +41,20 @@
     self.iconName = menuItem.iconName;
     self.disclosureText = menuItem.disclosureText;
     self.disclosureType = menuItem.disclosureType;
-    [self.disclosureSwitch setOn:menuItem.isSwitchOn animated:YES];
+    self.selectionStyle = (menuItem.disclosureType == OSSettingsMenuItemDisclosureTypeSwitch) ? UITableViewCellSelectionStyleNone : UITableViewCellSelectionStyleDefault;
     
-    self.selectionStyle = (menuItem.disclosureType == OSSettingsMenuItemDisclosureType_Switch) ? UITableViewCellSelectionStyleNone : UITableViewCellSelectionStyleDefault;
-    
-    if (menuItem.disclosureType != OSSettingsMenuItemDisclosureType_Switch && menuItem.disclosureType != OSSettingsMenuItemDisclosureType_None) {
+    if (menuItem.disclosureType != OSSettingsMenuItemDisclosureTypeSwitch && menuItem.disclosureType != OSSettingsMenuItemDisclosureTypeNormal) {
         self.accessibilityTraits = UIAccessibilityTraitButton;
     } else {
         self.accessibilityTraits = UIAccessibilityTraitStaticText;
     }
     
-    [self.disclosureSwitch removeTarget:self action:@selector(disclosureSwitchChanged:) forControlEvents:UIControlEventValueChanged];
-    [self.disclosureSwitch addTarget:self action:@selector(disclosureSwitchChanged:) forControlEvents:UIControlEventValueChanged];
+    [self.disclosureSwitch removeTarget:menuItem.actionTarget action:menuItem.actionSelector forControlEvents:UIControlEventValueChanged];
+    if (menuItem.disclosureType == OSSettingsMenuItemDisclosureTypeSwitch) {
+        [self.disclosureSwitch setOn:menuItem.isSwitchOn animated:YES];
+        [self.disclosureSwitch addTarget:menuItem.actionTarget action:menuItem.actionSelector forControlEvents:UIControlEventValueChanged];
+    }
+    
 }
 
 - (void)disclosureSwitchChanged:(UISwitch *)disclosureSwitch {
@@ -63,8 +67,7 @@
 #pragma mark - Switch tap handling
 
 - (void)updateStateForMenuItemType:(OSSettingsMenuItemDisclosureType)type isSwitchOnValue:(BOOL)isOn {
-    [[NSUserDefaults standardUserDefaults] setBool:isOn forKey:@(type).stringValue];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    
 }
 
 
@@ -111,7 +114,7 @@
 - (void)setDisclosureType:(OSSettingsMenuItemDisclosureType)disclosureType {
     _disclosureType = disclosureType;
     switch (disclosureType) {
-        case OSSettingsMenuItemDisclosureType_None: {
+        case OSSettingsMenuItemDisclosureTypeNormal: {
             self.disclosureIcon.hidden = YES;
             self.disclosureLabel.hidden = YES;
             self.disclosureIcon.image = nil;
@@ -125,7 +128,7 @@
             self.disclosureSwitch.hidden = YES;
             break;
         }
-        case OSSettingsMenuItemDisclosureType_Switch: {
+        case OSSettingsMenuItemDisclosureTypeSwitch: {
             self.disclosureIcon.hidden = YES;
             self.disclosureLabel.hidden = YES;
             self.disclosureIcon.image = nil;
@@ -191,6 +194,44 @@
     self.iconBackgroundColor = UIColorFromRGB(0xE1DAD1);
     self.iconColor = UIColorFromRGB(0x646059);
     self.disclosureIcon.tintColor = UIColorFromRGB(0x72777D);
+}
+
+////////////////////////////////////////////////////////////////////////
+#pragma mark - Touchs
+////////////////////////////////////////////////////////////////////////
+
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    
+    UIView *touchView = [super hitTest:point withEvent:event];
+    if ([touchView isKindOfClass:[UIControl class]] && self.disclosureType != OSSettingsMenuItemDisclosureTypeNormal) {
+        return touchView;
+    }
+
+    return touchView;
+}
+
+
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    [self.nextResponder touchesEnded:touches withEvent:event];
+    
+    if (self.disclosureType == OSSettingsMenuItemDisclosureTypeNormal) {
+        if (!self.menuItem.actionTarget || !self.menuItem.actionSelector) {
+            return;
+        }
+        SEL selector = self.menuItem.actionSelector;
+        NSString *selString = NSStringFromSelector(selector);
+        NSInteger strCount = [selString length] - [[selString stringByReplacingOccurrencesOfString:@":" withString:@""] length];
+        NSAssert(strCount <= 1, @"最多只能有一个参数");
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[[self.menuItem.actionTarget class] instanceMethodSignatureForSelector:selector]];
+        [invocation setSelector:selector];
+        [invocation setTarget:self.menuItem.actionTarget];
+        
+        if (strCount > 0) {
+            id target = self;
+            [invocation setArgument:&target atIndex:2];
+        }
+        [invocation invoke];
+    }
 }
 
 @end

@@ -12,8 +12,9 @@
 #import "BrowserViewController.h"
 #import "FilesViewController.h"
 #import "DownloadsViewController.h"
+#import "SmileAuthenticator.h"
 
-@interface MainTabBarController ()
+@interface MainTabBarController () <SmileAuthenticatorDelegate>
 
 @end
 
@@ -28,7 +29,15 @@
     [self addChildVC:[FilesViewController new] imageNamed:@"TabFiles" title:@"Files"];
     [self addChildVC:[OSSettingViewController new] imageNamed:@"TabMore" title:@"More"];
     
-    
+    [SmileAuthenticator sharedInstance].delegate = self;
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if ([SmileAuthenticator hasPassword]) {
+        [SmileAuthenticator sharedInstance].securityType = INPUT_TOUCHID;
+        [[SmileAuthenticator sharedInstance] presentAuthViewControllerAnimated:NO];
+    }
 }
 
 
@@ -45,5 +54,39 @@
     
 }
 
+////////////////////////////////////////////////////////////////////////
+#pragma mark - AuthenticatorDelegate
+////////////////////////////////////////////////////////////////////////
+
+- (void)userFailAuthenticationWithCount:(NSInteger)failCount{
+    NSLog(@"userFailAuthenticationWithCount: %ld", (long)failCount);
+}
+
+- (void)userSuccessAuthentication{
+    NSLog(@"userSuccessAuthentication");
+}
+
+- (void)userTurnPasswordOn{
+    NSLog(@"userTurnPasswordOn");
+}
+
+- (void)userTurnPasswordOff{
+    NSLog(@"userTurnPasswordOff");
+}
+
+- (void)userChangePassword{
+    NSLog(@"userChangePassword");
+}
+
+- (void)AuthViewControllerPresented{
+    NSLog(@"presentAuthViewController");
+}
+
+- (void)AuthViewControllerDismissed:(UIViewController*)previousPresentedVC{
+    NSLog(@"dismissAuthViewController, previousPresentedVC: %@", previousPresentedVC);
+    if (previousPresentedVC) {
+        [self presentViewController:previousPresentedVC animated:YES completion:nil];
+    }
+}
 
 @end
