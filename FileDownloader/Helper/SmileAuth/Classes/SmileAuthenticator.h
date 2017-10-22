@@ -11,7 +11,7 @@
 #import "SmileKeychainWrapper.h"
 #import "SmileSettingVC.h"
 
-typedef void(^AuthCompletionBlock)();
+typedef void(^AuthCompletionBlock)(void);
 typedef void(^AuthErrorBlock)(LAError);
 
 /*!
@@ -121,4 +121,5 @@ typedef NS_ENUM(int, SecurityType) {
 /*!The method is called when user change password.*/
 -(void)userChangePassword;
 @end
+
 

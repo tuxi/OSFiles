@@ -54,6 +54,9 @@
 
 -(void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+#if ! __has_feature(objc_arc)
+    [super dealloc];
+#endif
 }
 
 #pragma mark - for Delegate
@@ -178,7 +181,7 @@
     if (self = [super init]) {
         self.context = [[LAContext alloc] init];
         self.policy = LAPolicyDeviceOwnerAuthenticationWithBiometrics;
-        self.localizedReason = NSLocalizedString(@"SMILE_REASON", nil);
+        self.localizedReason = NSLocalizedString(@"轻触指纹", nil);
         self.keychainWrapper = [[SmileKeychainWrapper alloc] init];
         self.securityType = INPUT_TWICE;
         self.parallaxMode = YES;

@@ -8,7 +8,6 @@
 
 #import "OSAuthenticatorHelper.h"
 
-NSString * const OSAuthenticatorBackgroundImageNameKey = @"OSAuthenticatorBackgroundImageNameKey";
 
 @implementation OSAuthenticatorHelper {
     UIImageView *_coverImageView;
@@ -41,7 +40,7 @@ NSString * const OSAuthenticatorBackgroundImageNameKey = @"OSAuthenticatorBackgr
     [SmileAuthenticator sharedInstance].passcodeDigit = 4;
     [SmileAuthenticator sharedInstance].tintColor = [UIColor purpleColor];
     [SmileAuthenticator sharedInstance].touchIDIconName = @"my_Touch_ID";
-    [SmileAuthenticator sharedInstance].appLogoName = @"my_Logo";
+//    [SmileAuthenticator sharedInstance].appLogoName = @"my_Logo";
     [SmileAuthenticator sharedInstance].navibarTranslucent = YES;
     [SmileAuthenticator sharedInstance].backgroundImage = [UIImage imageWithContentsOfFile:[self backgroundImagePath]];
 }
@@ -121,7 +120,7 @@ NSString * const OSAuthenticatorBackgroundImageNameKey = @"OSAuthenticatorBackgr
             [SmileAuthenticator sharedInstance].passcodeDigit = 6;
             [SmileAuthenticator sharedInstance].tintColor = [UIColor purpleColor];
             [SmileAuthenticator sharedInstance].touchIDIconName = @"my_Touch_ID";
-            [SmileAuthenticator sharedInstance].appLogoName = @"my_Logo";
+//            [SmileAuthenticator sharedInstance].appLogoName = @"my_Logo";
             [SmileAuthenticator sharedInstance].navibarTranslucent = YES;
             UIImage *backgroundImage = [UIImage imageWithContentsOfFile:self.backgroundImagePath];
             [SmileAuthenticator sharedInstance].backgroundImage = backgroundImage;
@@ -129,7 +128,7 @@ NSString * const OSAuthenticatorBackgroundImageNameKey = @"OSAuthenticatorBackgr
             [SmileAuthenticator sharedInstance].passcodeDigit = 6;
             [SmileAuthenticator sharedInstance].tintColor = [UIColor purpleColor];
             [SmileAuthenticator sharedInstance].touchIDIconName = @"my_Touch_ID";
-            [SmileAuthenticator sharedInstance].appLogoName = @"my_Logo";
+//            [SmileAuthenticator sharedInstance].appLogoName = @"my_Logo";
             [SmileAuthenticator sharedInstance].navibarTranslucent = NO;
             [SmileAuthenticator sharedInstance].nightMode = YES;
             UIImage *backgroundImage = [UIImage imageWithContentsOfFile:self.backgroundImagePath];
@@ -145,7 +144,7 @@ NSString * const OSAuthenticatorBackgroundImageNameKey = @"OSAuthenticatorBackgr
     if (!isExist || !isDirectory) {
         [[NSFileManager defaultManager] createDirectoryAtPath:imageFolder withIntermediateDirectories:YES attributes:nil error:nil];
     }
-    NSString *fullPath = [imageFolder stringByAppendingPathComponent:self.backgroundImageName];
+    NSString *fullPath = [imageFolder stringByAppendingPathComponent:@"backgroundImage.png"];
     if (!fullPath.length) {
         return nil;
     }
@@ -153,33 +152,33 @@ NSString * const OSAuthenticatorBackgroundImageNameKey = @"OSAuthenticatorBackgr
 }
 
 
-- (void)setBackgroundImageName:(NSString *)backgroundImageName {
-    [[NSUserDefaults standardUserDefaults] setObject:backgroundImageName forKey:OSAuthenticatorBackgroundImageNameKey];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+- (void)saveImage:(UIImage *)currentImage {
+    NSData *imageData = UIImagePNGRepresentation(currentImage);
+    NSString *fullPath = [self backgroundImagePath];
+    [self clearBackgroundImage];
+    [imageData writeToFile:fullPath atomically:NO];
+    
+    /// 保存完成后重新给控件赋值
     UIImage *backgroundImage = [UIImage imageWithContentsOfFile:[self backgroundImagePath]];
     [SmileAuthenticator sharedInstance].backgroundImage = backgroundImage;
     [_coverImageView setImage:backgroundImage];
-    
 }
 
-- (NSString *)backgroundImageName {
-    return [[NSUserDefaults standardUserDefaults] objectForKey:OSAuthenticatorBackgroundImageNameKey];
-}
-
-- (void)saveImage:(UIImage *)currentImage withName:(NSString *)imageName {
-    NSData *imageData = UIImagePNGRepresentation(currentImage);
-    NSString *imageFolder = [[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:@"backgroundImage"];
-    NSString *fullPath = [imageFolder stringByAppendingPathComponent:imageName];
-    BOOL isExist, isDirectory;
-    isExist = [[NSFileManager defaultManager] fileExistsAtPath:imageFolder isDirectory:&isDirectory];
-    if (!isExist || !isDirectory) {
-        [[NSFileManager defaultManager] createDirectoryAtPath:imageFolder withIntermediateDirectories:YES attributes:nil error:nil];
+- (BOOL)hasBackgroundImage {
+    if ([[NSFileManager defaultManager] fileExistsAtPath:[self backgroundImagePath]]) {
+        return YES;
     }
+    return NO;
+}
+
+- (void)clearBackgroundImage {
+    NSString *fullPath = [self backgroundImagePath];
     if ([[NSFileManager defaultManager] fileExistsAtPath:fullPath]) {
         [[NSFileManager defaultManager] removeItemAtPath:fullPath error:nil];
     }
-    [imageData writeToFile:fullPath atomically:NO];
-    [self setBackgroundImageName:imageName];
+    UIImage *backgroundImage = nil;
+    [SmileAuthenticator sharedInstance].backgroundImage = backgroundImage;
+    [_coverImageView setImage:backgroundImage];
 }
 
 @end

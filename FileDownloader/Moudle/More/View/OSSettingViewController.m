@@ -59,17 +59,27 @@
 }
 
 - (OSSettingsTableViewSection *)section_1 {
-    BOOL isSwitchOn = [SmileAuthenticator hasPassword];
+    BOOL hasPassword = [SmileAuthenticator hasPassword];
     NSMutableArray *items = @[
-                       [OSSettingsMenuItem switchCellForSel:@selector(disclosureSwitchChanged:) target:self title:@"设置启动密码" iconName:@"settings-zero" on:isSwitchOn]
+                       [OSSettingsMenuItem switchCellForSel:@selector(disclosureSwitchChanged:) target:self title:@"设置启动密码" iconName:@"settings-zero" on:hasPassword]
                        ].mutableCopy;
-    if (isSwitchOn) {
+    if (hasPassword) {
         [items addObject:[OSSettingsMenuItem normalCellForSel:@selector(changePassword:) target:self title:@"修改密码" iconName:nil]];
-        [items addObject:[OSSettingsMenuItem normalCellForSel:@selector(setUnlockBackgroundImage:) target:self title:@"设置解锁背景图片" iconName:nil]];
+        BOOL hasBackgroundImage = [[OSAuthenticatorHelper sharedInstance] hasBackgroundImage];
+        if (hasBackgroundImage) {
+         [items addObject:[OSSettingsMenuItem normalCellForSel:@selector(setUnlockBackgroundImage:) target:self title:@"设置解锁背景图片" iconName:nil]];
+             // 如果设置了背景图片，就添加可以点击的清除背景图的cell
+            [items addObject:[OSSettingsMenuItem normalCellForSel:@selector(clearBackgroundImage:) target:self title:@"清除解锁背景图片" iconName:nil]];
+        }
+        else {
+            [items addObject:[OSSettingsMenuItem switchCellForSel:@selector(setUnlockBackgroundImage:) target:self title:@"设置解锁背景图片" iconName:nil on:hasBackgroundImage]];
+        }
+        
     }
     OSSettingsTableViewSection *section = [[OSSettingsTableViewSection alloc] initWithItem:items headerTitle:nil footerText:nil];
     return section;
 }
+
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -135,6 +145,12 @@
     [[SmileAuthenticator sharedInstance] presentAuthViewControllerAnimated:TRUE];
 }
 
+/// 清除背景图片
+- (void)clearBackgroundImage:(id)obj {
+    [[OSAuthenticatorHelper sharedInstance] clearBackgroundImage];
+    [self loadSectionItems];
+}
+
 /// 设置解锁页背景图片
 - (void)setUnlockBackgroundImage:(id)obj {
     UIAlertController *alertC = [UIAlertController alertControllerWithTitle:@"请选择图片来源" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
@@ -179,6 +195,7 @@
     [alertC addAction:photoAction];
     [alertC addAction:cancelAction];
     [self presentViewController:alertC animated:YES completion:nil];
+    [self loadSectionItems];
 }
 
 - (void)disclosureSwitchChanged:(UISwitch *)sw {
@@ -192,7 +209,7 @@
     //    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];//原始图片
     UIImage *image = [info objectForKey:UIImagePickerControllerEditedImage];//编辑后的图片
     
-    [[OSAuthenticatorHelper sharedInstance] saveImage:image withName:@"backgroundImage.png"];
+    [[OSAuthenticatorHelper sharedInstance] saveImage:image];
     
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -200,6 +217,7 @@
 /// 取消拍照/选择图片
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     [self dismissViewControllerAnimated:YES completion:nil];
+    [self loadSectionItems];
 }
 
 

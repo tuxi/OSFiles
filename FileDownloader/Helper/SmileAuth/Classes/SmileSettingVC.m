@@ -78,7 +78,7 @@
 }
 
 -(void)touchIDForINPUT_TOUCHID{
-    [SmileAuthenticator sharedInstance].localizedReason = NSLocalizedString(@"SMILE_REASON", nil);
+    [SmileAuthenticator sharedInstance].localizedReason = NSLocalizedString(@"轻触指纹", nil);
     [[SmileAuthenticator sharedInstance] authenticateWithSuccess:^{
         [[SmileAuthenticator sharedInstance] touchID_OR_PasswordAuthSuccess];
         self.unlockBackgroundView.passwordView.smilePasswordView.dotCount = [SmileAuthenticator sharedInstance].passcodeDigit;
@@ -89,7 +89,7 @@
 }
 
 -(void)touchIDForINPUT_ONCE{
-    [SmileAuthenticator sharedInstance].localizedReason = NSLocalizedString(@"SMILE_INPUT_ONCE_TITLE", nil);
+    [SmileAuthenticator sharedInstance].localizedReason = NSLocalizedString(@"请输入密码或使用指纹解锁", nil);
     [[SmileAuthenticator sharedInstance] authenticateWithSuccess:^{
         [[SmileAuthenticator sharedInstance] touchID_OR_PasswordTurnOff];
         self.unlockBackgroundView.passwordView.smilePasswordView.dotCount = [SmileAuthenticator sharedInstance].passcodeDigit;
@@ -100,7 +100,7 @@
 }
 
 -(void)touchIDForINPUT_THREE{
-    [SmileAuthenticator sharedInstance].localizedReason = NSLocalizedString(@"SMILE_INPUT_THREE_TITLE", nil);
+    [SmileAuthenticator sharedInstance].localizedReason = NSLocalizedString(@"请输入密码或使用指纹解锁", nil);
     [[SmileAuthenticator sharedInstance] authenticateWithSuccess:^{
         self.unlockBackgroundView.passwordView.smilePasswordView.dotCount = [SmileAuthenticator sharedInstance].passcodeDigit;
         _inputCount ++;
@@ -166,40 +166,40 @@
     UIImage *iconImage = [UIImage imageNamed:[SmileAuthenticator sharedInstance].touchIDIconName];
     [self.unlockBackgroundView.touchIDBtn setImage:iconImage forState:UIControlStateNormal];
     
-    self.unlockBackgroundView.descLabel.text = [NSString stringWithFormat:NSLocalizedString(@"SMILE_INPUT_DESCRIPTION", nil), (long)[SmileAuthenticator sharedInstance].passcodeDigit];
+    self.unlockBackgroundView.descLabel.text = [NSString stringWithFormat:NSLocalizedString(@"请输入密码或使用TouchID解锁", nil), (long)[SmileAuthenticator sharedInstance].passcodeDigit];
     
     switch ([SmileAuthenticator sharedInstance].securityType) {
-        case INPUT_ONCE:
+        case INPUT_ONCE: {
             self.unlockBackgroundView.touchIDBtn.hidden = NO;
-            self.navigationItem.title = NSLocalizedString(@"SMILE_INPUT_ONCE_TITLE", nil);
+            self.navigationItem.title = [self getAppName];
             
             break;
+        }
+        case INPUT_TWICE: {
             
-        case INPUT_TWICE:
-            
-            self.navigationItem.title = NSLocalizedString(@"SMILE_INPUT_TWICE_TITLE", nil);
+            self.navigationItem.title = [self getAppName];
             
             break;
-            
-        case INPUT_THREE:
+        }
+        case INPUT_THREE: {
             self.unlockBackgroundView.touchIDBtn.hidden = NO;
-            self.navigationItem.title = NSLocalizedString(@"SMILE_INPUT_THREE_TITLE", nil);
-            self.unlockBackgroundView.descLabel.text = [NSString stringWithFormat:NSLocalizedString(@"SMILE_INPUT_THREE_STEP_1_DESCRIPTION", nil), (long)[SmileAuthenticator sharedInstance].passcodeDigit];
+            self.navigationItem.title = [self getAppName];
+            self.unlockBackgroundView.descLabel.text = [NSString stringWithFormat:NSLocalizedString(@"请输入密码", nil), (long)[SmileAuthenticator sharedInstance].passcodeDigit];
             
             break;
-            
-        case INPUT_TOUCHID:
+        }
+        case INPUT_TOUCHID: {
             
             self.unlockBackgroundView.touchIDBtn.hidden = NO;
             
             if (![SmileAuthenticator sharedInstance].appLogoName.length) {
-                self.navigationItem.title = NSLocalizedString(@"SMILE_INPUT_TOUCHID_TITLE", nil);
+                self.navigationItem.title = [self getAppName];
             } else {
                 self.navigationItem.titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[SmileAuthenticator sharedInstance].appLogoName]];
             }
             
             break;
-            
+        }
         default:
             break;
     }
@@ -240,6 +240,14 @@
     [self.unlockBackgroundView.passwordField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
     
     _passLength =[SmileAuthenticator sharedInstance].passcodeDigit;
+}
+
+- (NSString *)getAppName {
+    NSString *appCurName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleDisplayName"];
+    if (!appCurName.length) {
+        appCurName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
+    }
+    return appCurName;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -299,7 +307,7 @@
     
     [[SmileAuthenticator sharedInstance] touchID_OR_PasswordAuthFail:_failCount];
     
-    self.unlockBackgroundView.descLabel.text = [NSString stringWithFormat:NSLocalizedString(@"SMILE_INPUT_FAILED", nil), (long)_failCount];
+    self.unlockBackgroundView.descLabel.text = [NSString stringWithFormat:NSLocalizedString(@"输入的密码错误", nil), (long)_failCount];
 }
 
 -(void)passwordNotMatch{
@@ -309,7 +317,7 @@
     [self clearText];
     [self shakeAnimation];
     
-    self.unlockBackgroundView.descLabel.text = NSLocalizedString(@"SMILE_INPUT_NOT_MATCH", nil);
+    self.unlockBackgroundView.descLabel.text = NSLocalizedString(@"密码或指纹不匹配", nil);
 }
 
 -(void)reEnterPassword{
@@ -319,13 +327,13 @@
     
     [self slideAnimation];
     
-    self.unlockBackgroundView.descLabel.text = [NSString stringWithFormat:NSLocalizedString(@"SMILE_INPUT_RE-ENTER", nil), (long)[SmileAuthenticator sharedInstance].passcodeDigit];
+    self.unlockBackgroundView.descLabel.text = [NSString stringWithFormat:NSLocalizedString(@"请输入密码或使用指纹确认", nil), (long)[SmileAuthenticator sharedInstance].passcodeDigit];
 }
 
 -(void)enterNewPassword{
     [self clearText];
     [self slideAnimation];
-    self.unlockBackgroundView.descLabel.text = [NSString stringWithFormat:NSLocalizedString(@"SMILE_INPUT_THREE_STEP_2_DESCRIPTION", nil), (long)[SmileAuthenticator sharedInstance].passcodeDigit];
+    self.unlockBackgroundView.descLabel.text = [NSString stringWithFormat:NSLocalizedString(@"请输入密码或使用指纹确认", nil), (long)[SmileAuthenticator sharedInstance].passcodeDigit];
 }
 
 -(void)handleINPUT_TOUCHID{

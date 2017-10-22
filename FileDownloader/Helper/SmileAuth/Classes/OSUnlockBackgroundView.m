@@ -27,10 +27,10 @@
 
 - (void)setupViews {
     
+    [self addSubview:self.passwordField]; // 让passwordField看不见
     [self addSubview:self.backgroundImageView];
     [self addSubview:self.touchIDBtn];
     [self addSubview:self.passwordView];
-    [self addSubview:self.passwordField];
     [self addSubview:self.descLabel];
     
     [self makeConstraints];
@@ -80,6 +80,7 @@
         _backgroundImageView = [UIImageView new];
         _backgroundImageView.accessibilityIdentifier = NSStringFromSelector(_cmd);
         _backgroundImageView.translatesAutoresizingMaskIntoConstraints = NO;
+        _backgroundImageView.backgroundColor = [UIColor whiteColor];
     }
     return _backgroundImageView;
 }
@@ -121,7 +122,7 @@
         _descLabel.translatesAutoresizingMaskIntoConstraints = NO;
         _descLabel.text = @"请输入四位密码";
         _descLabel.textAlignment = NSTextAlignmentCenter;
-        _descLabel.backgroundColor = [UIColor whiteColor];
+        _descLabel.backgroundColor = [UIColor clearColor];
     }
     return _descLabel;
 }
