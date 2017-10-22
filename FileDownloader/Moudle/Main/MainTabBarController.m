@@ -30,6 +30,7 @@
     [self addChildVC:[OSSettingViewController new] imageNamed:@"TabMore" title:@"More"];
     
     [SmileAuthenticator sharedInstance].delegate = self;
+    self.view.backgroundColor = [UIColor whiteColor];
 }
 
 - (void)viewDidAppear:(BOOL)animated {

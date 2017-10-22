@@ -59,4 +59,11 @@
 
 #endif
 
+- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    [super touchesEnded:touches withEvent:event];
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(touchesEndedOnPasswordContainerView:)]) {
+        [self.delegate touchesEndedOnPasswordContainerView:self];
+    }
+}
 @end

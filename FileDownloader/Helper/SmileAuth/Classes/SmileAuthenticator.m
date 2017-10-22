@@ -92,8 +92,7 @@
     }
 }
 
--(void)presentAuthViewControllerAnimated:(BOOL)animated{
-    
+-(void)presentAuthViewControllerAnimated:(BOOL)animated showNavigation:(BOOL)showNavigation {
     if (self.securityType != INPUT_TOUCHID) {
         _isAuthenticated = NO;
     } else {
@@ -117,14 +116,36 @@
         
         self.isShowingAuthVC = YES;
         
+        UIViewController *vc = nil;
+        if (showNavigation) {
+            SmileSettingVC *settingVc = [SmileSettingVC new];
+            vc = [[[[self currentNavigationController] class] alloc] initWithRootViewController:settingVc];;
+        }
+        else {
+            vc = [SmileSettingVC new];
+        }
         
-        SmileSettingVC *settingVc = [SmileSettingVC new];
-        UINavigationController *naviVC = [[UINavigationController alloc] initWithRootViewController:settingVc];;
-        
-        [self.rootVC presentViewController:naviVC animated:animated completion:^{
+        [self.rootVC presentViewController:vc animated:animated completion:^{
             [[NSNotificationCenter defaultCenter] postNotificationName:SmileTouchID_Presented_AuthVC_Notification object:nil];
         }];
     }
+}
+
+-(void)presentAuthViewControllerAnimated:(BOOL)animated {
+    [self presentAuthViewControllerAnimated:animated showNavigation:NO];
+    
+}
+
+- (UINavigationController *)currentNavigationController {
+    UIViewController *rootVc = [UIApplication sharedApplication].delegate.window.rootViewController;
+    if ([rootVc isKindOfClass:[UINavigationController class]]) {
+        return (UINavigationController *)rootVc;
+    }
+    if ([rootVc isKindOfClass:[UITabBarController class]]) {
+        UITabBarController *tabVc = (UITabBarController *)rootVc;
+        return (UINavigationController *)tabVc.selectedViewController;
+    }
+    return nil;
 }
 
 -(void)authViewControllerDidDismissed{

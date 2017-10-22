@@ -50,28 +50,21 @@
     
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0]];
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0.0]];
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeHeight multiplier:0.1 constant:0.0]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeHeight multiplier:0.08 constant:0.0]];
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.descLabel attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0]];
     
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordField attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeading multiplier:1.0 constant:16.0]];
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordField attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-16.0]];
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordField attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordField attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.descLabel attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0]];
  
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.descLabel attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0]];
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.descLabel attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0.0]];
     [self addConstraint:[NSLayoutConstraint constraintWithItem:self.descLabel attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:50.0]];
     
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.descLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.descLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1.0 constant:80.0]];
 
 }
 
-#pragma mark *** Actions ***
-
-- (void)useTouchID:(UIButton *)btn {
-    if (self.useTouchIDAction) {
-        self.useTouchIDAction(btn);
-    }
-}
 
 #pragma mark *** Lazy ***
 
@@ -90,7 +83,7 @@
         _touchIDBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _touchIDBtn.translatesAutoresizingMaskIntoConstraints = NO;
         _touchIDBtn.accessibilityIdentifier = NSStringFromSelector(_cmd);
-        [_touchIDBtn addTarget:self action:@selector(useTouchID:) forControlEvents:UIControlEventTouchUpInside];
+        _touchIDBtn.alpha = 0.35;
     }
     return _touchIDBtn;
 }

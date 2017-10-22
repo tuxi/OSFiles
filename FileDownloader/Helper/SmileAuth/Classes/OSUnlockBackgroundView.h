@@ -20,6 +20,5 @@
 @property (nonatomic, strong) SmilePasswordContainerView *passwordView;
 @property (nonatomic, strong) UITextField *passwordField;
 @property (nonatomic, strong) UILabel *descLabel;
-@property (nonatomic, copy) void (^useTouchIDAction)(UIButton *btn);
 
 @end

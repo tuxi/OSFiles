@@ -32,6 +32,11 @@
     self.unlockBackgroundView.passwordView.smilePasswordView.dotCount = self.unlockBackgroundView.passwordField.text.length;
 }
 
+- (void)touchesEndedOnPasswordContainerView:(SmilePasswordContainerView *)passwordContainerView {
+
+    [self.unlockBackgroundView.passwordField becomeFirstResponder];
+}
+
 - (void)dismissSelf:(id)sender {
     
     [[SmileAuthenticator sharedInstance] authViewControllerWillDismissed];
@@ -41,7 +46,8 @@
     }];
 }
 
-- (IBAction)useTouchID:(id)sender {
+- (void)useTouchID:(id)sender {
+    [self.unlockBackgroundView.passwordField resignFirstResponder];
     [self touchIDHandle];
 }
 
@@ -122,10 +128,10 @@
     [super viewDidLoad];
     
     [self.view addSubview:self.unlockBackgroundView];
-    NSDictionary *subviewsDict = @{@"unlockBackgroundView": self.unlockBackgroundView, @"topLayoutGuide": self.topLayoutGuide, @"bottomLayoutGuide": self.bottomLayoutGuide};
+    NSDictionary *subviewsDict = @{@"unlockBackgroundView": self.unlockBackgroundView};
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|[unlockBackgroundView]|" options:kNilOptions metrics:nil views:subviewsDict]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[topLayoutGuide]-[unlockBackgroundView]|" options:kNilOptions metrics:nil views:subviewsDict]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[unlockBackgroundView]|" options:kNilOptions metrics:nil views:subviewsDict]];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(dismissSelf:)];
     
@@ -475,7 +481,14 @@
         _unlockBackgroundView = [OSUnlockBackgroundView new];
         _unlockBackgroundView.translatesAutoresizingMaskIntoConstraints = NO;
         _unlockBackgroundView.accessibilityIdentifier = NSStringFromSelector(_cmd);
+        [_unlockBackgroundView.touchIDBtn addTarget:self action:@selector(useTouchID:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _unlockBackgroundView;
+}
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    [super touchesBegan:touches withEvent:event];
+    
+    [self.unlockBackgroundView.passwordField resignFirstResponder];
 }
 @end

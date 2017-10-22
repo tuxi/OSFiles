@@ -18,11 +18,17 @@
 //IBInspectable
 @property (nonatomic, strong) UIColor *mainColor;
 @property (nonatomic, strong) SmilePasswordView *smilePasswordView;
+#if ! __has_feature(objc_arc)
+@property (nonatomic, assign) id <SmileContainerLayoutDelegate> delegate;
+#else
 @property (nonatomic, weak) id <SmileContainerLayoutDelegate> delegate;
+#endif
 
 @end
 
 @protocol SmileContainerLayoutDelegate <NSObject>
 @required
--(void)smileContainerLayoutSubview;
+- (void)smileContainerLayoutSubview;
+@optional
+- (void)touchesEndedOnPasswordContainerView:(SmilePasswordContainerView *)passwordContainerView;
 @end

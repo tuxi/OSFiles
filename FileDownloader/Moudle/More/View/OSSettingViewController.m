@@ -131,7 +131,7 @@
 /// 修改密码
 - (void)changePassword:(id)obj {
     [SmileAuthenticator sharedInstance].securityType = INPUT_THREE;
-    [[SmileAuthenticator sharedInstance] presentAuthViewControllerAnimated:TRUE];
+    [[SmileAuthenticator sharedInstance] presentAuthViewControllerAnimated:TRUE showNavigation:TRUE];
 }
 
 /// 打开密码
@@ -142,7 +142,7 @@
         [SmileAuthenticator sharedInstance].securityType = INPUT_ONCE;
     }
     
-    [[SmileAuthenticator sharedInstance] presentAuthViewControllerAnimated:TRUE];
+    [[SmileAuthenticator sharedInstance] presentAuthViewControllerAnimated:TRUE showNavigation:TRUE];
 }
 
 /// 清除背景图片
@@ -206,8 +206,8 @@
 /// 拍照/选择图片结束
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     //获取图片
-    //    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];//原始图片
-    UIImage *image = [info objectForKey:UIImagePickerControllerEditedImage];//编辑后的图片
+    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];//原始图片
+//    UIImage *image = [info objectForKey:UIImagePickerControllerEditedImage];//编辑后的图片
     
     [[OSAuthenticatorHelper sharedInstance] saveImage:image];
     

@@ -10,7 +10,10 @@
 
 #define SmileTouchID_DispatchMainThread(block, ...) if(block) dispatch_async(dispatch_get_main_queue(), ^{ block(__VA_ARGS__); })
 
-static CGFloat kLineWidthConst = 12.0;
+#pragma clang diagnostic ignored "-Wself-assign"
+#pragma clang diagnostic ignored "-Wunused-property-ivar"
+
+static CGFloat kLineWidthConst = 18.0;
 static CGFloat kDotRadiusConst = 5.0;
 static CGFloat kMAX_RadiusConst = 32.0;
 
