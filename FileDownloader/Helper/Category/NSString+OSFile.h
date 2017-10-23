@@ -8,11 +8,13 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSString (FileDownloadsExtend)
+@interface NSString (OSFile)
 
 + (NSString *)transformedFileSizeValue:(NSNumber *)value;
 + (NSString *)stringWithRemainingTime:(NSInteger)secs;
 - (unsigned long long)fileSize;
+
++ (NSString *)stringForSize:(uint64_t)bytes;
 
 @end
 

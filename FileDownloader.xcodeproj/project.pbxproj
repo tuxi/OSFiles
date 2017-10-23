@@ -78,7 +78,7 @@
 		18517C671EEBDDDB00B148C8 /* BaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18517C661EEBDDDB00B148C8 /* BaseViewController.m */; };
 		18517C741EEBE08700B148C8 /* UIScrollView+NoDataPlaceholder.m in Sources */ = {isa = PBXBuildFile; fileRef = 18517C711EEBE08700B148C8 /* UIScrollView+NoDataPlaceholder.m */; };
 		18517C751EEBE08700B148C8 /* UITableView+NoDataPlaceholderExtend.m in Sources */ = {isa = PBXBuildFile; fileRef = 18517C731EEBE08700B148C8 /* UITableView+NoDataPlaceholderExtend.m */; };
-		1871ACDA1EEEE2D900ABC452 /* NSString+FileDownloadsExtend.m in Sources */ = {isa = PBXBuildFile; fileRef = 1871ACD91EEEE2D900ABC452 /* NSString+FileDownloadsExtend.m */; };
+		1871ACDA1EEEE2D900ABC452 /* NSString+OSFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 1871ACD91EEEE2D900ABC452 /* NSString+OSFile.m */; };
 		1871ACDD1EEEE55700ABC452 /* NSDate+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 1871ACDC1EEEE55700ABC452 /* NSDate+Utilities.m */; };
 		1871ACF21EEEECBE00ABC452 /* FilesTableViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1871ACF11EEEECBE00ABC452 /* FilesTableViewModel.m */; };
 		1871ACF51EEEEE8C00ABC452 /* DownloadsTableViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1871ACF41EEEEE8C00ABC452 /* DownloadsTableViewModel.m */; };
@@ -121,6 +121,7 @@
 		18878B271EF19EAC005C0185 /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = 18878B231EF19EAC005C0185 /* UIColor+Hex.m */; };
 		18878B281EF19EAC005C0185 /* UINavigationItem+MultipleItems.m in Sources */ = {isa = PBXBuildFile; fileRef = 18878B251EF19EAC005C0185 /* UINavigationItem+MultipleItems.m */; };
 		18910A6C1F0D3472002BA292 /* PSPDFUIKitMainThreadGuard.m in Sources */ = {isa = PBXBuildFile; fileRef = 18910A6B1F0D3472002BA292 /* PSPDFUIKitMainThreadGuard.m */; };
+		18ADEBEF1F9E21EA0024BA40 /* OSFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 18ADEBEE1F9E21EA0024BA40 /* OSFile.m */; };
 		18DCFC451F263D8F00AC21CA /* FileDownloaderDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 18DCFC401F263D8F00AC21CA /* FileDownloaderDelegate.m */; };
 		18DCFC461F263D8F00AC21CA /* FileDownloaderManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 18DCFC421F263D8F00AC21CA /* FileDownloaderManager.m */; };
 /* End PBXBuildFile section */
@@ -269,8 +270,8 @@
 		18517C711EEBE08700B148C8 /* UIScrollView+NoDataPlaceholder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+NoDataPlaceholder.m"; sourceTree = "<group>"; };
 		18517C721EEBE08700B148C8 /* UITableView+NoDataPlaceholderExtend.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+NoDataPlaceholderExtend.h"; sourceTree = "<group>"; };
 		18517C731EEBE08700B148C8 /* UITableView+NoDataPlaceholderExtend.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+NoDataPlaceholderExtend.m"; sourceTree = "<group>"; };
-		1871ACD81EEEE2D900ABC452 /* NSString+FileDownloadsExtend.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+FileDownloadsExtend.h"; sourceTree = "<group>"; };
-		1871ACD91EEEE2D900ABC452 /* NSString+FileDownloadsExtend.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+FileDownloadsExtend.m"; sourceTree = "<group>"; };
+		1871ACD81EEEE2D900ABC452 /* NSString+OSFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+OSFile.h"; sourceTree = "<group>"; };
+		1871ACD91EEEE2D900ABC452 /* NSString+OSFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+OSFile.m"; sourceTree = "<group>"; };
 		1871ACDB1EEEE55700ABC452 /* NSDate+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Utilities.h"; sourceTree = "<group>"; };
 		1871ACDC1EEEE55700ABC452 /* NSDate+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Utilities.m"; sourceTree = "<group>"; };
 		1871ACF01EEEECBE00ABC452 /* FilesTableViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilesTableViewModel.h; sourceTree = "<group>"; };
@@ -358,6 +359,9 @@
 		18878B241EF19EAC005C0185 /* UINavigationItem+MultipleItems.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationItem+MultipleItems.h"; sourceTree = "<group>"; };
 		18878B251EF19EAC005C0185 /* UINavigationItem+MultipleItems.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationItem+MultipleItems.m"; sourceTree = "<group>"; };
 		18910A6B1F0D3472002BA292 /* PSPDFUIKitMainThreadGuard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSPDFUIKitMainThreadGuard.m; sourceTree = "<group>"; };
+		18ADEBEB1F9E1FB00024BA40 /* Warnings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Warnings.h; sourceTree = "<group>"; };
+		18ADEBED1F9E21EA0024BA40 /* OSFile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSFile.h; sourceTree = "<group>"; };
+		18ADEBEE1F9E21EA0024BA40 /* OSFile.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSFile.m; sourceTree = "<group>"; };
 		18DCFC3F1F263D8F00AC21CA /* FileDownloaderDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileDownloaderDelegate.h; sourceTree = "<group>"; };
 		18DCFC401F263D8F00AC21CA /* FileDownloaderDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileDownloaderDelegate.m; sourceTree = "<group>"; };
 		18DCFC411F263D8F00AC21CA /* FileDownloaderManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileDownloaderManager.h; sourceTree = "<group>"; };
@@ -397,6 +401,7 @@
 				1813E7A31F9B6ACF002C661E /* FileDownloadProgress.h */,
 				1813E7A41F9B6ACF002C661E /* FileDownloadProgress.m */,
 				1813E7A51F9B6ACF002C661E /* FileDownloadProtocol.h */,
+				18ADEBEB1F9E1FB00024BA40 /* Warnings.h */,
 			);
 			path = Downloader;
 			sourceTree = "<group>";
@@ -560,6 +565,7 @@
 		18517BE91EEBCB2C00B148C8 /* Helper */ = {
 			isa = PBXGroup;
 			children = (
+				18ADEBEC1F9E21910024BA40 /* FileSystem */,
 				1813E8371F9BAE73002C661E /* SmileAuth */,
 				1813E7AA1F9B6E74002C661E /* ProgressBar */,
 				180CBDDD1F1126E0006D2871 /* SuspensionControl */,
@@ -838,8 +844,8 @@
 				18878A7A1EF030AF005C0185 /* UIButton+ClickBlock.m */,
 				18517C621EEBDB3E00B148C8 /* UIImage+XYImage.h */,
 				18517C631EEBDB3E00B148C8 /* UIImage+XYImage.m */,
-				1871ACD81EEEE2D900ABC452 /* NSString+FileDownloadsExtend.h */,
-				1871ACD91EEEE2D900ABC452 /* NSString+FileDownloadsExtend.m */,
+				1871ACD81EEEE2D900ABC452 /* NSString+OSFile.h */,
+				1871ACD91EEEE2D900ABC452 /* NSString+OSFile.m */,
 				1871ACDB1EEEE55700ABC452 /* NSDate+Utilities.h */,
 				1871ACDC1EEEE55700ABC452 /* NSDate+Utilities.m */,
 				18878A7F1EF035DF005C0185 /* UIView+Extend.h */,
@@ -979,6 +985,15 @@
 				18878A931EF03908005C0185 /* ICGVideoTrimmerView.m */,
 			);
 			path = Source;
+			sourceTree = "<group>";
+		};
+		18ADEBEC1F9E21910024BA40 /* FileSystem */ = {
+			isa = PBXGroup;
+			children = (
+				18ADEBED1F9E21EA0024BA40 /* OSFile.h */,
+				18ADEBEE1F9E21EA0024BA40 /* OSFile.m */,
+			);
+			path = FileSystem;
 			sourceTree = "<group>";
 		};
 		18DCFC3E1F263D8F00AC21CA /* Utils */ = {
@@ -1133,6 +1148,7 @@
 				18DCFC461F263D8F00AC21CA /* FileDownloaderManager.m in Sources */,
 				18878B261EF19EAC005C0185 /* UIApplication+ActivityIndicator.m in Sources */,
 				1871ACF21EEEECBE00ABC452 /* FilesTableViewModel.m in Sources */,
+				18ADEBEF1F9E21EA0024BA40 /* OSFile.m in Sources */,
 				1813E7A71F9B6ACF002C661E /* FileDownloader.m in Sources */,
 				1871AD0D1EEEF15100ABC452 /* BaseTableViewModel.m in Sources */,
 				1871ACDD1EEEE55700ABC452 /* NSDate+Utilities.m in Sources */,
@@ -1179,7 +1195,7 @@
 				18517C391EEBD66A00B148C8 /* README.markdown in Sources */,
 				1813E7A81F9B6ACF002C661E /* FileDownloaderSessionPrivateDelegate.m in Sources */,
 				18DCFC451F263D8F00AC21CA /* FileDownloaderDelegate.m in Sources */,
-				1871ACDA1EEEE2D900ABC452 /* NSString+FileDownloadsExtend.m in Sources */,
+				1871ACDA1EEEE2D900ABC452 /* NSString+OSFile.m in Sources */,
 				18878A941EF03908005C0185 /* XYCutVideoController.m in Sources */,
 				1813E8301F9B96F5002C661E /* OSProminentSwitch.m in Sources */,
 				18517BC81EEBC86600B148C8 /* main.m in Sources */,

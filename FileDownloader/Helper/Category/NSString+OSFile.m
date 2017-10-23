@@ -6,9 +6,13 @@
 //  Copyright © 2017年 Ossey. All rights reserved.
 //
 
-#import "NSString+FileDownloadsExtend.h"
+#import "NSString+OSFile.h"
 
-@implementation NSString (FileDownloadsExtend)
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wformat-nonliteral"
+#endif
+
+@implementation NSString (OSFile)
 
 + (NSString *)transformedFileSizeValue:(NSNumber *)value {
     
@@ -117,5 +121,33 @@
         totalSize = [mgr attributesOfItemAtPath:self error:nil].fileSize;
     }
     return totalSize;
+}
+
++ (NSString *)stringForSize:(uint64_t)bytes {
+    double     size;
+    NSString * unit;
+    
+    if( bytes > ( 1024 * 1024 * 1024 ) )
+    {
+        unit  = NSLocalizedString( @"SizeGigaBytes", @"SizeGigaBytes" );
+        size  = ( double )( ( double )( ( double )bytes / ( double )1024 ) / ( double )1024 ) / ( double )1024;
+    }
+    else if( bytes > ( 1024 * 1024 ) )
+    {
+        unit = NSLocalizedString( @"SizeMegaBytes", @"SizeMegaBytes" );
+        size = ( double )( ( double )bytes / ( double )1024 ) / ( double )1024;
+    }
+    else if( bytes > 1024 )
+    {
+        unit = NSLocalizedString( @"SizeKiloBytes", @"SizeKiloBytes" );
+        size = ( double )( ( double )bytes / ( double )1024 );
+    }
+    else
+    {
+        unit = NSLocalizedString( @"SizeBytes", @"SizeBytes" );
+        size = bytes;
+    }
+    
+    return [ NSString stringWithFormat: unit, size ];
 }
 @end

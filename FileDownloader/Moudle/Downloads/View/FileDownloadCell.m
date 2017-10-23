@@ -10,7 +10,7 @@
 #import "AppDelegate.h"
 #import "FileDownloaderManager.h"
 #import "FFCircularProgressView.h"
-#import "NSString+FileDownloadsExtend.h"
+#import "NSString+OSFile.h"
 #import "NetworkTypeUtils.h"
 
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"

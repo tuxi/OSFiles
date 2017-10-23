@@ -6,11 +6,11 @@
 //  Copyright © 2017年 Ossey. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "OSFile.h"
 #import "FileDownloadConst.h"
 #import "FileDownloadProgress.h"
 
-@interface FileItem : NSObject <NSCoding>
+@interface FileItem : OSFile <NSCoding>
 
 @property (nonatomic, copy) NSString *packageId;
 @property (nonatomic, assign) FileDownloadStatus status;

@@ -9,7 +9,7 @@
 #import "ExceptionUtils.h"
 #import <objc/runtime.h>
 #import "SuspensionControl.h"
-#import "NSString+FileDownloadsExtend.h"
+#import "NSString+OSFile.h"
 
 #define APPVERSION_STRING [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
