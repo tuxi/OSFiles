@@ -7,7 +7,8 @@
 //
 
 #import "XYImageBrowerView.h"
-#import "UIImageView+WebCache.h"
+#import <UIImageView+WebCache.h>
+#import <UIView+WebCache.h>
 
 @interface XYImageBrowerView () <UIScrollViewDelegate, XYImageViewDelegate>
 /// 图片数组，3个 XYImageView, 进行复用
@@ -567,12 +568,10 @@
     // 取消上一次的下载
     self.userInteractionEnabled = false;
     
-  
-    [self.imageView sd_setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:self.placeholderImage options:SDWebImageHighPriority progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+    [self.imageView sd_setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:self.placeholderImage options:SDWebImageLowPriority progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
         CGFloat progress = (CGFloat)receivedSize / expectedSize ;
         self.progressView.progress = progress;
-    } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-        
+    } completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
         if (error != nil) {
             [self.progressView showError];
         }else {
@@ -591,7 +590,6 @@
                 self.progressView.progress = 1;
             }
         }
-        
     }];
 }
 

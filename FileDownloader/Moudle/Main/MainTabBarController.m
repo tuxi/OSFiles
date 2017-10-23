@@ -9,10 +9,12 @@
 #import "MainTabBarController.h"
 #import "MainNavigationController.h"
 #import "OSSettingViewController.h"
-#import "BrowserViewController.h"
+//#import "OSBrowserViewController.h"
 #import "FilesViewController.h"
 #import "DownloadsViewController.h"
 #import "SmileAuthenticator.h"
+#import "BrowserViewController.h"
+#import "BaseNavigationViewController.h"
 
 @interface MainTabBarController () <SmileAuthenticatorDelegate>
 
@@ -24,7 +26,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self addChildVC:[BrowserViewController new] imageNamed:@"TabBrowser" title:@"Browser"];
+    [self addChildVC:[BrowserViewController sharedInstance] imageNamed:@"TabBrowser" title:@"Browser" navClass:[BaseNavigationViewController class]];
     [self addChildVC:[DownloadsViewController new] imageNamed:@"TabDownloads" title:@"Downloads"];
     [self addChildVC:[FilesViewController new] imageNamed:@"TabFiles" title:@"Files"];
     [self addChildVC:[OSSettingViewController new] imageNamed:@"TabMore" title:@"More"];
@@ -41,9 +43,15 @@
     }
 }
 
-
 - (void)addChildVC:(UIViewController *)vc imageNamed:(NSString *)name title:(NSString *)title {
-    MainNavigationController *nav = [[MainNavigationController alloc] initWithRootViewController:vc];
+    [self addChildVC:vc imageNamed:name title:title navClass:NULL];
+}
+
+- (void)addChildVC:(UIViewController *)vc imageNamed:(NSString *)name title:(NSString *)title navClass:(Class)navClass {
+    if (!navClass) {
+        navClass = [MainNavigationController class];
+    }
+    MainNavigationController *nav = [[navClass alloc] initWithRootViewController:vc];
     nav.tabBarItem.image = [UIImage imageNamed:name].xy_originalMode;
     nav.tabBarItem.selectedImage = [UIImage imageNamed:[name stringByAppendingString:@"Filled"]];
     nav.tabBarItem.title = title;

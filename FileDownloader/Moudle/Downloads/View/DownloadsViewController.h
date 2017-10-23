@@ -6,8 +6,8 @@
 //  Copyright © 2017年 Ossey. All rights reserved.
 //
 
-#import "BaseViewController.h"
+#import "OSBaseViewController.h"
 
-@interface DownloadsViewController : BaseViewController
+@interface DownloadsViewController : OSBaseViewController
 
 @end
