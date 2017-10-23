@@ -2,8 +2,8 @@
 //  CardCollectionViewLayout.m
 //  WebBrowser
 //
-//  Created by 钟武 on 2016/12/20.
-//  Copyright © 2016年 钟武. All rights reserved.
+//  Created by Null on 2016/12/20.
+//  Copyright © 2016年 Null. All rights reserved.
 //
 
 #import "CardCollectionViewLayout.h"

@@ -2,8 +2,8 @@
 //  ZWFastEnumeration.h
 //  WebBrowser
 //
-//  Created by 钟武 on 2017/8/12.
-//  Copyright © 2017年 钟武. All rights reserved.
+//  Created by Null on 2017/8/12.
+//  Copyright © 2017年 Null. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

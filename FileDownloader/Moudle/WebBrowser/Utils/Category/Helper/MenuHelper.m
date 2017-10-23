@@ -2,8 +2,8 @@
 //  MenuHelper.m
 //  WebBrowser
 //
-//  Created by 钟武 on 16/7/29.
-//  Copyright © 2016年 钟武. All rights reserved.
+//  Created by Null on 16/7/29.
+//  Copyright © 2016年 Null. All rights reserved.
 //
 
 #import "MenuHelper.h"

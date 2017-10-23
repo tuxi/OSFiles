@@ -2,8 +2,8 @@
 //  HTTPClient.m
 //  ZhihuDaily
 //
-//  Created by 钟武 on 16/8/3.
-//  Copyright © 2016年 钟武. All rights reserved.
+//  Created by Null on 16/8/3.
+//  Copyright © 2016年 Null. All rights reserved.
 //
 
 #import "HTTPClient.h"

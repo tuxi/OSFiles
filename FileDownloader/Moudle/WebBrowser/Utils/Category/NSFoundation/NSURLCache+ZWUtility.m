@@ -2,8 +2,8 @@
 //  NSURLCache+ZWUtility.m
 //  WebBrowser
 //
-//  Created by 钟武 on 2017/3/26.
-//  Copyright © 2017年 钟武. All rights reserved.
+//  Created by Null on 2017/3/26.
+//  Copyright © 2017年 Null. All rights reserved.
 //
 
 #import "NSURLCache+ZWUtility.h"

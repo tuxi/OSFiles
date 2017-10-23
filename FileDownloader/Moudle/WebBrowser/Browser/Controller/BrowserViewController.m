@@ -2,8 +2,8 @@
 //  BrowserViewController.m
 //  WebBrowser
 //
-//  Created by 钟武 on 16/7/30.
-//  Copyright © 2016年 钟武. All rights reserved.
+//  Created by Null on 16/7/30.
+//  Copyright © 2016年 Null. All rights reserved.
 //
 
 #import <StoreKit/StoreKit.h>
@@ -221,7 +221,14 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
           }],
           [SettingsMenuItem itemWithText:@"拷贝连接" image:[UIImage imageNamed:@"album"] action:^{
               [self_ handleCopyURLButtonClicked];
+          }],
+          [SettingsMenuItem itemWithText:@"下载" image:[UIImage imageNamed:@"album"] action:^{
+              NSString *lJs = @"document.documentElement.innerHTML";
+              NSString *lHtml = [self.browserContainerView.webView stringByEvaluatingJavaScriptFromString:lJs];
+//              NSArray *images = [self getImageurlFromHtml:lHtml];
+              [[[UIAlertView alloc] initWithTitle:@"HTML" message:lHtml delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
           }]
+          
           ];
         
         [SettingsViewController presentFromViewController:self withItems:items completion:nil];
@@ -241,6 +248,41 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
         }];
     }
 }
+
+//获取webView中的所有图片URL
+- (NSArray *) getImageurlFromHtml:(NSString *) webString
+{
+    NSMutableArray * imageurlArray = [NSMutableArray arrayWithCapacity:1];
+    
+    //标签匹配
+    NSString *parten = @"<img(.*?)>";
+    NSError* error = NULL;
+    NSRegularExpression *reg = [NSRegularExpression regularExpressionWithPattern:parten options:0 error:&error];
+    
+    NSArray* match = [reg matchesInString:webString options:0 range:NSMakeRange(0, [webString length] - 1)];
+    
+    for (NSTextCheckingResult * result in match) {
+        
+        //过去数组中的标签
+        NSRange range = [result range];
+        NSString * subString = [webString substringWithRange:range];
+        
+        
+        //从图片中的标签中提取ImageURL
+        NSRegularExpression *subReg = [NSRegularExpression regularExpressionWithPattern:@"http://(.*?)\"" options:0 error:NULL];
+        NSArray* match = [subReg matchesInString:subString options:0 range:NSMakeRange(0, [subString length] - 1)];
+        NSTextCheckingResult * subRes = match[0];
+        NSRange subRange = [subRes range];
+        subRange.length = subRange.length -1;
+        NSString * imagekUrl = [subString substringWithRange:subRange];
+        
+        //将提取出的图片URL添加到图片数组中
+        [imageurlArray addObject:imagekUrl];
+    }
+    
+    return imageurlArray;
+}
+
 
 - (void)pushTableViewControllerWithControllerName:(Class)class{
     if (![class isSubclassOfClass:[UITableViewController class]]) {
