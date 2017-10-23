@@ -1,23 +1,23 @@
 //
-//  FileDownloadCell.m
+//  OSFileDownloadCell.m
 //  DownloaderManager
 //
 //  Created by xiaoyuan on 2017/6/5.
 //  Copyright © 2017年 Ossey. All rights reserved.
 //
 
-#import "FileDownloadCell.h"
+#import "OSFileDownloadCell.h"
 #import "AppDelegate.h"
-#import "FileDownloaderManager.h"
+#import "OSFileDownloaderManager.h"
 #import "FFCircularProgressView.h"
 #import "NSString+OSFile.h"
 #import "NetworkTypeUtils.h"
 
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
-static CGFloat const FileDownloadCellGloabMargin = 10.0;
+static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
 
-@interface FileDownloadCell () <UIAlertViewDelegate>
+@interface OSFileDownloadCell () <UIAlertViewDelegate>
 
 @property (weak, nonatomic) UILabel *downloadStatusLabel;
 @property (weak, nonatomic) FFCircularProgressView *cycleView;
@@ -36,7 +36,7 @@ static CGFloat const FileDownloadCellGloabMargin = 10.0;
 
 @end
 
-@implementation FileDownloadCell
+@implementation OSFileDownloadCell
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -117,7 +117,7 @@ static CGFloat const FileDownloadCellGloabMargin = 10.0;
 ////////////////////////////////////////////////////////////////////////
 #pragma mark -
 ////////////////////////////////////////////////////////////////////////
-- (void)setFileItem:(FileItem *)fileItem {
+- (void)setFileItem:(OSFileItem *)fileItem {
     _fileItem = fileItem;
     self.downloadStatusLabel.hidden = NO;
     self.speedLabel.hidden = NO;
@@ -136,26 +136,26 @@ static CGFloat const FileDownloadCellGloabMargin = 10.0;
 }
 
 
-- (void)setDownloadViewByStatus:(FileDownloadStatus)aStatus {
+- (void)setDownloadViewByStatus:(OSFileDownloadStatus)aStatus {
     
     self.cycleView.tintColor = [UIColor grayColor];
     switch (aStatus) {
             
-        case FileDownloadStatusNotStarted:
+        case OSFileDownloadStatusNotStarted:
             self.cycleView.circularState = FFCircularStateIcon;
             
             break;
             
-        case FileDownloadStatusDownloading:
+        case OSFileDownloadStatusDownloading:
         {
             self.cycleView.circularState = FFCircularStateStopProgress;
         }
             break;
-        case FileDownloadStatusPaused:
+        case OSFileDownloadStatusPaused:
             self.cycleView.circularState = FFCircularStateIcon;
             break;
             
-        case FileDownloadStatusSuccess:
+        case OSFileDownloadStatusSuccess:
         {
             self.downloadStatusLabel.hidden = YES;
             self.speedLabel.hidden = YES;
@@ -174,11 +174,11 @@ static CGFloat const FileDownloadCellGloabMargin = 10.0;
         }
             break;
             
-        case FileDownloadStatusFailure:
+        case OSFileDownloadStatusFailure:
             self.cycleView.tintColor = [UIColor redColor];
             self.cycleView.circularState = FFCircularStateStopSpinning;
             break;
-        case FileDownloadStatusWaiting:
+        case OSFileDownloadStatusWaiting:
             self.cycleView.circularState = FFCircularStateStopSpinning;
             break;
             
@@ -200,12 +200,12 @@ static CGFloat const FileDownloadCellGloabMargin = 10.0;
     [self.remainTimeLabel setText:[NSString stringWithRemainingTime:self.fileItem.progressObj.estimatedRemainingTime]];
     [self.speedLabel setText:[NSString stringWithFormat:@"%@/s", [NSString transformedFileSizeValue:@(self.fileItem.progressObj.bytesPerSecondSpeed)]]];
     
-    FileDownloadProgress *progress = self.fileItem.progressObj;
+    OSFileDownloadProgress *progress = self.fileItem.progressObj;
     if (progress) {
         self.cycleView.progress = progress.progress;
         [self.cycleView stopSpinProgressBackgroundLayer];
     } else {
-        if (self.fileItem.status == FileDownloadStatusSuccess) {
+        if (self.fileItem.status == OSFileDownloadStatusSuccess) {
             self.cycleView.progress = 1.0;
             [self.cycleView stopSpinProgressBackgroundLayer];
         } else {
@@ -220,47 +220,47 @@ static CGFloat const FileDownloadCellGloabMargin = 10.0;
 ////////////////////////////////////////////////////////////////////////
 
 - (void)pause:(NSString *)urlPath {
-    [[FileDownloaderManager sharedInstance] pause:urlPath];
+    [[OSFileDownloaderManager sharedInstance] pause:urlPath];
     
 }
 
 - (void)start:(NSString *)urlPath {
     if ([NetworkTypeUtils networkType] == NetworkTypeWIFI) {
-        [[FileDownloaderManager sharedInstance] start:urlPath];
+        [[OSFileDownloaderManager sharedInstance] start:urlPath];
     } else {
         [[[UIAlertView alloc] initWithTitle:@"非Wifi环境下不能下载" message:nil delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil, nil] show];
     }
 }
 
 - (void)cancel:(NSString *)urlPath {
-    [[FileDownloaderManager sharedInstance] cancel:urlPath];
+    [[OSFileDownloaderManager sharedInstance] cancel:urlPath];
 }
 
 - (void)cycleViewClick:(FFCircularProgressView *)cycleView {
     
     switch (self.fileItem.status) {
             
-        case FileDownloadStatusNotStarted: {
+        case OSFileDownloadStatusNotStarted: {
             [self start:self.fileItem.urlPath];
             break;
         }
-        case FileDownloadStatusDownloading: {
+        case OSFileDownloadStatusDownloading: {
             [self pause:self.fileItem.urlPath];
             break;
         }
-        case FileDownloadStatusPaused: {
+        case OSFileDownloadStatusPaused: {
             [self start:self.fileItem.urlPath];
             break;
         }
-        case FileDownloadStatusSuccess: {
+        case OSFileDownloadStatusSuccess: {
             
             break;
         }
-        case FileDownloadStatusWaiting: {
+        case OSFileDownloadStatusWaiting: {
             [self pause:self.fileItem.urlPath];
             break;
         }
-        case FileDownloadStatusFailure: {
+        case OSFileDownloadStatusFailure: {
             [self start:self.fileItem.urlPath];
             break;
         }
@@ -278,16 +278,16 @@ static CGFloat const FileDownloadCellGloabMargin = 10.0;
 
 - (void)_makeConstraints {
     [_iconView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.contentView).mas_offset(FileDownloadCellGloabMargin);
+        make.left.equalTo(self.contentView).mas_offset(OSFileDownloadCellGloabMargin);
         make.centerY.equalTo(self.contentView);
         make.width.height.mas_equalTo(38);
     }];
     
     [_fileNameLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         if (_iconView && _iconView.hidden == NO) {
-            make.left.equalTo(_iconView.mas_right).mas_offset(FileDownloadCellGloabMargin);
+            make.left.equalTo(_iconView.mas_right).mas_offset(OSFileDownloadCellGloabMargin);
         } else {
-            make.left.equalTo(self.contentView).mas_offset(FileDownloadCellGloabMargin);
+            make.left.equalTo(self.contentView).mas_offset(OSFileDownloadCellGloabMargin);
         }
         make.top.equalTo(self.contentView).mas_offset(8.8);
         make.right.equalTo(self.contentView).mas_offset(-100);
@@ -304,7 +304,7 @@ static CGFloat const FileDownloadCellGloabMargin = 10.0;
     }];
     
     [_moreBtn mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.contentView).mas_offset(-FileDownloadCellGloabMargin);
+        make.right.equalTo(self.contentView).mas_offset(-OSFileDownloadCellGloabMargin);
         make.centerY.equalTo(self.contentView);
     }];
     
@@ -317,19 +317,19 @@ static CGFloat const FileDownloadCellGloabMargin = 10.0;
     }];
     
     [_bottomLine mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.contentView).mas_offset(FileDownloadCellGloabMargin);
+        make.left.equalTo(self.contentView).mas_offset(OSFileDownloadCellGloabMargin);
         make.bottom.right.equalTo(self.contentView);
         make.height.mas_offset(0.5);
     }];
     
     if (_downloadStatusLabel) {
         [_speedLabel mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(_downloadStatusLabel.mas_right).mas_offset(FileDownloadCellGloabMargin);
+            make.left.equalTo(_downloadStatusLabel.mas_right).mas_offset(OSFileDownloadCellGloabMargin);
             make.top.bottom.equalTo(_downloadStatusLabel);
         }];
         
         [_remainTimeLabel mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(_speedLabel.mas_right).mas_offset(FileDownloadCellGloabMargin);
+            make.left.equalTo(_speedLabel.mas_right).mas_offset(OSFileDownloadCellGloabMargin);
             make.top.bottom.equalTo(_downloadStatusLabel);
         }];
     }

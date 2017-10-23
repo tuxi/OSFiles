@@ -1,15 +1,15 @@
 //
 //  FilesTableViewModel.m
-//  FileDownloader
+//  OSFileDownloader
 //
 //  Created by Ossey on 2017/6/12.
 //  Copyright © 2017年 Ossey. All rights reserved.
 //
 
 #import "FilesTableViewModel.h"
-#import "FileDownloadCell.h"
+#import "OSFileDownloadCell.h"
 #import "XYImageViewer.h"
-#import "FileItem.h"
+#import "OSFileItem.h"
 #import "XYCutVideoController.h"
 #import "UIView+Extend.h"
 
@@ -27,7 +27,7 @@ static NSString * const FilesViewControllerViewCellID = @"FilesViewController";
     tableView.delegate = self;
     tableView.dataSource = self;
     _tableView = tableView;
-    [tableView registerClass:[FileDownloadCell class] forCellReuseIdentifier:FilesViewControllerViewCellID];
+    [tableView registerClass:[OSFileDownloadCell class] forCellReuseIdentifier:FilesViewControllerViewCellID];
 }
 
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ XYTableViewModelProtocol ~~~~~~~~~~~~~~~~~~~~~~~
@@ -52,7 +52,7 @@ static NSString * const FilesViewControllerViewCellID = @"FilesViewController";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    FileDownloadCell *cell = [tableView dequeueReusableCellWithIdentifier:FilesViewControllerViewCellID forIndexPath:indexPath];
+    OSFileDownloadCell *cell = [tableView dequeueReusableCellWithIdentifier:FilesViewControllerViewCellID forIndexPath:indexPath];
     cell.fileItem = self.dataSource[indexPath.row];
     
     return cell;
@@ -81,7 +81,7 @@ static NSString * const FilesViewControllerViewCellID = @"FilesViewController";
 
 - (void)cutVideoWithIndexPath:(NSIndexPath *)indexPath {
     
-    FileItem *item = (FileItem *)self.dataSource[indexPath.row];
+    OSFileItem *item = (OSFileItem *)self.dataSource[indexPath.row];
     // _MIMEType	NSTaggedPointerString *	@"video/mp4"	0xa2304a003f0625c9
     if ([item.MIMEType isEqualToString:@"video/mp4"]) {
         XYCutVideoController *vc = [XYCutVideoController new];
@@ -99,7 +99,7 @@ static NSString * const FilesViewControllerViewCellID = @"FilesViewController";
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
 //    NSMutableArray *imageURLs = [NSMutableArray array];
 //    [self.dataSource enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-//        FileItem *item = (FileItem *)obj;
+//        OSFileItem *item = (OSFileItem *)obj;
 //        if ([item isKindOfClass:[FileItem class]]) {
 //            if ([item.MIMEType isEqualToString:@"image/jpeg"] || [item.MIMEType isEqualToString:@"image/png"]) {
 //                [imageURLs addObject:item.urlPath];
@@ -107,7 +107,7 @@ static NSString * const FilesViewControllerViewCellID = @"FilesViewController";
 //        }
 //    }];
     
-    FileItem *item = (FileItem *)self.dataSource[indexPath.row];
+    OSFileItem *item = (OSFileItem *)self.dataSource[indexPath.row];
     
     if ([item.MIMEType isEqualToString:@"image/jpeg"] || [item.MIMEType isEqualToString:@"image/png"]) {
         [[XYImageViewer prepareImages:@[item.localPath] pageTextList:nil endView:^UIView *(NSIndexPath *indexPath) {

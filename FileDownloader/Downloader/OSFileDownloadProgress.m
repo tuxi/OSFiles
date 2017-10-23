@@ -1,23 +1,23 @@
 //
-//  FileDownloadProgress.m
+//  OSFileDownloadProgress.m
 //  DownloaderManager
 //
 //  Created by Ossey on 2017/6/4.
 //  Copyright © 2017年 Ossey. All rights reserved.
 //
 
-#import "FileDownloadProgress.h"
+#import "OSFileDownloadProgress.h"
 
 // 下载速度key
-static NSString * const FileDownloadBytesPerSecondSpeedKey = @"bytesPerSecondSpeed";
+static NSString * const OSFileDownloadBytesPerSecondSpeedKey = @"bytesPerSecondSpeed";
 // 剩余时间key
-static NSString * const FileDownloadRemainingTimeKey = @"remainingTime";
+static NSString * const OSFileDownloadRemainingTimeKey = @"remainingTime";
 
-@interface FileDownloadProgress () <NSCoding>
+@interface OSFileDownloadProgress () <NSCoding>
 
 @end
 
-@implementation FileDownloadProgress
+@implementation OSFileDownloadProgress
 
 @synthesize progress = _progress;
 
@@ -75,10 +75,10 @@ static NSString * const FileDownloadRemainingTimeKey = @"remainingTime";
         }
         
         NSDictionary *remainingTimeDict = [self remainingTimeAndBytesPerSecond];
-        [self.nativeProgress setUserInfoObject:[remainingTimeDict objectForKey:FileDownloadRemainingTimeKey] forKey:NSProgressEstimatedTimeRemainingKey];
-        [self.nativeProgress setUserInfoObject:[remainingTimeDict objectForKey:FileDownloadBytesPerSecondSpeedKey] forKey:NSProgressThroughputKey];
-        self.estimatedRemainingTime = [remainingTimeDict[FileDownloadRemainingTimeKey] doubleValue];
-        self.bytesPerSecondSpeed = [remainingTimeDict[FileDownloadBytesPerSecondSpeedKey] unsignedIntegerValue];
+        [self.nativeProgress setUserInfoObject:[remainingTimeDict objectForKey:OSFileDownloadRemainingTimeKey] forKey:NSProgressEstimatedTimeRemainingKey];
+        [self.nativeProgress setUserInfoObject:[remainingTimeDict objectForKey:OSFileDownloadBytesPerSecondSpeedKey] forKey:NSProgressThroughputKey];
+        self.estimatedRemainingTime = [remainingTimeDict[OSFileDownloadRemainingTimeKey] doubleValue];
+        self.bytesPerSecondSpeed = [remainingTimeDict[OSFileDownloadBytesPerSecondSpeedKey] unsignedIntegerValue];
         self.progress = progress;
         
     }
@@ -117,8 +117,8 @@ static NSString * const FileDownloadRemainingTimeKey = @"remainingTime";
         self.bytesPerSecondSpeed = bytesPerSecondsSpeed;
     }
     return @{
-             FileDownloadBytesPerSecondSpeedKey : @(bytesPerSecondsSpeed),
-             FileDownloadRemainingTimeKey: @(remainingTimeInterval)};
+             OSFileDownloadBytesPerSecondSpeedKey : @(bytesPerSecondsSpeed),
+             OSFileDownloadRemainingTimeKey: @(remainingTimeInterval)};
 }
 
 

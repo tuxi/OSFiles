@@ -1,5 +1,5 @@
 //
-//  FileDownloaderDelegate.h
+//  OSFileDownloaderDelegate.h
 //  DownloaderManager
 //
 //  Created by Ossey on 2017/6/4.
@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "FileDownloadConst.h"
+#import "OSFileDownloadConst.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class FileDownloadProgress;
+@class OSFileDownloadProgress;
 
-@protocol FileDownloadOperation <NSObject>
+@protocol OSFileDownloadOperation <NSObject>
 
 @required
 
@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setOutputStream:(nullable NSOutputStream *)outputStream;
 
 /// 自定义的进度对象
-- (FileDownloadProgress *)progressObj;
+- (OSFileDownloadProgress *)progressObj;
 
 /// 下载的url
 - (NSString *)urlPath;
@@ -36,11 +36,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// 最终文件存储的本地路径
 - (NSURL *)localURL;
 
-- (FileDownloadStatus)status;
-- (void)setStatus:(FileDownloadStatus)status;
+- (OSFileDownloadStatus)status;
+- (void)setStatus:(OSFileDownloadStatus)status;
 
 /** 状态改变回调 */
-- (void)setStatusChangeHandler:(void (^ _Nonnull)(FileDownloadStatus))statusChangeHandler;
+- (void)setStatusChangeHandler:(void (^ _Nonnull)(OSFileDownloadStatus))statusChangeHandler;
 
 - (void)pause;
 - (void)resume;
@@ -63,26 +63,26 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@protocol FileDownloaderDelegate <NSObject>
+@protocol OSFileDownloaderDelegate <NSObject>
 
 
 /// 下载成功回调
 /// 当需要隐藏网络活动指示器，应该在此回调中使用 UIApplication's setNetworkActivityIndicatorVisible: 去设置状态栏网络活动的可见性
-/// @param downloadOperation 下载的FileDownloadOperation
-- (void)downloadSuccessnWithDownloadOperation:(id<FileDownloadOperation>)downloadOperation;
+/// @param downloadOperation 下载的OSFileDownloadOperation
+- (void)downloadSuccessnWithDownloadOperation:(id<OSFileDownloadOperation>)downloadOperation;
 
 /// 一个任务下载失败或者取消时调用
 /// 当需要隐藏网络活动指示器，应该在此回调中使用 UIApplication's setNetworkActivityIndicatorVisible: 去设置状态栏网络活动的可见性
-/// @param downloadOperation 下载的FileDownloadOperation
+/// @param downloadOperation 下载的OSFileDownloadOperation
 /// @prram error 下载错误信息
-- (void)downloadFailureWithDownloadOperation:(id<FileDownloadOperation>)downloadOperation
+- (void)downloadFailureWithDownloadOperation:(id<OSFileDownloadOperation>)downloadOperation
                                   error:(nullable NSError *)error;
 
 @optional
 
 /// 一个任务开始下载时调用，当需要显示网络活动指示器的时候调用
 /// 此时应该在此回调中使用 UIApplication's setNetworkActivityIndicatorVisible: 去设置状态栏网络活动的可见性
-- (void)beginDownloadTaskWithDownloadOperation:(id<FileDownloadOperation>)downloadOperation;
+- (void)beginDownloadTaskWithDownloadOperation:(id<OSFileDownloadOperation>)downloadOperation;
 
 /// 是否允许此下载任务
 - (BOOL)shouldAllowedDownloadTaskWithURL:(NSString *)urlPath
@@ -90,7 +90,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 下载进度改变的时候调用
 /// @param downloadOperation 当前下载任务
-- (void)downloadProgressChangeWithDownloadOperation:(id<FileDownloadOperation>)downloadOperation;
+- (void)downloadProgressChangeWithDownloadOperation:(id<OSFileDownloadOperation>)downloadOperation;
 
 /// 下载暂停时调用
 /// @param url 当前下载任务的url
@@ -121,10 +121,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 /// 一个任务进入等待时调用
-- (void)downloadDidWaitingWithURLPath:(NSString *)url progress:(FileDownloadProgress *)progress;
+- (void)downloadDidWaitingWithURLPath:(NSString *)url progress:(OSFileDownloadProgress *)progress;
 
 /// 从等待队列中开始下载一个任务时调用
-- (void)downloadStartFromWaitingQueueWithURLPath:(NSString *)url progress:(FileDownloadProgress *)progress;
+- (void)downloadStartFromWaitingQueueWithURLPath:(NSString *)url progress:(OSFileDownloadProgress *)progress;
 @end
 
 

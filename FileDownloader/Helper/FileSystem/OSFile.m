@@ -1,6 +1,6 @@
 //
 //  OSFile.m
-//  FileDownloader
+//  OSFileDownloader
 //
 //  Created by Swae on 2017/10/23.
 //  Copyright © 2017年 Ossey. All rights reserved.

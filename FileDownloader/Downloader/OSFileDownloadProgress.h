@@ -1,5 +1,5 @@
 //
-//  FileDownloadProgress.h
+//  OSFileDownloadProgress.h
 //  DownloaderManager
 //
 //  Created by Ossey on 2017/6/4.
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface FileDownloadProgress : NSObject
+@interface OSFileDownloadProgress : NSObject
 
 /** 开始下载时的时间 */
 @property (nonatomic, strong) NSDate *downloadStartDate;
@@ -41,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param estimatedRemainingTime 估计剩余下载时间(秒)
 /// @param bytesPerSecondSpeed 每秒下载的字节数
 /// @param nativeProgress 下载进度对象(NSProgress)
-/// @return FileDownloadProgress 对象
+/// @return OSFileDownloadProgress 对象
 - (instancetype)initWithDownloadProgress:(float)aDownloadProgress
                         expectedFileSize:(int64_t)expectedFileSize
                         receivedFileSize:(int64_t)receivedFileSize

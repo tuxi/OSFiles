@@ -1,6 +1,6 @@
 //
 //  DownloadsTableViewModel.m
-//  FileDownloader
+//  OSFileDownloader
 //
 //  Created by Ossey on 2017/6/12.
 //  Copyright © 2017年 Ossey. All rights reserved.
@@ -10,7 +10,7 @@
 #import "AppDelegate.h"
 #import "UITableViewCell+XYConfigure.h"
 #import "UIView+Extend.h"
-#import "FileDownloaderManager.h"
+#import "OSFileDownloaderManager.h"
 
 static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
 
@@ -30,7 +30,7 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
     tableView.delegate = self;
     tableView.dataSource = self;
     _tableView = tableView;
-    [FileDownloadCell xy_registerTableViewCell:tableView classIdentifier:DownloadCellIdentifierKey];
+    [OSFileDownloadCell xy_registerTableViewCell:tableView classIdentifier:DownloadCellIdentifierKey];
 }
 
 - (void)getDataSourceBlock:(id (^)())dataSource completion:(void (^)())completion {
@@ -58,16 +58,16 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    FileDownloadCell *cell = [tableView dequeueReusableCellWithIdentifier:DownloadCellIdentifierKey forIndexPath:indexPath];
+    OSFileDownloadCell *cell = [tableView dequeueReusableCellWithIdentifier:DownloadCellIdentifierKey forIndexPath:indexPath];
     NSArray *items = self.dataSource[indexPath.section];
-    id<FileDownloadOperation> downloadItem = items[indexPath.row];
+    id<OSFileDownloadOperation> downloadItem = items[indexPath.row];
     [cell xy_configCellByModel:downloadItem indexPath:indexPath];
     [cell setLongPressGestureRecognizer:^(UILongPressGestureRecognizer *longPres) {
         if (longPres.state == UIGestureRecognizerStateBegan) {
             UIAlertController *alVc = [UIAlertController alertControllerWithTitle:@"delete download" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
             UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"ok" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 
-                [[FileDownloaderManager sharedInstance] cancel:downloadItem.urlPath];
+                [[OSFileDownloaderManager sharedInstance] cancel:downloadItem.urlPath];
                 [tableView reloadData];
                 
             }];
@@ -95,8 +95,8 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    FileDownloadCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    if (cell.fileItem.status == FileDownloadStatusNotStarted) {
+    OSFileDownloadCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    if (cell.fileItem.status == OSFileDownloadStatusNotStarted) {
         [self performSelector:@selector(scrollToIndexPath:) withObject:[NSIndexPath indexPathForRow:0 inSection:0] afterDelay:0.0];
     }
     [cell cycleViewClick:nil];
@@ -128,7 +128,7 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
 #pragma mark -
 ////////////////////////////////////////////////////////////////////////
 
-- (FileDownloadCell *)getDownloadCellByIndexPath:(NSIndexPath *)indexPath {
+- (OSFileDownloadCell *)getDownloadCellByIndexPath:(NSIndexPath *)indexPath {
     return [self.tableView cellForRowAtIndexPath:indexPath];
 }
 

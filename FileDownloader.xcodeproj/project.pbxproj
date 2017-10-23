@@ -9,11 +9,11 @@
 /* Begin PBXBuildFile section */
 		180CBDDC1F11269E006D2871 /* ExceptionUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 180CBDDB1F11269E006D2871 /* ExceptionUtils.m */; };
 		180CBDE01F1126E0006D2871 /* SuspensionControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 180CBDDF1F1126E0006D2871 /* SuspensionControl.m */; };
-		1811B4691F98D7FB003A5847 /* FileItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1811B4681F98D7FB003A5847 /* FileItem.m */; };
-		1813E7A61F9B6ACF002C661E /* FileDownloadConst.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E79E1F9B6ACF002C661E /* FileDownloadConst.m */; };
-		1813E7A71F9B6ACF002C661E /* FileDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E7A01F9B6ACF002C661E /* FileDownloader.m */; };
-		1813E7A81F9B6ACF002C661E /* FileDownloaderSessionPrivateDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E7A21F9B6ACF002C661E /* FileDownloaderSessionPrivateDelegate.m */; };
-		1813E7A91F9B6ACF002C661E /* FileDownloadProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E7A41F9B6ACF002C661E /* FileDownloadProgress.m */; };
+		1811B4691F98D7FB003A5847 /* OSFileItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1811B4681F98D7FB003A5847 /* OSFileItem.m */; };
+		1813E7A61F9B6ACF002C661E /* OSFileDownloadConst.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E79E1F9B6ACF002C661E /* OSFileDownloadConst.m */; };
+		1813E7A71F9B6ACF002C661E /* OSFileDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E7A01F9B6ACF002C661E /* OSFileDownloader.m */; };
+		1813E7A81F9B6ACF002C661E /* OSFileDownloaderSessionPrivateDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E7A21F9B6ACF002C661E /* OSFileDownloaderSessionPrivateDelegate.m */; };
+		1813E7A91F9B6ACF002C661E /* OSFileDownloadProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E7A41F9B6ACF002C661E /* OSFileDownloadProgress.m */; };
 		1813E7AF1F9B6E74002C661E /* OSProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E7AC1F9B6E74002C661E /* OSProgressView.m */; };
 		1813E7B01F9B6E74002C661E /* UINavigationController+OSProgressBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E7AE1F9B6E74002C661E /* UINavigationController+OSProgressBar.m */; };
 		1813E8171F9B8AA3002C661E /* OSSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E8161F9B8AA3002C661E /* OSSettingViewController.m */; };
@@ -38,7 +38,7 @@
 		18300F7E1EEC57280035D6EE /* NSObject+XYHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300F751EEC57280035D6EE /* NSObject+XYHUD.m */; };
 		18300F7F1EEC57280035D6EE /* UIViewController+XYHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300F771EEC57280035D6EE /* UIViewController+XYHUD.m */; };
 		18300F811EEC57280035D6EE /* NetworkTypeUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300F7C1EEC57280035D6EE /* NetworkTypeUtils.m */; };
-		18300F851EEC57920035D6EE /* FileDownloadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300F831EEC57920035D6EE /* FileDownloadCell.m */; };
+		18300F851EEC57920035D6EE /* OSFileDownloadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300F831EEC57920035D6EE /* OSFileDownloadCell.m */; };
 		18300FA71EECE79F0035D6EE /* MASCompositeConstraint.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300F8F1EECE79F0035D6EE /* MASCompositeConstraint.m */; };
 		18300FA81EECE79F0035D6EE /* MASConstraint.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300F921EECE79F0035D6EE /* MASConstraint.m */; };
 		18300FA91EECE79F0035D6EE /* MASConstraintMaker.m in Sources */ = {isa = PBXBuildFile; fileRef = 18300F941EECE79F0035D6EE /* MASConstraintMaker.m */; };
@@ -122,8 +122,8 @@
 		18878B281EF19EAC005C0185 /* UINavigationItem+MultipleItems.m in Sources */ = {isa = PBXBuildFile; fileRef = 18878B251EF19EAC005C0185 /* UINavigationItem+MultipleItems.m */; };
 		18910A6C1F0D3472002BA292 /* PSPDFUIKitMainThreadGuard.m in Sources */ = {isa = PBXBuildFile; fileRef = 18910A6B1F0D3472002BA292 /* PSPDFUIKitMainThreadGuard.m */; };
 		18ADEBEF1F9E21EA0024BA40 /* OSFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 18ADEBEE1F9E21EA0024BA40 /* OSFile.m */; };
-		18DCFC451F263D8F00AC21CA /* FileDownloaderDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 18DCFC401F263D8F00AC21CA /* FileDownloaderDelegate.m */; };
-		18DCFC461F263D8F00AC21CA /* FileDownloaderManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 18DCFC421F263D8F00AC21CA /* FileDownloaderManager.m */; };
+		18DCFC451F263D8F00AC21CA /* OSFileDownloaderDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 18DCFC401F263D8F00AC21CA /* OSFileDownloaderDelegate.m */; };
+		18DCFC461F263D8F00AC21CA /* OSFileDownloaderManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 18DCFC421F263D8F00AC21CA /* OSFileDownloaderManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -131,17 +131,17 @@
 		180CBDDB1F11269E006D2871 /* ExceptionUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExceptionUtils.m; sourceTree = "<group>"; };
 		180CBDDE1F1126E0006D2871 /* SuspensionControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SuspensionControl.h; sourceTree = "<group>"; };
 		180CBDDF1F1126E0006D2871 /* SuspensionControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SuspensionControl.m; sourceTree = "<group>"; };
-		1811B4671F98D7FB003A5847 /* FileItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FileItem.h; sourceTree = "<group>"; };
-		1811B4681F98D7FB003A5847 /* FileItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FileItem.m; sourceTree = "<group>"; };
-		1813E79D1F9B6ACF002C661E /* FileDownloadConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileDownloadConst.h; sourceTree = "<group>"; };
-		1813E79E1F9B6ACF002C661E /* FileDownloadConst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileDownloadConst.m; sourceTree = "<group>"; };
-		1813E79F1F9B6ACF002C661E /* FileDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileDownloader.h; sourceTree = "<group>"; };
-		1813E7A01F9B6ACF002C661E /* FileDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileDownloader.m; sourceTree = "<group>"; };
-		1813E7A11F9B6ACF002C661E /* FileDownloaderSessionPrivateDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileDownloaderSessionPrivateDelegate.h; sourceTree = "<group>"; };
-		1813E7A21F9B6ACF002C661E /* FileDownloaderSessionPrivateDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileDownloaderSessionPrivateDelegate.m; sourceTree = "<group>"; };
-		1813E7A31F9B6ACF002C661E /* FileDownloadProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileDownloadProgress.h; sourceTree = "<group>"; };
-		1813E7A41F9B6ACF002C661E /* FileDownloadProgress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileDownloadProgress.m; sourceTree = "<group>"; };
-		1813E7A51F9B6ACF002C661E /* FileDownloadProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileDownloadProtocol.h; sourceTree = "<group>"; };
+		1811B4671F98D7FB003A5847 /* OSFileItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSFileItem.h; sourceTree = "<group>"; };
+		1811B4681F98D7FB003A5847 /* OSFileItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSFileItem.m; sourceTree = "<group>"; };
+		1813E79D1F9B6ACF002C661E /* OSFileDownloadConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSFileDownloadConst.h; sourceTree = "<group>"; };
+		1813E79E1F9B6ACF002C661E /* OSFileDownloadConst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSFileDownloadConst.m; sourceTree = "<group>"; };
+		1813E79F1F9B6ACF002C661E /* OSFileDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSFileDownloader.h; sourceTree = "<group>"; };
+		1813E7A01F9B6ACF002C661E /* OSFileDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSFileDownloader.m; sourceTree = "<group>"; };
+		1813E7A11F9B6ACF002C661E /* OSFileDownloaderSessionPrivateDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSFileDownloaderSessionPrivateDelegate.h; sourceTree = "<group>"; };
+		1813E7A21F9B6ACF002C661E /* OSFileDownloaderSessionPrivateDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSFileDownloaderSessionPrivateDelegate.m; sourceTree = "<group>"; };
+		1813E7A31F9B6ACF002C661E /* OSFileDownloadProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSFileDownloadProgress.h; sourceTree = "<group>"; };
+		1813E7A41F9B6ACF002C661E /* OSFileDownloadProgress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSFileDownloadProgress.m; sourceTree = "<group>"; };
+		1813E7A51F9B6ACF002C661E /* OSFileDownloadProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSFileDownloadProtocol.h; sourceTree = "<group>"; };
 		1813E7AB1F9B6E74002C661E /* OSProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSProgressView.h; sourceTree = "<group>"; };
 		1813E7AC1F9B6E74002C661E /* OSProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSProgressView.m; sourceTree = "<group>"; };
 		1813E7AD1F9B6E74002C661E /* UINavigationController+OSProgressBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+OSProgressBar.h"; sourceTree = "<group>"; };
@@ -186,8 +186,8 @@
 		18300F771EEC57280035D6EE /* UIViewController+XYHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+XYHUD.m"; sourceTree = "<group>"; };
 		18300F7B1EEC57280035D6EE /* NetworkTypeUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkTypeUtils.h; sourceTree = "<group>"; };
 		18300F7C1EEC57280035D6EE /* NetworkTypeUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkTypeUtils.m; sourceTree = "<group>"; };
-		18300F821EEC57920035D6EE /* FileDownloadCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileDownloadCell.h; sourceTree = "<group>"; };
-		18300F831EEC57920035D6EE /* FileDownloadCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileDownloadCell.m; sourceTree = "<group>"; };
+		18300F821EEC57920035D6EE /* OSFileDownloadCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSFileDownloadCell.h; sourceTree = "<group>"; };
+		18300F831EEC57920035D6EE /* OSFileDownloadCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSFileDownloadCell.m; sourceTree = "<group>"; };
 		18300F8E1EECE79F0035D6EE /* MASCompositeConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MASCompositeConstraint.h; sourceTree = "<group>"; };
 		18300F8F1EECE79F0035D6EE /* MASCompositeConstraint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MASCompositeConstraint.m; sourceTree = "<group>"; };
 		18300F901EECE79F0035D6EE /* MASConstraint+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MASConstraint+Private.h"; sourceTree = "<group>"; };
@@ -362,10 +362,10 @@
 		18ADEBEB1F9E1FB00024BA40 /* Warnings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Warnings.h; sourceTree = "<group>"; };
 		18ADEBED1F9E21EA0024BA40 /* OSFile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSFile.h; sourceTree = "<group>"; };
 		18ADEBEE1F9E21EA0024BA40 /* OSFile.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSFile.m; sourceTree = "<group>"; };
-		18DCFC3F1F263D8F00AC21CA /* FileDownloaderDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileDownloaderDelegate.h; sourceTree = "<group>"; };
-		18DCFC401F263D8F00AC21CA /* FileDownloaderDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileDownloaderDelegate.m; sourceTree = "<group>"; };
-		18DCFC411F263D8F00AC21CA /* FileDownloaderManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileDownloaderManager.h; sourceTree = "<group>"; };
-		18DCFC421F263D8F00AC21CA /* FileDownloaderManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileDownloaderManager.m; sourceTree = "<group>"; };
+		18DCFC3F1F263D8F00AC21CA /* OSFileDownloaderDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSFileDownloaderDelegate.h; sourceTree = "<group>"; };
+		18DCFC401F263D8F00AC21CA /* OSFileDownloaderDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSFileDownloaderDelegate.m; sourceTree = "<group>"; };
+		18DCFC411F263D8F00AC21CA /* OSFileDownloaderManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSFileDownloaderManager.h; sourceTree = "<group>"; };
+		18DCFC421F263D8F00AC21CA /* OSFileDownloaderManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSFileDownloaderManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -392,15 +392,15 @@
 		1813E79C1F9B6ACF002C661E /* Downloader */ = {
 			isa = PBXGroup;
 			children = (
-				1813E79D1F9B6ACF002C661E /* FileDownloadConst.h */,
-				1813E79E1F9B6ACF002C661E /* FileDownloadConst.m */,
-				1813E79F1F9B6ACF002C661E /* FileDownloader.h */,
-				1813E7A01F9B6ACF002C661E /* FileDownloader.m */,
-				1813E7A11F9B6ACF002C661E /* FileDownloaderSessionPrivateDelegate.h */,
-				1813E7A21F9B6ACF002C661E /* FileDownloaderSessionPrivateDelegate.m */,
-				1813E7A31F9B6ACF002C661E /* FileDownloadProgress.h */,
-				1813E7A41F9B6ACF002C661E /* FileDownloadProgress.m */,
-				1813E7A51F9B6ACF002C661E /* FileDownloadProtocol.h */,
+				1813E79D1F9B6ACF002C661E /* OSFileDownloadConst.h */,
+				1813E79E1F9B6ACF002C661E /* OSFileDownloadConst.m */,
+				1813E79F1F9B6ACF002C661E /* OSFileDownloader.h */,
+				1813E7A01F9B6ACF002C661E /* OSFileDownloader.m */,
+				1813E7A11F9B6ACF002C661E /* OSFileDownloaderSessionPrivateDelegate.h */,
+				1813E7A21F9B6ACF002C661E /* OSFileDownloaderSessionPrivateDelegate.m */,
+				1813E7A31F9B6ACF002C661E /* OSFileDownloadProgress.h */,
+				1813E7A41F9B6ACF002C661E /* OSFileDownloadProgress.m */,
+				1813E7A51F9B6ACF002C661E /* OSFileDownloadProtocol.h */,
 				18ADEBEB1F9E1FB00024BA40 /* Warnings.h */,
 			);
 			path = Downloader;
@@ -766,8 +766,8 @@
 			children = (
 				18517C5A1EEBD97500B148C8 /* DownloadsViewController.h */,
 				18517C5B1EEBD97500B148C8 /* DownloadsViewController.m */,
-				18300F821EEC57920035D6EE /* FileDownloadCell.h */,
-				18300F831EEC57920035D6EE /* FileDownloadCell.m */,
+				18300F821EEC57920035D6EE /* OSFileDownloadCell.h */,
+				18300F831EEC57920035D6EE /* OSFileDownloadCell.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -999,12 +999,12 @@
 		18DCFC3E1F263D8F00AC21CA /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				18DCFC3F1F263D8F00AC21CA /* FileDownloaderDelegate.h */,
-				18DCFC401F263D8F00AC21CA /* FileDownloaderDelegate.m */,
-				18DCFC411F263D8F00AC21CA /* FileDownloaderManager.h */,
-				18DCFC421F263D8F00AC21CA /* FileDownloaderManager.m */,
-				1811B4671F98D7FB003A5847 /* FileItem.h */,
-				1811B4681F98D7FB003A5847 /* FileItem.m */,
+				18DCFC3F1F263D8F00AC21CA /* OSFileDownloaderDelegate.h */,
+				18DCFC401F263D8F00AC21CA /* OSFileDownloaderDelegate.m */,
+				18DCFC411F263D8F00AC21CA /* OSFileDownloaderManager.h */,
+				18DCFC421F263D8F00AC21CA /* OSFileDownloaderManager.m */,
+				1811B4671F98D7FB003A5847 /* OSFileItem.h */,
+				1811B4681F98D7FB003A5847 /* OSFileItem.m */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1097,7 +1097,7 @@
 				18300FCA1EED38820035D6EE /* FFCircularProgressView.m in Sources */,
 				18517C271EEBD64800B148C8 /* AFURLSessionManager.m in Sources */,
 				18300FAE1EECE79F0035D6EE /* NSLayoutConstraint+MASDebugAdditions.m in Sources */,
-				1811B4691F98D7FB003A5847 /* FileItem.m in Sources */,
+				1811B4691F98D7FB003A5847 /* OSFileItem.m in Sources */,
 				18878A471EF022B6005C0185 /* NSData+ImageContentType.m in Sources */,
 				18878A461EF022B6005C0185 /* README.md in Sources */,
 				18517C641EEBDB3E00B148C8 /* UIImage+XYImage.m in Sources */,
@@ -1145,11 +1145,11 @@
 				1813E84B1F9BAE73002C661E /* SmileKeychainWrapper.m in Sources */,
 				1871AD231EEEF76E00ABC452 /* UICollectionViewCell+XYConfigure.m in Sources */,
 				1871AD261EEEF76E00ABC452 /* XYDBUtil.m in Sources */,
-				18DCFC461F263D8F00AC21CA /* FileDownloaderManager.m in Sources */,
+				18DCFC461F263D8F00AC21CA /* OSFileDownloaderManager.m in Sources */,
 				18878B261EF19EAC005C0185 /* UIApplication+ActivityIndicator.m in Sources */,
 				1871ACF21EEEECBE00ABC452 /* FilesTableViewModel.m in Sources */,
 				18ADEBEF1F9E21EA0024BA40 /* OSFile.m in Sources */,
-				1813E7A71F9B6ACF002C661E /* FileDownloader.m in Sources */,
+				1813E7A71F9B6ACF002C661E /* OSFileDownloader.m in Sources */,
 				1871AD0D1EEEF15100ABC452 /* BaseTableViewModel.m in Sources */,
 				1871ACDD1EEEE55700ABC452 /* NSDate+Utilities.m in Sources */,
 				18910A6C1F0D3472002BA292 /* PSPDFUIKitMainThreadGuard.m in Sources */,
@@ -1160,15 +1160,15 @@
 				1813E84D1F9BAE73002C661E /* SmilePasswordView.m in Sources */,
 				18878A4C1EF022B6005C0185 /* SDWebImageDownloaderOperation.m in Sources */,
 				18878A9A1EF03908005C0185 /* ICGVideoTrimmerView.m in Sources */,
-				18300F851EEC57920035D6EE /* FileDownloadCell.m in Sources */,
+				18300F851EEC57920035D6EE /* OSFileDownloadCell.m in Sources */,
 				18517C591EEBD95C00B148C8 /* FilesViewController.m in Sources */,
-				1813E7A91F9B6ACF002C661E /* FileDownloadProgress.m in Sources */,
+				1813E7A91F9B6ACF002C661E /* OSFileDownloadProgress.m in Sources */,
 				1871AD221EEEF76E00ABC452 /* NSObject+XYRequest.m in Sources */,
 				18878A521EF022B6005C0185 /* UIImageView+HighlightedWebCache.m in Sources */,
 				1813E81B1F9B8FA5002C661E /* OSSettingsTableViewCell.m in Sources */,
 				1813E7AF1F9B6E74002C661E /* OSProgressView.m in Sources */,
 				18878A4F1EF022B6005C0185 /* UIButton+WebCache.m in Sources */,
-				1813E7A61F9B6ACF002C661E /* FileDownloadConst.m in Sources */,
+				1813E7A61F9B6ACF002C661E /* OSFileDownloadConst.m in Sources */,
 				18878B281EF19EAC005C0185 /* UINavigationItem+MultipleItems.m in Sources */,
 				18300F7D1EEC57280035D6EE /* MBProgressHUD.m in Sources */,
 				1813E84C1F9BAE73002C661E /* SmilePasswordContainerView.m in Sources */,
@@ -1193,8 +1193,8 @@
 				18300FAD1EECE79F0035D6EE /* NSArray+MASAdditions.m in Sources */,
 				18517C261EEBD64800B148C8 /* AFURLResponseSerialization.m in Sources */,
 				18517C391EEBD66A00B148C8 /* README.markdown in Sources */,
-				1813E7A81F9B6ACF002C661E /* FileDownloaderSessionPrivateDelegate.m in Sources */,
-				18DCFC451F263D8F00AC21CA /* FileDownloaderDelegate.m in Sources */,
+				1813E7A81F9B6ACF002C661E /* OSFileDownloaderSessionPrivateDelegate.m in Sources */,
+				18DCFC451F263D8F00AC21CA /* OSFileDownloaderDelegate.m in Sources */,
 				1871ACDA1EEEE2D900ABC452 /* NSString+OSFile.m in Sources */,
 				18878A941EF03908005C0185 /* XYCutVideoController.m in Sources */,
 				1813E8301F9B96F5002C661E /* OSProminentSwitch.m in Sources */,

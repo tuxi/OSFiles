@@ -1,6 +1,6 @@
 //
 //  AppDelegate.m
-//  FileDownloader
+//  OSFileDownloader
 //
 //  Created by Ossey on 2017/6/10.
 //  Copyright © 2017年 Ossey. All rights reserved.
@@ -8,8 +8,8 @@
 
 #import "AppDelegate.h"
 #import "MainTabBarController.h"
-#import "FileDownloader.h"
-#import "FileDownloaderManager.h"
+#import "OSFileDownloader.h"
+#import "OSFileDownloaderManager.h"
 #import "NetworkTypeUtils.h"
 #import "ExceptionUtils.h"
 #import "OSAuthenticatorHelper.h"
@@ -135,7 +135,7 @@
 
 - (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)(void))completionHandler {
     
-    [[FileDownloaderManager sharedInstance].downloader setBackgroundSessionCompletionHandler:completionHandler];
+    [[OSFileDownloaderManager sharedInstance].downloader setBackgroundSessionCompletionHandler:completionHandler];
 }
 
 

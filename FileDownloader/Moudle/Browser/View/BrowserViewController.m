@@ -1,6 +1,6 @@
 //
 //  BrowserViewController.m
-//  FileDownloader
+//  OSFileDownloader
 //
 //  Created by Ossey on 2017/6/10.
 //  Copyright © 2017年 Ossey. All rights reserved.
@@ -8,7 +8,7 @@
 
 #import "BrowserViewController.h"
 #import "UITextField+Blocks.h"
-#import "FileDownloaderManager.h"
+#import "OSFileDownloaderManager.h"
 
 @interface BrowserViewController () <UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UITextField *textField;
@@ -25,7 +25,7 @@
     self.textField.delegate = self;
     self.textField.shouldReturnBlock = ^BOOL(UITextField *textField) {
       
-        [[FileDownloaderManager sharedInstance] start:textField.text];
+        [[OSFileDownloaderManager sharedInstance] start:textField.text];
         return YES;
     };
     
@@ -43,7 +43,7 @@
 - (void)textFieldDidEndEditing:(UITextField *)textField {
     
     if ([textField.text hasPrefix:@"http"]) {
-        [[FileDownloaderManager sharedInstance] start:textField.text];
+        [[OSFileDownloaderManager sharedInstance] start:textField.text];
     }
 }
 

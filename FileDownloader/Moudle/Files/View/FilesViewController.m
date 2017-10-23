@@ -1,6 +1,6 @@
 //
 //  FilesViewController.m
-//  FileDownloader
+//  OSFileDownloader
 //
 //  Created by Ossey on 2017/6/10.
 //  Copyright © 2017年 Ossey. All rights reserved.
@@ -8,10 +8,10 @@
 
 #import "FilesViewController.h"
 #import "AppDelegate.h"
-#import "FileDownloadCell.h"
+#import "OSFileDownloadCell.h"
 #import "FilesTableViewModel.h"
-#import "FileDownloaderManager.h"
-#import "FileDownloadConst.h"
+#import "OSFileDownloaderManager.h"
+#import "OSFileDownloadConst.h"
 
 @interface FilesViewController ()
 
@@ -48,7 +48,7 @@
     
     
     [self.tableViewModel getDataSourceBlock:^id{
-         return [[FileDownloaderManager sharedInstance] downloadedItems];
+         return [[OSFileDownloaderManager sharedInstance] downloadedItems];
     } completion:^{
         [weakSelf.tableView reloadData];
     }];
@@ -60,11 +60,11 @@
 
 /// 重新下载全部
 - (void)resertDownlod {
-    [[FileDownloaderManager sharedInstance] clearAllDownloadTask];
+    [[OSFileDownloaderManager sharedInstance] clearAllDownloadTask];
     __weak typeof(self) weakSelf = self;
     [self.tableViewModel getDataSourceBlock:^id{
         
-        return [[FileDownloaderManager sharedInstance] downloadedItems];
+        return [[OSFileDownloaderManager sharedInstance] downloadedItems];
     } completion:^{
         [weakSelf.tableView reloadData];
     }];
@@ -72,14 +72,14 @@
                                 withObject:@1
                                 afterDelay:0.5];
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:FileDownloaderResetDownloadsNotification
+    [[NSNotificationCenter defaultCenter] postNotificationName:OSFileDownloaderResetDownloadsNotification
                                                         object:nil];
 }
 
 
 - (void)addObservers {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadSuccess:)
-                                                 name:FileDownloadSussessNotification
+                                                 name:OSFileDownloadSussessNotification
                                                object:nil];
 }
 
@@ -91,7 +91,7 @@
     __weak typeof(self) weakSelf = self;
     [self.tableViewModel getDataSourceBlock:^id{
         
-        return [[FileDownloaderManager sharedInstance] downloadedItems];
+        return [[OSFileDownloaderManager sharedInstance] downloadedItems];
     } completion:^{
         [weakSelf.tableView reloadData];
     }];

@@ -1,34 +1,34 @@
 //
-//  FileDownloaderSessionPrivateDelegate.h
-//  FileDownloader
+//  OSFileDownloaderSessionPrivateDelegate.h
+//  OSFileDownloader
 //
 //  Created by Ossey on 2017/7/9.
 //  Copyright © 2017年 Ossey. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import "FileDownloadProtocol.h"
+#import "OSFileDownloadProtocol.h"
 
-@class FileDownloader;
+@class OSFileDownloader;
 
-@interface FileDownloaderSessionPrivateDelegate : NSObject  <NSURLSessionDelegate, NSURLSessionDataDelegate, NSURLSessionTaskDelegate>
-@property (nonatomic, weak) id<FileDownloaderDelegate> downloadDelegate;
-@property (nonatomic, weak) FileDownloader *downloader;
+@interface OSFileDownloaderSessionPrivateDelegate : NSObject  <NSURLSessionDelegate, NSURLSessionDataDelegate, NSURLSessionTaskDelegate>
+@property (nonatomic, weak) id<OSFileDownloaderDelegate> downloadDelegate;
+@property (nonatomic, weak) OSFileDownloader *downloader;
 
 
-- (instancetype)initWithDownloader:(FileDownloader *)downloader;
+- (instancetype)initWithDownloader:(OSFileDownloader *)downloader;
 /// 下载取消(或暂停)、失败时回调
 - (void)handleDownloadFailureWithError:(NSError *)error
-                          downloadOperation:(id<FileDownloadOperation>)downloadOperation
+                          downloadOperation:(id<OSFileDownloadOperation>)downloadOperation
                         taskIdentifier:(NSUInteger)taskIdentifier
                             response:(NSURLResponse *)response;
 /// 下载成功后调用 并已成功保存到本地
-- (void)handleDownloadSuccessWithDownloadOperation:(id<FileDownloadOperation>)downloadOperation
+- (void)handleDownloadSuccessWithDownloadOperation:(id<OSFileDownloadOperation>)downloadOperation
                                taskIdentifier:(NSUInteger)taskIdentifier
                                      response:(NSURLResponse *)response;
 
 /// 开始下载时调用
-- (void)_beginDownloadTaskWithDownloadOperation:(id<FileDownloadOperation>)downloadOperation;
+- (void)_beginDownloadTaskWithDownloadOperation:(id<OSFileDownloadOperation>)downloadOperation;
 /// 是否允许此下载任务
 - (BOOL)_shouldAllowedDownloadTaskWithURL:(NSString *)urlPath
                                 localPath:(NSString *)localPath;

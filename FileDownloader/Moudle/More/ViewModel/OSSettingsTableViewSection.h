@@ -1,6 +1,6 @@
 //
 //  OSSettingsTableViewSection.h
-//  FileDownloader
+//  OSFileDownloader
 //
 //  Created by Swae on 2017/10/22.
 //  Copyright © 2017年 Ossey. All rights reserved.

@@ -1,6 +1,6 @@
 //
 //  DownloadsViewController.m
-//  FileDownloader
+//  OSFileDownloader
 //
 //  Created by Ossey on 2017/6/10.
 //  Copyright © 2017年 Ossey. All rights reserved.
@@ -10,12 +10,12 @@
 #import "NetworkTypeUtils.h"
 #import "NSObject+XYHUD.h"
 #import "DownloadsTableViewModel.h"
-#import "FileDownloaderManager.h"
-#import "FileDownloaderManager.h"
-#import "FileDownloadConst.h"
+#import "OSFileDownloaderManager.h"
+#import "OSFileDownloaderManager.h"
+#import "OSFileDownloadConst.h"
 #import "UINavigationController+OSProgressBar.h"
 
-@interface DownloadsViewController () <FileDownloaderDataSource>
+@interface DownloadsViewController () <OSFileDownloaderDataSource>
 
 
 @end
@@ -64,7 +64,7 @@
     self.navigationItem.title = @"Downloads";
     self.tableViewModel = [DownloadsTableViewModel new];
     [self.tableViewModel prepareTableView:self.tableView];
-    FileDownloaderManager *module = [FileDownloaderManager sharedInstance];
+    OSFileDownloaderManager *module = [OSFileDownloaderManager sharedInstance];
     module.shouldAutoDownloadWhenInitialize = YES;
     module.dataSource = self;
     [self addObservers];
@@ -88,8 +88,8 @@
     
     __weak typeof(self) weakSelf = self;
     [weakSelf.tableViewModel getDataSourceBlock:^id{
-        NSArray *activeDownloadItems = [[FileDownloaderManager sharedInstance] activeDownloadItems];
-        NSArray *displayItems = [[FileDownloaderManager sharedInstance] displayItems];
+        NSArray *activeDownloadItems = [[OSFileDownloaderManager sharedInstance] activeDownloadItems];
+        NSArray *displayItems = [[OSFileDownloaderManager sharedInstance] displayItems];
         return @[activeDownloadItems, displayItems];
     } completion:^{
         [weakSelf.tableView reloadData];
@@ -99,16 +99,16 @@
 
 - (void)addObservers {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadSuccess:)
-                                                 name:FileDownloadSussessNotification
+                                                 name:OSFileDownloadSussessNotification
                                                object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadFailure:) name:FileDownloadFailureNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadProgressChange:) name:FileDownloadProgressChangeNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadCanceld) name:FileDownloadCanceldNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableData) name:FileDownloaderResetDownloadsNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(totalProgressChange:) name:FileDownloadTotalProgressCanceldNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadStart:) name:FileDownloadStartedNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableData) name:FileDownloadWaittingNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableData) name:FileDownloadPausedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadFailure:) name:OSFileDownloadFailureNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadProgressChange:) name:OSFileDownloadProgressChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadCanceld) name:OSFileDownloadCanceldNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableData) name:OSFileDownloaderResetDownloadsNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(totalProgressChange:) name:OSFileDownloadTotalProgressCanceldNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downloadStart:) name:OSFileDownloadStartedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableData) name:OSFileDownloadWaittingNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableData) name:OSFileDownloadPausedNotification object:nil];
 }
 
 
@@ -134,9 +134,9 @@
 
 - (void)downloadProgressChange:(NSNotification *)note {
     
-    FileItem *item = note.object;
-    NSArray *downloadingArray = [[FileDownloaderManager sharedInstance] activeDownloadItems];
-    NSUInteger foundIdxInDownloading = [downloadingArray indexOfObjectPassingTest:^BOOL(FileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    OSFileItem *item = note.object;
+    NSArray *downloadingArray = [[OSFileDownloaderManager sharedInstance] activeDownloadItems];
+    NSUInteger foundIdxInDownloading = [downloadingArray indexOfObjectPassingTest:^BOOL(OSFileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         BOOL res = [obj.urlPath isEqualToString:item.urlPath];
         if (res) {
             *stop = YES;
@@ -144,8 +144,8 @@
         return res;
     }];
     
-    NSArray *displayArray = [[FileDownloaderManager sharedInstance] displayItems];
-    NSUInteger foundIdxInDisplay = [displayArray indexOfObjectPassingTest:^BOOL(FileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    NSArray *displayArray = [[OSFileDownloaderManager sharedInstance] displayItems];
+    NSUInteger foundIdxInDisplay = [displayArray indexOfObjectPassingTest:^BOOL(OSFileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         BOOL res = [obj.urlPath isEqualToString:item.urlPath];
         if (res) {
             *stop = YES;
@@ -160,7 +160,7 @@
     NSInteger section = foundIdxInDownloading != NSNotFound ? 0 : 1;
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
     DownloadsTableViewModel *tableViewModel = self.tableViewModel;
-    FileDownloadCell *cell = [tableViewModel getDownloadCellByIndexPath:indexPath];
+    OSFileDownloadCell *cell = [tableViewModel getDownloadCellByIndexPath:indexPath];
     cell.fileItem = item;
     
 }
@@ -177,10 +177,10 @@
 
 
 ////////////////////////////////////////////////////////////////////////
-#pragma mark - FileDownloaderDataSource
+#pragma mark - OSFileDownloaderDataSource
 ////////////////////////////////////////////////////////////////////////
 
-- (NSArray<NSString *> *)fileDownloaderAddTasksFromRemoteURLPaths {
+- (NSArray<NSString *> *)OSFileDownloaderAddTasksFromRemoteURLPaths {
     return [self getImageUrls];
 }
 

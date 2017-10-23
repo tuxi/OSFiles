@@ -1,5 +1,5 @@
 //
-//  FileDownloader.h
+//  OSFileDownloader.h
 //  DownloaderManager
 //
 //  Created by Ossey on 2017/6/4.
@@ -7,27 +7,27 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "FileDownloadProgress.h"
-#import "FileDownloadProtocol.h"
+#import "OSFileDownloadProgress.h"
+#import "OSFileDownloadProtocol.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-FOUNDATION_EXTERN NSString * const FileDownloaderDefaultFolderNameKey;
+FOUNDATION_EXTERN NSString * const OSFileDownloaderDefaultFolderNameKey;
 
-@interface FileDownloader : NSObject
+@interface OSFileDownloader : NSObject
 
 /// 同时允许的最大下载数量
 @property (nonatomic, assign) NSInteger maxConcurrentDownloads;
 /// 完成一个后台任务时回调
 @property (nonatomic, copy) void (^backgroundSessionCompletionHandler)();
-/// 下载中的任务 key 为 taskIdentifier， value 为 FileDownloadOperation, 下载完成、取消、暂停都会从此字典中移除
-@property (nonatomic, strong) NSMutableDictionary<NSNumber *, id<FileDownloadOperation>> *activeDownloadsDictionary;
+/// 下载中的任务 key 为 taskIdentifier， value 为 OSFileDownloadOperation, 下载完成、取消、暂停都会从此字典中移除
+@property (nonatomic, strong) NSMutableDictionary<NSNumber *, id<OSFileDownloadOperation>> *activeDownloadsDictionary;
 /// 等待下载的任务数组 每个元素 字典 为一个等待的任务
 @property (nonatomic, strong) NSMutableArray<NSDictionary <NSString *, NSObject *> *> *waitingDownloadArray;
-@property (nonatomic, weak) id<FileDownloaderDelegate> downloadDelegate;
+@property (nonatomic, weak) id<OSFileDownloaderDelegate> downloadDelegate;
 
-- (id<FileDownloadOperation>)getDownloadOperationByTask:(NSURLSessionDataTask *)task;
-- (id<FileDownloadOperation>)getDownloadOperationByURL:(nonnull NSString *)urlPath;
+- (id<OSFileDownloadOperation>)getDownloadOperationByTask:(NSURLSessionDataTask *)task;
+- (id<OSFileDownloadOperation>)getDownloadOperationByURL:(nonnull NSString *)urlPath;
 
 - (long long)getCacheFileSizeWithPath:(NSString *)url;
 
@@ -36,13 +36,13 @@ FOUNDATION_EXTERN NSString * const FileDownloaderDefaultFolderNameKey;
 /// @param localPath 文件下载时存储的完整路径
 /// @param downloadProgressBlock 进度回调
 /// @param completionHandler 下载完成回调，不管成功失败都会回调
-/// @return 一个id<FileDownloadOperation> 实例
-- (id<FileDownloadOperation>)downloadTaskWithURLPath:(NSString *)urlPath
+/// @return 一个id<OSFileDownloadOperation> 实例
+- (id<OSFileDownloadOperation>)downloadTaskWithURLPath:(NSString *)urlPath
                                            localPath:(NSString *)localPath
                                             progress:(void (^ _Nullable)(NSProgress * _Nullable progress))downloadProgressBlock
                                    completionHandler:(void (^ _Nullable)(NSURLResponse * _Nullable response, NSURL * _Nullable localURL, NSError * _Nullable error))completionHandler;
 
-- (id<FileDownloadOperation>)downloadTaskWithRequest:(NSURLRequest *)request
+- (id<OSFileDownloadOperation>)downloadTaskWithRequest:(NSURLRequest *)request
                                            localPath:(NSString *)localPath
                                             progress:(void (^ _Nullable)(NSProgress * _Nullable progress))downloadProgressBlock
                                    completionHandler:(void (^ _Nullable)(NSURLResponse * _Nullable response, NSURL * _Nullable localURL, NSError * _Nullable error))completionHandler;
@@ -72,7 +72,7 @@ FOUNDATION_EXTERN NSString * const FileDownloaderDefaultFolderNameKey;
 /// 获取下载进度
 /// urlPath 当前下载任务的唯一标识符
 /// @return 下载进度的信息
-- (FileDownloadProgress *)getDownloadProgressByURL:(NSString *)urlPath;
+- (OSFileDownloadProgress *)getDownloadProgressByURL:(NSString *)urlPath;
 
 /// 检查当前同时下载的任务数量是否超出最大值maxConcurrentDownloadCount
 /// @mark 当当前正在下载的activeDownloadsDictionary任务中小于最大同时下载数量时，

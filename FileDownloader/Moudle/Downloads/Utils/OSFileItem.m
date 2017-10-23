@@ -1,20 +1,20 @@
 //
-//  FileItem.m
-//  FileDownloader
+//  OSFileItem.m
+//  OSFileDownloader
 //
 //  Created by Swae on 2017/10/19.
 //  Copyright © 2017年 Ossey. All rights reserved.
 //
 
-#import "FileItem.h"
+#import "OSFileItem.h"
 
-@implementation FileItem
+@implementation OSFileItem
 
 - (instancetype)init
 {
     self = [super init];
     if (self) {
-        self.status = FileDownloadStatusNotStarted;
+        self.status = OSFileDownloadStatusNotStarted;
     }
     return self;
 }

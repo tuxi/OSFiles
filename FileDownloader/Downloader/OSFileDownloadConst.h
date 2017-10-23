@@ -1,5 +1,5 @@
 //
-//  FileDownloadConst.h
+//  OSFileDownloadConst.h
 //  Boobuz
 //
 //  Created by xiaoyuan on 18/10/2017.
@@ -31,25 +31,25 @@
     _Pragma("clang diagnostic pop") \
     } while (0)
 
-typedef NS_ENUM(NSUInteger, FileDownloadStatus) {
-    FileDownloadStatusNotStarted = 0,
+typedef NS_ENUM(NSUInteger, OSFileDownloadStatus) {
+    OSFileDownloadStatusNotStarted = 0,
     /// 暂停下载
-    FileDownloadStatusPaused,
+    OSFileDownloadStatusPaused,
     /// 下载中
-    FileDownloadStatusDownloading,
+    OSFileDownloadStatusDownloading,
     /// 下载完成
-    FileDownloadStatusSuccess,
+    OSFileDownloadStatusSuccess,
     /// 等待下载
-    FileDownloadStatusWaiting,
+    OSFileDownloadStatusWaiting,
     /// 下载失败
-    FileDownloadStatusFailure,
+    OSFileDownloadStatusFailure,
 };
 
-FOUNDATION_EXTERN NSNotificationName const FileDownloadProgressChangeNotification;
-FOUNDATION_EXTERN NSNotificationName const FileDownloadSussessNotification;
-FOUNDATION_EXTERN NSNotificationName const FileDownloadFailureNotification;
-FOUNDATION_EXTERN NSNotificationName const FileDownloadCanceldNotification;
-FOUNDATION_EXTERN NSNotificationName const FileDownloadStartedNotification;
-FOUNDATION_EXTERN NSNotificationName const FileDownloadPausedNotification;
-FOUNDATION_EXTERN NSNotificationName const FileDownloadWaittingNotification;
-FOUNDATION_EXTERN NSNotificationName const FileDownloadTotalProgressCanceldNotification;
+FOUNDATION_EXTERN NSNotificationName const OSFileDownloadProgressChangeNotification;
+FOUNDATION_EXTERN NSNotificationName const OSFileDownloadSussessNotification;
+FOUNDATION_EXTERN NSNotificationName const OSFileDownloadFailureNotification;
+FOUNDATION_EXTERN NSNotificationName const OSFileDownloadCanceldNotification;
+FOUNDATION_EXTERN NSNotificationName const OSFileDownloadStartedNotification;
+FOUNDATION_EXTERN NSNotificationName const OSFileDownloadPausedNotification;
+FOUNDATION_EXTERN NSNotificationName const OSFileDownloadWaittingNotification;
+FOUNDATION_EXTERN NSNotificationName const OSFileDownloadTotalProgressCanceldNotification;

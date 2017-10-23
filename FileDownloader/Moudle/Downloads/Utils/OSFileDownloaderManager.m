@@ -1,22 +1,22 @@
 //
-//  FileDownloaderManager.m
+//  OSFileDownloaderManager.m
 //  DownloaderManager
 //
 //  Created by Ossey on 2017/6/4.
 //  Copyright © 2017年 Ossey. All rights reserved.
 //
 
-#import "FileDownloaderManager.h"
+#import "OSFileDownloaderManager.h"
 #import "UIApplication+ActivityIndicator.h"
-#import "FileDownloaderDelegate.h"
-#import "FileDownloadConst.h"
+#import "OSFileDownloaderDelegate.h"
+#import "OSFileDownloadConst.h"
 
-static NSString * const FileDownloadOperationsKey = @"downloadItems";
+static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
 static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitialize";
 
-@interface FileDownloaderManager()
+@interface OSFileDownloaderManager()
 
-@property (nonatomic, strong) FileDownloaderDelegate *downloadDelegate;
+@property (nonatomic, strong) OSFileDownloaderDelegate *downloadDelegate;
 /// 所有添加到下载中的热任务，包括除了未开始和成功状态的所有下载任务
 @property (nonatomic, strong) NSMutableArray *downloadItems;
 /// 所有展示中的文件，还未开始下载时存放的，当文件取消下载时也会存放到此数组
@@ -25,7 +25,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 @end
 
 
-@implementation FileDownloaderManager
+@implementation OSFileDownloaderManager
 
 ////////////////////////////////////////////////////////////////////////
 #pragma mark - initialize
@@ -35,11 +35,11 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 @synthesize shouldAutoDownloadWhenInitialize = _shouldAutoDownloadWhenInitialize;
 
 
-+ (FileDownloaderManager *)sharedInstance {
-    static FileDownloaderManager *_sharedInstance;
++ (OSFileDownloaderManager *)sharedInstance {
+    static OSFileDownloaderManager *_sharedInstance;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _sharedInstance = [FileDownloaderManager new];
+        _sharedInstance = [OSFileDownloaderManager new];
     });
     return _sharedInstance;
 }
@@ -51,8 +51,8 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
     if (self) {
         
         _displayItems = [NSMutableArray array];
-        self.downloadDelegate = [FileDownloaderDelegate new];
-        self.downloader = [FileDownloader new];
+        self.downloadDelegate = [OSFileDownloaderDelegate new];
+        self.downloader = [OSFileDownloader new];
         self.downloader.downloadDelegate = self.downloadDelegate;
         self.downloader.maxConcurrentDownloads = 3;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate) name:UIApplicationWillTerminateNotification object:nil];
@@ -79,31 +79,31 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 
 - (void)initDownloadTasks {
     NSIndexSet *indexSet = [self.downloadItems indexesOfObjectsPassingTest:
-                            ^BOOL(FileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                            ^BOOL(OSFileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                                 return
-                                obj.status == FileDownloadStatusDownloading |
-                                obj.status == FileDownloadStatusWaiting |
-                                obj.status == FileDownloadStatusFailure;
+                                obj.status == OSFileDownloadStatusDownloading |
+                                obj.status == OSFileDownloadStatusWaiting |
+                                obj.status == OSFileDownloadStatusFailure;
                             }];
     NSArray *needDownloads = [self.downloadItems objectsAtIndexes:indexSet];
     if (self.shouldAutoDownloadWhenInitialize) {
-        needDownloads = [needDownloads sortedArrayUsingComparator:^NSComparisonResult(FileItem *  _Nonnull obj1, FileItem *  _Nonnull obj2) {
+        needDownloads = [needDownloads sortedArrayUsingComparator:^NSComparisonResult(OSFileItem *  _Nonnull obj1, OSFileItem *  _Nonnull obj2) {
             NSComparisonResult result = [@(obj1.status) compare:@(obj2.status)];
             return result == NSOrderedDescending;
         }];
         
-        [needDownloads enumerateObjectsUsingBlock:^(FileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [needDownloads enumerateObjectsUsingBlock:^(OSFileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             [self start:obj.urlPath];
         }];
     } else {
-        [needDownloads enumerateObjectsUsingBlock:^(FileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            obj.status = FileDownloadStatusPaused;
+        [needDownloads enumerateObjectsUsingBlock:^(OSFileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            obj.status = OSFileDownloadStatusPaused;
         }];
     }
     [self storedDownloadItems];
 }
 
-- (void)setDataSource:(id<FileDownloaderDataSource>)dataSource {
+- (void)setDataSource:(id<OSFileDownloaderDataSource>)dataSource {
     if (dataSource != _dataSource) {
         _dataSource = dataSource;
         
@@ -113,8 +113,8 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 
 - (void)_addDownloadTaskFromDataSource {
     if (self.dataSource
-        && [self.dataSource respondsToSelector:@selector(fileDownloaderAddTasksFromRemoteURLPaths)]) {
-        NSArray *urls = [self.dataSource fileDownloaderAddTasksFromRemoteURLPaths];
+        && [self.dataSource respondsToSelector:@selector(OSFileDownloaderAddTasksFromRemoteURLPaths)]) {
+        NSArray *urls = [self.dataSource OSFileDownloaderAddTasksFromRemoteURLPaths];
         [self.displayItems removeAllObjects];
         [urls enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             [self addUrlPathToDisplayItemArray:obj downloadItem:nil];
@@ -123,16 +123,16 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
     }
 }
 
-/// 根据url创建或获取一个FileDownloadIem 返回
-- (BOOL)addUrlPathToDisplayItemArray:(NSString *)urlPath downloadItem:(FileItem * *)downloadItem {
+/// 根据url创建或获取一个OSFileDownloadIem 返回
+- (BOOL)addUrlPathToDisplayItemArray:(NSString *)urlPath downloadItem:(OSFileItem * *)downloadItem {
     @synchronized (self) {
-        FileItem *item = nil;
+        OSFileItem *item = nil;
         // 下载任务中没有
         NSUInteger downloadItemIdx = [self foundItemIndxInDownloadItemsByURL:urlPath];
         // 显示的队列中也没有
         NSUInteger displayItemIdx = [self foundItemIndxInDisplayItemsByURL:urlPath];
         if (downloadItemIdx == NSNotFound && displayItemIdx == NSNotFound) {
-            item = [[FileItem alloc] init];
+            item = [[OSFileItem alloc] init];
             item.urlPath = urlPath;
             item.fileName = urlPath.lastPathComponent;
             [self.displayItems addObject:item];
@@ -168,25 +168,25 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
         if (foundIndexInDownloadItems == NSNotFound) {
             NSUInteger foundIndexInDisplay = [self foundItemIndxInDisplayItemsByURL:urlPath];
             if (foundIndexInDisplay != NSNotFound) {
-                FileItem * item = [self.displayItems objectAtIndex:foundIndexInDisplay];
-                item.status = FileDownloadStatusNotStarted;
+                OSFileItem * item = [self.displayItems objectAtIndex:foundIndexInDisplay];
+                item.status = OSFileDownloadStatusNotStarted;
                 [self.downloadItems addObject:item];
                 [self.displayItems removeObjectAtIndex:foundIndexInDisplay];
                 [self start:urlPath];
             } else {
-                FileItem * item = [[FileItem alloc] init];
+                OSFileItem * item = [[OSFileItem alloc] init];
                 item.urlPath = urlPath;
                 item.fileName = urlPath.lastPathComponent;
                 [self.downloadItems addObject:item];
                 [self start:urlPath];
             }
         } else {
-            FileItem * item = [self.downloadItems objectAtIndex:foundIndexInDownloadItems];
-            if (item.status != FileDownloadStatusSuccess) {
+            OSFileItem * item = [self.downloadItems objectAtIndex:foundIndexInDownloadItems];
+            if (item.status != OSFileDownloadStatusSuccess) {
                 BOOL isDownloading = [self.downloader isDownloading:item.urlPath];
                 if (isDownloading == NO){
-                    item.status = FileDownloadStatusDownloading;
-                   id<FileDownloadOperation> opeation = [self.downloader downloadTaskWithURLPath:urlPath localPath:item.localPath progress:^(NSProgress * _Nonnull progress) {
+                    item.status = OSFileDownloadStatusDownloading;
+                   id<OSFileDownloadOperation> opeation = [self.downloader downloadTaskWithURLPath:urlPath localPath:item.localPath progress:^(NSProgress * _Nonnull progress) {
                         
                     } completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable localURL, NSError * _Nullable error) {
                         if (error) {
@@ -197,7 +197,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
                     }];
                     BOOL isWaiting = [self.downloader isWaiting:opeation.urlPath];
                     if (isWaiting) {
-                        item.status = FileDownloadStatusWaiting;
+                        item.status = OSFileDownloadStatusWaiting;
                     }
                     [self storedDownloadItems];
                 }
@@ -221,10 +221,10 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
         /// 根据downloadIdentifier 在self.downloadItems中找到对应的item
         NSUInteger itemIdx = [self foundItemIndxInDownloadItemsByURL:urlPath];
         if (itemIdx != NSNotFound) {
-            // 根据索引在self.downloadItems中取出FileDownloadOperation，修改状态，并进行归档
-            FileItem *item = [self.downloadItems objectAtIndex:itemIdx];
-            item.status = FileDownloadStatusNotStarted;
-            id<FileDownloadOperation> operation = [self.downloader getDownloadOperationByURL:urlPath];
+            // 根据索引在self.downloadItems中取出OSFileDownloadOperation，修改状态，并进行归档
+            OSFileItem *item = [self.downloadItems objectAtIndex:itemIdx];
+            item.status = OSFileDownloadStatusNotStarted;
+            id<OSFileDownloadOperation> operation = [self.downloader getDownloadOperationByURL:urlPath];
             if (operation.progressObj.nativeProgress) {
                 [operation cancel];
             } else {
@@ -242,7 +242,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
                 [self.displayItems replaceObjectAtIndex:founIdxInDisplay withObject:item];
             }
             [self storedDownloadItems];
-            [[NSNotificationCenter defaultCenter] postNotificationName:FileDownloadCanceldNotification object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:OSFileDownloadCanceldNotification object:nil];
         }
         else {
             DLog(@"ERR: Cancelled download item not found (id: %@)", urlPath);
@@ -257,11 +257,11 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
     @synchronized (self) {
         NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:urlPath];
         if (foundItemIdx != NSNotFound) {
-            FileItem *item = [self.downloadItems objectAtIndex:foundItemIdx];
+            OSFileItem *item = [self.downloadItems objectAtIndex:foundItemIdx];
             BOOL isDownloading = [self.downloader isDownloading:urlPath];
-            id<FileDownloadOperation> operation = [self.downloader getDownloadOperationByURL:urlPath];
+            id<OSFileDownloadOperation> operation = [self.downloader getDownloadOperationByURL:urlPath];
             if (isDownloading) {
-                item.status = FileDownloadStatusPaused;
+                item.status = OSFileDownloadStatusPaused;
                 if (operation.progressObj.nativeProgress) {
                     [operation pause];
                 }
@@ -273,10 +273,10 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
                     } else {
                         [self.downloader pauseWithURL:urlPath];
                     }
-                    item.status = FileDownloadStatusPaused;
+                    item.status = OSFileDownloadStatusPaused;
                 } else {
                     // 不在下载队列中，也不在等待队列中，就标记为取消
-                    item.status = FileDownloadStatusFailure;
+                    item.status = OSFileDownloadStatusFailure;
                 }
             }
             [self storedDownloadItems];
@@ -301,9 +301,9 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 - (void)clearAllDownloadTask {
     @synchronized (_downloadItems) {
         typeof(self) weakSelf = self;
-        [self.downloadItems enumerateObjectsUsingBlock:^(FileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [self.downloadItems enumerateObjectsUsingBlock:^(OSFileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             
-            if (obj.status == FileDownloadStatusDownloading || obj.status == FileDownloadStatusWaiting) {
+            if (obj.status == OSFileDownloadStatusDownloading || obj.status == OSFileDownloadStatusWaiting) {
                 [self cancel:obj.urlPath];
             }
             [weakSelf deleteFile:obj.localPath];
@@ -315,27 +315,27 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
     
 }
 
-- (NSArray<FileItem *> *)downloadedItems {
+- (NSArray<OSFileItem *> *)downloadedItems {
     if (!self.downloadItems.count) {
         return nil;
     }
     
     NSMutableArray *allSuccessItems = [NSMutableArray array];
-    [self.downloadItems enumerateObjectsUsingBlock:^(FileItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if (obj.status == FileDownloadStatusSuccess) {
+    [self.downloadItems enumerateObjectsUsingBlock:^(OSFileItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (obj.status == OSFileDownloadStatusSuccess) {
             [allSuccessItems addObject:obj];
         }
     }];
     return allSuccessItems;
 }
 
-- (NSArray<FileItem *> *)activeDownloadItems {
+- (NSArray<OSFileItem *> *)activeDownloadItems {
     if (!self.downloadItems.count) {
         return @[];
     }
     NSMutableArray *downloadingItems = [NSMutableArray array];
-    [self.downloadItems enumerateObjectsUsingBlock:^(FileItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if (obj.status != FileDownloadStatusSuccess) {
+    [self.downloadItems enumerateObjectsUsingBlock:^(OSFileItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (obj.status != OSFileDownloadStatusSuccess) {
             [downloadingItems addObject:obj];
         }
     }];
@@ -350,16 +350,16 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 
 
 /// 从本地获取所有的downloadItem
-- (NSMutableArray<FileItem *> *)restoredDownloadItems {
+- (NSMutableArray<OSFileItem *> *)restoredDownloadItems {
     
-    NSMutableArray<FileItem *> *restoredDownloadItems = [NSMutableArray array];
-    NSMutableArray<NSData *> *restoredMutableDataArray = [[NSUserDefaults standardUserDefaults] objectForKey:FileDownloadOperationsKey];
+    NSMutableArray<OSFileItem *> *restoredDownloadItems = [NSMutableArray array];
+    NSMutableArray<NSData *> *restoredMutableDataArray = [[NSUserDefaults standardUserDefaults] objectForKey:OSFileDownloadOperationsKey];
     if (!restoredMutableDataArray) {
         restoredMutableDataArray = [NSMutableArray array];
     }
     
     [restoredMutableDataArray enumerateObjectsUsingBlock:^(NSData * _Nonnull data, NSUInteger idx, BOOL * _Nonnull stop) {
-        FileItem *item = nil;
+        OSFileItem *item = nil;
         if (data) {
             @try {
                 // 解档
@@ -384,7 +384,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
     
     NSMutableArray<NSData *> *downloadItemsArchiveArray = [NSMutableArray arrayWithCapacity:self.downloadItems.count];
     
-    [self.downloadItems enumerateObjectsUsingBlock:^(FileItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self.downloadItems enumerateObjectsUsingBlock:^(OSFileItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSData *itemData = nil;
         @try {
             itemData = [NSKeyedArchiver archivedDataWithRootObject:obj];
@@ -399,7 +399,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
         
     }];
     
-    [[NSUserDefaults standardUserDefaults] setObject:downloadItemsArchiveArray forKey:FileDownloadOperationsKey];
+    [[NSUserDefaults standardUserDefaults] setObject:downloadItemsArchiveArray forKey:OSFileDownloadOperationsKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
@@ -410,7 +410,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 
 - (void)applicationWillTerminate {
     if (!self.shouldAutoDownloadWhenInitialize) {
-        [[self activeDownloadItems] enumerateObjectsUsingBlock:^(FileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [[self activeDownloadItems] enumerateObjectsUsingBlock:^(OSFileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             [self pause:obj.urlPath];
         }];
     }
@@ -420,25 +420,25 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 #pragma mark - Other
 ////////////////////////////////////////////////////////////////////////
 
-// 查找urlPath在displayItems中对应的FileDownloadOperation的索引
+// 查找urlPath在displayItems中对应的OSFileDownloadOperation的索引
 - (NSUInteger)foundItemIndxInDisplayItemsByURL:(NSString *)urlPath {
     if (!urlPath.length) {
         return NSNotFound;
     }
     return [self.displayItems indexOfObjectPassingTest:
-            ^BOOL(FileItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            ^BOOL(OSFileItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 return [urlPath isEqualToString:obj.urlPath];
             }];
 }
 
 
-// 查找urlPath在downloadItems中对应的FileDownloadOperation的索引
+// 查找urlPath在downloadItems中对应的OSFileDownloadOperation的索引
 - (NSUInteger)foundItemIndxInDownloadItemsByURL:(NSString *)urlPath {
     if (!urlPath.length) {
         return NSNotFound;
     }
     return [self.downloadItems indexOfObjectPassingTest:
-            ^BOOL(FileItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            ^BOOL(OSFileItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 return [urlPath isEqualToString:obj.urlPath];
             }];
 }
@@ -449,7 +449,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
         return NO;
     }
     @synchronized (_downloadItems) {
-        NSIndexSet *indexSet = [self.downloadItems indexesOfObjectsPassingTest:^BOOL(FileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSIndexSet *indexSet = [self.downloadItems indexesOfObjectsPassingTest:^BOOL(OSFileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             return [obj.fileName isEqualToString:packageId];
         }];
         if (!indexSet.count) {

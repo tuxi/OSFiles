@@ -1,17 +1,17 @@
 //
-//  FileDownloaderSessionPrivateDelegate.m
-//  FileDownloader
+//  OSFileDownloaderSessionPrivateDelegate.m
+//  OSFileDownloader
 //
 //  Created by Ossey on 2017/7/9.
 //  Copyright © 2017年 Ossey. All rights reserved.
 //
 
-#import "FileDownloaderSessionPrivateDelegate.h"
-#import "FileDownloader.h"
+#import "OSFileDownloaderSessionPrivateDelegate.h"
+#import "OSFileDownloader.h"
 
-@implementation FileDownloaderSessionPrivateDelegate
+@implementation OSFileDownloaderSessionPrivateDelegate
 
-- (instancetype)initWithDownloader:(FileDownloader *)downloader {
+- (instancetype)initWithDownloader:(OSFileDownloader *)downloader {
     if (self = [super init]) {
         _downloader = downloader;
     }
@@ -45,8 +45,8 @@
 
 
 /// 开始下载时调用
-- (void)_beginDownloadTaskWithDownloadOperation:(id<FileDownloadOperation>)downloadOperation {
-    downloadOperation.status = FileDownloadStatusDownloading;
+- (void)_beginDownloadTaskWithDownloadOperation:(id<OSFileDownloadOperation>)downloadOperation {
+    downloadOperation.status = OSFileDownloadStatusDownloading;
     if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(beginDownloadTaskWithDownloadOperation:)]) {
         [self.downloadDelegate beginDownloadTaskWithDownloadOperation:downloadOperation];
     }
@@ -65,7 +65,7 @@
 
 
 /// 下载成功并已成功保存到本地
-- (void)handleDownloadSuccessWithDownloadOperation:(id<FileDownloadOperation>)downloadOperation
+- (void)handleDownloadSuccessWithDownloadOperation:(id<OSFileDownloadOperation>)downloadOperation
                                taskIdentifier:(NSUInteger)taskIdentifier
                                      response:(NSURLResponse *)response {
     
@@ -73,7 +73,7 @@
     if (downloadOperation.completionHandler) {
         downloadOperation.completionHandler(response, downloadOperation.localURL, nil);
     }
-    downloadOperation.status = FileDownloadStatusSuccess;
+    downloadOperation.status = OSFileDownloadStatusSuccess;
     XYDispatch_main_async_safe(^{
       [self.downloadDelegate downloadSuccessnWithDownloadOperation:downloadOperation];
     })
@@ -84,18 +84,18 @@
 
 /// 下载取消(或暂停)、失败时回调
 - (void)handleDownloadFailureWithError:(NSError *)error
-                          downloadOperation:(id<FileDownloadOperation>)downloadOperation
+                          downloadOperation:(id<OSFileDownloadOperation>)downloadOperation
                         taskIdentifier:(NSUInteger)taskIdentifier
                               response:(NSURLResponse *)response {
     downloadOperation.progressObj.nativeProgress.completedUnitCount = downloadOperation.progressObj.nativeProgress.totalUnitCount;
     XYDispatch_main_async_safe(^{
         // 非用户手动触发暂停时才修改，因为此方法暂停时也会回调
-        if (downloadOperation.status != FileDownloadStatusPaused) {
+        if (downloadOperation.status != OSFileDownloadStatusPaused) {
             if ([error.domain isEqualToString:NSURLErrorDomain] &&
                 (error.code == NSURLErrorCancelled)) {
-                downloadOperation.status = FileDownloadStatusNotStarted;
+                downloadOperation.status = OSFileDownloadStatusNotStarted;
             } else {
-                downloadOperation.status = FileDownloadStatusFailure;
+                downloadOperation.status = OSFileDownloadStatusFailure;
             }
             [self.downloadDelegate downloadFailureWithDownloadOperation:downloadOperation error:error];
         }
@@ -120,7 +120,7 @@
     
     if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadProgressChangeWithDownloadOperation:)]) {
         if (urlPath) {
-            id<FileDownloadOperation> opeartion = [self.downloader getDownloadOperationByURL:urlPath];
+            id<OSFileDownloadOperation> opeartion = [self.downloader getDownloadOperationByURL:urlPath];
             [self.downloadDelegate downloadProgressChangeWithDownloadOperation:opeartion];
         }
     }
@@ -133,7 +133,7 @@
 /// 一个任务进入等待时调用
 - (void)_didWaitingDownloadForUrlPath:(NSString *)url {
     if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadDidWaitingWithURLPath:progress:)]) {
-        FileDownloadProgress *progress = [self.downloader getDownloadProgressByURL:url];
+        OSFileDownloadProgress *progress = [self.downloader getDownloadProgressByURL:url];
         [self.downloadDelegate downloadDidWaitingWithURLPath:url progress:progress];
     }
 }
@@ -141,15 +141,15 @@
 /// 从等待队列中开始下载一个任务
 - (void)_startDownloadTaskFromTheWaitingQueue:(NSString *)url {
     if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadStartFromWaitingQueueWithURLPath:progress:)]) {
-        FileDownloadProgress *progress = [self.downloader getDownloadProgressByURL:url];
+        OSFileDownloadProgress *progress = [self.downloader getDownloadProgressByURL:url];
         [self.downloadDelegate downloadStartFromWaitingQueueWithURLPath:url progress:progress];
     }
 }
 
 
 - (void)_pauseWithURL:(NSString *)urlPath {
-    id<FileDownloadOperation> downloadOpeartion = [self.downloader getDownloadOperationByURL:urlPath];
-    downloadOpeartion.status = FileDownloadStatusPaused;
+    id<OSFileDownloadOperation> downloadOpeartion = [self.downloader getDownloadOperationByURL:urlPath];
+    downloadOpeartion.status = OSFileDownloadStatusPaused;
     if (self.downloadDelegate && [self.downloadDelegate respondsToSelector:@selector(downloadPausedWithURL:)]) {
         [self.downloadDelegate downloadPausedWithURL:urlPath];
     }
@@ -163,7 +163,7 @@
 /// 接收到响应
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSHTTPURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler {
     
-    id<FileDownloadOperation> downloadOperation = [self.downloader getDownloadOperationByTask:dataTask];
+    id<OSFileDownloadOperation> downloadOperation = [self.downloader getDownloadOperationByTask:dataTask];
     
     // 打开流
     [downloadOperation.outputStream open];
@@ -179,7 +179,7 @@
 
 /// 接收到服务器返回的数据
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data {
-    id<FileDownloadOperation> downloadOperation = [self.downloader getDownloadOperationByTask:dataTask];
+    id<OSFileDownloadOperation> downloadOperation = [self.downloader getDownloadOperationByTask:dataTask];
     [downloadOperation.outputStream write:data.bytes maxLength:data.length];
     if (downloadOperation) {
         if (!downloadOperation.progressObj.downloadStartDate) {
@@ -197,7 +197,7 @@
 /// 请求完毕（成功|失败）
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
     
-    id<FileDownloadOperation> downloadOperation = [self.downloader getDownloadOperationByTask:(NSURLSessionDataTask *)task];
+    id<OSFileDownloadOperation> downloadOperation = [self.downloader getDownloadOperationByTask:(NSURLSessionDataTask *)task];
     if (!downloadOperation) {
         [self handleDownloadFailureWithError:error downloadOperation:downloadOperation taskIdentifier:task.taskIdentifier response:task.response];
         return;

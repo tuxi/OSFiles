@@ -1,6 +1,6 @@
 //
 //  UIView+Extend.h
-//  FileDownloader
+//  OSFileDownloader
 //
 //  Created by Ossey on 2017/6/13.
 //  Copyright © 2017年 Ossey. All rights reserved.
