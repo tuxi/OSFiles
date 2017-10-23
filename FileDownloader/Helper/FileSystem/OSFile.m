@@ -116,7 +116,7 @@
             _targetFile = [[OSFile alloc] initWithPath:symLinkTarget];
         }
         
-        [ self getSubTypes ];
+        [ self getSubTypes];
         [ self getIcon ];
     }
     
