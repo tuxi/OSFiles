@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1855DF1B1FA37CBD001CCAE8 /* UIViewController+OSAlertExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF1A1FA37CBD001CCAE8 /* UIViewController+OSAlertExtension.m */; };
 		18ADEEAB1F9E48D30024BA40 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18ADEEAA1F9E48D30024BA40 /* LaunchScreen.storyboard */; };
 		18ADEEAD1F9E48DE0024BA40 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18ADEEAC1F9E48DE0024BA40 /* Main.storyboard */; };
 		18ADEEB21F9E492E0024BA40 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18517BD21EEBC86600B148C8 /* Assets.xcassets */; };
@@ -168,8 +169,6 @@
 		18ADEF531F9E4A860024BA40 /* UIView+XYConfigure.m in Sources */ = {isa = PBXBuildFile; fileRef = 1871AD181EEEF76E00ABC452 /* UIView+XYConfigure.m */; };
 		18ADEF541F9E4A860024BA40 /* XYDBUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 1871AD1B1EEEF76E00ABC452 /* XYDBUtil.m */; };
 		18ADEF551F9E4A860024BA40 /* XYNetworkRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1871AD1D1EEEF76E00ABC452 /* XYNetworkRequest.m */; };
-		18ADEF561F9E4A860024BA40 /* UIScrollView+NoDataPlaceholder.m in Sources */ = {isa = PBXBuildFile; fileRef = 18517C711EEBE08700B148C8 /* UIScrollView+NoDataPlaceholder.m */; };
-		18ADEF571F9E4A860024BA40 /* UITableView+NoDataPlaceholderExtend.m in Sources */ = {isa = PBXBuildFile; fileRef = 18517C731EEBE08700B148C8 /* UITableView+NoDataPlaceholderExtend.m */; };
 		18ADEF581F9E4A970024BA40 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 18517BC71EEBC86600B148C8 /* main.m */; };
 		18ADEF591F9E4AC20024BA40 /* GCDWebServers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18ADEE881F9E43A20024BA40 /* GCDWebServers.framework */; };
 		18ADEF5A1F9E4AC20024BA40 /* GCDWebServers.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 18ADEE881F9E43A20024BA40 /* GCDWebServers.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -429,10 +428,8 @@
 		18517C631EEBDB3E00B148C8 /* UIImage+XYImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+XYImage.m"; sourceTree = "<group>"; };
 		18517C651EEBDDDB00B148C8 /* OSBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSBaseViewController.h; sourceTree = "<group>"; };
 		18517C661EEBDDDB00B148C8 /* OSBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSBaseViewController.m; sourceTree = "<group>"; };
-		18517C701EEBE08700B148C8 /* UIScrollView+NoDataPlaceholder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+NoDataPlaceholder.h"; sourceTree = "<group>"; };
-		18517C711EEBE08700B148C8 /* UIScrollView+NoDataPlaceholder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+NoDataPlaceholder.m"; sourceTree = "<group>"; };
-		18517C721EEBE08700B148C8 /* UITableView+NoDataPlaceholderExtend.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+NoDataPlaceholderExtend.h"; sourceTree = "<group>"; };
-		18517C731EEBE08700B148C8 /* UITableView+NoDataPlaceholderExtend.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+NoDataPlaceholderExtend.m"; sourceTree = "<group>"; };
+		1855DF191FA37CBD001CCAE8 /* UIViewController+OSAlertExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIViewController+OSAlertExtension.h"; sourceTree = "<group>"; };
+		1855DF1A1FA37CBD001CCAE8 /* UIViewController+OSAlertExtension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+OSAlertExtension.m"; sourceTree = "<group>"; };
 		1871ACD81EEEE2D900ABC452 /* NSString+OSFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+OSFile.h"; sourceTree = "<group>"; };
 		1871ACD91EEEE2D900ABC452 /* NSString+OSFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+OSFile.m"; sourceTree = "<group>"; };
 		1871ACDB1EEEE55700ABC452 /* NSDate+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Utilities.h"; sourceTree = "<group>"; };
@@ -1140,7 +1137,6 @@
 			isa = PBXGroup;
 			children = (
 				1871AD0E1EEEF74900ABC452 /* Protocol */,
-				18517C6F1EEBE08700B148C8 /* NODataPlaceholderView */,
 			);
 			path = Reuse;
 			sourceTree = "<group>";
@@ -1258,19 +1254,10 @@
 				18878A801EF035DF005C0185 /* UIView+Extend.m */,
 				1819EFB31EF2E3FE00208A20 /* UITextField+Blocks.h */,
 				1819EFB41EF2E3FE00208A20 /* UITextField+Blocks.m */,
+				1855DF191FA37CBD001CCAE8 /* UIViewController+OSAlertExtension.h */,
+				1855DF1A1FA37CBD001CCAE8 /* UIViewController+OSAlertExtension.m */,
 			);
 			path = Category;
-			sourceTree = "<group>";
-		};
-		18517C6F1EEBE08700B148C8 /* NODataPlaceholderView */ = {
-			isa = PBXGroup;
-			children = (
-				18517C701EEBE08700B148C8 /* UIScrollView+NoDataPlaceholder.h */,
-				18517C711EEBE08700B148C8 /* UIScrollView+NoDataPlaceholder.m */,
-				18517C721EEBE08700B148C8 /* UITableView+NoDataPlaceholderExtend.h */,
-				18517C731EEBE08700B148C8 /* UITableView+NoDataPlaceholderExtend.m */,
-			);
-			path = NODataPlaceholderView;
 			sourceTree = "<group>";
 		};
 		1871AD0E1EEEF74900ABC452 /* Protocol */ = {
@@ -2451,6 +2438,7 @@
 				18ADEED51F9E4A090024BA40 /* BookmarkDataManager.m in Sources */,
 				18ADEEF51F9E4A2E0024BA40 /* GestureProxy.m in Sources */,
 				18ADEF271F9E4A860024BA40 /* OSFileDownloadCell.m in Sources */,
+				1855DF1B1FA37CBD001CCAE8 /* UIViewController+OSAlertExtension.m in Sources */,
 				18ADEF481F9E4A860024BA40 /* UIImage+XYImage.m in Sources */,
 				18ADEEFF1F9E4A3D0024BA40 /* MenuHelper.m in Sources */,
 				18ADEF461F9E4A860024BA40 /* UINavigationItem+MultipleItems.m in Sources */,
@@ -2473,9 +2461,7 @@
 				18ADEEDD1F9E4A130024BA40 /* BrowserTopToolBar.m in Sources */,
 				18ADEF471F9E4A860024BA40 /* UIButton+ClickBlock.m in Sources */,
 				18ADEF071F9E4A3D0024BA40 /* NSNumber+ZWUtility.m in Sources */,
-				18ADEF561F9E4A860024BA40 /* UIScrollView+NoDataPlaceholder.m in Sources */,
 				18ADEF1D1F9E4A530024BA40 /* ICGVideoTrimmerView.m in Sources */,
-				18ADEF571F9E4A860024BA40 /* UITableView+NoDataPlaceholderExtend.m in Sources */,
 				18ADEF431F9E4A860024BA40 /* NetworkTypeUtils.m in Sources */,
 				18ADEF121F9E4A530024BA40 /* DelegateManager.m in Sources */,
 				18ADEF531F9E4A860024BA40 /* UIView+XYConfigure.m in Sources */,

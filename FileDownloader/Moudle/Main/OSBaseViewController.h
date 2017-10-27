@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "UITableView+NoDataPlaceholderExtend.h"
+#import <UIScrollView+NoDataExtend.h>
 #import "XYTableViewModelProtocol.h"
 
 @interface OSBaseViewController : UIViewController {
@@ -18,10 +18,13 @@
 
 @property (nonatomic, strong) UITableView *tableView;
 
-- (BOOL)shouldShowNoDataPlaceholder;
+- (NSAttributedString *)attributedStringWithText:(NSString *)string color:(UIColor *)color fontSize:(CGFloat)fontSize;
 
-- (UIImage *)noDataPlaceholderImageWithIsLoading:(BOOL)isLoading;
-- (NSAttributedString *)reloadbuttonTitleAttributedStringForNoDataPlaceholder;
-- (NSAttributedString *)detailAttributedStringForNoDataPlaceholder;
-- (NSAttributedString *)titleAttributedStringForNoDataPlaceholder;
+/// 子类可以重写此方法
+- (void)noDataPlaceholder:(UIScrollView *)scrollView didClickReloadButton:(UIButton *)button;
+- (void)noDataPlaceholder:(UIScrollView *)scrollView didTapOnContentView:(UITapGestureRecognizer *)tap;
+- (NSAttributedString *)noDataReloadButtonAttributedStringWithState:(UIControlState)state;
+- (NSAttributedString *)noDataDetailLabelAttributedString;
+- (NSAttributedString *)noDataTextLabelAttributedString;
+- (UIImage *)noDataImageViewImage;
 @end

@@ -33,7 +33,7 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
     [OSFileDownloadCell xy_registerTableViewCell:tableView classIdentifier:DownloadCellIdentifierKey];
 }
 
-- (void)getDataSourceBlock:(id (^)())dataSource completion:(void (^)())completion {
+- (void)getDataSourceBlock:(id (^)(void))dataSource completion:(void (^)())completion {
     if (dataSource) {
         self.dataSource = [dataSource() mutableCopy];
         

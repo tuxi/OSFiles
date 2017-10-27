@@ -42,9 +42,6 @@
     [self.tableViewModel prepareTableView:self.tableView];
     [self addObservers];
     __weak typeof(self) weakSelf = self;
-    self.tableView.reloadButtonClickBlock = ^{
-        weakSelf.tabBarController.selectedIndex = 1;
-    };
     
     
     [self.tableViewModel getDataSourceBlock:^id{
@@ -55,8 +52,9 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"clear"
                                                                               style:UIBarButtonItemStyleDone
                                                                              target:self
-                                                                             action:@selector(resertDownlod)];
+                                                                     action:@selector(resertDownlod)];
 }
+
 
 /// 重新下载全部
 - (void)resertDownlod {
@@ -99,53 +97,24 @@
 
 
 ////////////////////////////////////////////////////////////////////////
-#pragma mark - Config NoDataPlaceholderExtend
+#pragma mark - NoDataPlaceholderExtend
 ////////////////////////////////////////////////////////////////////////
 
-- (NSAttributedString *)titleAttributedStringForNoDataPlaceholder {
-    
-    NSString *text = @"本地无下载文件\n去查看下载页是否有文件在下载中";
-    
-    UIFont *font = nil;
-    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_8_4) {
-        font = [UIFont monospacedDigitSystemFontOfSize:18.0 weight:UIFontWeightRegular];
-    } else {
-        font = [UIFont boldSystemFontOfSize:18.0];
-    }
-    UIColor *textColor = [UIColor grayColor];
-    
-    NSMutableDictionary *attributeDict = [NSMutableDictionary dictionaryWithCapacity:0];
-    NSMutableParagraphStyle *style = [NSMutableParagraphStyle new];
-    style.lineBreakMode = NSLineBreakByWordWrapping;
-    style.alignment = NSTextAlignmentCenter;
-    
-    [attributeDict setObject:font forKey:NSFontAttributeName];
-    [attributeDict setObject:textColor forKey:NSForegroundColorAttributeName];
-    [attributeDict setObject:style forKey:NSParagraphStyleAttributeName];
-    
-    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:text attributes:attributeDict];
-    
-    return attributedString;
-    
+
+- (NSAttributedString *)noDataReloadButtonAttributedStringWithState:(UIControlState)state {
+    return [self attributedStringWithText:@"查看下载页" color:[UIColor colorWithRed:49/255.0 green:194/255.0 blue:124/255.0 alpha:1.0] fontSize:15.0];
 }
 
-- (NSAttributedString *)reloadbuttonTitleAttributedStringForNoDataPlaceholder {
-    
-    UIFont *font = nil;
-    
-    NSString *text = @"查看下载页";
-    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_8_4) {
-        font = [UIFont monospacedDigitSystemFontOfSize:15.0 weight:UIFontWeightRegular];
-    } else {
-        font = [UIFont boldSystemFontOfSize:15.0];
-    }
-    UIColor *textColor = [UIColor whiteColor];
-    NSMutableDictionary *attributes = [NSMutableDictionary new];
-    if (font) [attributes setObject:font forKey:NSFontAttributeName];
-    if (textColor) [attributes setObject:textColor forKey:NSForegroundColorAttributeName];
-    
-    return [[NSAttributedString alloc] initWithString:text attributes:attributes];
+- (void)noDataPlaceholder:(UIScrollView *)scrollView didClickReloadButton:(UIButton *)button {
+    self.tabBarController.selectedIndex = 1;
 }
 
+- (NSAttributedString *)noDataDetailLabelAttributedString {
+    return [self attributedStringWithText:@"无文件" color:[UIColor grayColor] fontSize:16];
+}
+
+- (NSAttributedString *)noDataTextLabelAttributedString {
+    return [self attributedStringWithText:@"本地无下载文件\n去查看下载页是否有文件在下载中" color:[UIColor grayColor] fontSize:16];;
+}
 
 @end
