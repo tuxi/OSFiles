@@ -222,12 +222,12 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
           [SettingsMenuItem itemWithText:@"拷贝连接" image:[UIImage imageNamed:@"album"] action:^{
               [self_ handleCopyURLButtonClicked];
           }],
-          [SettingsMenuItem itemWithText:@"下载" image:[UIImage imageNamed:@"album"] action:^{
-              NSString *lJs = @"document.documentElement.innerHTML";
-              NSString *lHtml = [self.browserContainerView.webView stringByEvaluatingJavaScriptFromString:lJs];
-//              NSArray *images = [self getImageurlFromHtml:lHtml];
-              [[[UIAlertView alloc] initWithTitle:@"HTML" message:lHtml delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
-          }]
+//          [SettingsMenuItem itemWithText:@"下载" image:[UIImage imageNamed:@"album"] action:^{
+//              NSString *lJs = @"document.documentElement.innerHTML";
+//              NSString *lHtml = [self.browserContainerView.webView stringByEvaluatingJavaScriptFromString:lJs];
+////              NSArray *images = [self getImageurlFromHtml:lHtml];
+//              [[[UIAlertView alloc] initWithTitle:@"HTML" message:lHtml delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
+//          }]
           
           ];
         

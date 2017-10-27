@@ -37,7 +37,7 @@
 
 - (void)setup {
     
-    self.navigationItem.title = @"Files";
+    self.navigationItem.title = @"文件管理";
     self.tableViewModel = [FilesTableViewModel new];
     [self.tableViewModel prepareTableView:self.tableView];
     [self addObservers];
@@ -49,10 +49,12 @@
     } completion:^{
         [weakSelf.tableView reloadData];
     }];
+#if DEBUG
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"clear"
                                                                               style:UIBarButtonItemStyleDone
                                                                              target:self
                                                                      action:@selector(resertDownlod)];
+#endif
 }
 
 
@@ -109,12 +111,12 @@
     self.tabBarController.selectedIndex = 1;
 }
 
-- (NSAttributedString *)noDataDetailLabelAttributedString {
-    return [self attributedStringWithText:@"无文件" color:[UIColor grayColor] fontSize:16];
-}
+//- (NSAttributedString *)noDataDetailLabelAttributedString {
+//    return [self attributedStringWithText:@"无文件" color:[UIColor grayColor] fontSize:16];
+//}
 
 - (NSAttributedString *)noDataTextLabelAttributedString {
-    return [self attributedStringWithText:@"本地无下载文件\n去查看下载页是否有文件在下载中" color:[UIColor grayColor] fontSize:16];;
+    return [self attributedStringWithText:@"没有下载完成文件\n去查看下载页是否有文件在下载中" color:[UIColor grayColor] fontSize:16];;
 }
 
 @end

@@ -25,10 +25,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self addChildVC:[BrowserViewController sharedInstance] imageNamed:@"TabBrowser" title:@"Browser" navClass:[BaseNavigationViewController class]];
-    [self addChildVC:[DownloadsViewController new] imageNamed:@"TabDownloads" title:@"Downloads"];
-    [self addChildVC:[FilesViewController new] imageNamed:@"TabFiles" title:@"Files"];
-    [self addChildVC:[OSSettingViewController new] imageNamed:@"TabMore" title:@"More"];
+    [self addChildVC:[BrowserViewController sharedInstance] imageNamed:@"TabBrowser" title:@"浏览器" navClass:[BaseNavigationViewController class]];
+    [self addChildVC:[DownloadsViewController new] imageNamed:@"TabDownloads" title:@"下载"];
+    [self addChildVC:[FilesViewController new] imageNamed:@"TabFiles" title:@"文件管理"];
+    [self addChildVC:[OSSettingViewController new] imageNamed:@"TabMore" title:@"更多"];
     
     [SmileAuthenticator sharedInstance].delegate = self;
     self.view.backgroundColor = [UIColor whiteColor];

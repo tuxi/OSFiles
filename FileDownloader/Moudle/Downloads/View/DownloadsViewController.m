@@ -58,8 +58,6 @@
 }
 
 
-
-
 - (void)setup {
     
     self.navigationItem.title = @"下载";
@@ -77,6 +75,8 @@
     self.navigationController.progressView.progressHeight = 2.0;
     self.navigationController.progressView.progressTintColor = [UIColor redColor];
     self.navigationController.progressView.trackTintColor = [[UIColor greenColor] colorWithAlphaComponent:0.5];
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"添加下载任务" style:UIBarButtonItemStylePlain target:self action:@selector(addTask)];
     
 }
 
@@ -230,6 +230,20 @@
 }
 
 - (void)noDataPlaceholder:(UIScrollView *)scrollView didClickReloadButton:(UIButton *)button {
+    [self addTask];
+}
+
+
+- (NSAttributedString *)noDataDetailLabelAttributedString {
+    return [self attributedStringWithText:@"请输入URL开启下载任务" color:[UIColor grayColor] fontSize:16];
+}
+
+- (NSAttributedString *)noDataTextLabelAttributedString {
+    return [self attributedStringWithText:@"无下载任务" color:[UIColor grayColor] fontSize:16];;
+}
+
+
+- (void)addTask {
     [self alertControllerWithTitle:@"输入正确的URL"
                            message:nil
                            content:nil
@@ -243,7 +257,7 @@
                                         原因：urlPath中可能存在空格导致
                                         */
                                        urlPath = [NSString returnFormatString:urlPath];
-//                                       urlPath = [urlPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                                       //                                       urlPath = [urlPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
                                        [[OSFileDownloaderManager sharedInstance] start:urlPath];
                                    }
                                    else {
@@ -251,15 +265,6 @@
                                    }
                                    [self reloadTableData];
                                }];
-   
-}
-
-- (NSAttributedString *)noDataDetailLabelAttributedString {
-    return [self attributedStringWithText:@"请输入URL开启下载任务" color:[UIColor grayColor] fontSize:16];
-}
-
-- (NSAttributedString *)noDataTextLabelAttributedString {
-    return [self attributedStringWithText:@"无下载任务" color:[UIColor grayColor] fontSize:16];;
 }
 
 @end
