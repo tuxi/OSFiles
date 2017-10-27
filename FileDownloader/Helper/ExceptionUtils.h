@@ -11,19 +11,11 @@
 
 
 @interface ExceptionUtils : NSObject
-extern NSString * getExceptionFilePath();
+
+extern NSString * getExceptionFilePath(void);
+
 + (void)configExceptionHandlerWithEmail:(NSString *)emailStr;
 + (void)configExceptionHandler;
 
 @end
 
-
-@interface FodlerViewController : UITableViewController <QLPreviewControllerDataSource>
-
-- (instancetype)initWithPath:(NSString *)path;
-
-@property (strong) NSString *path;
-@property (strong) NSArray<NSString *> *files;
-@property (nonatomic, assign) BOOL displayHiddenFiles;
-
-@end

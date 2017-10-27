@@ -15,6 +15,8 @@
 - (unsigned long long)fileSize;
 
 + (NSString *)stringForSize:(uint64_t)bytes;
+/// 修改文件时间
+- (BOOL)updateFileModificationDateForFilePath;
 
 @end
 

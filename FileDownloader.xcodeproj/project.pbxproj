@@ -8,6 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		1855DF1B1FA37CBD001CCAE8 /* UIViewController+OSAlertExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF1A1FA37CBD001CCAE8 /* UIViewController+OSAlertExtension.m */; };
+		1855DF6C1FA38B95001CCAE8 /* DirectoryWatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF6B1FA38B94001CCAE8 /* DirectoryWatcher.m */; };
+		1855DF6F1FA38BC8001CCAE8 /* NSObject+IvarList.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF6E1FA38BC8001CCAE8 /* NSObject+IvarList.m */; };
+		1855DF781FA38C0E001CCAE8 /* OSFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF751FA38C0D001CCAE8 /* OSFileManager.m */; };
+		1855DF7C1FA38C1C001CCAE8 /* FoldersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF7A1FA38C1C001CCAE8 /* FoldersViewController.m */; };
+		1855DF811FA390C0001CCAE8 /* XYSuspensionMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF7F1FA390C0001CCAE8 /* XYSuspensionMenu.m */; };
+		1855DF841FA3938C001CCAE8 /* OSFileCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF831FA3938C001CCAE8 /* OSFileCollectionViewController.m */; };
 		18ADEEAB1F9E48D30024BA40 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18ADEEAA1F9E48D30024BA40 /* LaunchScreen.storyboard */; };
 		18ADEEAD1F9E48DE0024BA40 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18ADEEAC1F9E48DE0024BA40 /* Main.storyboard */; };
 		18ADEEB21F9E492E0024BA40 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18517BD21EEBC86600B148C8 /* Assets.xcassets */; };
@@ -141,7 +147,6 @@
 		18ADEF371F9E4A860024BA40 /* OSUnlockBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E8D91F9C3CE5002C661E /* OSUnlockBackgroundView.m */; };
 		18ADEF381F9E4A860024BA40 /* OSProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E7AC1F9B6E74002C661E /* OSProgressView.m */; };
 		18ADEF391F9E4A860024BA40 /* UINavigationController+OSProgressBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1813E7AE1F9B6E74002C661E /* UINavigationController+OSProgressBar.m */; };
-		18ADEF3A1F9E4A860024BA40 /* SuspensionControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 180CBDDF1F1126E0006D2871 /* SuspensionControl.m */; };
 		18ADEF3B1F9E4A860024BA40 /* ExceptionUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 180CBDDB1F11269E006D2871 /* ExceptionUtils.m */; };
 		18ADEF3C1F9E4A860024BA40 /* PSPDFUIKitMainThreadGuard.m in Sources */ = {isa = PBXBuildFile; fileRef = 18910A6B1F0D3472002BA292 /* PSPDFUIKitMainThreadGuard.m */; };
 		18ADEF3D1F9E4A860024BA40 /* XYImageBrowerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18878A1F1EF01B87005C0185 /* XYImageBrowerView.m */; };
@@ -346,8 +351,6 @@
 		0C8B7998687A11DE8FCA96A2 /* Pods-FileDownloader.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FileDownloader.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FileDownloader/Pods-FileDownloader.debug.xcconfig"; sourceTree = "<group>"; };
 		180CBDDA1F11269E006D2871 /* ExceptionUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExceptionUtils.h; sourceTree = "<group>"; };
 		180CBDDB1F11269E006D2871 /* ExceptionUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExceptionUtils.m; sourceTree = "<group>"; };
-		180CBDDE1F1126E0006D2871 /* SuspensionControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SuspensionControl.h; sourceTree = "<group>"; };
-		180CBDDF1F1126E0006D2871 /* SuspensionControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SuspensionControl.m; sourceTree = "<group>"; };
 		1811B4671F98D7FB003A5847 /* OSFileItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSFileItem.h; sourceTree = "<group>"; };
 		1811B4681F98D7FB003A5847 /* OSFileItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSFileItem.m; sourceTree = "<group>"; };
 		1813E79D1F9B6ACF002C661E /* OSFileDownloadConst.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSFileDownloadConst.h; sourceTree = "<group>"; };
@@ -392,7 +395,6 @@
 		1813E8D91F9C3CE5002C661E /* OSUnlockBackgroundView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSUnlockBackgroundView.m; sourceTree = "<group>"; };
 		1813E8F21F9CE49F002C661E /* OSUnlockViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSUnlockViewController.h; sourceTree = "<group>"; };
 		1813E8F31F9CE49F002C661E /* OSUnlockViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSUnlockViewController.m; sourceTree = "<group>"; };
-		1819EFAE1EF2E29300208A20 /* OSBrowserViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OSBrowserViewController.xib; sourceTree = "<group>"; };
 		1819EFB31EF2E3FE00208A20 /* UITextField+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITextField+Blocks.h"; sourceTree = "<group>"; };
 		1819EFB41EF2E3FE00208A20 /* UITextField+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextField+Blocks.m"; sourceTree = "<group>"; };
 		18300F741EEC57280035D6EE /* NSObject+XYHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+XYHUD.h"; sourceTree = "<group>"; };
@@ -417,8 +419,6 @@
 		18517C431EEBD81D00B148C8 /* MainNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainNavigationController.m; sourceTree = "<group>"; };
 		18517C441EEBD81D00B148C8 /* MainTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainTabBarController.h; sourceTree = "<group>"; };
 		18517C451EEBD81D00B148C8 /* MainTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainTabBarController.m; sourceTree = "<group>"; };
-		18517C541EEBD93800B148C8 /* OSBrowserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSBrowserViewController.h; sourceTree = "<group>"; };
-		18517C551EEBD93800B148C8 /* OSBrowserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSBrowserViewController.m; sourceTree = "<group>"; };
 		18517C571EEBD95C00B148C8 /* FilesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilesViewController.h; sourceTree = "<group>"; };
 		18517C581EEBD95C00B148C8 /* FilesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FilesViewController.m; sourceTree = "<group>"; };
 		18517C5A1EEBD97500B148C8 /* DownloadsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadsViewController.h; sourceTree = "<group>"; };
@@ -430,6 +430,18 @@
 		18517C661EEBDDDB00B148C8 /* OSBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSBaseViewController.m; sourceTree = "<group>"; };
 		1855DF191FA37CBD001CCAE8 /* UIViewController+OSAlertExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIViewController+OSAlertExtension.h"; sourceTree = "<group>"; };
 		1855DF1A1FA37CBD001CCAE8 /* UIViewController+OSAlertExtension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+OSAlertExtension.m"; sourceTree = "<group>"; };
+		1855DF6A1FA38B94001CCAE8 /* DirectoryWatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryWatcher.h; sourceTree = "<group>"; };
+		1855DF6B1FA38B94001CCAE8 /* DirectoryWatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DirectoryWatcher.m; sourceTree = "<group>"; };
+		1855DF6D1FA38BC8001CCAE8 /* NSObject+IvarList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+IvarList.h"; sourceTree = "<group>"; };
+		1855DF6E1FA38BC8001CCAE8 /* NSObject+IvarList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+IvarList.m"; sourceTree = "<group>"; };
+		1855DF751FA38C0D001CCAE8 /* OSFileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSFileManager.m; sourceTree = "<group>"; };
+		1855DF771FA38C0E001CCAE8 /* OSFileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSFileManager.h; sourceTree = "<group>"; };
+		1855DF7A1FA38C1C001CCAE8 /* FoldersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FoldersViewController.m; sourceTree = "<group>"; };
+		1855DF7B1FA38C1C001CCAE8 /* FoldersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FoldersViewController.h; sourceTree = "<group>"; };
+		1855DF7F1FA390C0001CCAE8 /* XYSuspensionMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XYSuspensionMenu.m; sourceTree = "<group>"; };
+		1855DF801FA390C0001CCAE8 /* XYSuspensionMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYSuspensionMenu.h; sourceTree = "<group>"; };
+		1855DF821FA3938C001CCAE8 /* OSFileCollectionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSFileCollectionViewController.h; sourceTree = "<group>"; };
+		1855DF831FA3938C001CCAE8 /* OSFileCollectionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSFileCollectionViewController.m; sourceTree = "<group>"; };
 		1871ACD81EEEE2D900ABC452 /* NSString+OSFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+OSFile.h"; sourceTree = "<group>"; };
 		1871ACD91EEEE2D900ABC452 /* NSString+OSFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+OSFile.m"; sourceTree = "<group>"; };
 		1871ACDB1EEEE55700ABC452 /* NSDate+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Utilities.h"; sourceTree = "<group>"; };
@@ -875,15 +887,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		180CBDDD1F1126E0006D2871 /* SuspensionControl */ = {
-			isa = PBXGroup;
-			children = (
-				180CBDDE1F1126E0006D2871 /* SuspensionControl.h */,
-				180CBDDF1F1126E0006D2871 /* SuspensionControl.m */,
-			);
-			path = SuspensionControl;
-			sourceTree = "<group>";
-		};
 		1813E79C1F9B6ACF002C661E /* Downloader */ = {
 			isa = PBXGroup;
 			children = (
@@ -1029,10 +1032,15 @@
 		18517BE91EEBCB2C00B148C8 /* Helper */ = {
 			isa = PBXGroup;
 			children = (
+				1855DF801FA390C0001CCAE8 /* XYSuspensionMenu.h */,
+				1855DF7F1FA390C0001CCAE8 /* XYSuspensionMenu.m */,
+				1855DF6A1FA38B94001CCAE8 /* DirectoryWatcher.h */,
+				1855DF6B1FA38B94001CCAE8 /* DirectoryWatcher.m */,
+				1855DF771FA38C0E001CCAE8 /* OSFileManager.h */,
+				1855DF751FA38C0D001CCAE8 /* OSFileManager.m */,
 				18ADEBEC1F9E21910024BA40 /* FileSystem */,
 				1813E8371F9BAE73002C661E /* SmileAuth */,
 				1813E7AA1F9B6E74002C661E /* ProgressBar */,
-				180CBDDD1F1126E0006D2871 /* SuspensionControl */,
 				180CBDDA1F11269E006D2871 /* ExceptionUtils.h */,
 				180CBDDB1F11269E006D2871 /* ExceptionUtils.m */,
 				18910A6B1F0D3472002BA292 /* PSPDFUIKitMainThreadGuard.m */,
@@ -1156,9 +1164,6 @@
 		18517C491EEBD8CB00B148C8 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				18517C541EEBD93800B148C8 /* OSBrowserViewController.h */,
-				18517C551EEBD93800B148C8 /* OSBrowserViewController.m */,
-				1819EFAE1EF2E29300208A20 /* OSBrowserViewController.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1188,6 +1193,10 @@
 			children = (
 				18517C571EEBD95C00B148C8 /* FilesViewController.h */,
 				18517C581EEBD95C00B148C8 /* FilesViewController.m */,
+				1855DF7B1FA38C1C001CCAE8 /* FoldersViewController.h */,
+				1855DF7A1FA38C1C001CCAE8 /* FoldersViewController.m */,
+				1855DF821FA3938C001CCAE8 /* OSFileCollectionViewController.h */,
+				1855DF831FA3938C001CCAE8 /* OSFileCollectionViewController.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1256,6 +1265,8 @@
 				1819EFB41EF2E3FE00208A20 /* UITextField+Blocks.m */,
 				1855DF191FA37CBD001CCAE8 /* UIViewController+OSAlertExtension.h */,
 				1855DF1A1FA37CBD001CCAE8 /* UIViewController+OSAlertExtension.m */,
+				1855DF6D1FA38BC8001CCAE8 /* NSObject+IvarList.h */,
+				1855DF6E1FA38BC8001CCAE8 /* NSObject+IvarList.m */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -2376,6 +2387,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1855DF6F1FA38BC8001CCAE8 /* NSObject+IvarList.m in Sources */,
 				18ADEF3E1F9E4A860024BA40 /* XYImageViewer.m in Sources */,
 				18ADEEFA1F9E4A3D0024BA40 /* BrowserWebView.m in Sources */,
 				18ADEF231F9E4A860024BA40 /* OSFileDownloaderDelegate.m in Sources */,
@@ -2408,6 +2420,8 @@
 				18ADEEDB1F9E4A100024BA40 /* BrowserViewController.m in Sources */,
 				18ADEF281F9E4A860024BA40 /* DownloadsTableViewModel.m in Sources */,
 				18ADEECF1F9E4A020024BA40 /* OSFileDownloaderSessionPrivateDelegate.m in Sources */,
+				1855DF6C1FA38B95001CCAE8 /* DirectoryWatcher.m in Sources */,
+				1855DF811FA390C0001CCAE8 /* XYSuspensionMenu.m in Sources */,
 				18ADEF101F9E4A4A0024BA40 /* BaseTableViewController.m in Sources */,
 				18ADEEC61F9E49F70024BA40 /* HTTPManager.m in Sources */,
 				18ADEEF21F9E4A2E0024BA40 /* SettingSwitchTableViewCell.m in Sources */,
@@ -2431,6 +2445,7 @@
 				18ADEF321F9E4A860024BA40 /* SmileAuthenticator.m in Sources */,
 				18ADEF141F9E4A530024BA40 /* ZWDatabaseQueue.m in Sources */,
 				18ADEF131F9E4A530024BA40 /* ZWDatabase.m in Sources */,
+				1855DF781FA38C0E001CCAE8 /* OSFileManager.m in Sources */,
 				18ADEEEF1F9E4A2E0024BA40 /* SettingAnimator.m in Sources */,
 				18ADEF451F9E4A860024BA40 /* UIColor+Hex.m in Sources */,
 				18ADEEF31F9E4A2E0024BA40 /* DelegateManager+WebViewDelegate.m in Sources */,
@@ -2480,11 +2495,11 @@
 				18ADEF4B1F9E4A860024BA40 /* UIView+Extend.m in Sources */,
 				18ADEF391F9E4A860024BA40 /* UINavigationController+OSProgressBar.m in Sources */,
 				18ADEF2F1F9E4A860024BA40 /* BaseTableViewModel.m in Sources */,
-				18ADEF3A1F9E4A860024BA40 /* SuspensionControl.m in Sources */,
 				18ADEF051F9E4A3D0024BA40 /* NSDate+ZWUtility.m in Sources */,
 				18ADEF441F9E4A860024BA40 /* UIApplication+ActivityIndicator.m in Sources */,
 				18ADEF301F9E4A860024BA40 /* AppDelegate.m in Sources */,
 				18ADEF2C1F9E4A860024BA40 /* MainNavigationController.m in Sources */,
+				1855DF841FA3938C001CCAE8 /* OSFileCollectionViewController.m in Sources */,
 				18ADEF211F9E4A860024BA40 /* OSSettingsMenuItem.m in Sources */,
 				18ADEF0D1F9E4A420024BA40 /* UIImage+ZWUtility.m in Sources */,
 				18ADEF081F9E4A3D0024BA40 /* NSString+ZWUtility.m in Sources */,
@@ -2516,6 +2531,7 @@
 				18ADEF331F9E4A860024BA40 /* SmileKeychainWrapper.m in Sources */,
 				18ADEF3F1F9E4A860024BA40 /* FFCircularProgressView.m in Sources */,
 				18ADEF161F9E4A530024BA40 /* ArrowActivityView.m in Sources */,
+				1855DF7C1FA38C1C001CCAE8 /* FoldersViewController.m in Sources */,
 				18ADEF2D1F9E4A860024BA40 /* MainTabBarController.m in Sources */,
 				18ADEEE71F9E4A1F0024BA40 /* CardMainBottomView.m in Sources */,
 				18ADEEE81F9E4A1F0024BA40 /* CardMainView.m in Sources */,

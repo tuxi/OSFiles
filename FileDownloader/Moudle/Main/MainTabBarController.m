@@ -9,7 +9,6 @@
 #import "MainTabBarController.h"
 #import "MainNavigationController.h"
 #import "OSSettingViewController.h"
-//#import "OSBrowserViewController.h"
 #import "FilesViewController.h"
 #import "DownloadsViewController.h"
 #import "SmileAuthenticator.h"

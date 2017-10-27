@@ -150,4 +150,10 @@
     
     return [ NSString stringWithFormat: unit, size ];
 }
+
+- (BOOL)updateFileModificationDateForFilePath {
+    NSDictionary *setDic =[NSDictionary dictionaryWithObject:[NSDate date] forKey:NSFileModificationDate];
+    return  [[NSFileManager defaultManager] setAttributes:setDic ofItemAtPath:self error:nil];
+}
+
 @end
