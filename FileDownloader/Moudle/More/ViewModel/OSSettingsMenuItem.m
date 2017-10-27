@@ -59,6 +59,23 @@
     return item;
 }
 
++ (instancetype)cellForSel:(SEL)sel
+                          target:(id)target
+                           title:(NSString *)title
+                        iconName:(NSString *)iconName
+                  disclosureType:(OSSettingsMenuItemDisclosureType)disclosureType {
+    OSSettingsMenuItem *item = [[self alloc] initWithTitle:title
+                                                  iconName:iconName
+                                                 iconColor:UIColorFromRGB(0xFF1B33)
+                                            disclosureType:disclosureType
+                                            disclosureText:nil
+                                                isSwitchOn:NO];
+    item.actionSelector = sel;
+    item.actionTarget = target;
+    
+    return item;
+}
+
 - (instancetype)initWithTitle:(NSString *)title
                     iconName:(NSString *)iconName
                    iconColor:(UIColor *)iconColor

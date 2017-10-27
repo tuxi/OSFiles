@@ -11,6 +11,7 @@
 #import "OSFileDownloaderDelegate.h"
 #import "OSFileDownloadConst.h"
 #import "NSString+OSFile.h"
+#import "OSFileConfigManager.h"
 
 static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
 static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitialize";
@@ -55,7 +56,12 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
         self.downloadDelegate = [OSFileDownloaderDelegate new];
         self.downloader = [OSFileDownloader new];
         self.downloader.downloadDelegate = self.downloadDelegate;
-        self.downloader.maxConcurrentDownloads = 3;
+        NSUInteger maxConcurrentDownloads = [[OSFileConfigManager manager] maxConcurrentDownloads];
+        if (!maxConcurrentDownloads) {
+            maxConcurrentDownloads = 3;
+            [[OSFileConfigManager manager] setMaxConcurrentDownloads:maxConcurrentDownloads];
+        }
+        self.downloader.maxConcurrentDownloads = maxConcurrentDownloads;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate) name:UIApplicationWillTerminateNotification object:nil];
         self.downloadItems = [self restoredDownloadItems];
     }

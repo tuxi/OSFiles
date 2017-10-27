@@ -211,7 +211,7 @@
 - (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [self.nextResponder touchesEnded:touches withEvent:event];
     
-    if (self.disclosureType == OSSettingsMenuItemDisclosureTypeNormal) {
+    if (self.disclosureType != OSSettingsMenuItemDisclosureTypeSwitch) {
         if (!self.menuItem.actionTarget || !self.menuItem.actionSelector) {
             return;
         }

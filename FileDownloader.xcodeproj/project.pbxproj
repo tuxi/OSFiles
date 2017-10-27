@@ -14,6 +14,7 @@
 		1855DF7C1FA38C1C001CCAE8 /* FoldersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF7A1FA38C1C001CCAE8 /* FoldersViewController.m */; };
 		1855DF811FA390C0001CCAE8 /* XYSuspensionMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF7F1FA390C0001CCAE8 /* XYSuspensionMenu.m */; };
 		1855DF841FA3938C001CCAE8 /* OSFileCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF831FA3938C001CCAE8 /* OSFileCollectionViewController.m */; };
+		1855DF981FA3A8FB001CCAE8 /* OSFileConfigManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF971FA3A8FB001CCAE8 /* OSFileConfigManager.m */; };
 		18ADEEAB1F9E48D30024BA40 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18ADEEAA1F9E48D30024BA40 /* LaunchScreen.storyboard */; };
 		18ADEEAD1F9E48DE0024BA40 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18ADEEAC1F9E48DE0024BA40 /* Main.storyboard */; };
 		18ADEEB21F9E492E0024BA40 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18517BD21EEBC86600B148C8 /* Assets.xcassets */; };
@@ -442,6 +443,8 @@
 		1855DF801FA390C0001CCAE8 /* XYSuspensionMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYSuspensionMenu.h; sourceTree = "<group>"; };
 		1855DF821FA3938C001CCAE8 /* OSFileCollectionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSFileCollectionViewController.h; sourceTree = "<group>"; };
 		1855DF831FA3938C001CCAE8 /* OSFileCollectionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSFileCollectionViewController.m; sourceTree = "<group>"; };
+		1855DF961FA3A8FB001CCAE8 /* OSFileConfigManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSFileConfigManager.h; sourceTree = "<group>"; };
+		1855DF971FA3A8FB001CCAE8 /* OSFileConfigManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSFileConfigManager.m; sourceTree = "<group>"; };
 		1871ACD81EEEE2D900ABC452 /* NSString+OSFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+OSFile.h"; sourceTree = "<group>"; };
 		1871ACD91EEEE2D900ABC452 /* NSString+OSFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+OSFile.m"; sourceTree = "<group>"; };
 		1871ACDB1EEEE55700ABC452 /* NSDate+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Utilities.h"; sourceTree = "<group>"; };
@@ -1053,6 +1056,8 @@
 				1813E8681F9BB717002C661E /* OSAuthenticatorHelper.m */,
 				1813E8D51F9C39D2002C661E /* OSLoaclNotificationHelper.h */,
 				1813E8D61F9C39D2002C661E /* OSLoaclNotificationHelper.m */,
+				1855DF961FA3A8FB001CCAE8 /* OSFileConfigManager.h */,
+				1855DF971FA3A8FB001CCAE8 /* OSFileConfigManager.m */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -2407,6 +2412,7 @@
 				18ADEED81F9E4A0C0024BA40 /* BookmarkSectionHeaderView.m in Sources */,
 				18ADEEFE1F9E4A3D0024BA40 /* KeyboardHelper.m in Sources */,
 				18ADEF291F9E4A860024BA40 /* FilesViewController.m in Sources */,
+				1855DF981FA3A8FB001CCAE8 /* OSFileConfigManager.m in Sources */,
 				18ADEEC71F9E49F70024BA40 /* HTTPURLConfiguration.m in Sources */,
 				18ADEF3C1F9E4A860024BA40 /* PSPDFUIKitMainThreadGuard.m in Sources */,
 				18ADEED11F9E4A050024BA40 /* BookmarkDirectoryEditViewController.m in Sources */,

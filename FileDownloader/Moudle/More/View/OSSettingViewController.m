@@ -55,6 +55,7 @@
 - (void)loadSectionItems {
     self.sectionItems = [NSMutableArray arrayWithCapacity:0];
     [self.sectionItems addObject:[self section_1]];
+    [self.sectionItems addObject:[self section_2]];
     [self.settingTableView reloadData];
 }
 
@@ -64,7 +65,7 @@
                        [OSSettingsMenuItem switchCellForSel:@selector(disclosureSwitchChanged:) target:self title:@"设置启动密码" iconName:@"settings-zero" on:hasPassword]
                        ].mutableCopy;
     if (hasPassword) {
-        [items addObject:[OSSettingsMenuItem normalCellForSel:@selector(changePassword:) target:self title:@"修改密码" iconName:nil]];
+        [items addObject:[OSSettingsMenuItem cellForSel:@selector(changePassword:) target:self title:@"修改密码" iconName:nil disclosureType:OSSettingsMenuItemDisclosureTypeViewController]];
         BOOL hasBackgroundImage = [[OSAuthenticatorHelper sharedInstance] hasBackgroundImage];
         if (hasBackgroundImage) {
          [items addObject:[OSSettingsMenuItem normalCellForSel:@selector(setUnlockBackgroundImage:) target:self title:@"设置解锁背景图片" iconName:nil]];
@@ -80,6 +81,14 @@
     return section;
 }
 
+- (OSSettingsTableViewSection *)section_2 {
+    NSMutableArray *items = @[
+                              [OSSettingsMenuItem cellForSel:@selector(setMaxConcurrentDownloads) target:self title:@"修改最大同时下载数量" iconName:nil disclosureType:OSSettingsMenuItemDisclosureTypeViewControllerWithDisclosureText],
+                              [OSSettingsMenuItem cellForSel:@selector(autoDownloadFailure) target:self title:@"下载失败后自动开始" iconName:nil disclosureType:OSSettingsMenuItemDisclosureTypeViewControllerWithDisclosureText]
+                              ].mutableCopy;
+    OSSettingsTableViewSection *section = [[OSSettingsTableViewSection alloc] initWithItem:items headerTitle:nil footerText:nil];
+    return section;
+}
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -200,6 +209,14 @@
 
 - (void)disclosureSwitchChanged:(UISwitch *)sw {
     [self passwordSwitch:sw];
+}
+
+- (void)setMaxConcurrentDownloads {
+    
+}
+
+- (void)autoDownloadFailure {
+    
 }
 
 #pragma mark - UIImagePickerControllerDelegate
