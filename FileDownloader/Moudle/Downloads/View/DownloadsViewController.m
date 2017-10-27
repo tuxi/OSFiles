@@ -15,6 +15,7 @@
 #import "OSFileDownloadConst.h"
 #import "UINavigationController+OSProgressBar.h"
 #import "UIViewController+OSAlertExtension.h"
+#import "NSString+OSFile.h"
 
 @interface DownloadsViewController () <OSFileDownloaderDataSource>
 
@@ -236,7 +237,14 @@
                       keyboardType:UIKeyboardTypeURL
                                blk:^(UITextField *textField) {
                                    if ([textField.text hasPrefix:@"http"] || [textField.text hasPrefix:@"https"]) {
-                                       [[OSFileDownloaderManager sharedInstance] start:textField.text];
+                                       NSString *urlPath = textField.text;
+                                       /*
+                                        解决URLWithString return nil问题
+                                        原因：urlPath中可能存在空格导致
+                                        */
+                                       urlPath = [NSString returnFormatString:urlPath];
+//                                       urlPath = [urlPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                                       [[OSFileDownloaderManager sharedInstance] start:urlPath];
                                    }
                                    else {
                                        [self alertControllerWithTitle:@"URL不是可下载资源，请检测后再确认哦！" message:nil okBlk:NULL];

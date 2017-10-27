@@ -10,6 +10,7 @@
 #import "UIApplication+ActivityIndicator.h"
 #import "OSFileDownloaderDelegate.h"
 #import "OSFileDownloadConst.h"
+#import "NSString+OSFile.h"
 
 static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
 static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitialize";
@@ -161,7 +162,7 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
 - (void)start:(NSString *)urlPath {
     
     NSAssert(urlPath, @"urlPath is not nil");
-    
+
     @synchronized (_downloadItems) {
         
         NSUInteger foundIndexInDownloadItems = [self foundItemIndxInDownloadItemsByURL:urlPath];

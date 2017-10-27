@@ -225,6 +225,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
 }
 
 - (void)start:(NSString *)urlPath {
+    
     if ([NetworkTypeUtils networkType] == NetworkTypeWIFI) {
         [[OSFileDownloaderManager sharedInstance] start:urlPath];
     } else {

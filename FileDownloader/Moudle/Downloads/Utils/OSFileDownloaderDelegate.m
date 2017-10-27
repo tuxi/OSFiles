@@ -183,6 +183,24 @@
     }
 }
 
+- (void)authenticationChallenge:(NSURLAuthenticationChallenge *)aChallenge
+                            url:(NSString *)url
+              completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential * aCredential))aCompletionHandler {
+    //通过调用block，来告诉NSURLSession要不要收到这个证书
+    //(NSURLSessionAuthChallengeDisposition, NSURLCredential * _Nullable))completionHandler
+    //NSURLSessionAuthChallengeDisposition （枚举）如何处理这个证书
+    //NSURLCredential 授权
+    
+    //证书分为好几种：服务器信任的证书、输入密码的证书  。。，所以这里最好判断
+    
+    if([aChallenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]){//服务器信任证书
+        
+        NSURLCredential *credential = [NSURLCredential credentialForTrust:aChallenge.protectionSpace.serverTrust];//服务器信任证书
+        if(aCompletionHandler)
+            aCompletionHandler(NSURLSessionAuthChallengeUseCredential, credential);
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////
 #pragma mark - Other
 ////////////////////////////////////////////////////////////////////////

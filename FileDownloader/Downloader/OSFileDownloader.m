@@ -161,7 +161,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
                                       localPath:(NSString *)localPath
                                             progress:(void (^ _Nullable)(NSProgress * _Nullable))downloadProgressBlock
                                    completionHandler:(void (^ _Nullable)(NSURLResponse * _Nullable, NSURL * _Nullable, NSError * _Nullable))completionHandler {
-    
+//    urlPath = [urlPath stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet characterSetWithCharactersInString:@"`#%^{}\"[]|\\<> "].invertedSet];
     id<OSFileDownloadOperation> item = [self downloadWithURL:urlPath localPath:localPath];
     item.progressHandler = downloadProgressBlock;
     item.completionHandler = completionHandler;
@@ -180,6 +180,13 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 }
 
 - (id<OSFileDownloadOperation>)downloadWithURL:(NSString *)urlPath localPath:(NSString *)localPath {
+    
+    /*
+     解决URLWithString return nil问题
+     原因：urlPath中可能存在空格导致
+     */
+//    urlPath = [urlPath stringByReplacingOccurrencesOfString:@" "withString:@" "];
+//    urlPath = [urlPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSURL *remoteURL = [NSURL URLWithString:urlPath];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:remoteURL

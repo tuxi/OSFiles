@@ -156,4 +156,7 @@
     return  [[NSFileManager defaultManager] setAttributes:setDic ofItemAtPath:self error:nil];
 }
 
++ (NSString *)returnFormatString:(NSString *)str {
+    return [str stringByReplacingOccurrencesOfString:@" " withString:@""];
+}
 @end

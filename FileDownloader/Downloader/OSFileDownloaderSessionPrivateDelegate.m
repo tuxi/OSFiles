@@ -267,9 +267,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
         if (urlPath) {
             [self.downloadDelegate authenticationChallenge:challenge
                                                        url:urlPath
-                                         completionHandler:^(NSURLCredential * _Nullable aCredential, NSURLSessionAuthChallengeDisposition aDisposition) {
-                                             completionHandler(aDisposition, aCredential);
-                                         }];
+                                         completionHandler:completionHandler];
         } else {
             DLog(@"Error: Missing task description");
             completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, nil);

@@ -117,7 +117,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param aCompletionHandler 此block用于配置调用完成回调
 - (void)authenticationChallenge:(NSURLAuthenticationChallenge *)aChallenge
                             url:(NSString *)url
-              completionHandler:(void (^)(NSURLCredential * aCredential, NSURLSessionAuthChallengeDisposition disposition))aCompletionHandler;
+              completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential * aCredential))aCompletionHandler;
 
 
 /// 一个任务进入等待时调用

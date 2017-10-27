@@ -19,7 +19,7 @@ FOUNDATION_EXTERN NSString * const OSFileDownloaderDefaultFolderNameKey;
 /// 同时允许的最大下载数量
 @property (nonatomic, assign) NSInteger maxConcurrentDownloads;
 /// 完成一个后台任务时回调
-@property (nonatomic, copy) void (^backgroundSessionCompletionHandler)();
+@property (nonatomic, copy) void (^backgroundSessionCompletionHandler)(void);
 /// 下载中的任务 key 为 taskIdentifier， value 为 OSFileDownloadOperation, 下载完成、取消、暂停都会从此字典中移除
 @property (nonatomic, strong) NSMutableDictionary<NSNumber *, id<OSFileDownloadOperation>> *activeDownloadsDictionary;
 /// 等待下载的任务数组 每个元素 字典 为一个等待的任务
