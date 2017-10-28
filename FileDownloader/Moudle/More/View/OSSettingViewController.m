@@ -11,6 +11,9 @@
 #import "OSSettingsTableViewSection.h"
 #import "SmileAuthenticator.h"
 #import "OSAuthenticatorHelper.h"
+#import "OSFileConfigManager.h"
+#import "UIViewController+OSAlertExtension.h"
+#import "OSFileDownloaderManager.h"
 
 @interface OSSettingViewController () <UITableViewDelegate, UITableViewDataSource, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
@@ -65,7 +68,7 @@
                        [OSSettingsMenuItem switchCellForSel:@selector(disclosureSwitchChanged:) target:self title:@"设置启动密码" iconName:@"settings-zero" on:hasPassword]
                        ].mutableCopy;
     if (hasPassword) {
-        [items addObject:[OSSettingsMenuItem cellForSel:@selector(changePassword:) target:self title:@"修改密码" iconName:nil disclosureType:OSSettingsMenuItemDisclosureTypeViewController]];
+        [items addObject:[OSSettingsMenuItem cellForSel:@selector(changePassword:) target:self title:@"修改密码" disclosureText:nil iconName:nil disclosureType:OSSettingsMenuItemDisclosureTypeViewController]];
         BOOL hasBackgroundImage = [[OSAuthenticatorHelper sharedInstance] hasBackgroundImage];
         if (hasBackgroundImage) {
          [items addObject:[OSSettingsMenuItem normalCellForSel:@selector(setUnlockBackgroundImage:) target:self title:@"设置解锁背景图片" iconName:nil]];
@@ -82,9 +85,11 @@
 }
 
 - (OSSettingsTableViewSection *)section_2 {
+    NSNumber *maxConcurrentDownloads = [OSFileConfigManager manager].maxConcurrentDownloads;
+    NSNumber *shouldAutoDownloadWhenFailure = [OSFileConfigManager manager].shouldAutoDownloadWhenFailure;
     NSMutableArray *items = @[
-                              [OSSettingsMenuItem cellForSel:@selector(setMaxConcurrentDownloads) target:self title:@"修改最大同时下载数量" iconName:nil disclosureType:OSSettingsMenuItemDisclosureTypeViewControllerWithDisclosureText],
-                              [OSSettingsMenuItem cellForSel:@selector(autoDownloadFailure) target:self title:@"下载失败后自动开始" iconName:nil disclosureType:OSSettingsMenuItemDisclosureTypeViewControllerWithDisclosureText]
+                              [OSSettingsMenuItem cellForSel:@selector(setMaxConcurrentDownloads) target:self title:@"最大同时下载数量" disclosureText:[maxConcurrentDownloads stringValue] iconName:nil disclosureType:OSSettingsMenuItemDisclosureTypeViewControllerWithDisclosureText],
+                              [OSSettingsMenuItem switchCellForSel:@selector(autoDownloadFailure:) target:self title:@"下载失败后自动重试" iconName:nil on:[shouldAutoDownloadWhenFailure boolValue]]
                               ].mutableCopy;
     OSSettingsTableViewSection *section = [[OSSettingsTableViewSection alloc] initWithItem:items headerTitle:nil footerText:nil];
     return section;
@@ -212,11 +217,28 @@
 }
 
 - (void)setMaxConcurrentDownloads {
-    
+    [self alertControllerWithTitle:@"设置最大同时下载数量"
+                           message:@"请输入一个大于0的数字"
+                           content:nil
+                       placeholder:nil
+                      keyboardType:UIKeyboardTypeNamePhonePad
+                               blk:^(UITextField *textField) {
+                                   NSString *num = textField.text;
+                                   NSNumberFormatter *nf = [[NSNumberFormatter alloc] init];
+                                   NSNumber *strNum = [nf numberFromString:num];
+                                   if (!strNum) {
+                                       strNum = [[OSFileConfigManager manager] maxConcurrentDownloads];
+                                   }
+                                   [[OSFileConfigManager manager] setMaxConcurrentDownloads:strNum];
+                                   [[OSFileDownloaderManager sharedInstance] setMaxConcurrentDownloads:[strNum integerValue]];
+                               }];
 }
 
-- (void)autoDownloadFailure {
-    
+- (void)autoDownloadFailure:(UISwitch *)sw {
+    [[OSFileConfigManager manager] setShouldAutoDownloadWhenFailure:@(sw.isOn)];
+    if (sw.isOn) {
+        [self xy_showMessage:@"下载失败后，\n每隔10秒钟重试下载，\n只在WIFI下进行"];
+    }
 }
 
 #pragma mark - UIImagePickerControllerDelegate

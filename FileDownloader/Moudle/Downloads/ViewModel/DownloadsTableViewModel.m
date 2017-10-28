@@ -84,7 +84,7 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    return 60;
+    return 70;
 }
 
 

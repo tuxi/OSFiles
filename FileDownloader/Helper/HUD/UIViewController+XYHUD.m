@@ -54,6 +54,7 @@ static const void *hudKey = &hudKey;
     hud.userInteractionEnabled = NO;
     hud.mode = MBProgressHUDModeText;
     [hud.label setText:meeeage];
+    hud.label.numberOfLines = 0;
     hud.margin = 10.0f;
     [hud setRemoveFromSuperViewOnHide:YES];
     [hud hideAnimated:YES afterDelay:2.0];

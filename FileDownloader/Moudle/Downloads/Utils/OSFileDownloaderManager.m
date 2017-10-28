@@ -12,6 +12,7 @@
 #import "OSFileDownloadConst.h"
 #import "NSString+OSFile.h"
 #import "OSFileConfigManager.h"
+#import "AutoTimer.h"
 
 static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
 static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitialize";
@@ -56,12 +57,8 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
         self.downloadDelegate = [OSFileDownloaderDelegate new];
         self.downloader = [OSFileDownloader new];
         self.downloader.downloadDelegate = self.downloadDelegate;
-        NSUInteger maxConcurrentDownloads = [[OSFileConfigManager manager] maxConcurrentDownloads];
-        if (!maxConcurrentDownloads) {
-            maxConcurrentDownloads = 3;
-            [[OSFileConfigManager manager] setMaxConcurrentDownloads:maxConcurrentDownloads];
-        }
-        self.downloader.maxConcurrentDownloads = maxConcurrentDownloads;
+        NSNumber *maxConcurrentDownloads = [[OSFileConfigManager manager] maxConcurrentDownloads];
+        self.maxConcurrentDownloads = [maxConcurrentDownloads integerValue];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate) name:UIApplicationWillTerminateNotification object:nil];
         self.downloadItems = [self restoredDownloadItems];
     }
@@ -78,6 +75,11 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
                                             forKey:AutoDownloadWhenInitializeKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
+}
+
+- (void)setMaxConcurrentDownloads:(NSInteger)maxConcurrentDownloads {
+    _maxConcurrentDownloads = maxConcurrentDownloads;
+    self.downloader.maxConcurrentDownloads = maxConcurrentDownloads;
 }
 
 - (BOOL)shouldAutoDownloadWhenInitialize {
@@ -350,6 +352,29 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
     
 }
 
+// 地图下载失败时app每隔10秒下载自动下载一次全部失败的
+- (void)autoDownloadFailure {
+    
+    [AutoTimer startWithTimeInterval:10.0 block:^{
+        BOOL shouldAutoDownloadWhenFailure = [[OSFileConfigManager manager].shouldAutoDownloadWhenFailure boolValue];
+        if ([NetworkTypeUtils networkType] != NetworkTypeWIFI || !shouldAutoDownloadWhenFailure) {
+            [AutoTimer cancel];
+            return;
+        }
+        
+        if (![self downloadFailureItems].count) {
+            [AutoTimer cancel];
+            return;
+        }
+        
+        for (OSFileItem *item in  [self downloadFailureItems]) {
+            [self start:item.urlPath];
+        }
+        
+    }];
+}
+
+
 
 ////////////////////////////////////////////////////////////////////////
 #pragma mark - 下载信息存储
@@ -467,5 +492,21 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
         
         return YES;
     }
+}
+
+- (NSArray *)getDownloadItemsWithStatus:(OSFileDownloadStatus)state {
+    @synchronized (_downloadItems) {
+        NSIndexSet *indexSet = [_downloadItems indexesOfObjectsPassingTest:^BOOL(OSFileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            return obj.status == state;
+        }];
+        if (indexSet.count) {
+            return [_downloadItems objectsAtIndexes:indexSet];
+        }
+        return nil;
+    }
+}
+
+- (NSArray<OSFileItem *> *)downloadFailureItems {
+    return [self getDownloadItemsWithStatus:OSFileDownloadStatusFailure];
 }
 @end

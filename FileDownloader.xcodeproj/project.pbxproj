@@ -15,6 +15,8 @@
 		1855DF811FA390C0001CCAE8 /* XYSuspensionMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF7F1FA390C0001CCAE8 /* XYSuspensionMenu.m */; };
 		1855DF841FA3938C001CCAE8 /* OSFileCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF831FA3938C001CCAE8 /* OSFileCollectionViewController.m */; };
 		1855DF981FA3A8FB001CCAE8 /* OSFileConfigManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF971FA3A8FB001CCAE8 /* OSFileConfigManager.m */; };
+		185A8EAE1FA42ED4006077CE /* AutoTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = 185A8EAC1FA42ED3006077CE /* AutoTimer.m */; };
+		185A8EB11FA43416006077CE /* NSString+MD5.m in Sources */ = {isa = PBXBuildFile; fileRef = 185A8EAF1FA43416006077CE /* NSString+MD5.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		18ADEEAB1F9E48D30024BA40 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18ADEEAA1F9E48D30024BA40 /* LaunchScreen.storyboard */; };
 		18ADEEAD1F9E48DE0024BA40 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18ADEEAC1F9E48DE0024BA40 /* Main.storyboard */; };
 		18ADEEB21F9E492E0024BA40 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18517BD21EEBC86600B148C8 /* Assets.xcassets */; };
@@ -445,6 +447,10 @@
 		1855DF831FA3938C001CCAE8 /* OSFileCollectionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSFileCollectionViewController.m; sourceTree = "<group>"; };
 		1855DF961FA3A8FB001CCAE8 /* OSFileConfigManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSFileConfigManager.h; sourceTree = "<group>"; };
 		1855DF971FA3A8FB001CCAE8 /* OSFileConfigManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSFileConfigManager.m; sourceTree = "<group>"; };
+		185A8EAC1FA42ED3006077CE /* AutoTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AutoTimer.m; sourceTree = "<group>"; };
+		185A8EAD1FA42ED3006077CE /* AutoTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoTimer.h; sourceTree = "<group>"; };
+		185A8EAF1FA43416006077CE /* NSString+MD5.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MD5.m"; sourceTree = "<group>"; };
+		185A8EB01FA43416006077CE /* NSString+MD5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+MD5.h"; sourceTree = "<group>"; };
 		1871ACD81EEEE2D900ABC452 /* NSString+OSFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+OSFile.h"; sourceTree = "<group>"; };
 		1871ACD91EEEE2D900ABC452 /* NSString+OSFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+OSFile.m"; sourceTree = "<group>"; };
 		1871ACDB1EEEE55700ABC452 /* NSDate+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Utilities.h"; sourceTree = "<group>"; };
@@ -1058,6 +1064,8 @@
 				1813E8D61F9C39D2002C661E /* OSLoaclNotificationHelper.m */,
 				1855DF961FA3A8FB001CCAE8 /* OSFileConfigManager.h */,
 				1855DF971FA3A8FB001CCAE8 /* OSFileConfigManager.m */,
+				185A8EAD1FA42ED3006077CE /* AutoTimer.h */,
+				185A8EAC1FA42ED3006077CE /* AutoTimer.m */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -1250,6 +1258,8 @@
 		18517C611EEBDB3600B148C8 /* Category */ = {
 			isa = PBXGroup;
 			children = (
+				185A8EB01FA43416006077CE /* NSString+MD5.h */,
+				185A8EAF1FA43416006077CE /* NSString+MD5.m */,
 				18878B201EF19EAC005C0185 /* UIApplication+ActivityIndicator.h */,
 				18878B211EF19EAC005C0185 /* UIApplication+ActivityIndicator.m */,
 				18878B221EF19EAC005C0185 /* UIColor+Hex.h */,
@@ -2430,6 +2440,7 @@
 				1855DF811FA390C0001CCAE8 /* XYSuspensionMenu.m in Sources */,
 				18ADEF101F9E4A4A0024BA40 /* BaseTableViewController.m in Sources */,
 				18ADEEC61F9E49F70024BA40 /* HTTPManager.m in Sources */,
+				185A8EAE1FA42ED4006077CE /* AutoTimer.m in Sources */,
 				18ADEEF21F9E4A2E0024BA40 /* SettingSwitchTableViewCell.m in Sources */,
 				18ADEF3B1F9E4A860024BA40 /* ExceptionUtils.m in Sources */,
 				18ADEECE1F9E4A020024BA40 /* OSFileDownloader.m in Sources */,
@@ -2508,6 +2519,7 @@
 				1855DF841FA3938C001CCAE8 /* OSFileCollectionViewController.m in Sources */,
 				18ADEF211F9E4A860024BA40 /* OSSettingsMenuItem.m in Sources */,
 				18ADEF0D1F9E4A420024BA40 /* UIImage+ZWUtility.m in Sources */,
+				185A8EB11FA43416006077CE /* NSString+MD5.m in Sources */,
 				18ADEF081F9E4A3D0024BA40 /* NSString+ZWUtility.m in Sources */,
 				18ADEED31F9E4A050024BA40 /* BookmarkItemEditViewController.m in Sources */,
 				18ADEEC91F9E49FB0024BA40 /* BaseResponseModel.m in Sources */,

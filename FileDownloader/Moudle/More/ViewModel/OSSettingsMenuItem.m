@@ -60,15 +60,16 @@
 }
 
 + (instancetype)cellForSel:(SEL)sel
-                          target:(id)target
-                           title:(NSString *)title
-                        iconName:(NSString *)iconName
-                  disclosureType:(OSSettingsMenuItemDisclosureType)disclosureType {
+                    target:(id)target
+                     title:(NSString *)title
+            disclosureText:(NSString *)disclosureText
+                  iconName:(NSString *)iconName
+            disclosureType:(OSSettingsMenuItemDisclosureType)disclosureType {
     OSSettingsMenuItem *item = [[self alloc] initWithTitle:title
                                                   iconName:iconName
                                                  iconColor:UIColorFromRGB(0xFF1B33)
                                             disclosureType:disclosureType
-                                            disclosureText:nil
+                                            disclosureText:disclosureText
                                                 isSwitchOn:NO];
     item.actionSelector = sel;
     item.actionTarget = target;

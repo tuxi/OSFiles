@@ -72,7 +72,9 @@
         // 发送失败通知
         [[NSNotificationCenter defaultCenter] postNotificationName:OSFileDownloadFailureNotification object:fileItem];
         [self downloadTaskDidEnd];
-        [[OSLoaclNotificationHelper sharedInstance] sendLocalNotificationWithMessage:[NSString stringWithFormat:@"%@-下载失败", fileItem.fileName]];
+//        [[OSLoaclNotificationHelper sharedInstance] sendLocalNotificationWithMessage:[NSString stringWithFormat:@"%@-下载失败", fileItem.fileName]];
+        
+        [[OSFileDownloaderManager sharedInstance] autoDownloadFailure];
     }))
 }
 

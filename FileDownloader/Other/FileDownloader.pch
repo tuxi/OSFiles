@@ -27,6 +27,10 @@
 #import "ZWUtility.h"
 #import "DelegateManager.h"
 #import "ZWFastEnumeration.h"
+#import "NetworkTypeUtils.h"
+#import "NSString+MD5.h"
+#import "NSObject+XYHUD.h"
+#import "UIViewController+XYHUD.h"
 
 
 static NSString * const OSFileDownloaderResetDownloadsNotification = @"OSFileDownloaderResetDownloadsNotification";

@@ -33,6 +33,8 @@
 
 @property (nonatomic, assign) BOOL shouldAutoDownloadWhenInitialize;
 
+@property (nonatomic, assign) NSInteger maxConcurrentDownloads;
+
 - (void)clearAllDownloadTask;
 
 /// 归档items
@@ -44,10 +46,16 @@
 - (void)cancel:(NSString *)url;
 - (void)pause:(NSString *)url;
 
+/// 下载失败时app每隔10秒下载自动下载一次全部失败的
+- (void)autoDownloadFailure;
+
 - (NSArray<OSFileItem *> *)downloadedItems;
 - (NSArray<OSFileItem *> *)activeDownloadItems;
+- (NSArray<OSFileItem *> *)downloadFailureItems;
 /// 所有展示中的文件，还未开始下载时存放的，当文件取消下载时也会存放到此数组
 - (NSMutableArray<OSFileItem *> *)displayItems;
+/// 获取某种状态的任务
+- (NSArray *)getDownloadItemsWithStatus:(OSFileDownloadStatus)state;
 
 - (BOOL)removeDownloadItemByPackageId:(NSString *)packageId;
 @end

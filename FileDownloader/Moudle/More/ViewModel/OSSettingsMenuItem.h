@@ -55,6 +55,7 @@ typedef NS_ENUM(NSUInteger, OSSettingsMenuItemDisclosureType) {
 + (instancetype)cellForSel:(SEL)sel
                     target:(id)target
                      title:(NSString *)title
+            disclosureText:(NSString *)disclosureText
                   iconName:(NSString *)iconName
             disclosureType:(OSSettingsMenuItemDisclosureType)disclosureType;
 
