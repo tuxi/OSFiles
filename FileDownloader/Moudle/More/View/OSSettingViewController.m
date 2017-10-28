@@ -231,6 +231,7 @@
                                    }
                                    [[OSFileConfigManager manager] setMaxConcurrentDownloads:strNum];
                                    [[OSFileDownloaderManager sharedInstance] setMaxConcurrentDownloads:[strNum integerValue]];
+                                   [self loadSectionItems];
                                }];
 }
 

@@ -354,7 +354,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
     }
 }
 
-- (void)pauseWithURL:(NSString *)urlPath completionHandler:(void (^)())completion {
+- (void)pauseWithURL:(NSString *)urlPath completionHandler:(void (^)(void))completion {
     
     // 根据downloadIdentifier获取tashIdentifier
     NSInteger taskIdentifier = [self getDownloadTaskIdentifierByURL:urlPath];
@@ -369,7 +369,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 }
 
 
-- (void)pauseWithTaskIdentifier:(NSUInteger)taskIdentifier completionHandler:(void (^)())completion {
+- (void)pauseWithTaskIdentifier:(NSUInteger)taskIdentifier completionHandler:(void (^)(void))completion {
     
     // 从正在下载的集合中根据taskIdentifier获取到OSFileDownloadOperation
     OSFileDownloadOperation *downloadOperation = [self.activeDownloadsDictionary objectForKey:@(taskIdentifier)];
@@ -513,7 +513,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
         if (self.maxConcurrentDownloads == NSIntegerMax || self.activeDownloadsDictionary.count < self.maxConcurrentDownloads) {
             if (self.waitingDownloadArray.count) {
                 NSDictionary *waitingDownTaskDict = [self.waitingDownloadArray firstObject];
-                [self downloadWithURL:waitingDownTaskDict[OSFileDownloadRemoteURLPathKey] localPath:[waitingDownTaskDict[OSFileDownloadLocalURLKey] path]];
+                [self downloadWithURL:waitingDownTaskDict[OSFileDownloadRemoteURLPathKey] localPath:waitingDownTaskDict[OSFileDownloadLocalURLKey]];
                 [self.waitingDownloadArray removeObjectAtIndex:0];
                 [self.sessionDelegate _startDownloadTaskFromTheWaitingQueue:waitingDownTaskDict[OSFileDownloadRemoteURLPathKey]];
             }
@@ -771,7 +771,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 
 - (void)setMaxConcurrentDownloads:(NSInteger)maxConcurrentDownloads {
     
-    if (maxConcurrentDownloads > _maxConcurrentDownloads
+    if (maxConcurrentDownloads != _maxConcurrentDownloads
         && maxConcurrentDownloads < NSIntegerMax) {
         _maxConcurrentDownloads = maxConcurrentDownloads;
         [self checkMaxConcurrentDownloadCountThenDownloadWaitingQueueIfExceeded];
