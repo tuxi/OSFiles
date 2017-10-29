@@ -122,8 +122,9 @@ OSFileFlags;
 @property( atomic, readonly ) UIImage     * icon;
 @property( atomic, readonly ) OSFile      * targetFile;
 
-+ (OSFile *)fileWithPath: (NSString *)filePath;
-- (instancetype)initWithPath: (NSString *)filePath;
+/// 当文件不存在获取读取文件失败时，return nil
++ (instancetype)fileWithPath:(NSString *)filePath;
+- (instancetype)initWithPath:(NSString *)filePath;
 
 
 @end

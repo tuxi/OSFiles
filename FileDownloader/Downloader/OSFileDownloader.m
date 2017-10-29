@@ -383,7 +383,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
             } else {
                 [downloadTask cancel];
             }
-            completion(nil);
+            completion();
             // 此时会调用NSURLSessionTaskDelegate 的 URLSession:task:didCompleteWithError:
         } else {
             DLog(@"INFO: NSURLSessionDownloadTask cancelled (task not found): %@", downloadOperation.urlPath);

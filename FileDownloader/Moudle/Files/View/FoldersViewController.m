@@ -12,36 +12,22 @@
 #import <MBProgressHUD.h>
 #import "NSString+OSFile.h"
 #import "DirectoryWatcher.h"
+#import "OSFileAttributeItem.h"
+#import "FilePreviewViewController.h"
 
 static void * FileProgressObserverContext = &FileProgressObserverContext;
 
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
-@interface FileAttributeItem : NSObject
-
-@property (nonatomic, copy) NSString *fullPath;
-@property (nonatomic, assign) NSUInteger subFileCount;
-
-@end
 
 
 @interface FileTableViewCell : UITableViewCell
 
-@property (nonatomic, strong) FileAttributeItem *fileModel;
+@property (nonatomic, strong) OSFileAttributeItem *fileModel;
 
 @end
 
 
-@interface FilePreviewViewController : UIViewController {
-    UITextView *_textView;
-    UIImageView *_imageView;
-}
-
-@property (nonatomic, copy) NSString *filePath;
-
-- (instancetype)initWithPath:(NSString *)file;
-
-@end
 
 #pragma mark *** FoldersViewController ***
 
@@ -215,19 +201,21 @@ static void * FileProgressObserverContext = &FileProgressObserverContext;
         NSArray *files = [self sortedFiles:tempFiles];
         NSMutableArray *array = [NSMutableArray arrayWithCapacity:files.count];
         [files enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            FileAttributeItem *model = [FileAttributeItem new];
             NSString *fullPath = [directoryPath stringByAppendingPathComponent:obj];
-            model.fullPath = fullPath;
-            NSError *error = nil;
-            NSArray *subFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:fullPath error:&error];
-            if (!error) {
-                if (!_displayHiddenFiles) {
-                    subFiles = [self removeHiddenFilesFromFiles:subFiles];
+            OSFileAttributeItem *model = [[OSFileAttributeItem alloc] initWithPath:fullPath];
+            if (model) {
+                NSError *error = nil;
+                NSArray *subFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:fullPath error:&error];
+                if (!error) {
+                    if (!_displayHiddenFiles) {
+                        subFiles = [self removeHiddenFilesFromFiles:subFiles];
+                    }
+                    model.subFileCount = subFiles.count;
                 }
-                model.subFileCount = subFiles.count;
+                
+                [array addObject:model];
             }
-            
-            [array addObject:model];
+           
         }];
         
         if (!_displayHiddenFiles) {
@@ -256,8 +244,8 @@ static void * FileProgressObserverContext = &FileProgressObserverContext;
 - (NSArray *)removeHiddenFilesFromFiles:(NSArray *)files {
     @synchronized (self) {
         NSMutableArray *tempFiles = [files mutableCopy];
-        NSIndexSet *indexSet = [tempFiles indexesOfObjectsPassingTest:^BOOL(FileAttributeItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            if ([obj isKindOfClass:[FileAttributeItem class]]) {
+        NSIndexSet *indexSet = [tempFiles indexesOfObjectsPassingTest:^BOOL(OSFileAttributeItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([obj isKindOfClass:[OSFileAttributeItem class]]) {
                 return [obj.fullPath.lastPathComponent hasPrefix:@"."];
             } else if ([obj isKindOfClass:[NSString class]]) {
                 NSString *path = (NSString *)obj;
@@ -282,7 +270,7 @@ static void * FileProgressObserverContext = &FileProgressObserverContext;
 }
 
 - (void)deleteFileFromSelectorFiles {
-    [self.selectorFiles enumerateObjectsUsingBlock:^(FileAttributeItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self.selectorFiles enumerateObjectsUsingBlock:^(OSFileAttributeItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSString *fullPath = obj.fullPath;
         NSError *removeError = nil;
         [[NSFileManager defaultManager] removeItemAtPath:fullPath error:&removeError];
@@ -329,12 +317,12 @@ static void * FileProgressObserverContext = &FileProgressObserverContext;
     return _hud;
 }
 
-- (void)copyFiles:(NSArray<FileAttributeItem *> *)fileItems toRootDirectory:(NSString *)rootPath {
+- (void)copyFiles:(NSArray<OSFileAttributeItem *> *)fileItems toRootDirectory:(NSString *)rootPath {
     if (!fileItems.count) {
         return;
     }
     NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
-        [fileItems enumerateObjectsUsingBlock:^(FileAttributeItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [fileItems enumerateObjectsUsingBlock:^(OSFileAttributeItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             
             NSString *desPath = [rootPath stringByAppendingPathComponent:[obj.fullPath lastPathComponent]];
             if ([desPath isEqualToString:obj.fullPath]) {
@@ -368,7 +356,7 @@ static void * FileProgressObserverContext = &FileProgressObserverContext;
     
     
     operation.completionBlock = ^{
-        [fileItems enumerateObjectsUsingBlock:^(FileAttributeItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [fileItems enumerateObjectsUsingBlock:^(OSFileAttributeItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             [hudDetailTextArray addObject:@(idx).stringValue];
             NSString *desPath = [rootPath stringByAppendingPathComponent:[obj.fullPath lastPathComponent]];
             NSURL *desURL = [NSURL fileURLWithPath:desPath];
@@ -681,7 +669,7 @@ static void * FileProgressObserverContext = &FileProgressObserverContext;
             if (!moveError) {
                 [newPath updateFileModificationDateForFilePath];
                 NSString *selectorFullPath = [self.rootDirectory stringByAppendingPathComponent:self.selectorFilenNewName];
-                FileAttributeItem *fileItem = self.files[indexPath.row];
+                OSFileAttributeItem *fileItem = self.files[indexPath.row];
                 fileItem.fullPath = selectorFullPath;
             } else {
                 NSLog(@"%@", moveError.localizedDescription);
@@ -703,7 +691,7 @@ static void * FileProgressObserverContext = &FileProgressObserverContext;
     deleteAction.backgroundColor = [UIColor redColor];
     
     UITableViewRowAction *copyAction = [UITableViewRowAction rowActionWithStyle:(UITableViewRowActionStyleDefault) title:@"copy" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
-        FileAttributeItem *item = self.files[indexPath.row];
+        OSFileAttributeItem *item = self.files[indexPath.row];
         NSString *documentsPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
         [self copyFiles:@[item] toRootDirectory:documentsPath];
     }];
@@ -864,7 +852,7 @@ static void * FileProgressObserverContext = &FileProgressObserverContext;
     return _tableView;
 }
 
-- (NSMutableArray<FileAttributeItem *> *)selectorFiles {
+- (NSMutableArray<OSFileAttributeItem *> *)selectorFiles {
     if (!_selectorFiles) {
         _selectorFiles = [NSMutableArray array];
     }
@@ -881,140 +869,9 @@ static void * FileProgressObserverContext = &FileProgressObserverContext;
 @end
 
 
-
-#pragma mark *** FilePreviewViewController ***
-
-
-
-@implementation FilePreviewViewController
-
-////////////////////////////////////////////////////////////////////////
-#pragma mark - initialize
-////////////////////////////////////////////////////////////////////////
-
-- (instancetype)initWithPath:(NSString *)file {
-    self = [super init];
-    if (self) {
-        _filePath = file;
-        _textView = [[UITextView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-        _textView.editable = NO;
-        _textView.backgroundColor = [UIColor whiteColor];
-        
-        _imageView = [[UIImageView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-        _imageView.contentMode = UIViewContentModeScaleAspectFit;
-        
-        _imageView.backgroundColor = [UIColor whiteColor];
-        
-        [self loadFile:file];
-        
-    }
-    return self;
-}
-
-#ifdef __IPHONE_9_0
-- (NSArray<id<UIPreviewActionItem>> *)previewActionItems {
-    
-    BOOL isDirectory;
-    BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:self.filePath isDirectory:&isDirectory];
-    if (!fileExists || isDirectory) {
-        return nil;
-    }
-    
-    UIPreviewAction *action1 = [UIPreviewAction actionWithTitle:@"info" style:UIPreviewActionStyleDefault handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
-        [self infoAction];
-    }];
-    
-    UIPreviewAction *action2 = [UIPreviewAction actionWithTitle:@"share" style:UIPreviewActionStyleDestructive handler:^(UIPreviewAction * _Nonnull action, UIViewController * _Nonnull previewViewController) {
-        [self shareAction];
-    }];
-    
-    NSArray *actions = @[action1, action2];
-    
-    // 将所有的actions 添加到group中
-    UIPreviewActionGroup *group1 = [UIPreviewActionGroup actionGroupWithTitle:@"more operation" style:UIPreviewActionStyleDefault actions:actions];
-    NSArray *group = @[group1];
-    
-    return group;
-}
-#endif
-
-- (void)infoAction {
-    
-    NSDictionary *fileAtt = [[NSFileManager defaultManager] attributesOfItemAtPath:self.filePath error:nil];
-    
-    NSMutableString *attstring = @"".mutableCopy;
-    [fileAtt enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-        if ([key isEqualToString:NSFileSize]) {
-            obj = [NSString transformedFileSizeValue:obj];
-        }
-        [attstring appendString:[NSString stringWithFormat:@"%@:%@\n", key, obj]];
-    }];
-    
-    [[[UIAlertView alloc] initWithTitle:@"File info" message:attstring delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil, nil] show];
-}
-
-- (void)shareAction {
-    NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:self.filePath.lastPathComponent];
-    NSError *error = nil;
-    [[NSFileManager defaultManager] copyItemAtPath:self.filePath toPath:tmpPath error:&error];
-    
-    if (error) {
-        NSLog(@"ERROR: %@", error);
-    }
-    UIActivityViewController *shareActivity = [[UIActivityViewController alloc] initWithActivityItems:@[[NSURL fileURLWithPath:tmpPath]] applicationActivities:nil];
-    
-    shareActivity.completionWithItemsHandler = ^(UIActivityType  _Nullable activityType, BOOL completed, NSArray * _Nullable returnedItems, NSError * _Nullable activityError) {
-        [[NSFileManager defaultManager] removeItemAtPath:tmpPath error:nil];
-    };
-    [self.navigationController presentViewController:shareActivity animated:YES completion:nil];
-}
-
-
-////////////////////////////////////////////////////////////////////////
-#pragma mark - Other
-////////////////////////////////////////////////////////////////////////
-
-+ (NSArray *)fileExtensions {
-    return @[@"plist",
-             @"strings",
-             @"xcconfig",
-             @"version",
-             @"archive",
-             @"db",
-             @"gps"];
-}
-
-
-- (void)loadFile:(NSString *)file {
-    if ([file.pathExtension.lowercaseString isEqualToString:@"db"]) {
-        // 可以读取数据库后展示
-        [_textView setText:@"db"];
-        self.view = _textView;
-        
-    }
-    
-    else if ([file.pathExtension.lowercaseString isEqualToString:@"xcconfig"] ||
-             [file.pathExtension.lowercaseString isEqualToString:@"version"]) {
-        NSString *d = [NSString stringWithContentsOfFile:file encoding:NSUTF8StringEncoding error:nil];
-        [_textView setText:d];
-        self.view = _textView;
-    }
-    else {
-        NSDictionary *d = [NSDictionary dictionaryWithContentsOfFile:file];
-        [_textView setText:[d description]];
-        self.view = _textView;
-    }
-    
-    self.title = file.lastPathComponent;
-}
-
-@end
-
-
-
 @implementation FileTableViewCell
 
-- (void)setFileModel:(FileAttributeItem *)fileModel {
+- (void)setFileModel:(OSFileAttributeItem *)fileModel {
     _fileModel = fileModel;
     
     BOOL isDirectory;
@@ -1041,7 +898,3 @@ static void * FileProgressObserverContext = &FileProgressObserverContext;
 
 @end
 
-@implementation FileAttributeItem
-
-
-@end

@@ -7,7 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <QuickLook/QuickLook.h>
 
-@interface OSFileCollectionViewController : UIViewController
+@class OSFileAttributeItem;
+
+@interface OSFileCollectionViewController : UIViewController <QLPreviewControllerDataSource, UITableViewDelegate, UITableViewDataSource>
+
+- (instancetype)initWithRootDirectory:(NSString *)path;
+
+@property (nonatomic, strong) NSString *rootDirectory;
+@property (nonatomic, strong) NSArray<OSFileAttributeItem *> *files;
+@property (nonatomic, assign) BOOL displayHiddenFiles;
 
 @end

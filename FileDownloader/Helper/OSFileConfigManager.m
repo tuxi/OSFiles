@@ -10,6 +10,7 @@
 
 static NSString * const OSFileConfigMaxConcurrentDownloadsKey = @"OSFileConfigMaxConcurrentDownloadsKey";
 static NSString * const OSFileConfigAutoDownloadWhenFailureKey = @"OSFileConfigAutoDownloadWhenFailureKey";
+static NSString * const OSFileConfigAutoDownloadWhenInitializeKey = @"OSFileConfigAutoDownloadWhenInitializeKey";
 
 @implementation OSFileConfigManager
 
@@ -50,6 +51,15 @@ static NSString * const OSFileConfigAutoDownloadWhenFailureKey = @"OSFileConfigA
 - (void)setShouldAutoDownloadWhenFailure:(NSNumber *)shouldAutoDownloadWhenFailure {
     [[NSUserDefaults standardUserDefaults] setObject:shouldAutoDownloadWhenFailure forKey:OSFileConfigAutoDownloadWhenFailureKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)setShouldAutoDownloadWhenInitialize:(NSNumber *)shouldAutoDownloadWhenInitialize {
+    [[NSUserDefaults standardUserDefaults] setObject:shouldAutoDownloadWhenInitialize forKey:OSFileConfigAutoDownloadWhenInitializeKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (NSNumber *)shouldAutoDownloadWhenInitialize {
+    return [[NSUserDefaults standardUserDefaults] objectForKey:OSFileConfigAutoDownloadWhenInitializeKey];
 }
 
 @end

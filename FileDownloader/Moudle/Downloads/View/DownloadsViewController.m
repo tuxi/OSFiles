@@ -17,8 +17,7 @@
 #import "UIViewController+OSAlertExtension.h"
 #import "NSString+OSFile.h"
 
-@interface DownloadsViewController () <OSFileDownloaderDataSource>
-
+@interface DownloadsViewController ()
 
 @end
 
@@ -63,9 +62,8 @@
     self.navigationItem.title = @"下载";
     self.tableViewModel = [DownloadsTableViewModel new];
     [self.tableViewModel prepareTableView:self.tableView];
-    OSFileDownloaderManager *module = [OSFileDownloaderManager sharedInstance];
-    module.shouldAutoDownloadWhenInitialize = YES;
-    module.dataSource = self;
+//    OSFileDownloaderManager *module = [OSFileDownloaderManager sharedInstance];
+//    module.dataSource = self;
     [self addObservers];
     
     [self.tableView reloadData];

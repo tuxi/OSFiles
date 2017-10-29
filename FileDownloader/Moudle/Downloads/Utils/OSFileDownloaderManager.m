@@ -15,7 +15,6 @@
 #import "AutoTimer.h"
 
 static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
-static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitialize";
 
 @interface OSFileDownloaderManager()
 
@@ -71,19 +70,12 @@ static NSString * const AutoDownloadWhenInitializeKey = @"AutoDownloadWhenInitia
     dispatch_once(&onceToken, ^{
         [self initDownloadTasks];
     });
-    [[NSUserDefaults standardUserDefaults] setBool:shouldAutoDownloadWhenInitialize
-                                            forKey:AutoDownloadWhenInitializeKey];
-    [[NSUserDefaults standardUserDefaults] synchronize];
     
 }
 
 - (void)setMaxConcurrentDownloads:(NSInteger)maxConcurrentDownloads {
     _maxConcurrentDownloads = maxConcurrentDownloads;
     self.downloader.maxConcurrentDownloads = maxConcurrentDownloads;
-}
-
-- (BOOL)shouldAutoDownloadWhenInitialize {
-    return [[NSUserDefaults standardUserDefaults] boolForKey:AutoDownloadWhenInitializeKey];
 }
 
 - (void)initDownloadTasks {

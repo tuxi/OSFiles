@@ -8,6 +8,6 @@
 
 #import "OSBaseViewController.h"
 
-@interface FilesViewController : OSBaseViewController
+@interface FilesViewController : OSBaseViewController 
 
 @end

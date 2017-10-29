@@ -14,6 +14,8 @@
 @property (nonatomic, strong) NSNumber *maxConcurrentDownloads;
 /// 下载失败是否自动重试
 @property (nonatomic, strong) NSNumber *shouldAutoDownloadWhenFailure;
+/// app启动时是否接着上次任务继续下载
+@property (nonatomic, strong) NSNumber *shouldAutoDownloadWhenInitialize;
 
 + (OSFileConfigManager *)manager;
 

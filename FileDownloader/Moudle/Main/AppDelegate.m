@@ -14,7 +14,7 @@
 #import "ExceptionUtils.h"
 #import "OSAuthenticatorHelper.h"
 #import "OSLoaclNotificationHelper.h"
-
+#import "OSFileConfigManager.h"
 
 #import "KeyboardHelper.h"
 #import "MenuHelper.h"
@@ -142,6 +142,8 @@ static NSString * const UserAgent = @"Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 li
         [self applicationStartPrepare];
     });
     
+    OSFileDownloaderManager *module = [OSFileDownloaderManager sharedInstance];
+    module.shouldAutoDownloadWhenInitialize = [[OSFileConfigManager manager].shouldAutoDownloadWhenInitialize boolValue];
     
     return YES;
 }
