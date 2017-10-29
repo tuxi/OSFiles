@@ -584,7 +584,7 @@ static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
         layout.lineSpacing = 20.0;
         layout.lineSize = 30.0;
         layout.lineItemCount = 3;
-        layout.lineMultiplier = 1.15;
+        layout.lineMultiplier = 1.19;
         layout.scrollDirection = UICollectionViewScrollDirectionVertical;
         layout.sectionsStartOnNewLine = NO;
 

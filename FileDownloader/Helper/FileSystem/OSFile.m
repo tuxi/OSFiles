@@ -24,6 +24,8 @@
 @synthesize isImage                     = _isImage;
 @synthesize isAudio                     = _isAudio;
 @synthesize isVideo                     = _isVideo;
+@synthesize isArchive                   = _isArchive;
+@synthesize isWindows                   = _isWindows;
 @synthesize flags                       = _flags;
 @synthesize extensionIsHidden           = _extensionIsHidden;
 @synthesize isReadable                  = _isReadable;
@@ -344,10 +346,34 @@
           || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"bmpf" ]
           || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"ico" ]
           || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"cur" ]
-          || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"xbm" ] )
+          || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"xbm" ]
+          || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"webp" ])
          )
     {
         _isImage = YES;
+    }
+    if
+        (
+         infos.isRegularFile &&
+         ( [ [ infos.fileExtension lowercaseString ] isEqualToString: @"zip" ]
+          || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"rar" ]
+          || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"7zf" ]
+          || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"tar" ]
+          || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"tgz" ]
+          || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"tbz" ]
+          || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"dmg" ])
+         )
+    {
+        _isArchive = YES;
+    }
+    
+    if
+        (
+         infos.isRegularFile &&
+         ( [ [ infos.fileExtension lowercaseString ] isEqualToString: @"exe" ])
+         )
+    {
+        _isWindows = YES;
     }
 }
 

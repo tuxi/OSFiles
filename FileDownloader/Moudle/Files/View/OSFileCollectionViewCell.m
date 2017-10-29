@@ -47,19 +47,31 @@
     _fileModel = fileModel;
     
     /// 根据文件类型显示
-    BOOL isDirectory, fileExists;
-    fileExists = [[NSFileManager defaultManager] fileExistsAtPath:fileModel.fullPath isDirectory:&isDirectory];
     self.titleLabel.text = [fileModel.fullPath lastPathComponent];
-    if (isDirectory) {
+    if (fileModel.isDirectory) {
         self.iconView.image = [UIImage imageNamed:@"table-folder"];
         self.subTitleLabel.text = [NSString stringWithFormat:@"%ld个文件", fileModel.subFileCount];
-    } else if (fileModel.isImage) {
-        self.iconView.image = [UIImage imageWithContentsOfFile:fileModel.fullPath];
-    } else if (fileModel.isVideo) {
-        NSURL *videoURL = [NSURL fileURLWithPath:fileModel.fullPath];
-        [self.iconView xy_imageWithMediaURL:videoURL placeholderImage:[UIImage imageNamed:@"table-fileicon-images"] completionHandlder:^(UIImage *image) {
-            
-        }];
+    }
+    else {
+        
+        self.subTitleLabel.text = [fileModel.creationDate shortDateString];
+        if (fileModel.isImage) {
+            self.iconView.image = [UIImage imageWithContentsOfFile:fileModel.fullPath];
+        } else if (fileModel.isVideo) {
+            NSURL *videoURL = [NSURL fileURLWithPath:fileModel.fullPath];
+            [self.iconView xy_imageWithMediaURL:videoURL placeholderImage:[UIImage imageNamed:@"table-fileicon-images"] completionHandlder:^(UIImage *image) {
+                
+            }];
+        }
+        else if (fileModel.isArchive) {
+            self.iconView.image = [UIImage imageNamed:@"table-fileicon-archive"];
+        }
+        else if (fileModel.isWindows) {
+            self.iconView.image = [UIImage imageNamed:@"table-foder-windows-smb"];
+        }
+        else {
+            self.iconView.image = [UIImage imageNamed:@"table-fileicon-c-source"];
+        }
     }
     
     if (fileModel.fullPath.length) {
@@ -131,11 +143,12 @@
         _subTitleLabel = label;
         label.translatesAutoresizingMaskIntoConstraints = NO;
         if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_8_4) {
-            [label setFont:[UIFont monospacedDigitSystemFontOfSize:13.0 weight:UIFontWeightRegular]];
+            [label setFont:[UIFont monospacedDigitSystemFontOfSize:11.0 weight:UIFontWeightRegular]];
         } else {
-            [label setFont:[UIFont systemFontOfSize:13.0]];
+            [label setFont:[UIFont systemFontOfSize:11.0]];
         }
-        _subTitleLabel.numberOfLines = 0;
+        _subTitleLabel.numberOfLines = 1;
+        _subTitleLabel.textColor = [UIColor colorWithWhite:0.3 alpha:1.0];
     }
     return _subTitleLabel;
 }
