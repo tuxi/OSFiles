@@ -159,4 +159,20 @@
 + (NSString *)returnFormatString:(NSString *)str {
     return [str stringByReplacingOccurrencesOfString:@" " withString:@""];
 }
+
+/// Apple 官方提供的浮点型换算为百分比的方法，但是CFNumberFormatterRef不必多次malloc，会造成内存飙升
++ (NSString *)percentageString:(float)percent {
+    static CFLocaleRef currentLocale = NULL;
+    static CFNumberFormatterRef numberFormatter = NULL;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        currentLocale = CFLocaleCopyCurrent();
+        numberFormatter = CFNumberFormatterCreate(NULL, currentLocale, kCFNumberFormatterPercentStyle);
+    });
+    CFNumberRef number = CFNumberCreate(NULL, kCFNumberFloatType, &percent);
+    CFStringRef numberString = CFNumberFormatterCreateStringWithNumber(NULL, numberFormatter, number);
+    CFRelease(number);
+    CFRelease(numberString);
+    return (__bridge NSString *)numberString;
+}
 @end

@@ -196,7 +196,9 @@
 }
 
 - (void)deleteFile {
-    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(fileCollectionViewCell:needDeleteFile:)]) {
+        [self.delegate fileCollectionViewCell:self needDeleteFile:self.fileModel];
+    }
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"确定删除吗" message:nil preferredStyle:UIAlertControllerStyleAlert];
     [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
     [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {

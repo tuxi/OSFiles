@@ -12,6 +12,7 @@
 
 @protocol OSFileBottomHUDDelegate <NSObject>
 
+@optional
 - (void)fileBottomHUD:(OSFileBottomHUD *)hud didClickItem:(OSFileBottomHUDItem *)item;
 
 @end
