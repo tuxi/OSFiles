@@ -11,5 +11,6 @@
 @interface UIViewController (XYExtensions)
 
 + (UIViewController *)xy_topViewController;
++ (UINavigationController *)xy_currentNavigationController;
 
 @end

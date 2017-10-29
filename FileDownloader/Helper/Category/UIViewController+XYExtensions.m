@@ -31,4 +31,20 @@
     return nil;
 }
 
++ (UINavigationController *)xy_currentNavigationController {
+    UIViewController *rootViewController = (UINavigationController *)[UIApplication sharedApplication].delegate.window.rootViewController;
+    if ([rootViewController isKindOfClass:[UINavigationController class]]) {
+        UINavigationController *nac = (UINavigationController *)rootViewController;
+        return nac;
+    }
+    else if ([rootViewController isKindOfClass:[UITabBarController class]]) {
+        UITabBarController *tabc = (UITabBarController *)rootViewController;
+        UINavigationController *nac = tabc.selectedViewController;
+        return nac;
+    }
+    return nil;
+}
+
+
+
 @end

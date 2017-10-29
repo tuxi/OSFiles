@@ -199,23 +199,6 @@
     if (self.delegate && [self.delegate respondsToSelector:@selector(fileCollectionViewCell:needDeleteFile:)]) {
         [self.delegate fileCollectionViewCell:self needDeleteFile:self.fileModel];
     }
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"确定删除吗" message:nil preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
-    [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        if (!self.fileModel) {
-            return;
-        }
-        NSString *currentPath = self.fileModel.path;
-        NSError *error = nil;
-        [[NSFileManager defaultManager] removeItemAtPath:currentPath error:&error];
-        if (error) {
-            [[[UIAlertView alloc] initWithTitle:@"Remove error" message:nil delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil, nil] show];
-        }
-        if (self.delegate && [self.delegate respondsToSelector:@selector(fileCollectionViewCell:fileAttributeChange:)]) {
-            [self.delegate fileCollectionViewCell:self fileAttributeChange:self.fileModel];
-        }
-    }]];
-    [[UIViewController xy_topViewController] presentViewController:alert animated:true completion:nil];
 }
 
 - (void)shareFile {
