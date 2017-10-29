@@ -25,9 +25,9 @@ static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
 static const CGFloat windowHeight = 49.0;
 
 #ifdef __IPHONE_9_0
-@interface OSFileCollectionViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIViewControllerPreviewingDelegate, NoDataPlaceholderDelegate, OSFileCollectionViewCellDelegate>
+@interface OSFileCollectionViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIViewControllerPreviewingDelegate, NoDataPlaceholderDelegate, OSFileCollectionViewCellDelegate, OSFileBottomHUDDelegate>
 #else
-@interface OSFileCollectionViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NoDataPlaceholderDelegate, OSFileCollectionViewCellDelegate>
+@interface OSFileCollectionViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NoDataPlaceholderDelegate, OSFileCollectionViewCellDelegate, OSFileBottomHUDDelegate>
 #endif
 
 {
@@ -137,17 +137,42 @@ static const CGFloat windowHeight = 49.0;
         
         [self.bottomHUD hideHudCompletion:^{
             self.navigationItem.rightBarButtonItem.enabled = YES;
+            self.bottomHUD = nil;
         }];
     
     }
     
 }
 
+
 - (OSFileBottomHUD *)bottomHUD {
     if (!_bottomHUD) {
-        _bottomHUD = [[OSFileBottomHUD alloc] initWithView:self.view];
+        _bottomHUD = [[OSFileBottomHUD alloc] initWithItems:@[
+                                                              [[OSFileBottomHUDItem alloc] initWithTitle:@"复制" image:nil],
+                                                              [[OSFileBottomHUDItem alloc] initWithTitle:@"删除" image:nil],
+                                                              ] toView:self.view];
+        _bottomHUD.delegate = self;
     }
     return _bottomHUD;
+}
+
+////////////////////////////////////////////////////////////////////////
+#pragma mark - OSFileBottomHUDDelegate
+////////////////////////////////////////////////////////////////////////
+
+- (void)fileBottomHUD:(OSFileBottomHUD *)hud didClickItem:(OSFileBottomHUDItem *)item {
+    switch (item.buttonIdx) {
+        case 0: {
+            
+            break;
+        }
+        case 1: {
+            
+            break;
+        }
+        default:
+            break;
+    }
 }
 
 
@@ -183,6 +208,10 @@ static const CGFloat windowHeight = 49.0;
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    [self.bottomHUD hideHudCompletion:^{
+        self.navigationItem.rightBarButtonItem.enabled = YES;
+        self.bottomHUD = nil;
+    }];
 }
 
 - (void)setupViews {
