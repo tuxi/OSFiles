@@ -188,16 +188,7 @@
     return returnImage;
 }
 
-
-
-/**
- *  通过视频的URL，获得视频缩略图
- *
- *  @param vidoURL 视频URL
- *
- *  @return首帧缩略图
- */
-- (UIImage *)xy_imageWithMediaURL:(NSURL *)vidoURL {
++ (UIImage *)xy_imageWithMediaURL:(NSURL *)vidoURL {
     NSDictionary *opts = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO]
                                                      forKey:AVURLAssetPreferPreciseDurationAndTimingKey];
     // 初始化媒体文件
@@ -352,8 +343,7 @@
 }
 
 #pragma mark - private
-- (BOOL)isRetina
-{
++ (BOOL)isRetina {
     return ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] &&
             ([UIScreen mainScreen].scale > 1.0));
 }

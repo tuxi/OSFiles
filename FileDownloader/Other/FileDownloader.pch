@@ -31,6 +31,7 @@
 #import "NSString+MD5.h"
 #import "NSObject+XYHUD.h"
 #import "UIViewController+XYHUD.h"
+#import "OSFileConfigUtils.h"
 
 
 static NSString * const OSFileDownloaderResetDownloadsNotification = @"OSFileDownloaderResetDownloadsNotification";

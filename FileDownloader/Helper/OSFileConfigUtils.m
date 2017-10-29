@@ -1,24 +1,24 @@
 //
-//  OSFileConfigManager.m
+//  OSFileConfigUtils.m
 //  FileDownloader
 //
 //  Created by Swae on 2017/10/28.
 //  Copyright © 2017年 Ossey. All rights reserved.
 //
 
-#import "OSFileConfigManager.h"
+#import "OSFileConfigUtils.h"
 
 static NSString * const OSFileConfigMaxConcurrentDownloadsKey = @"OSFileConfigMaxConcurrentDownloadsKey";
 static NSString * const OSFileConfigAutoDownloadWhenFailureKey = @"OSFileConfigAutoDownloadWhenFailureKey";
 static NSString * const OSFileConfigAutoDownloadWhenInitializeKey = @"OSFileConfigAutoDownloadWhenInitializeKey";
 
-@implementation OSFileConfigManager
+@implementation OSFileConfigUtils
 
-+ (OSFileConfigManager *)manager {
-    static OSFileConfigManager *_sharedInstance;
++ (OSFileConfigUtils *)manager {
+    static OSFileConfigUtils *_sharedInstance;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _sharedInstance = [OSFileConfigManager new];
+        _sharedInstance = [OSFileConfigUtils new];
     });
     return _sharedInstance;
 }
@@ -60,6 +60,32 @@ static NSString * const OSFileConfigAutoDownloadWhenInitializeKey = @"OSFileConf
 
 - (NSNumber *)shouldAutoDownloadWhenInitialize {
     return [[NSUserDefaults standardUserDefaults] objectForKey:OSFileConfigAutoDownloadWhenInitializeKey];
+}
+
++ (NSString *)getDownloadLocalFolderPath {
+    NSString *documents = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
+    NSString *localFolderPath = [documents stringByAppendingPathComponent:@"OSFileDownloader"];
+    BOOL isDirectory, isExist;
+    isExist = [[NSFileManager defaultManager] fileExistsAtPath:localFolderPath isDirectory:&isDirectory];
+    if (!isExist || !isDirectory) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:localFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    return localFolderPath;
+}
+
++ (NSString *)getDocumentPath {
+    
+    return [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
+}
+
++ (NSString *)getLibraryPath {
+    NSArray *userPaths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
+    return [userPaths objectAtIndex:0];
+}
+
++ (NSString *)getCachesPath {
+    NSArray *userPaths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    return [userPaths objectAtIndex:0];
 }
 
 @end

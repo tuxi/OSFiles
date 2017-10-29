@@ -310,7 +310,6 @@
           || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"aiff" ]
           || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"caf" ]
           || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"m4a" ]
-          || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"mp4" ]
           || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"m4r" ]
           || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"3gp" ]
           || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"wav" ] )
@@ -325,7 +324,8 @@
          ( [ [ infos.fileExtension lowercaseString ] isEqualToString: @"m4v" ]
           || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"mov" ]
           || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"avi" ]
-          || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"mpg" ] )
+          || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"mpg" ]
+          || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"mp4" ] )
          )
     {
         _isVideo = YES;

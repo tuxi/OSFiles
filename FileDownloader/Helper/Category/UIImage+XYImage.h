@@ -55,13 +55,13 @@ typedef NS_ENUM(NSInteger, GradientType) {
 + (UIImage *)xy_circleImage:(UIImage *)originImage borderColor:(UIColor *)borderColor borderWidth:(CGFloat)borderWidth;
 
 /**
- *  通过视频的URL，获得视频缩略图
+ *  异步通过视频的URL，获得视频缩略图
  *
  *  @param vidoURL 视频URL
  *
- *  @return首帧缩略图
+ *  @return image 首帧缩略图
  */
-- (UIImage *)xy_imageWithMediaURL:(NSURL *)vidoURL;
++ (UIImage *)xy_imageWithMediaURL:(NSURL *)vidoURL;
 
 //返回渐变的image
 + (UIImage*)xy_gradientImageFromColors:(NSArray*)colors ByGradientType:(GradientType)gradientType inSize:(CGSize)size;

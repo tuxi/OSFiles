@@ -8,6 +8,7 @@
 
 #import "OSFileCollectionViewCell.h"
 #import "OSFileAttributeItem.h"
+#import "UIImageView+XYExtension.h"
 
 @interface OSFileCollectionViewCell ()
 
@@ -45,16 +46,32 @@
 - (void)setFileModel:(OSFileAttributeItem *)fileModel {
     _fileModel = fileModel;
     
+    /// 根据文件类型显示
     BOOL isDirectory, fileExists;
     fileExists = [[NSFileManager defaultManager] fileExistsAtPath:fileModel.fullPath isDirectory:&isDirectory];
     self.titleLabel.text = [fileModel.fullPath lastPathComponent];
     if (isDirectory) {
         self.iconView.image = [UIImage imageNamed:@"table-folder"];
         self.subTitleLabel.text = [NSString stringWithFormat:@"%ld个文件", fileModel.subFileCount];
-    } else if ([fileModel.fullPath.pathExtension.lowercaseString isEqualToString:@"png"] ||
-               [fileModel.fullPath.pathExtension.lowercaseString isEqualToString:@"jpg"]) {
+    } else if (fileModel.isImage) {
         self.iconView.image = [UIImage imageWithContentsOfFile:fileModel.fullPath];
+    } else if (fileModel.isVideo) {
+        NSURL *videoURL = [NSURL fileURLWithPath:fileModel.fullPath];
+        [self.iconView xy_imageWithMediaURL:videoURL placeholderImage:[UIImage imageNamed:@"table-fileicon-images"] completionHandlder:^(UIImage *image) {
+            
+        }];
     }
+    
+    if (fileModel.fullPath.length) {
+        if ([fileModel.fullPath isEqualToString:[OSFileConfigUtils getDocumentPath]]) {
+            self.titleLabel.text  = @"iTunes文件";
+            self.iconView.image = [UIImage imageNamed:@"table-folder-itunes-files-sharing"];
+        }
+        else if ([fileModel.fullPath isEqualToString:[OSFileConfigUtils getDownloadLocalFolderPath]]) {
+            self.titleLabel.text  = @"下载";
+        }
+    }
+   
 }
 
 

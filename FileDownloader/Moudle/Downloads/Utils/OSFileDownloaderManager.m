@@ -11,7 +11,7 @@
 #import "OSFileDownloaderDelegate.h"
 #import "OSFileDownloadConst.h"
 #import "NSString+OSFile.h"
-#import "OSFileConfigManager.h"
+#import "OSFileConfigUtils.h"
 #import "AutoTimer.h"
 
 static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
@@ -56,7 +56,7 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
         self.downloadDelegate = [OSFileDownloaderDelegate new];
         self.downloader = [OSFileDownloader new];
         self.downloader.downloadDelegate = self.downloadDelegate;
-        NSNumber *maxConcurrentDownloads = [[OSFileConfigManager manager] maxConcurrentDownloads];
+        NSNumber *maxConcurrentDownloads = [[OSFileConfigUtils manager] maxConcurrentDownloads];
         self.maxConcurrentDownloads = [maxConcurrentDownloads integerValue];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate) name:UIApplicationWillTerminateNotification object:nil];
         self.downloadItems = [self restoredDownloadItems];
@@ -348,7 +348,7 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
 - (void)autoDownloadFailure {
     
     [AutoTimer startWithTimeInterval:10.0 block:^{
-        BOOL shouldAutoDownloadWhenFailure = [[OSFileConfigManager manager].shouldAutoDownloadWhenFailure boolValue];
+        BOOL shouldAutoDownloadWhenFailure = [[OSFileConfigUtils manager].shouldAutoDownloadWhenFailure boolValue];
         if ([NetworkTypeUtils networkType] != NetworkTypeWIFI || !shouldAutoDownloadWhenFailure) {
             [AutoTimer cancel];
             return;

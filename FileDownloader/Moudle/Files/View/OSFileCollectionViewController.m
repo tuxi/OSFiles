@@ -13,13 +13,19 @@
 #import "OSFileManager.h"
 #import "OSFileAttributeItem.h"
 #import "FilePreviewViewController.h"
+#import <UIScrollView+NoDataExtend.h>
+
+typedef NS_ENUM(NSInteger, OSFileLoadType) {
+    OSFileLoadTypeCurrentDirectory,
+    OSFileLoadTypeSubDirectory,
+};
 
 static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
 
 #ifdef __IPHONE_9_0
-@interface OSFileCollectionViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIViewControllerPreviewingDelegate>
+@interface OSFileCollectionViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIViewControllerPreviewingDelegate, NoDataPlaceholderDelegate>
 #else
-@interface OSFileCollectionViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
+@interface OSFileCollectionViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NoDataPlaceholderDelegate>
 #endif
 
 {
@@ -35,6 +41,8 @@ static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
 @property (nonatomic, strong) NSOperationQueue *loadFileQueue;
 @property (nonatomic, strong) OSFileManager *fileManager;
 @property (nonatomic, strong) MBProgressHUD *hud;
+@property (nonatomic, strong) NSArray *directoryArray;
+@property (nonatomic, assign) OSFileLoadType fileLoadType;
 
 @end
 
@@ -47,25 +55,39 @@ static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
 - (instancetype)initWithRootDirectory:(NSString *)path {
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
-        _fileManager = [OSFileManager defaultManager];
+        self.fileLoadType = OSFileLoadTypeSubDirectory;
+        [self commonInit];
         self.rootDirectory = path;
-        _displayHiddenFiles = NO;
-        self.title = [self.rootDirectory lastPathComponent];
-        _loadFileQueue = [NSOperationQueue new];
         
-        __weak typeof(self) weakSelf = self;
-        NSString *documentPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
-        _currentFolderHelper = [DirectoryWatcher watchFolderWithPath:self.rootDirectory directoryDidChange:^(DirectoryWatcher *folderWatcher) {
-            [weakSelf reloadFiles];
-        }];
-        
-        if (![self.rootDirectory isEqualToString:documentPath]) {
-            _documentFolderHelper = [DirectoryWatcher watchFolderWithPath:documentPath directoryDidChange:^(DirectoryWatcher *folderWatcher) {
-                [weakSelf reloadFiles];
-            }];
-        }
     }
     return self;
+}
+
+- (instancetype)initWithDirectoryArray:(NSArray *)directoryArray {
+    self = [super initWithNibName:nil bundle:nil];
+    if (self) {
+        self.fileLoadType = OSFileLoadTypeCurrentDirectory;
+        [self commonInit];
+        self.directoryArray = directoryArray;
+    }
+    return self;
+}
+
+- (void)commonInit {
+    _fileManager = [OSFileManager defaultManager];
+     _displayHiddenFiles = NO;
+    _loadFileQueue = [NSOperationQueue new];
+    __weak typeof(self) weakSelf = self;
+    NSString *documentPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
+    _currentFolderHelper = [DirectoryWatcher watchFolderWithPath:self.rootDirectory directoryDidChange:^(DirectoryWatcher *folderWatcher) {
+        [weakSelf reloadFiles];
+    }];
+    
+    if (![self.rootDirectory isEqualToString:documentPath]) {
+        _documentFolderHelper = [DirectoryWatcher watchFolderWithPath:documentPath directoryDidChange:^(DirectoryWatcher *folderWatcher) {
+            [weakSelf reloadFiles];
+        }];
+    }
 }
 
 
@@ -74,10 +96,24 @@ static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
     // Do any additional setup after loading the view.
     [self setupViews];
     __weak typeof(self) weakSelf = self;
-    [self loadFile:self.rootDirectory completion:^(NSArray *fileItems) {
-        weakSelf.files = fileItems.copy;
-        [weakSelf.collectionView reloadData];
-    }];
+    switch (self.fileLoadType) {
+        case OSFileLoadTypeCurrentDirectory: {
+            [self loadFileWithDirectoryArray:self.directoryArray completion:^(NSArray *fileItems) {
+                weakSelf.files = fileItems.copy;
+                [weakSelf.collectionView reloadData];
+            }];
+            break;
+        }
+        case OSFileLoadTypeSubDirectory: {
+            [self loadFileWithDirectoryPath:self.rootDirectory completion:^(NSArray *fileItems) {
+                weakSelf.files = fileItems.copy;
+                [weakSelf.collectionView reloadData];
+            }];
+            break;
+        }
+        default:
+            break;
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -87,14 +123,129 @@ static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
 
 - (void)setupViews {
     self.navigationItem.title = @"文件管理";
+    if (self.rootDirectory.length) {
+        self.navigationItem.title = [self.rootDirectory lastPathComponent];
+        if ([self.rootDirectory isEqualToString:[OSFileConfigUtils getDocumentPath]]) {
+            self.navigationItem.title = @"iTunes文件";
+        }
+        else if ([self.rootDirectory isEqualToString:[OSFileConfigUtils getDownloadLocalFolderPath]]) {
+            self.navigationItem.title = @"下载";
+        }
+    }
     self.view.backgroundColor = [UIColor colorWithWhite:0.8 alpha:1.0];
     
     [self.view addSubview:self.collectionView];
     [self makeCollectionViewConstr];
-
+    [self setupNodataView];
 }
 
-- (void)loadFile:(NSString *)directoryPath completion:(void (^)(NSArray *fileItems))completion {
+- (void)setupNodataView {
+    __weak typeof(self) weakSelf = self;
+    
+    self.collectionView.noDataPlaceholderDelegate = self;
+    if ([self isDownloadBrowser]) {
+        self.collectionView.customNoDataView = ^UIView * _Nonnull{
+            if (weakSelf.collectionView.xy_loading) {
+                UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+                [activityView startAnimating];
+                return activityView;
+            }
+            else {
+                return nil;
+            }
+            
+        };
+    
+  
+        self.collectionView.noDataDetailTextLabelBlock = ^(UILabel * _Nonnull detailTextLabel) {
+            NSAttributedString *string = [weakSelf noDataDetailLabelAttributedString];
+            if (!string.length) {
+                return;
+            }
+            detailTextLabel.backgroundColor = [UIColor clearColor];
+            detailTextLabel.font = [UIFont systemFontOfSize:17.0];
+            detailTextLabel.textColor = [UIColor colorWithWhite:0.6 alpha:1.0];
+            detailTextLabel.textAlignment = NSTextAlignmentCenter;
+            detailTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
+            detailTextLabel.numberOfLines = 0;
+            detailTextLabel.attributedText = string;
+        };
+        self.collectionView.noDataImageViewBlock = ^(UIImageView * _Nonnull imageView) {
+            imageView.backgroundColor = [UIColor clearColor];
+            imageView.contentMode = UIViewContentModeScaleAspectFit;
+            imageView.userInteractionEnabled = NO;
+            imageView.image = [weakSelf noDataImageViewImage];
+            
+        };
+        
+        self.collectionView.noDataReloadButtonBlock = ^(UIButton * _Nonnull reloadButton) {
+            reloadButton.backgroundColor = [UIColor clearColor];
+            reloadButton.layer.borderWidth = 0.5;
+            reloadButton.layer.borderColor = [UIColor colorWithRed:49/255.0 green:194/255.0 blue:124/255.0 alpha:1.0].CGColor;
+            reloadButton.layer.cornerRadius = 2.0;
+            [reloadButton.layer setMasksToBounds:YES];
+            [reloadButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+            [reloadButton setAttributedTitle:[weakSelf noDataReloadButtonAttributedStringWithState:UIControlStateNormal] forState:UIControlStateNormal];
+        };
+        
+        self.collectionView.noDataButtonEdgeInsets = UIEdgeInsetsMake(20, 100, 11, 100);
+    }
+    self.collectionView.noDataTextLabelBlock = ^(UILabel * _Nonnull textLabel) {
+        NSAttributedString *string = [weakSelf noDataTextLabelAttributedString];
+        if (!string.length) {
+            return;
+        }
+        textLabel.backgroundColor = [UIColor clearColor];
+        textLabel.font = [UIFont systemFontOfSize:27.0];
+        textLabel.textColor = [UIColor colorWithWhite:0.6 alpha:1.0];
+        textLabel.textAlignment = NSTextAlignmentCenter;
+        textLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        textLabel.numberOfLines = 0;
+        textLabel.attributedText = string;
+    };
+ 
+    self.collectionView.noDataTextEdgeInsets = UIEdgeInsetsMake(20, 0, 20, 0);
+    
+    
+}
+
+- (void)loadFileWithDirectoryArray:(NSArray<NSString *> *)directoryArray completion:(void (^)(NSArray *fileItems))completion {
+    [_loadFileQueue cancelAllOperations];
+    [_loadFileQueue addOperationWithBlock:^{
+        NSMutableArray *array = @[].mutableCopy;
+        [directoryArray enumerateObjectsUsingBlock:^(NSString * _Nonnull fullPath, NSUInteger idx, BOOL * _Nonnull stop) {
+            OSFileAttributeItem *model = [[OSFileAttributeItem alloc] initWithPath:fullPath];
+            if (model) {
+                NSError *error = nil;
+                NSArray *subFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:fullPath error:&error];
+                if (!error) {
+                    if (!_displayHiddenFiles) {
+                        subFiles = [self removeHiddenFilesFromFiles:subFiles];
+                    }
+                    model.subFileCount = subFiles.count;
+                }
+                
+                [array addObject:model];
+            }
+        }];
+        
+        
+        if (!_displayHiddenFiles) {
+            array = [[self removeHiddenFilesFromFiles:array] mutableCopy];
+        }
+        if (completion) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(array);
+            });
+        }
+        
+    }];
+  
+   
+}
+
+- (void)loadFileWithDirectoryPath:(NSString *)directoryPath completion:(void (^)(NSArray *fileItems))completion {
+    [_loadFileQueue cancelAllOperations];
     [_loadFileQueue addOperationWithBlock:^{
         
         NSError *error = nil;
@@ -139,10 +290,25 @@ static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
     }
     _displayHiddenFiles = displayHiddenFiles;
     __weak typeof(self) weakSelf = self;
-    [self loadFile:self.rootDirectory completion:^(NSArray *fileItems) {
-        weakSelf.files = fileItems.copy;
-        [weakSelf.collectionView reloadData];
-    }];
+    switch (self.fileLoadType) {
+        case OSFileLoadTypeCurrentDirectory: {
+            [self loadFileWithDirectoryArray:self.directoryArray completion:^(NSArray *fileItems) {
+                weakSelf.files = fileItems.copy;
+                [weakSelf.collectionView reloadData];
+            }];
+            break;
+        }
+        case OSFileLoadTypeSubDirectory: {
+            [self loadFileWithDirectoryPath:self.rootDirectory completion:^(NSArray *fileItems) {
+                weakSelf.files = fileItems.copy;
+                [weakSelf.collectionView reloadData];
+            }];
+            break;
+        }
+        default:
+            break;
+    }
+    
 }
 
 - (NSArray *)removeHiddenFilesFromFiles:(NSArray *)files {
@@ -166,10 +332,24 @@ static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
 
 - (void)reloadFiles {
     __weak typeof(self) weakSelf = self;
-    [self loadFile:self.rootDirectory completion:^(NSArray *fileItems) {
-        weakSelf.files = fileItems.copy;
-        [weakSelf.collectionView reloadData];
-    }];
+    switch (self.fileLoadType) {
+        case OSFileLoadTypeCurrentDirectory: {
+            [self loadFileWithDirectoryArray:self.directoryArray completion:^(NSArray *fileItems) {
+                weakSelf.files = fileItems.copy;
+                [weakSelf.collectionView reloadData];
+            }];
+            break;
+        }
+        case OSFileLoadTypeSubDirectory: {
+            [self loadFileWithDirectoryPath:self.rootDirectory completion:^(NSArray *fileItems) {
+                weakSelf.files = fileItems.copy;
+                [weakSelf.collectionView reloadData];
+            }];
+            break;
+        }
+        default:
+            break;
+    }
     
 }
 
@@ -425,6 +605,98 @@ static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
         _collectionView.contentInset = UIEdgeInsetsMake(20, 20, 0, 20);
     }
     return _collectionView;
+}
+
+////////////////////////////////////////////////////////////////////////
+#pragma mark - NoDataPlaceholderDelegate
+////////////////////////////////////////////////////////////////////////
+
+- (BOOL)noDataPlaceholderShouldAllowScroll:(UIScrollView *)scrollView {
+    return YES;
+}
+
+- (void)noDataPlaceholder:(UIScrollView *)scrollView didTapOnContentView:(UITapGestureRecognizer *)tap {
+    [self noDataPlaceholder:scrollView didTapOnContentView:tap];
+}
+
+
+- (CGFloat)contentOffsetYForNoDataPlaceholder:(UIScrollView *)scrollView {
+    if ([UIDevice currentDevice].orientation == UIDeviceOrientationPortrait) {
+        return 120.0;
+    }
+    return 80.0;
+}
+
+- (void)noDataPlaceholderWillAppear:(UIScrollView *)scrollView {
+    
+}
+
+- (void)noDataPlaceholderDidDisappear:(UIScrollView *)scrollView {
+    
+}
+
+- (BOOL)noDataPlaceholderShouldFadeInOnDisplay:(UIScrollView *)scrollView {
+    return YES;
+}
+
+
+- (NSAttributedString *)noDataDetailLabelAttributedString {
+    return nil;
+}
+
+- (UIImage *)noDataImageViewImage {
+
+    return [UIImage imageNamed:@"file_noData"];
+}
+
+
+- (NSAttributedString *)noDataReloadButtonAttributedStringWithState:(UIControlState)state {
+    return [self attributedStringWithText:@"查看下载页" color:[UIColor colorWithRed:49/255.0 green:194/255.0 blue:124/255.0 alpha:1.0] fontSize:15.0];
+}
+
+- (void)noDataPlaceholder:(UIScrollView *)scrollView didClickReloadButton:(UIButton *)button {
+    self.tabBarController.selectedIndex = 1;
+    self.navigationController.viewControllers = @[self.navigationController.viewControllers.firstObject];
+}
+
+
+- (NSAttributedString *)noDataTextLabelAttributedString {
+    NSString *string = nil;
+    if ([self isDownloadBrowser]) {
+        string = @"没有下载完成文件\n去查看下载页是否有文件在下载中";
+    }
+    else {
+        string = @"没有文件";
+    }
+    return [self attributedStringWithText:string color:[UIColor grayColor] fontSize:16];;
+}
+
+- (NSAttributedString *)attributedStringWithText:(NSString *)string color:(UIColor *)color fontSize:(CGFloat)fontSize {
+    NSString *text = string;
+    UIFont *font = [UIFont systemFontOfSize:fontSize];
+    UIColor *textColor = color;
+    
+    NSMutableDictionary *attributeDict = [NSMutableDictionary new];
+    NSMutableParagraphStyle *style = [NSMutableParagraphStyle new];
+    style.lineBreakMode = NSLineBreakByWordWrapping;
+    style.alignment = NSTextAlignmentCenter;
+    style.lineSpacing = 4.0;
+    [attributeDict setObject:font forKey:NSFontAttributeName];
+    [attributeDict setObject:textColor forKey:NSForegroundColorAttributeName];
+    [attributeDict setObject:style forKey:NSParagraphStyleAttributeName];
+    
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:text attributes:attributeDict];
+    
+    return attributedString;
+    
+}
+
+////////////////////////////////////////////////////////////////////////
+#pragma mark - Others
+////////////////////////////////////////////////////////////////////////
+
+- (BOOL)isDownloadBrowser {
+    return [self.rootDirectory isEqualToString:[OSFileConfigUtils getDownloadLocalFolderPath]];
 }
 
 

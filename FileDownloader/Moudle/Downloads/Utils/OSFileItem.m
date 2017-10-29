@@ -7,6 +7,7 @@
 //
 
 #import "OSFileItem.h"
+#import "OSFileConfigUtils.h"
 
 @implementation OSFileItem
 
@@ -50,7 +51,7 @@
 }
 
 - (NSString *)localFolderPath {
-    return NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
+    return [OSFileConfigUtils getDownloadLocalFolderPath];
 }
 
 - (NSString *)localPath {

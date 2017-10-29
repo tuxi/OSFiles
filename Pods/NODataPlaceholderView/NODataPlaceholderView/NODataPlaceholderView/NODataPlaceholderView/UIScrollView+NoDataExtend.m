@@ -700,6 +700,7 @@ static const CGFloat NoDataPlaceholderHorizontalSpaceRatioValue = 16.0;
 
 - (void)setNoDataTextLabelBlock:(void (^)(UILabel * _Nonnull))noDataTextLabelBlock {
     objc_setAssociatedObject(self, @selector(noDataTextLabelBlock), noDataTextLabelBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
+    [self registerNoDataPlaceholder];
 }
 
 - (void (^)(UILabel * _Nonnull))noDataTextLabelBlock {
@@ -708,6 +709,7 @@ static const CGFloat NoDataPlaceholderHorizontalSpaceRatioValue = 16.0;
 
 - (void)setNoDataDetailTextLabelBlock:(void (^)(UILabel * _Nonnull))noDataDetailTextLabelBlock {
     objc_setAssociatedObject(self, @selector(noDataDetailTextLabelBlock), noDataDetailTextLabelBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
+    [self registerNoDataPlaceholder];
 }
 
 - (void (^)(UILabel * _Nonnull))noDataDetailTextLabelBlock {
@@ -724,6 +726,7 @@ static const CGFloat NoDataPlaceholderHorizontalSpaceRatioValue = 16.0;
 
 - (void)setNoDataReloadButtonBlock:(void (^)(UIButton * _Nonnull))noDataReloadButtonBlock {
     objc_setAssociatedObject(self, @selector(noDataReloadButtonBlock), noDataReloadButtonBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
+    [self registerNoDataPlaceholder];
 }
 
 - (void (^)(UIButton * _Nonnull))noDataReloadButtonBlock {
@@ -867,12 +870,21 @@ buttonEdgeInsets = _buttonEdgeInsets;
     _selfTopConstraint = selfTopConstraint;
     NSLayoutConstraint *selfBottomConstraint = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.superview attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0];
     _selfBottomConstraint = selfBottomConstraint;
+    CGFloat widthConstant = 0.0;
+    if ([view isKindOfClass:[UICollectionView class]]) {
+        UICollectionView *collectionView = (UICollectionView *)view;
+        widthConstant = collectionView.contentInset.left + collectionView.contentInset.right;
+    }
+    else if ([view isKindOfClass:[UITableView class]]) {
+        UITableView *tableView = (UITableView *)view;
+        widthConstant = tableView.contentInset.left + tableView.contentInset.right;
+    }
     NSArray *selfConstraints = @[
                                  @[
                                      selfTopConstraint,
                                      selfBottomConstraint
                                      ],
-                                 @[[NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeWidth multiplier:1.0 constant:0.0],
+                                 @[[NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeWidth multiplier:1.0 constant:-widthConstant],
                                    [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeHeight multiplier:1.0 constant:0.0]
                                    ],
                                  

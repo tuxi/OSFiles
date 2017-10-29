@@ -1,5 +1,5 @@
 //
-//  OSFileConfigManager.h
+//  OSFileConfigUtils.h
 //  FileDownloader
 //
 //  Created by Swae on 2017/10/28.
@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface OSFileConfigManager : NSObject
+@interface OSFileConfigUtils : NSObject
 
 /// 最大同时下载数量，default is 3
 @property (nonatomic, strong) NSNumber *maxConcurrentDownloads;
@@ -17,6 +17,11 @@
 /// app启动时是否接着上次任务继续下载
 @property (nonatomic, strong) NSNumber *shouldAutoDownloadWhenInitialize;
 
-+ (OSFileConfigManager *)manager;
++ (OSFileConfigUtils *)manager;
+
++ (NSString *)getDownloadLocalFolderPath;
++ (NSString *)getDocumentPath;
++ (NSString *)getLibraryPath;
++ (NSString *)getCachesPath;
 
 @end

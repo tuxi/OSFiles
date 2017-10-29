@@ -15,6 +15,7 @@
 #import "BrowserViewController.h"
 #import "BaseNavigationViewController.h"
 #import "OSFileCollectionViewController.h"
+#import "OSFileConfigUtils.h"
 
 @interface MainTabBarController () <SmileAuthenticatorDelegate>
 
@@ -29,7 +30,10 @@
     [self addChildVC:[BrowserViewController sharedInstance] imageNamed:@"TabBrowser" title:@"浏览器" navClass:[BaseNavigationViewController class]];
     [self addChildVC:[DownloadsViewController new] imageNamed:@"TabDownloads" title:@"下载"];
     
-    [self addChildVC:[[OSFileCollectionViewController alloc] initWithRootDirectory:NSHomeDirectory()] imageNamed:@"TabFiles" title:@"文件管理"];
+    [self addChildVC:[[OSFileCollectionViewController alloc] initWithDirectoryArray:@[
+                                                                                      [OSFileConfigUtils getDownloadLocalFolderPath],
+                                                                                      [OSFileConfigUtils getDocumentPath]
+                                                                                      ]] imageNamed:@"TabFiles" title:@"文件管理"];
     [self addChildVC:[OSSettingViewController new] imageNamed:@"TabMore" title:@"更多"];
     
     [SmileAuthenticator sharedInstance].delegate = self;

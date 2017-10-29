@@ -14,13 +14,14 @@
 		1855DF7C1FA38C1C001CCAE8 /* FoldersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF7A1FA38C1C001CCAE8 /* FoldersViewController.m */; };
 		1855DF811FA390C0001CCAE8 /* XYSuspensionMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF7F1FA390C0001CCAE8 /* XYSuspensionMenu.m */; };
 		1855DF841FA3938C001CCAE8 /* OSFileCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF831FA3938C001CCAE8 /* OSFileCollectionViewController.m */; };
-		1855DF981FA3A8FB001CCAE8 /* OSFileConfigManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF971FA3A8FB001CCAE8 /* OSFileConfigManager.m */; };
+		1855DF981FA3A8FB001CCAE8 /* OSFileConfigUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF971FA3A8FB001CCAE8 /* OSFileConfigUtils.m */; };
 		185A8EAE1FA42ED4006077CE /* AutoTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = 185A8EAC1FA42ED3006077CE /* AutoTimer.m */; };
 		185A8EB11FA43416006077CE /* NSString+MD5.m in Sources */ = {isa = PBXBuildFile; fileRef = 185A8EAF1FA43416006077CE /* NSString+MD5.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		18A0F16A1FA57DBA00614E91 /* OSFileCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A0F1681FA57DBA00614E91 /* OSFileCollectionViewCell.m */; };
 		18A0F16E1FA590C100614E91 /* OSFileCollectionViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A0F16D1FA590C100614E91 /* OSFileCollectionViewFlowLayout.m */; };
 		18A0F1711FA5A47200614E91 /* OSFileAttributeItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A0F1701FA5A47200614E91 /* OSFileAttributeItem.m */; };
 		18A0F1741FA5A86C00614E91 /* FilePreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A0F1731FA5A86C00614E91 /* FilePreviewViewController.m */; };
+		18A0F1991FA5CC3500614E91 /* UIImageView+XYExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A0F1981FA5CC3500614E91 /* UIImageView+XYExtension.m */; };
 		18ADEEAB1F9E48D30024BA40 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18ADEEAA1F9E48D30024BA40 /* LaunchScreen.storyboard */; };
 		18ADEEAD1F9E48DE0024BA40 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18ADEEAC1F9E48DE0024BA40 /* Main.storyboard */; };
 		18ADEEB21F9E492E0024BA40 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18517BD21EEBC86600B148C8 /* Assets.xcassets */; };
@@ -449,8 +450,8 @@
 		1855DF801FA390C0001CCAE8 /* XYSuspensionMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYSuspensionMenu.h; sourceTree = "<group>"; };
 		1855DF821FA3938C001CCAE8 /* OSFileCollectionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSFileCollectionViewController.h; sourceTree = "<group>"; };
 		1855DF831FA3938C001CCAE8 /* OSFileCollectionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSFileCollectionViewController.m; sourceTree = "<group>"; };
-		1855DF961FA3A8FB001CCAE8 /* OSFileConfigManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSFileConfigManager.h; sourceTree = "<group>"; };
-		1855DF971FA3A8FB001CCAE8 /* OSFileConfigManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSFileConfigManager.m; sourceTree = "<group>"; };
+		1855DF961FA3A8FB001CCAE8 /* OSFileConfigUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSFileConfigUtils.h; sourceTree = "<group>"; };
+		1855DF971FA3A8FB001CCAE8 /* OSFileConfigUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSFileConfigUtils.m; sourceTree = "<group>"; };
 		185A8EAC1FA42ED3006077CE /* AutoTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AutoTimer.m; sourceTree = "<group>"; };
 		185A8EAD1FA42ED3006077CE /* AutoTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoTimer.h; sourceTree = "<group>"; };
 		185A8EAF1FA43416006077CE /* NSString+MD5.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MD5.m"; sourceTree = "<group>"; };
@@ -521,6 +522,8 @@
 		18A0F1701FA5A47200614E91 /* OSFileAttributeItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSFileAttributeItem.m; sourceTree = "<group>"; };
 		18A0F1721FA5A86C00614E91 /* FilePreviewViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FilePreviewViewController.h; sourceTree = "<group>"; };
 		18A0F1731FA5A86C00614E91 /* FilePreviewViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FilePreviewViewController.m; sourceTree = "<group>"; };
+		18A0F1971FA5CC3500614E91 /* UIImageView+XYExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImageView+XYExtension.h"; sourceTree = "<group>"; };
+		18A0F1981FA5CC3500614E91 /* UIImageView+XYExtension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+XYExtension.m"; sourceTree = "<group>"; };
 		18ADEBEB1F9E1FB00024BA40 /* Warnings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Warnings.h; sourceTree = "<group>"; };
 		18ADEBED1F9E21EA0024BA40 /* OSFile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSFile.h; sourceTree = "<group>"; };
 		18ADEBEE1F9E21EA0024BA40 /* OSFile.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSFile.m; sourceTree = "<group>"; };
@@ -1074,8 +1077,8 @@
 				1813E8681F9BB717002C661E /* OSAuthenticatorHelper.m */,
 				1813E8D51F9C39D2002C661E /* OSLoaclNotificationHelper.h */,
 				1813E8D61F9C39D2002C661E /* OSLoaclNotificationHelper.m */,
-				1855DF961FA3A8FB001CCAE8 /* OSFileConfigManager.h */,
-				1855DF971FA3A8FB001CCAE8 /* OSFileConfigManager.m */,
+				1855DF961FA3A8FB001CCAE8 /* OSFileConfigUtils.h */,
+				1855DF971FA3A8FB001CCAE8 /* OSFileConfigUtils.m */,
 				185A8EAD1FA42ED3006077CE /* AutoTimer.h */,
 				185A8EAC1FA42ED3006077CE /* AutoTimer.m */,
 			);
@@ -1302,6 +1305,8 @@
 				1855DF1A1FA37CBD001CCAE8 /* UIViewController+OSAlertExtension.m */,
 				1855DF6D1FA38BC8001CCAE8 /* NSObject+IvarList.h */,
 				1855DF6E1FA38BC8001CCAE8 /* NSObject+IvarList.m */,
+				18A0F1971FA5CC3500614E91 /* UIImageView+XYExtension.h */,
+				18A0F1981FA5CC3500614E91 /* UIImageView+XYExtension.m */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -2431,6 +2436,7 @@
 				18ADEF421F9E4A860024BA40 /* UIViewController+XYHUD.m in Sources */,
 				18ADEF491F9E4A860024BA40 /* NSString+OSFile.m in Sources */,
 				18ADEEFC1F9E4A3D0024BA40 /* HttpHelper.m in Sources */,
+				18A0F1991FA5CC3500614E91 /* UIImageView+XYExtension.m in Sources */,
 				18ADEF351F9E4A860024BA40 /* SmilePasswordView.m in Sources */,
 				18ADEF1A1F9E4A530024BA40 /* XYVideoPlayerView.m in Sources */,
 				18A0F16E1FA590C100614E91 /* OSFileCollectionViewFlowLayout.m in Sources */,
@@ -2443,7 +2449,7 @@
 				18ADEED81F9E4A0C0024BA40 /* BookmarkSectionHeaderView.m in Sources */,
 				18ADEEFE1F9E4A3D0024BA40 /* KeyboardHelper.m in Sources */,
 				18ADEF291F9E4A860024BA40 /* FilesViewController.m in Sources */,
-				1855DF981FA3A8FB001CCAE8 /* OSFileConfigManager.m in Sources */,
+				1855DF981FA3A8FB001CCAE8 /* OSFileConfigUtils.m in Sources */,
 				18ADEEC71F9E49F70024BA40 /* HTTPURLConfiguration.m in Sources */,
 				18ADEF3C1F9E4A860024BA40 /* PSPDFUIKitMainThreadGuard.m in Sources */,
 				18ADEED11F9E4A050024BA40 /* BookmarkDirectoryEditViewController.m in Sources */,
