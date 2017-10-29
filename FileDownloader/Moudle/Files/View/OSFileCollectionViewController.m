@@ -14,6 +14,7 @@
 #import "OSFileAttributeItem.h"
 #import "FilePreviewViewController.h"
 #import <UIScrollView+NoDataExtend.h>
+#import "OSFileBottomHUD.h"
 
 typedef NS_ENUM(NSInteger, OSFileLoadType) {
     OSFileLoadTypeCurrentDirectory,
@@ -21,6 +22,7 @@ typedef NS_ENUM(NSInteger, OSFileLoadType) {
 };
 
 static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
+static const CGFloat windowHeight = 49.0;
 
 #ifdef __IPHONE_9_0
 @interface OSFileCollectionViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIViewControllerPreviewingDelegate, NoDataPlaceholderDelegate, OSFileCollectionViewCellDelegate>
@@ -45,6 +47,7 @@ static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
 @property (nonatomic, assign) OSFileLoadType fileLoadType;
 @property (nonatomic, strong) NSMutableArray<OSFileAttributeItem *> *selectorFiles;
 @property (nonatomic, assign) BOOL isEdit;
+@property (nonatomic, strong) OSFileBottomHUD *bottomHUD;
 
 @end
 
@@ -110,15 +113,19 @@ static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
 }
 
 - (void)editCollectionView {
+    self.navigationItem.rightBarButtonItem.enabled = NO;
     _isEdit = !_isEdit;
     if (_isEdit) {
         self.collectionView.allowsMultipleSelection = YES;
-        
         for (OSFileAttributeItem *item in self.files) {
             item.status = OSFileAttributeItemStatusEdit;
         }
         [self.collectionView reloadData];
         self.navigationItem.rightBarButtonItem.title = @"完成";
+        
+        [self.bottomHUD showHUDWithFrame:CGRectMake(0, self.view.frame.size.height - windowHeight, self.view.width, windowHeight) completion:^{
+            self.navigationItem.rightBarButtonItem.enabled = YES;
+        }];
     }
     else {
         self.collectionView.allowsMultipleSelection = NO;
@@ -127,9 +134,22 @@ static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
         }
         [self.collectionView reloadData];
         self.navigationItem.rightBarButtonItem.title = @"编辑";
+        
+        [self.bottomHUD hideHudCompletion:^{
+            self.navigationItem.rightBarButtonItem.enabled = YES;
+        }];
+    
     }
     
 }
+
+- (OSFileBottomHUD *)bottomHUD {
+    if (!_bottomHUD) {
+        _bottomHUD = [[OSFileBottomHUD alloc] initWithView:self.view];
+    }
+    return _bottomHUD;
+}
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -159,6 +179,10 @@ static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self check3DTouch];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
 }
 
 - (void)setupViews {
@@ -256,6 +280,9 @@ static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
         [directoryArray enumerateObjectsUsingBlock:^(NSString * _Nonnull fullPath, NSUInteger idx, BOOL * _Nonnull stop) {
             OSFileAttributeItem *model = [[OSFileAttributeItem alloc] initWithPath:fullPath];
             if (model) {
+                if (self.isEdit) {
+                    model.status = OSFileAttributeItemStatusEdit;
+                }
                 NSError *error = nil;
                 NSArray *subFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:fullPath error:&error];
                 if (!error) {
@@ -299,6 +326,9 @@ static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
             NSString *fullPath = [directoryPath stringByAppendingPathComponent:obj];
             OSFileAttributeItem *model = [[OSFileAttributeItem alloc] initWithPath:fullPath];
             if (model) {
+                if (self.isEdit) {
+                    model.status = OSFileAttributeItemStatusEdit;
+                }
                 NSError *error = nil;
                 NSArray *subFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:fullPath error:&error];
                 if (!error) {
@@ -458,6 +488,13 @@ static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
     OSFileCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
     cell.fileModel = self.files[indexPath.row];
     cell.delegate = self;
+//    if (cell.fileModel.status == OSFileAttributeItemStatusChecked) {
+//        [collectionView selectItemAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionNone];
+//    }
+//    else {
+//        [collectionView deselectItemAtIndexPath:indexPath animated:NO];
+//    }
+//
     return cell;
 }
 
@@ -470,6 +507,10 @@ static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
             [self.selectorFiles addObject:item];
         }
         [collectionView reloadItemsAtIndexPaths:@[indexPath]];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+           [collectionView selectItemAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionNone];
+        });
     } else {
         self.indexPath = indexPath;
         UIViewController *vc = [self previewControllerByIndexPath:indexPath];
@@ -477,14 +518,15 @@ static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
     }
 }
 
-#pragma mark 反选
-- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath{
-    
+- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
     if (self.isEdit) {
         OSFileAttributeItem *item = self.files[indexPath.row];
         item.status = OSFileAttributeItemStatusEdit;
         [self.selectorFiles removeObject:item];
         [collectionView reloadItemsAtIndexPaths:@[indexPath]];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [collectionView deselectItemAtIndexPath:indexPath animated:YES];
+        });
     }
 }
 

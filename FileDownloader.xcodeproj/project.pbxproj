@@ -340,6 +340,7 @@
 		18ADEFF21F9E4B460024BA40 /* Protected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 18ADECA01F9E2C450024BA40 /* Protected@2x.png */; };
 		18ADEFF31F9E4B460024BA40 /* Socket.png in Resources */ = {isa = PBXBuildFile; fileRef = 18ADECA11F9E2C450024BA40 /* Socket.png */; };
 		18ADEFF41F9E4B460024BA40 /* Socket@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 18ADECA21F9E2C450024BA40 /* Socket@2x.png */; };
+		18E68BB81FA6175F00708070 /* OSFileBottomHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E68BB71FA6175F00708070 /* OSFileBottomHUD.m */; };
 		88C9037378C7FDA243F02BF2 /* libPods-FileDownloader.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A5107F0693D00542CC3FA456 /* libPods-FileDownloader.a */; };
 /* End PBXBuildFile section */
 
@@ -896,6 +897,8 @@
 		18DCFC401F263D8F00AC21CA /* OSFileDownloaderDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSFileDownloaderDelegate.m; sourceTree = "<group>"; };
 		18DCFC411F263D8F00AC21CA /* OSFileDownloaderManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSFileDownloaderManager.h; sourceTree = "<group>"; };
 		18DCFC421F263D8F00AC21CA /* OSFileDownloaderManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSFileDownloaderManager.m; sourceTree = "<group>"; };
+		18E68BB61FA6175F00708070 /* OSFileBottomHUD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSFileBottomHUD.h; sourceTree = "<group>"; };
+		18E68BB71FA6175F00708070 /* OSFileBottomHUD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSFileBottomHUD.m; sourceTree = "<group>"; };
 		A5107F0693D00542CC3FA456 /* libPods-FileDownloader.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FileDownloader.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAEFFFFF9AB15F258CAC9CC7 /* Pods-FileDownloader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FileDownloader.release.xcconfig"; path = "Pods/Target Support Files/Pods-FileDownloader/Pods-FileDownloader.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1235,6 +1238,8 @@
 				18A0F1681FA57DBA00614E91 /* OSFileCollectionViewCell.m */,
 				18A0F1721FA5A86C00614E91 /* FilePreviewViewController.h */,
 				18A0F1731FA5A86C00614E91 /* FilePreviewViewController.m */,
+				18E68BB61FA6175F00708070 /* OSFileBottomHUD.h */,
+				18E68BB71FA6175F00708070 /* OSFileBottomHUD.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -2469,6 +2474,7 @@
 				18ADEF0C1F9E4A420024BA40 /* UIColor+ZWUtility.m in Sources */,
 				18ADEEE91F9E4A2E0024BA40 /* SearchViewController.m in Sources */,
 				18ADEF551F9E4A860024BA40 /* XYNetworkRequest.m in Sources */,
+				18E68BB81FA6175F00708070 /* OSFileBottomHUD.m in Sources */,
 				18ADEEF61F9E4A2E0024BA40 /* SessionData.m in Sources */,
 				18ADEEDB1F9E4A100024BA40 /* BrowserViewController.m in Sources */,
 				18ADEF281F9E4A860024BA40 /* DownloadsTableViewModel.m in Sources */,
