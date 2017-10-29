@@ -9,6 +9,8 @@
 #import "OSFileCollectionViewCell.h"
 #import "OSFileAttributeItem.h"
 #import "UIImageView+XYExtension.h"
+#import "NSString+OSFile.h"
+#import "OSFileManager.h"
 
 @interface OSFileCollectionViewCell ()
 
@@ -16,6 +18,7 @@
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UILabel *subTitleLabel;
 @property (nonatomic, strong) UIButton *optionBtn;
+@property (nonatomic, copy) NSString *renameNewName;
 
 @end
 
@@ -40,11 +43,35 @@
     
     [self makeConstraints];
     
-    [self.optionBtn setImage:[UIImage imageNamed:@"grid-options"] forState:UIControlStateNormal];
+}
+
+- (void)setStatus:(OSFileAttributeItemStatus)status {
+    self.optionBtn.userInteractionEnabled = NO;
+    self.contentView.layer.borderColor = [UIColor colorWithWhite:0.75 alpha:1.0].CGColor;
+    switch (status) {
+        case OSFileAttributeItemStatusDefault: {
+            [self.optionBtn setImage:[UIImage imageNamed:@"grid-options"] forState:UIControlStateNormal];
+            self.optionBtn.userInteractionEnabled = YES;
+            break;
+        }
+        case OSFileAttributeItemStatusEdit: {
+            [self.optionBtn setImage:[UIImage imageNamed:@"grid-selection"] forState:UIControlStateNormal];
+            break;
+        }
+        case OSFileAttributeItemStatusChecked: {
+            [self.optionBtn setImage:[UIImage imageNamed:@"grid-selected"] forState:UIControlStateNormal];
+            self.contentView.layer.borderColor = [UIColor blueColor].CGColor;
+            break;
+        }
+        default:
+            break;
+    }
 }
 
 - (void)setFileModel:(OSFileAttributeItem *)fileModel {
     _fileModel = fileModel;
+    self.optionBtn.hidden = NO;
+    [self setStatus:fileModel.status];
     
     /// 根据文件类型显示
     self.titleLabel.text = [fileModel.fullPath lastPathComponent];
@@ -78,13 +105,146 @@
         if ([fileModel.fullPath isEqualToString:[OSFileConfigUtils getDocumentPath]]) {
             self.titleLabel.text  = @"iTunes文件";
             self.iconView.image = [UIImage imageNamed:@"table-folder-itunes-files-sharing"];
+            self.optionBtn.hidden = YES;
         }
         else if ([fileModel.fullPath isEqualToString:[OSFileConfigUtils getDownloadLocalFolderPath]]) {
             self.titleLabel.text  = @"下载";
+            self.optionBtn.hidden = YES;
         }
     }
    
 }
+
+////////////////////////////////////////////////////////////////////////
+#pragma mark - Actions
+////////////////////////////////////////////////////////////////////////
+
+- (void)optionBtnClick:(UIButton *)btn {
+    
+    [UIAlertView showWithTitle:nil message:nil style:UIAlertViewStyleDefault cancelButtonTitle:@"取消" otherButtonTitles:@[@"重命名", @"删除", @"共享", @"复制"] tapBlock:^(UIAlertView * _Nonnull alertView, NSInteger buttonIndex) {
+        switch (buttonIndex) {
+            case 0: { // cancel
+                
+                break;
+            }
+            case 1: {
+                [self renameFile];
+                break;
+            }
+            case 2: {
+                [self deleteFile];
+                break;
+            }
+            case 3: {
+                [self shareFile];
+                break;
+            }
+            case 4: {
+                [self copyFile];
+                break;
+            }
+            default:
+                break;
+        }
+    }];
+}
+
+- (void)renameFile {
+    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"rename" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.text = self.fileModel.filename;
+        textField.placeholder = @"请输入需要修改的名字";
+        [textField addTarget:self action:@selector(alertViewTextFieldtextChange:) forControlEvents:UIControlEventEditingChanged];
+    }];
+    
+    [alert addAction:[UIAlertAction actionWithTitle:@"cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [alert addAction:[UIAlertAction actionWithTitle:@"ok" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+        if ([self.renameNewName containsString:@"/"]) {
+            [self showInfo:@"名称中不符合的字符"];
+            return;
+        }
+        
+        NSString *oldPath = self.fileModel.path;
+        NSString *currentDirectory = [oldPath substringToIndex:oldPath.length-oldPath.lastPathComponent.length];
+        NSString *newPath = [currentDirectory stringByAppendingPathComponent:self.renameNewName];
+        BOOL res = [[NSFileManager defaultManager] fileExistsAtPath:newPath];
+        if (res) {
+            [self showInfo:@"存在同名的文件"];
+            return;
+        }
+        NSError *moveError = nil;
+        [[NSFileManager defaultManager] moveItemAtPath:oldPath toPath:newPath error:&moveError];
+        if (!moveError) {
+            [newPath updateFileModificationDateForFilePath];
+            [[NSFileManager defaultManager] removeItemAtPath:oldPath error:&moveError];
+            self.fileModel.fullPath = newPath;
+            if (self.delegate && [self.delegate respondsToSelector:@selector(fileCollectionViewCell:fileAttributeChange:)]) {
+                [self.delegate fileCollectionViewCell:self fileAttributeChange:self.fileModel];
+            }
+        } else {
+            NSLog(@"%@", moveError.localizedDescription);
+        }
+        self.renameNewName = nil;
+    }]];
+    [[UIViewController xy_topViewController] presentViewController:alert animated:true completion:nil];
+}
+
+- (void)alertViewTextFieldtextChange:(UITextField *)tf {
+    self.renameNewName = tf.text;
+}
+
+- (void)deleteFile {
+    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"确定删除吗" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
+    [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        if (!self.fileModel) {
+            return;
+        }
+        NSString *currentPath = self.fileModel.path;
+        NSError *error = nil;
+        [[NSFileManager defaultManager] removeItemAtPath:currentPath error:&error];
+        if (error) {
+            [[[UIAlertView alloc] initWithTitle:@"Remove error" message:nil delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil, nil] show];
+        }
+        if (self.delegate && [self.delegate respondsToSelector:@selector(fileCollectionViewCell:fileAttributeChange:)]) {
+            [self.delegate fileCollectionViewCell:self fileAttributeChange:self.fileModel];
+        }
+    }]];
+    [[UIViewController xy_topViewController] presentViewController:alert animated:true completion:nil];
+}
+
+- (void)shareFile {
+    if (!self.fileModel) {
+        return;
+    }
+    NSString *newPath = self.fileModel.path;
+    NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:newPath.lastPathComponent];
+    NSError *error = nil;
+    [[NSFileManager defaultManager] copyItemAtPath:newPath toPath:tmpPath error:&error];
+    
+    if (error) {
+        NSLog(@"ERROR: %@", error);
+    }
+    UIActivityViewController *shareActivity = [[UIActivityViewController alloc] initWithActivityItems:@[[NSURL fileURLWithPath:tmpPath]] applicationActivities:nil];
+    
+    shareActivity.completionWithItemsHandler = ^(UIActivityType  _Nullable activityType, BOOL completed, NSArray * _Nullable returnedItems, NSError * _Nullable activityError) {
+        [[NSFileManager defaultManager] removeItemAtPath:tmpPath error:nil];
+    };
+    [[UIViewController xy_topViewController] presentViewController:shareActivity animated:YES completion:nil];
+}
+
+- (void)copyFile {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(fileCollectionViewCell:needCopyFile:)]) {
+        [self.delegate fileCollectionViewCell:self needCopyFile:self.fileModel];
+    }
+}
+
+////////////////////////////////////////////////////////////////////////
+#pragma mark -
+////////////////////////////////////////////////////////////////////////
 
 
 - (void)makeConstraints {
@@ -107,6 +267,7 @@
         [btn.titleLabel setFont:[UIFont systemFontOfSize:12]];
         _optionBtn = btn;
         btn.translatesAutoresizingMaskIntoConstraints = NO;
+        [btn addTarget:self action:@selector(optionBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _optionBtn;
 }

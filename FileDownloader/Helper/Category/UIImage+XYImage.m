@@ -342,6 +342,54 @@
     return [UIImage imageNamed:name];
 }
 
+- (UIImage *)stringImageTinted:(NSString *)string font:(UIFont *)font inset:(CGFloat)inset
+{
+    CGSize baseSize = [string sizeWithAttributes:@{NSFontAttributeName: font}];
+    CGSize adjustSize = CGSizeMake(baseSize.width + inset * 2, baseSize.height + inset * 2);
+    
+    // 开启图像上下文
+    UIGraphicsBeginImageContextWithOptions(adjustSize, NO, 0);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    // 绘制白色背景
+    CGRect bounds = (CGRect){.size = adjustSize};
+    // 设置绘图颜色
+    [[UIColor whiteColor] set];
+    CGContextAddRect(context, bounds);
+    CGContextFillPath(context);
+    
+    // 绘制随机色, 覆盖白色背景
+    [[UIColor colorWithRed:((rand() % 255) / 255.0f)
+                     green:((rand() % 255) / 255.0f)
+                      blue:((rand() % 255) / 255.0f)
+                     alpha:0.5f] set];
+    CGContextAddRect(context, bounds);
+    CGContextFillPath(context);
+    
+    // 绘制黑色线框
+    [[UIColor blackColor] set];
+    CGContextAddRect(context, bounds);
+    CGContextSetLineWidth(context, inset);
+    CGContextStrokePath(context);
+    
+    // 绘制文字
+    CGRect insetBounds = CGRectInset(bounds, inset, inset);
+    // 段落格式
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;   // 断行模式
+    paragraphStyle.alignment = NSTextAlignmentCenter;           // 居中显示
+    [string drawInRect:insetBounds withAttributes:@{
+                                                    NSFontAttributeName: font,
+                                                    NSParagraphStyleAttributeName: paragraphStyle,
+                                                    NSForegroundColorAttributeName: [UIColor blackColor]
+                                                    }];
+    // 从图像上下文获得图片
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    // 关闭图像上下文
+    UIGraphicsEndImageContext();
+    return image;
+    
+}
 #pragma mark - private
 + (BOOL)isRetina {
     return ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] &&

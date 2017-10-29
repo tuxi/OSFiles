@@ -22,6 +22,8 @@
 		18A0F1711FA5A47200614E91 /* OSFileAttributeItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A0F1701FA5A47200614E91 /* OSFileAttributeItem.m */; };
 		18A0F1741FA5A86C00614E91 /* FilePreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A0F1731FA5A86C00614E91 /* FilePreviewViewController.m */; };
 		18A0F1991FA5CC3500614E91 /* UIImageView+XYExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A0F1981FA5CC3500614E91 /* UIImageView+XYExtension.m */; };
+		18A0F19C1FA5DE4F00614E91 /* UIAlertView+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A0F19A1FA5DE4F00614E91 /* UIAlertView+Blocks.m */; };
+		18A0F19F1FA5E09200614E91 /* UIViewController+XYExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A0F19E1FA5E09200614E91 /* UIViewController+XYExtensions.m */; };
 		18ADEEAB1F9E48D30024BA40 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18ADEEAA1F9E48D30024BA40 /* LaunchScreen.storyboard */; };
 		18ADEEAD1F9E48DE0024BA40 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18ADEEAC1F9E48DE0024BA40 /* Main.storyboard */; };
 		18ADEEB21F9E492E0024BA40 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18517BD21EEBC86600B148C8 /* Assets.xcassets */; };
@@ -524,6 +526,10 @@
 		18A0F1731FA5A86C00614E91 /* FilePreviewViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FilePreviewViewController.m; sourceTree = "<group>"; };
 		18A0F1971FA5CC3500614E91 /* UIImageView+XYExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImageView+XYExtension.h"; sourceTree = "<group>"; };
 		18A0F1981FA5CC3500614E91 /* UIImageView+XYExtension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+XYExtension.m"; sourceTree = "<group>"; };
+		18A0F19A1FA5DE4F00614E91 /* UIAlertView+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertView+Blocks.m"; sourceTree = "<group>"; };
+		18A0F19B1FA5DE4F00614E91 /* UIAlertView+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+Blocks.h"; sourceTree = "<group>"; };
+		18A0F19D1FA5E09200614E91 /* UIViewController+XYExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIViewController+XYExtensions.h"; sourceTree = "<group>"; };
+		18A0F19E1FA5E09200614E91 /* UIViewController+XYExtensions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+XYExtensions.m"; sourceTree = "<group>"; };
 		18ADEBEB1F9E1FB00024BA40 /* Warnings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Warnings.h; sourceTree = "<group>"; };
 		18ADEBED1F9E21EA0024BA40 /* OSFile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSFile.h; sourceTree = "<group>"; };
 		18ADEBEE1F9E21EA0024BA40 /* OSFile.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSFile.m; sourceTree = "<group>"; };
@@ -1281,6 +1287,8 @@
 		18517C611EEBDB3600B148C8 /* Category */ = {
 			isa = PBXGroup;
 			children = (
+				18A0F19B1FA5DE4F00614E91 /* UIAlertView+Blocks.h */,
+				18A0F19A1FA5DE4F00614E91 /* UIAlertView+Blocks.m */,
 				185A8EB01FA43416006077CE /* NSString+MD5.h */,
 				185A8EAF1FA43416006077CE /* NSString+MD5.m */,
 				18878B201EF19EAC005C0185 /* UIApplication+ActivityIndicator.h */,
@@ -1307,6 +1315,8 @@
 				1855DF6E1FA38BC8001CCAE8 /* NSObject+IvarList.m */,
 				18A0F1971FA5CC3500614E91 /* UIImageView+XYExtension.h */,
 				18A0F1981FA5CC3500614E91 /* UIImageView+XYExtension.m */,
+				18A0F19D1FA5E09200614E91 /* UIViewController+XYExtensions.h */,
+				18A0F19E1FA5E09200614E91 /* UIViewController+XYExtensions.m */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -2487,6 +2497,7 @@
 				18ADEEE41F9E4A1D0024BA40 /* CardBrowserFlatLayout.m in Sources */,
 				18ADEF4C1F9E4A860024BA40 /* UITextField+Blocks.m in Sources */,
 				18ADEED71F9E4A0C0024BA40 /* BookmarkEditTextFieldTableViewCell.m in Sources */,
+				18A0F19C1FA5DE4F00614E91 /* UIAlertView+Blocks.m in Sources */,
 				18ADEF321F9E4A860024BA40 /* SmileAuthenticator.m in Sources */,
 				18ADEF141F9E4A530024BA40 /* ZWDatabaseQueue.m in Sources */,
 				18ADEF131F9E4A530024BA40 /* ZWDatabase.m in Sources */,
@@ -2551,6 +2562,7 @@
 				18ADEF0D1F9E4A420024BA40 /* UIImage+ZWUtility.m in Sources */,
 				185A8EB11FA43416006077CE /* NSString+MD5.m in Sources */,
 				18ADEF081F9E4A3D0024BA40 /* NSString+ZWUtility.m in Sources */,
+				18A0F19F1FA5E09200614E91 /* UIViewController+XYExtensions.m in Sources */,
 				18ADEED31F9E4A050024BA40 /* BookmarkItemEditViewController.m in Sources */,
 				18ADEEC91F9E49FB0024BA40 /* BaseResponseModel.m in Sources */,
 				18ADEF0F1F9E4A4A0024BA40 /* BaseNavigationViewController.m in Sources */,

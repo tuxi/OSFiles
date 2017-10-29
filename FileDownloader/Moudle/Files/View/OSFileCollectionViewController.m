@@ -23,9 +23,9 @@ typedef NS_ENUM(NSInteger, OSFileLoadType) {
 static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
 
 #ifdef __IPHONE_9_0
-@interface OSFileCollectionViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIViewControllerPreviewingDelegate, NoDataPlaceholderDelegate>
+@interface OSFileCollectionViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIViewControllerPreviewingDelegate, NoDataPlaceholderDelegate, OSFileCollectionViewCellDelegate>
 #else
-@interface OSFileCollectionViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NoDataPlaceholderDelegate>
+@interface OSFileCollectionViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NoDataPlaceholderDelegate, OSFileCollectionViewCellDelegate>
 #endif
 
 {
@@ -41,8 +41,10 @@ static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
 @property (nonatomic, strong) NSOperationQueue *loadFileQueue;
 @property (nonatomic, strong) OSFileManager *fileManager;
 @property (nonatomic, strong) MBProgressHUD *hud;
-@property (nonatomic, strong) NSArray *directoryArray;
+@property (nonatomic, strong) NSArray<NSString *> *directoryArray;
 @property (nonatomic, assign) OSFileLoadType fileLoadType;
+@property (nonatomic, strong) NSMutableArray<OSFileAttributeItem *> *selectorFiles;
+@property (nonatomic, assign) BOOL isEdit;
 
 @end
 
@@ -56,8 +58,8 @@ static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         self.fileLoadType = OSFileLoadTypeSubDirectory;
+         self.rootDirectory = path;
         [self commonInit];
-        self.rootDirectory = path;
         
     }
     return self;
@@ -67,13 +69,15 @@ static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         self.fileLoadType = OSFileLoadTypeCurrentDirectory;
-        [self commonInit];
         self.directoryArray = directoryArray;
+        [self commonInit];
     }
     return self;
 }
 
 - (void)commonInit {
+    _isEdit = NO;
+    _selectorFiles = @[].mutableCopy;
     _fileManager = [OSFileManager defaultManager];
      _displayHiddenFiles = NO;
     _loadFileQueue = [NSOperationQueue new];
@@ -88,8 +92,44 @@ static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
             [weakSelf reloadFiles];
         }];
     }
+    
+    // 如果数组中只有下载文件夹和iTunes文件夹，就不能显示编辑
+    BOOL displayEdit = YES;
+    if (self.directoryArray && self.directoryArray.count <= 2) {
+        NSIndexSet *set = [self.directoryArray indexesOfObjectsPassingTest:^BOOL(NSString * _Nonnull path, NSUInteger idx, BOOL * _Nonnull stop) {
+            return [path isEqualToString:[OSFileConfigUtils getDownloadLocalFolderPath]] || [path isEqualToString:[OSFileConfigUtils getDocumentPath]];
+        }];
+        if (set.count == self.directoryArray.count) {
+            displayEdit = NO;
+        }
+    }
+    if (displayEdit) {
+         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"编辑" style:UIBarButtonItemStylePlain target:self action:@selector(editCollectionView)];
+    }
+   
 }
 
+- (void)editCollectionView {
+    _isEdit = !_isEdit;
+    if (_isEdit) {
+        self.collectionView.allowsMultipleSelection = YES;
+        
+        for (OSFileAttributeItem *item in self.files) {
+            item.status = OSFileAttributeItemStatusEdit;
+        }
+        [self.collectionView reloadData];
+        self.navigationItem.rightBarButtonItem.title = @"完成";
+    }
+    else {
+        self.collectionView.allowsMultipleSelection = NO;
+        for (OSFileAttributeItem *item in self.files) {
+            item.status = OSFileAttributeItemStatusDefault;
+        }
+        [self.collectionView reloadData];
+        self.navigationItem.rightBarButtonItem.title = @"编辑";
+    }
+    
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -417,13 +457,54 @@ static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     OSFileCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
     cell.fileModel = self.files[indexPath.row];
+    cell.delegate = self;
     return cell;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    self.indexPath = indexPath;
-    UIViewController *vc = [self previewControllerByIndexPath:indexPath];
-    [self jumpToDetailControllerToViewController:vc atIndexPath:indexPath];
+    
+    if (self.isEdit == YES) {
+        OSFileAttributeItem *item = self.files[indexPath.row];
+        item.status = OSFileAttributeItemStatusChecked;
+        if (![self.selectorFiles containsObject:item]) {
+            [self.selectorFiles addObject:item];
+        }
+        [collectionView reloadItemsAtIndexPaths:@[indexPath]];
+    } else {
+        self.indexPath = indexPath;
+        UIViewController *vc = [self previewControllerByIndexPath:indexPath];
+        [self jumpToDetailControllerToViewController:vc atIndexPath:indexPath];
+    }
+}
+
+#pragma mark 反选
+- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath{
+    
+    if (self.isEdit) {
+        OSFileAttributeItem *item = self.files[indexPath.row];
+        item.status = OSFileAttributeItemStatusEdit;
+        [self.selectorFiles removeObject:item];
+        [collectionView reloadItemsAtIndexPaths:@[indexPath]];
+    }
+}
+
+////////////////////////////////////////////////////////////////////////
+#pragma mark - OSFileCollectionViewCellDelegate
+////////////////////////////////////////////////////////////////////////
+
+- (void)fileCollectionViewCell:(OSFileCollectionViewCell *)cell fileAttributeChange:(OSFileAttributeItem *)fileModel {
+    NSUInteger foudIdx = [self.files indexOfObject:fileModel];
+    if (foudIdx != NSNotFound) {
+        OSFileAttributeItem *item = [OSFileAttributeItem fileWithPath:fileModel.fullPath];
+        NSMutableArray *files = self.files.mutableCopy;
+        [files replaceObjectAtIndex:foudIdx withObject:item];
+        self.files = files;
+        [self.collectionView reloadData];
+    }
+}
+
+- (void)fileCollectionViewCell:(OSFileCollectionViewCell *)cell needCopyFile:(OSFileAttributeItem *)fileModel {
+    
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -490,9 +571,6 @@ static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
     return vc;
 }
 
-////////////////////////////////////////////////////////////////////////
-#pragma mark -
-////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
 #pragma mark - QLPreviewControllerDataSource
 ////////////////////////////////////////////////////////////////////////

@@ -13,6 +13,7 @@
 - (instancetype)initWithPath:(NSString *)filePath {
     if (self = [super initWithPath:filePath]) {
         self.fullPath = filePath;
+        self.status = OSFileAttributeItemStatusDefault;
     }
     return self;
 }

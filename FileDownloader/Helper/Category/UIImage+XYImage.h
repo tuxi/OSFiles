@@ -87,4 +87,7 @@ typedef NS_ENUM(NSInteger, GradientType) {
 + (UIImage *)blurImage:(UIImage *)image blur:(CGFloat)blur;
 
 + (UIImage *)xy_imageFlippedForRTLLayoutDirectionNamed:(NSString *)name;
+
+ // 根据文字, 字体, 内边距生成图片
+- (UIImage *)stringImageTinted:(NSString *)string font:(UIFont *)font inset:(CGFloat)inset;
 @end

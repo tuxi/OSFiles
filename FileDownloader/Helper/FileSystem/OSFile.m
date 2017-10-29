@@ -327,7 +327,9 @@
           || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"mov" ]
           || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"avi" ]
           || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"mpg" ]
-          || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"mp4" ] )
+          || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"mp4" ]
+          || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"mov" ]
+          || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"wmv" ])
          )
     {
         _isVideo = YES;
@@ -361,7 +363,9 @@
           || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"tar" ]
           || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"tgz" ]
           || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"tbz" ]
-          || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"dmg" ])
+          || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"dmg" ]
+          || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"app" ]
+          || [ [ infos.fileExtension lowercaseString ] isEqualToString: @"ipa" ])
          )
     {
         _isArchive = YES;
