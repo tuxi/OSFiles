@@ -22,7 +22,7 @@
 - (void)downloadSuccessnWithDownloadOperation:(id<OSFileDownloadOperation>)downloadOperation {
     
     // 根据aIdentifier在downloadOperation中查找对应的OSFileDownloadOperation，更改其下载状态，发送通知
-    NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:downloadOperation.urlPath];
+    NSUInteger foundItemIdx = [[OSFileDownloaderManager sharedInstance] foundItemIndxInDownloadItemsByURL:downloadOperation.originalURLString];
     OSFileItem *fileItem = nil;
     if (foundItemIdx != NSNotFound) {
         DLog(@"INFO: Download success (id: %@)", downloadOperation.urlPath);
@@ -48,7 +48,7 @@
                                   error:(NSError *)error {
     
     // 根据aIdentifier在downloadOperation中查找对应的DownloadItem
-    NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:downloadOperation.urlPath];
+    NSUInteger foundItemIdx = [[OSFileDownloaderManager sharedInstance] foundItemIndxInDownloadItemsByURL:downloadOperation.originalURLString];
     OSFileItem *fileItem = nil;
     if (foundItemIdx != NSNotFound) {
         fileItem = [[OSFileDownloaderManager sharedInstance].downloadItems objectAtIndex:foundItemIdx];
@@ -80,7 +80,7 @@
 
 - (void)beginDownloadTaskWithDownloadOperation:(id<OSFileDownloadOperation>)downloadOperation {
     [self toggleNetworkActivityIndicatorVisible:YES];
-    NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:downloadOperation.urlPath];
+    NSUInteger foundItemIdx = [[OSFileDownloaderManager sharedInstance] foundItemIndxInDownloadItemsByURL:downloadOperation.originalURLString];
     OSFileItem *fileItem = nil;
     if (foundItemIdx != NSNotFound) {
         fileItem = [[OSFileDownloaderManager sharedInstance].downloadItems objectAtIndex:foundItemIdx];
@@ -100,7 +100,7 @@
 
 - (void)downloadProgressChangeWithDownloadOperation:(id<OSFileDownloadOperation>)downloadOperation  {
     
-    NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:downloadOperation.urlPath];
+    NSUInteger foundItemIdx = [[OSFileDownloaderManager sharedInstance] foundItemIndxInDownloadItemsByURL:downloadOperation.originalURLString];
     
     OSFileItem *item = nil;
     if (foundItemIdx != NSNotFound) {
@@ -116,7 +116,7 @@
 
 - (void)downloadPausedWithURL:(NSString *)url {
     
-    NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:url];
+    NSUInteger foundItemIdx = [[OSFileDownloaderManager sharedInstance] foundItemIndxInDownloadItemsByURL:url];
     
     OSFileItem *item = nil;
     if (foundItemIdx != NSNotFound) {
@@ -160,7 +160,7 @@
 
 /// 一个任务进入等待时调用
 - (void)downloadDidWaitingWithURLPath:(NSString *)url progress:(OSFileDownloadProgress *)progress {
-    NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:url];
+    NSUInteger foundItemIdx = [[OSFileDownloaderManager sharedInstance] foundItemIndxInDownloadItemsByURL:url];
     
     OSFileItem *item = nil;
     if (foundItemIdx != NSNotFound) {
@@ -176,7 +176,7 @@
 
 /// 从等待队列中开始下载一个任务
 - (void)downloadStartFromWaitingQueueWithURLPath:(NSString *)url progress:(OSFileDownloadProgress *)progress {
-    NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:url];
+    NSUInteger foundItemIdx = [[OSFileDownloaderManager sharedInstance] foundItemIndxInDownloadItemsByURL:url];
     
     OSFileItem *item = nil;
     if (foundItemIdx != NSNotFound) {
@@ -211,22 +211,6 @@
 /// 此时应该在此回调中使用 UIApplication's setNetworkActivityIndicatorVisible: 去设置状态栏网络活动的可见性
 - (void)downloadTaskDidEnd {
     [self toggleNetworkActivityIndicatorVisible:NO];
-}
-
-// 查找数组中第一个符合条件的对象（代码块过滤），返回对应索引
-// 查找urlPath在downloadItems中对应的OSFileDownloadOperation的索引
-- (NSUInteger)foundItemIndxInDownloadItemsByURL:(NSString *)urlPath {
-    if (!urlPath.length) {
-        return NSNotFound;
-    }
-    NSUInteger foundIdx =  [[OSFileDownloaderManager sharedInstance].downloadItems indexOfObjectPassingTest:^BOOL(OSFileItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        BOOL res = [urlPath isEqualToString:obj.urlPath];
-        if (res) {
-            *stop = YES;
-        }
-        return res;
-    }];
-    return foundIdx;
 }
 
 

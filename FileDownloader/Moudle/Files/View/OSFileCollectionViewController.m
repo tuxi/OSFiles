@@ -226,9 +226,9 @@ static const CGFloat windowHeight = 49.0;
 - (OSFileBottomHUD *)bottomHUD {
     if (!_bottomHUD) {
         _bottomHUD = [[OSFileBottomHUD alloc] initWithItems:@[
-                                                              [[OSFileBottomHUDItem alloc] initWithTitle:@"复制" image:[UIImage imageNamed:@"edit_copy"]],
-                                                              [[OSFileBottomHUDItem alloc] initWithTitle:@"移动" image:[UIImage imageNamed:@"edit_move"]],
-                                                              [[OSFileBottomHUDItem alloc] initWithTitle:@"删除" image:[UIImage imageNamed:@"delete-white"]],
+                                                              [[OSFileBottomHUDItem alloc] initWithTitle:@"复制" image:nil],
+                                                              [[OSFileBottomHUDItem alloc] initWithTitle:@"移动" image:nil],
+                                                              [[OSFileBottomHUDItem alloc] initWithTitle:@"删除" image:nil],
                                                               ] toView:self.view];
         _bottomHUD.delegate = self;
     }

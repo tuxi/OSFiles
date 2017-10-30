@@ -27,6 +27,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AudioToolbox/AudioToolbox.h>
 
+
 static NSString * const UserAgent = @"Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 like Mac OS X) AppleWebKit/602.1.38 (KHTML, like Gecko) Version/10.0 Mobile/14A300 Safari/602.1";
 
 @interface AppDelegate ()  {
@@ -60,15 +61,26 @@ static NSString * const UserAgent = @"Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 li
 }
 
 - (void)presentPasteboardChangedAlertWithURL:(NSURL *)url{
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"新窗口打开剪切板网址" message:@"您是否需要在新窗口中打开剪切板中的网址？" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"新窗口打开剪切板网址" message:@"您是否需要在新窗口中打开剪切板中的网址？" preferredStyle:UIAlertControllerStyleActionSheet];
     
-    UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action){
+    UIAlertAction *openBrowserAction = [UIAlertAction actionWithTitle:@"打开网页" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action){
         NSNotification *notify = [NSNotification notificationWithName:kOpenInNewWindowNotification object:self userInfo:@{@"url": url}];
         [Notifier postNotification:notify];
+        [UIViewController xy_tabBarController].selectedIndex = 0;
+    }];
+    UIAlertAction *downloadFileAction = [UIAlertAction actionWithTitle:@"下载" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action){
+        
+        if ([NetworkTypeUtils networkType] == NetworkTypeWIFI) {
+            [[OSFileDownloaderManager sharedInstance] start:url.path];
+        } else {
+            [[[UIAlertView alloc] initWithTitle:@"非Wifi环境下不能下载" message:nil delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil, nil] show];
+        }
+        [UIViewController xy_tabBarController].selectedIndex = 1;
     }];
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
     
-    [alert addAction:defaultAction];
+    [alert addAction:openBrowserAction];
+    [alert addAction:downloadFileAction];
     [alert addAction:cancelAction];
     [self.window.rootViewController presentViewController:alert animated:YES completion:nil];
 }

@@ -8,6 +8,13 @@
 
 #import "OSFileBottomHUD.h"
 
+@interface OSFileBottomHUDButton : UIButton
+
+@property (nonatomic) CGFloat imageTitleSpace;
+
+@end
+
+
 @interface OSFileBottomHUDItem ()
 
 @property (nonatomic, assign) NSInteger buttonIdx;;
@@ -56,7 +63,12 @@
     NSMutableArray *btnlist =@[].mutableCopy;
      NSInteger i = 0;
     for (OSFileBottomHUDItem *item in self.items) {
-        UIButton *btn = [UIButton buttonWithType:UIButtonTypeSystem];
+        OSFileBottomHUDButton *btn = [OSFileBottomHUDButton buttonWithType:UIButtonTypeSystem];
+        btn.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        btn.contentMode = UIViewContentModeScaleAspectFit;
+        [btn setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
+        [btn setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
+        [btn setTitleColor:[UIColor redColor] forState:UIControlStateSelected];
         [btn setTitle:item.title forState:UIControlStateNormal];
         [btn setImage:item.image forState:UIControlStateNormal];
         btn.translatesAutoresizingMaskIntoConstraints = NO;
@@ -163,4 +175,43 @@
 }
 @end
 
+
+@implementation OSFileBottomHUDButton {
+    CGSize _titleLabelSize;
+}
+
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        self.titleLabel.textAlignment = NSTextAlignmentCenter;
+    }
+    return self;
+}
+
+
+// 图片太大，文本显示不出来，控制button中image的尺寸
+// imageRectForContentRect:和titleRectForContentRect:不能互相调用imageView和titleLael,不然会死循环
+- (CGRect)imageRectForContentRect:(CGRect)bounds {
+    if (CGSizeEqualToSize(_titleLabelSize, CGSizeZero)) {
+        return CGRectMake(0.0, 0.0, self.bounds.size.width, self.bounds.size.height);
+    }
+    return CGRectMake(0.0, 0.0, self.bounds.size.width, self.bounds.size.height-_titleLabelSize.height);
+}
+
+- (CGRect)titleRectForContentRect:(CGRect)contentRect {
+    if (self.imageView.image) {
+        return CGRectMake(0.0, self.imageView.bounds.size.height, self.bounds.size.width, self.bounds.size.height-self.imageView.bounds.size.height);
+    }
+    return CGRectMake(0.0, 0.0, self.bounds.size.width, self.bounds.size.height);
+    
+}
+
+- (void)setTitle:(NSString *)title forState:(UIControlState)state {
+    [super setTitle:title forState:state];
+    _titleLabelSize = [title sizeWithMaxSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX) font:self.titleLabel.font];
+}
+
+
+@end
 

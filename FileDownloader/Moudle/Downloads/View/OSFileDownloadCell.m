@@ -24,7 +24,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
 @property (weak, nonatomic) UILabel *fileNameLabel;
 @property (weak, nonatomic) UILabel *remainTimeLabel;
 @property (weak, nonatomic) UIButton *downloadStatusBtn;
-@property (weak, nonatomic) UIButton *moreBtn;
+@property (weak, nonatomic) UIButton *optionButton;
 @property (weak, nonatomic) UIImageView *iconView;
 @property (weak, nonatomic) UILabel *speedLabel;
 @property (weak, nonatomic) UIView *bottomLine;
@@ -88,8 +88,9 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
     self.iconView.image = [UIImage imageNamed:@"TabBrowser"];
     self.fileNameLabel.text = @"fileName";
     self.downloadStatusLabel.text = @"0.0KB of 0.0KB";
-    [self.moreBtn setTitle:@"•••" forState:UIControlStateNormal];
-    [self.moreBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+    [self.optionButton setTitle:@"•••" forState:UIControlStateNormal];
+    [self.optionButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+    [self.optionButton addTarget:self action:@selector(optionMoreButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.cycleView startSpinProgressBackgroundLayer];
     [self.cycleView setProgress:1.0];
     self.bottomLine.backgroundColor = [UIColor colorWithWhite:0.8 alpha:0.8];
@@ -271,6 +272,11 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
     
 }
 
+- (void)optionMoreButtonClick:(UIButton *)btn {
+    if (self.optionButtonClick) {
+        self.optionButtonClick(btn, self);
+    }
+}
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -304,14 +310,14 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
         make.bottom.equalTo(self.contentView).mas_offset(-8.8);
     }];
     
-    [_moreBtn mas_updateConstraints:^(MASConstraintMaker *make) {
+    [_optionButton mas_updateConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.contentView).mas_offset(-OSFileDownloadCellGloabMargin);
         make.centerY.equalTo(self.contentView);
     }];
     
     [_cycleView mas_remakeConstraints:^(MASConstraintMaker *make) {
-        if (_moreBtn && _moreBtn.hidden == NO) {
-            make.right.equalTo(_moreBtn.mas_left).mas_offset(-5);
+        if (_optionButton && _optionButton.hidden == NO) {
+            make.right.equalTo(_optionButton.mas_left).mas_offset(-5);
         }
         make.centerY.equalTo(self.contentView);
         make.width.height.mas_equalTo(25);
@@ -337,8 +343,8 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
     
     if (_fileSizeLabel && _fileSizeLabel.hidden == NO) {
         [_fileSizeLabel mas_updateConstraints:^(MASConstraintMaker *make) {
-            if (_moreBtn.hidden == NO) {
-                make.right.equalTo(_moreBtn.mas_left).mas_offset(-5);
+            if (_optionButton.hidden == NO) {
+                make.right.equalTo(_optionButton.mas_left).mas_offset(-5);
             }
             make.centerY.equalTo(self.contentView);
         }];
@@ -445,14 +451,14 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
     return _downloadStatusBtn;
 }
 
-- (UIButton *)moreBtn {
-    if (!_moreBtn) {
+- (UIButton *)optionButton {
+    if (!_optionButton) {
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
         [btn.titleLabel setFont:[UIFont systemFontOfSize:12]];
-        _moreBtn = btn;
+        _optionButton = btn;
         [self.contentView addSubview:btn];
     }
-    return _moreBtn;
+    return _optionButton;
 }
 
 - (UIImageView *)iconView {

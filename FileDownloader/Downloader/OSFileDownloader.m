@@ -14,7 +14,7 @@
         [NSString stringWithFormat:@"%@.OSFileDownloader", \
         [NSBundle mainBundle].bundleIdentifier]
 
-static NSString * const OSFileDownloadRemoteURLPathKey = @"OSFileDownloadRemoteURLPathKey";
+static NSString * const OSFileDownloadOriginalRemoteURLPathKey = @"OSFileDownloadOriginalRemoteURLPathKey";
 static NSString * const OSFileDownloadLocalURLKey = @"OSFileDownloadLocalURLKey";
 NSString * const OSFileDownloaderDefaultFolderNameKey = @"OSFileDownloaderDefaultFolderNameKey";
 static void *ProgressObserverContext = &ProgressObserverContext;
@@ -55,6 +55,8 @@ static void *ProgressObserverContext = &ProgressObserverContext;
 @property (nonatomic, strong) OSFileDownloadProgress *progressObj;
 /** 用于文件下载的对象 */
 @property (nonatomic, weak) OSFileDownloader *downloader;
+/** 原始的urlPath, 由于OSFileDownloader会对错误的urlPath进行处理，所以需要保存原始的urlPath，以便回调给外界参照 */
+@property (nonatomic, copy) NSString *originalURLString;
 
 - (instancetype)initWithURL:(NSString *)urlPath
             sessionDataTask:(nullable NSURLSessionDataTask *)sessionDownloadTask
@@ -161,7 +163,6 @@ static void *ProgressObserverContext = &ProgressObserverContext;
                                       localPath:(NSString *)localPath
                                             progress:(void (^ _Nullable)(NSProgress * _Nullable))downloadProgressBlock
                                    completionHandler:(void (^ _Nullable)(NSURLResponse * _Nullable, NSURL * _Nullable, NSError * _Nullable))completionHandler {
-//    urlPath = [urlPath stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet characterSetWithCharactersInString:@"`#%^{}\"[]|\\<> "].invertedSet];
     id<OSFileDownloadOperation> item = [self downloadWithURL:urlPath localPath:localPath];
     item.progressHandler = downloadProgressBlock;
     item.completionHandler = completionHandler;
@@ -173,31 +174,31 @@ static void *ProgressObserverContext = &ProgressObserverContext;
                                       localPath:(NSString *)localPath
                                             progress:(void (^ _Nullable)(NSProgress * _Nullable))downloadProgressBlock
                                    completionHandler:(void (^ _Nullable)(NSURLResponse * _Nullable, NSURL * _Nullable, NSError * _Nullable))completionHandler {
-    id<OSFileDownloadOperation> item = [self downloadWithRequest:request localPath:localPath];
+    id<OSFileDownloadOperation> item = [self downloadWithRequest:request originalURLString:nil localPath:localPath];
     item.progressHandler = downloadProgressBlock;
     item.completionHandler = completionHandler;
     return item;
 }
 
 - (id<OSFileDownloadOperation>)downloadWithURL:(NSString *)urlPath localPath:(NSString *)localPath {
-    
+    NSMutableString *originalURLString = urlPath.mutableCopy;
     /*
      解决URLWithString return nil问题
      原因：urlPath中可能存在空格导致
      */
-//    urlPath = [urlPath stringByReplacingOccurrencesOfString:@" "withString:@" "];
-//    urlPath = [urlPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSURL *remoteURL = [NSURL URLWithString:urlPath];
+    NSURL *remoteURL = [self smartURLForString:urlPath];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:remoteURL
                                                            cachePolicy:NSURLRequestReloadIgnoringCacheData
                                                        timeoutInterval:30.0];
     
-    return [self downloadWithRequest:request localPath:localPath];
+    return [self downloadWithRequest:request originalURLString:originalURLString localPath:localPath];
 }
 
-- (id<OSFileDownloadOperation>)downloadWithRequest:(NSURLRequest *)request localPath:(NSString *)localPath  {
-    
+- (id<OSFileDownloadOperation>)downloadWithRequest:(NSURLRequest *)request originalURLString:(NSString *)originalURLString localPath:(NSString *)localPath  {
+    if (!originalURLString.length) {
+        originalURLString = request.URL.path;
+    }
     NSAssert(request, @"Error: request do't is nil");
 
     NSUInteger taskIdentifier = 0;
@@ -220,6 +221,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
     // 若已经在下载中，则返回其实例对象
     BOOL isDownloading = [self isDownloading:urlPath];
     if (isDownloading) {
+        downloadOperation.originalURLString = originalURLString;
         return downloadOperation;
     }
     
@@ -227,6 +229,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
     [self resetProgressIfNoActiveDownloadsRunning];
     
     if (downloadOperation) {
+        downloadOperation.originalURLString = originalURLString;
         /*
          此处为了解决当前request对应的url已存在activeDownloadsDictionary中，但是不符合下面条件时(也就是超出最大可下载数量时)，会导致当前request一直在等待中，无法执行下载，
          进入这里你不必担心会超出最大下载数量，因为在activeDownloadsDictionary中肯定没有超出数量
@@ -250,6 +253,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
                 
                 OSFileDownloadOperation *downloadOperation = [[OSFileDownloadOperation alloc] initWithURL:urlPath sessionDataTask:nil downloader:self];
                 downloadOperation.localURL = localURL;
+                downloadOperation.originalURLString = originalURLString;
                 NSMutableURLRequest *requestM = request.mutableCopy;
                 long long cacheFileSize = [self getCacheFileSizeWithPath:downloadOperation.localURL.path];
                 NSString *range = [NSString stringWithFormat:@"bytes=%zd-", cacheFileSize];
@@ -285,10 +289,10 @@ static void *ProgressObserverContext = &ProgressObserverContext;
             @synchronized (_waitingDownloadArray) {
                 // 超出同时的最大下载数量时，将新的任务的aResumeData或者aRemoteURL添加到等待下载数组中
                 NSMutableDictionary *waitingDownloadDict = [NSMutableDictionary dictionary];
-                [waitingDownloadDict setValue:urlPath forKey:OSFileDownloadRemoteURLPathKey];
+                [waitingDownloadDict setValue:originalURLString forKey:OSFileDownloadOriginalRemoteURLPathKey];
                 [waitingDownloadDict setValue:localPath forKey:OSFileDownloadLocalURLKey];
                 [self.waitingDownloadArray addObject:waitingDownloadDict];
-                [self.sessionDelegate _didWaitingDownloadForUrlPath:urlPath];
+                [self.sessionDelegate _didWaitingDownloadForUrlPath:originalURLString];
             }
         }
         
@@ -319,9 +323,10 @@ static void *ProgressObserverContext = &ProgressObserverContext;
         return;
     }
     
-    NSString *urlPath = [downloadOperation.urlPath copy];
+    
     __weak typeof(self) weakSelf = self;
     __weak typeof(downloadOperation) weakOperation = downloadOperation;
+    NSString *urlPath = [downloadOperation.originalURLString copy];
     downloadOperation.pausingHandler = ^{
         [weakSelf pauseWithURL:urlPath];
     };
@@ -439,7 +444,7 @@ static void *ProgressObserverContext = &ProgressObserverContext;
     @synchronized (_waitingDownloadArray) {
         NSInteger foundIdx = [self.waitingDownloadArray indexOfObjectPassingTest:
                               ^BOOL(NSDictionary<NSString *,NSObject *> * _Nonnull waitingDownloadDict, NSUInteger idx, BOOL * _Nonnull stop) {
-                                  NSString *waitingUrlPath = (NSString *)waitingDownloadDict[OSFileDownloadRemoteURLPathKey];
+                                  NSString *waitingUrlPath = (NSString *)waitingDownloadDict[OSFileDownloadOriginalRemoteURLPathKey];
                                   return [url isKindOfClass:[NSString class]] && [url isEqualToString:waitingUrlPath];
                               }];
         if (foundIdx != NSNotFound) {
@@ -476,8 +481,8 @@ static void *ProgressObserverContext = &ProgressObserverContext;
         __block BOOL isWaiting = NO;
         
         [self.waitingDownloadArray enumerateObjectsUsingBlock:^(NSDictionary<NSString *,NSObject *> * _Nonnull waitingDownloadDict, NSUInteger idx, BOOL * _Nonnull stop) {
-            if ([waitingDownloadDict[OSFileDownloadRemoteURLPathKey] isKindOfClass:[NSString class]]) {
-                NSString *waitingUrlPath = (NSString *)waitingDownloadDict[OSFileDownloadRemoteURLPathKey];
+            if ([waitingDownloadDict[OSFileDownloadOriginalRemoteURLPathKey] isKindOfClass:[NSString class]]) {
+                NSString *waitingUrlPath = (NSString *)waitingDownloadDict[OSFileDownloadOriginalRemoteURLPathKey];
                 if ([waitingUrlPath isEqualToString:urlPath]) {
                     isWaiting = YES;
                     *stop = YES;
@@ -513,9 +518,9 @@ static void *ProgressObserverContext = &ProgressObserverContext;
         if (self.maxConcurrentDownloads == NSIntegerMax || self.activeDownloadsDictionary.count < self.maxConcurrentDownloads) {
             if (self.waitingDownloadArray.count) {
                 NSDictionary *waitingDownTaskDict = [self.waitingDownloadArray firstObject];
-                [self downloadWithURL:waitingDownTaskDict[OSFileDownloadRemoteURLPathKey] localPath:waitingDownTaskDict[OSFileDownloadLocalURLKey]];
+                [self downloadWithURL:waitingDownTaskDict[OSFileDownloadOriginalRemoteURLPathKey] localPath:waitingDownTaskDict[OSFileDownloadLocalURLKey]];
                 [self.waitingDownloadArray removeObjectAtIndex:0];
-                [self.sessionDelegate _startDownloadTaskFromTheWaitingQueue:waitingDownTaskDict[OSFileDownloadRemoteURLPathKey]];
+                [self.sessionDelegate _startDownloadTaskFromTheWaitingQueue:waitingDownTaskDict[OSFileDownloadOriginalRemoteURLPathKey]];
             }
         }
     }
@@ -808,6 +813,40 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 
 - (void)removeAllWaitingDownloadArray {
     [self.waitingDownloadArray removeAllObjects];
+}
+
+
+- (NSURL *)smartURLForString:(NSString *)str {
+    NSURL *     result;
+    NSString *  trimmedStr;
+    NSRange     schemeMarkerRange;
+    NSString *  scheme;
+    assert(str != nil);
+    
+    result = nil;
+    trimmedStr = [str stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    if ( (trimmedStr != nil) && (trimmedStr.length != 0) ) {
+        schemeMarkerRange = [trimmedStr rangeOfString:@"://"];
+        
+        if (schemeMarkerRange.location == NSNotFound) {
+            if ([trimmedStr hasPrefix:@"/"]) {
+                trimmedStr = [trimmedStr substringFromIndex:1];
+            }
+            result = [NSURL URLWithString:[NSString stringWithFormat:@"http://%@", trimmedStr]];
+        } else {
+            scheme = [trimmedStr substringWithRange:NSMakeRange(0, schemeMarkerRange.location)];
+            assert(scheme != nil);
+            
+            if ( ([scheme compare:@"http"  options:NSCaseInsensitiveSearch] == NSOrderedSame)
+                || ([scheme compare:@"https" options:NSCaseInsensitiveSearch] == NSOrderedSame) ) {
+                result = [NSURL URLWithString:trimmedStr];
+            } else {
+                // 不支持的URL
+            }
+        }
+    }
+    
+    return result;
 }
 
 @end

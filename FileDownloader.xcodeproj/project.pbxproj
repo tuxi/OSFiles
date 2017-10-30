@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		184F75011FA75D9500C2590D /* NSString+OSDrawingAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 184F75001FA75D9500C2590D /* NSString+OSDrawingAdditions.m */; };
 		1855DF1B1FA37CBD001CCAE8 /* UIViewController+OSAlertExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF1A1FA37CBD001CCAE8 /* UIViewController+OSAlertExtension.m */; };
 		1855DF6C1FA38B95001CCAE8 /* DirectoryWatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF6B1FA38B94001CCAE8 /* DirectoryWatcher.m */; };
 		1855DF6F1FA38BC8001CCAE8 /* NSObject+IvarList.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF6E1FA38BC8001CCAE8 /* NSObject+IvarList.m */; };
@@ -420,6 +421,8 @@
 		18300FC71EED38820035D6EE /* FFCircularProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFCircularProgressView.m; sourceTree = "<group>"; };
 		18300FC81EED38820035D6EE /* UIColor+iOS7.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+iOS7.h"; sourceTree = "<group>"; };
 		18300FC91EED38820035D6EE /* UIColor+iOS7.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+iOS7.m"; sourceTree = "<group>"; };
+		184F74FF1FA75D9500C2590D /* NSString+OSDrawingAdditions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+OSDrawingAdditions.h"; sourceTree = "<group>"; };
+		184F75001FA75D9500C2590D /* NSString+OSDrawingAdditions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+OSDrawingAdditions.m"; sourceTree = "<group>"; };
 		18517BC71EEBC86600B148C8 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		18517BD21EEBC86600B148C8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		18517BD71EEBC86600B148C8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1322,6 +1325,8 @@
 				18A0F1981FA5CC3500614E91 /* UIImageView+XYExtension.m */,
 				18A0F19D1FA5E09200614E91 /* UIViewController+XYExtensions.h */,
 				18A0F19E1FA5E09200614E91 /* UIViewController+XYExtensions.m */,
+				184F74FF1FA75D9500C2590D /* NSString+OSDrawingAdditions.h */,
+				184F75001FA75D9500C2590D /* NSString+OSDrawingAdditions.m */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -2458,6 +2463,7 @@
 				18ADEF3D1F9E4A860024BA40 /* XYImageBrowerView.m in Sources */,
 				18ADEF4F1F9E4A860024BA40 /* NSObject+XYProperties.m in Sources */,
 				18ADEEED1F9E4A2E0024BA40 /* SettingsTableViewController.m in Sources */,
+				184F75011FA75D9500C2590D /* NSString+OSDrawingAdditions.m in Sources */,
 				18ADEEDC1F9E4A130024BA40 /* BrowserBottomToolBar.m in Sources */,
 				18ADEF311F9E4A860024BA40 /* OSFile.m in Sources */,
 				18ADEECB1F9E49FE0024BA40 /* NJKWebViewProgress.m in Sources */,

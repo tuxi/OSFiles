@@ -242,7 +242,7 @@
 
 
 - (void)addTask {
-    [self alertControllerWithTitle:@"输入正确的URL"
+    [self alertControllerWithTitle:@"输入URL"
                            message:nil
                            content:nil
                        placeholder:nil
@@ -254,8 +254,6 @@
                                         解决URLWithString return nil问题
                                         原因：urlPath中可能存在空格导致
                                         */
-                                       urlPath = [NSString returnFormatString:urlPath];
-                                       //                                       urlPath = [urlPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
                                        [[OSFileDownloaderManager sharedInstance] start:urlPath];
                                    }
                                    else {

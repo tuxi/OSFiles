@@ -56,6 +56,7 @@
 - (NSMutableArray<OSFileItem *> *)displayItems;
 /// 获取某种状态的任务
 - (NSArray *)getDownloadItemsWithStatus:(OSFileDownloadStatus)state;
-
+// 查找urlPath在downloadItems中对应的OSFileDownloadOperation的索引
+- (NSUInteger)foundItemIndxInDownloadItemsByURL:(NSString *)urlPath;
 - (BOOL)removeDownloadItemByPackageId:(NSString *)packageId;
 @end

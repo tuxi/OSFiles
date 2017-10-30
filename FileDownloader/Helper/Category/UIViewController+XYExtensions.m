@@ -45,6 +45,14 @@
     return nil;
 }
 
++ (UITabBarController *)xy_tabBarController {
+    UIViewController *rootViewController = (UINavigationController *)[UIApplication sharedApplication].delegate.window.rootViewController;
+    if ([rootViewController isKindOfClass:[UITabBarController class]]) {
+        UITabBarController *tabc = (UITabBarController *)rootViewController;
+        return tabc;
+    }
+    return nil;
+}
 
 
 @end

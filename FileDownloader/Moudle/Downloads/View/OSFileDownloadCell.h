@@ -14,6 +14,7 @@
 @interface OSFileDownloadCell : UITableViewCell
 
 @property (nonatomic, strong) OSFileItem *fileItem;
+@property (nonatomic, copy) void (^optionButtonClick)(UIButton *btn, OSFileDownloadCell *cell);
 
 - (void)setLongPressGestureRecognizer:(void (^)(UILongPressGestureRecognizer *longPres))block;
 - (void)cycleViewClick:(id)cycleView;

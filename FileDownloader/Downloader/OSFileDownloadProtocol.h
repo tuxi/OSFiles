@@ -25,6 +25,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 下载的url
 - (NSString *)urlPath;
+/// 原始的urlPath, 由于OSFileDownloader会对错误的urlPath进行处理，所以需要保存原始的urlPath，以便回调给外界参照
+- (NSString *)originalURLString;
 
 /// 下载会话对象 NSURLSessionDataTask
 - (NSURLSessionDataTask *)sessionTask;
