@@ -17,6 +17,8 @@
 #import "OSFileBottomHUD.h"
 #import "NSString+OSFile.h"
 
+NSNotificationName const OSFileCollectionViewControllerOptionFileCompletionNotification = @"OptionFileCompletionNotification";
+
 typedef NS_ENUM(NSInteger, OSFileLoadType) {
     OSFileLoadTypeCurrentDirectory,
     OSFileLoadTypeSubDirectory,
@@ -49,8 +51,7 @@ static const CGFloat windowHeight = 49.0;
 @property (nonatomic, strong) NSMutableArray<OSFileAttributeItem *> *selectorFiles;
 @property (nonatomic, strong) OSFileBottomHUD *bottomHUD;
 @property (nonatomic, assign) OSFileCollectionViewControllerMode mode;
-@property (nonatomic, copy) void (^selectFilsCompetion)(NSArray<OSFileAttributeItem *> *selectFils, NSString *desDirectory);
-@property (nonatomic, weak) UIButton *bottomCopyButton;
+@property (nonatomic, weak) UIButton *bottomTipButton;
 
 @end
 
@@ -117,7 +118,8 @@ static const CGFloat windowHeight = 49.0;
         if (set.count == self.directoryArray.count) {
             displayEdit = NO;
         }
-        if ( self.mode == OSFileCollectionViewControllerModeCopy) {
+        if ( self.mode == OSFileCollectionViewControllerModeCopy ||
+            self.mode == OSFileCollectionViewControllerModeMove) {
             displayEdit = YES;
         }
     }
@@ -132,7 +134,8 @@ static const CGFloat windowHeight = 49.0;
                 self.navigationItem.rightBarButtonItem.title = @"完成";
                 break;
             }
-            case OSFileCollectionViewControllerModeCopy: {
+            case OSFileCollectionViewControllerModeCopy:
+            case OSFileCollectionViewControllerModeMove: {
                 self.navigationItem.rightBarButtonItem.title = @"取消";
                 break;
             }
@@ -140,6 +143,8 @@ static const CGFloat windowHeight = 49.0;
                 break;
         }
     }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(optionFileCompletion:) name:OSFileCollectionViewControllerOptionFileCompletionNotification object:nil];
    
 }
 
@@ -158,6 +163,10 @@ static const CGFloat windowHeight = 49.0;
             [self copyModeAction];
             break;
         }
+        case OSFileCollectionViewControllerModeMove: {
+            [self moveModeAction];
+            break;
+        }
         default:
             break;
     }
@@ -167,8 +176,7 @@ static const CGFloat windowHeight = 49.0;
 - (void)updateMode {
     self.collectionView.allowsMultipleSelection = NO;
     self.navigationItem.rightBarButtonItem.enabled = NO;
-    if (self.mode != OSFileCollectionViewControllerModeEdit &&
-        self.mode != OSFileCollectionViewControllerModeCopy) {
+    if (self.mode == OSFileCollectionViewControllerModeDefault)  {
         self.mode = OSFileCollectionViewControllerModeEdit;
     }
     else if (self.mode == OSFileCollectionViewControllerModeEdit) {
@@ -209,12 +217,18 @@ static const CGFloat windowHeight = 49.0;
     self.navigationItem.rightBarButtonItem.enabled = YES;
 }
 
+- (void)moveModeAction {
+    [self backButtonClick];
+    self.navigationItem.rightBarButtonItem.enabled = YES;
+}
+
 
 - (OSFileBottomHUD *)bottomHUD {
     if (!_bottomHUD) {
         _bottomHUD = [[OSFileBottomHUD alloc] initWithItems:@[
-                                                              [[OSFileBottomHUDItem alloc] initWithTitle:@"复制" image:nil],
-                                                              [[OSFileBottomHUDItem alloc] initWithTitle:@"删除" image:nil],
+                                                              [[OSFileBottomHUDItem alloc] initWithTitle:@"复制" image:[UIImage imageNamed:@"edit_copy"]],
+                                                              [[OSFileBottomHUDItem alloc] initWithTitle:@"移动" image:[UIImage imageNamed:@"edit_move"]],
+                                                              [[OSFileBottomHUDItem alloc] initWithTitle:@"删除" image:[UIImage imageNamed:@"delete-white"]],
                                                               ] toView:self.view];
         _bottomHUD.delegate = self;
     }
@@ -252,11 +266,13 @@ static const CGFloat windowHeight = 49.0;
     [super viewWillAppear:animated];
     [self check3DTouch];
     
-    if (self.mode == OSFileCollectionViewControllerModeCopy && self.rootDirectory.length) {
-        [self bottomCopyButton].hidden = NO;
+    if ((self.mode == OSFileCollectionViewControllerModeCopy ||
+         self.mode == OSFileCollectionViewControllerModeMove) &&
+        self.rootDirectory.length) {
+        [self bottomTipButton].hidden = NO;
     }
     else {
-        [self bottomCopyButton].hidden = YES;
+        [self bottomTipButton].hidden = YES;
     }
 }
 
@@ -273,16 +289,17 @@ static const CGFloat windowHeight = 49.0;
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    [self bottomCopyButton].hidden = YES;
+    [self bottomTipButton].hidden = YES;
 }
 
 - (void)dealloc {
     self.bottomHUD = nil;
-    [_bottomCopyButton removeFromSuperview];
-    _bottomCopyButton = nil;
+    [_bottomTipButton removeFromSuperview];
+    _bottomTipButton = nil;
     self.directoryArray = nil;
     [_currentFolderHelper invalidate];
     [_documentFolderHelper invalidate];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)setupViews {
@@ -693,19 +710,15 @@ static const CGFloat windowHeight = 49.0;
         if (isDirectory) {
             /// 如果当前界面是OSFileCollectionViewControllerModeCopy，那么下一个界面也要是同样的模式
             OSFileCollectionViewControllerMode mode = OSFileCollectionViewControllerModeDefault;
-            if (self.mode == OSFileCollectionViewControllerModeCopy) {
+            if (self.mode == OSFileCollectionViewControllerModeCopy ||
+                self.mode == OSFileCollectionViewControllerModeMove) {
                 mode = self.mode;
             }
             vc = [[OSFileCollectionViewController alloc] initWithRootDirectory:newPath controllerMode:mode];
-            if (mode == OSFileCollectionViewControllerModeCopy) {
+            if (self.mode == OSFileCollectionViewControllerModeCopy ||
+                self.mode == OSFileCollectionViewControllerModeMove) {
                 OSFileCollectionViewController *viewController = (OSFileCollectionViewController *)vc;
                 viewController.selectorFiles = self.selectorFiles.mutableCopy;
-                __weak typeof(self) weakSelf = self;
-                viewController.selectFilsCompetion = ^(NSArray<OSFileAttributeItem *> *selectFils, NSString *desDirectory)
-                {
-                    
-                    [weakSelf copyFiles:selectFils toRootDirectory:desDirectory];
-                };
             }
             
         } else if (![QLPreviewController canPreviewItem:url]) {
@@ -843,35 +856,51 @@ static const CGFloat windowHeight = 49.0;
     return _hud;
 }
 
-- (UIButton *)bottomCopyButton {
-    if (!_bottomCopyButton) {
-        UIButton *bottomCopyButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _bottomCopyButton = bottomCopyButton;
-        [self.view addSubview:bottomCopyButton];
-        bottomCopyButton.translatesAutoresizingMaskIntoConstraints = NO;
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|[bottomCopyButton]|" options:kNilOptions metrics:nil views:@{@"bottomCopyButton": bottomCopyButton}]];
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[bottomCopyButton(==49.0)]|" options:kNilOptions metrics:nil views:@{@"bottomCopyButton": bottomCopyButton}]];
-        [bottomCopyButton setBackgroundColor:[UIColor blueColor]];
-        [bottomCopyButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [_bottomCopyButton addTarget:self action:@selector(chooseCompletion) forControlEvents:UIControlEventTouchUpInside];
+- (UIButton *)bottomTipButton {
+    if (!_bottomTipButton) {
+        UIButton *bottomTipButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _bottomTipButton = bottomTipButton;
+        [self.view addSubview:bottomTipButton];
+        bottomTipButton.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|[bottomTipButton]|" options:kNilOptions metrics:nil views:@{@"bottomTipButton": bottomTipButton}]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[bottomTipButton(==49.0)]|" options:kNilOptions metrics:nil views:@{@"bottomTipButton": bottomTipButton}]];
+        [bottomTipButton setBackgroundColor:[UIColor blueColor]];
+        [bottomTipButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [_bottomTipButton addTarget:self action:@selector(chooseCompletion) forControlEvents:UIControlEventTouchUpInside];
     }
     if (self.rootDirectory.length) {
-        _bottomCopyButton.hidden = NO;
-        [_bottomCopyButton setTitle:[NSString stringWithFormat:@"复制到%@", self.rootDirectory.lastPathComponent] forState:UIControlStateNormal];
+        _bottomTipButton.hidden = NO;
+        NSString *string = @"复制";
+        if (self.mode == OSFileCollectionViewControllerModeMove) {
+            string = @"移动";
+        }
+        [_bottomTipButton setTitle:[NSString stringWithFormat:@"%@到%@", string, self.rootDirectory.lastPathComponent] forState:UIControlStateNormal];
     }
     else {
-        _bottomCopyButton.hidden = YES;
+        _bottomTipButton.hidden = YES;
     }
-    [self.view bringSubviewToFront:_bottomCopyButton];
+    [self.view bringSubviewToFront:_bottomTipButton];
     
-    return _bottomCopyButton;
+    return _bottomTipButton;
 }
 
+/// 将选择的文件拷贝到目标目录中
 - (void)chooseCompletion {
-    if (self.selectFilsCompetion) {
-        self.selectFilsCompetion(self.selectorFiles, self.rootDirectory);
-    }
-    [self backButtonClick];
+    __weak typeof(self) weakSelf = self;
+    [self copyFiles:self.selectorFiles toRootDirectory:self.rootDirectory completionHandler:^(NSError *error) {
+        if (!error) {
+            if (weakSelf.mode == OSFileCollectionViewControllerModeMove) {
+                // 如果是移动文件，就移除那些选中的文件
+                NSFileManager *fileManager = [NSFileManager defaultManager];
+                [weakSelf.selectorFiles enumerateObjectsUsingBlock:^(OSFileAttributeItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    [fileManager removeItemAtPath:obj.path error:nil];
+                }];
+            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:OSFileCollectionViewControllerOptionFileCompletionNotification object:nil userInfo:@{@"OSFileCollectionViewControllerMode": @(weakSelf.mode)}];
+            [self backButtonClick];
+        }
+    }];
+    
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -885,12 +914,21 @@ static const CGFloat windowHeight = 49.0;
                 [self showInfo:@"请选择需要复制的文件"];
             }
             else {
-                [self chooseDesDirectory];
+                [self chooseDesDirectoryToCopy];
             }
                                                                              
             break;
         }
-        case 1: { // 删除
+        case 1: { // 移动
+            if (!self.selectorFiles.count) {
+                [self showInfo:@"请选择需要移动的文件"];
+            }
+            else {
+                [self chooseDesDirectoryToMove];
+            }
+            break;
+        }
+        case 2: { // 删除
             if (!self.selectorFiles.count) {
                 [self showInfo:@"请选择需要删除的文件"];
             }
@@ -905,19 +943,24 @@ static const CGFloat windowHeight = 49.0;
 }
 
 /// 选择文件最终复制的目标目录
-- (void)chooseDesDirectory {
+- (void)chooseDesDirectoryToCopy {
     OSFileCollectionViewController *vc = [[OSFileCollectionViewController alloc] initWithDirectoryArray:@[
                                                                                                          [OSFileConfigUtils getDownloadLocalFolderPath],
                                                                                                          [OSFileConfigUtils getDocumentPath]] controllerMode:OSFileCollectionViewControllerModeCopy];
     UINavigationController *nac = [[[self.navigationController class] alloc] initWithRootViewController:vc];
     vc.selectorFiles = self.selectorFiles.mutableCopy;
-    __weak typeof(self) weakSelf = self;
-    vc.selectFilsCompetion = ^(NSArray<OSFileAttributeItem *> *selectFils, NSString *desDirectory) {
-        
-        [weakSelf copyFiles:selectFils toRootDirectory:desDirectory];
-    };
     [self showDetailViewController:nac sender:self];
 }
+
+- (void)chooseDesDirectoryToMove {
+    OSFileCollectionViewController *vc = [[OSFileCollectionViewController alloc] initWithDirectoryArray:@[
+                                                                                                          [OSFileConfigUtils getDownloadLocalFolderPath],
+                                                                                                          [OSFileConfigUtils getDocumentPath]] controllerMode:OSFileCollectionViewControllerModeMove];
+    UINavigationController *nac = [[[self.navigationController class] alloc] initWithRootViewController:vc];
+    vc.selectorFiles = self.selectorFiles.mutableCopy;
+    [self showDetailViewController:nac sender:self];
+}
+
 
 - (void)deleteSelectFiles {
     if (!self.selectorFiles.count) {
@@ -961,11 +1004,23 @@ static const CGFloat windowHeight = 49.0;
 }
 
 ////////////////////////////////////////////////////////////////////////
+#pragma mark - Notification
+////////////////////////////////////////////////////////////////////////
+/// 文件操作文件，比如复制、移动文件完成
+- (void)optionFileCompletion:(NSNotification *)notification {
+    self.selectorFiles = nil;
+    self.mode = OSFileCollectionViewControllerModeDefault;
+    [self reloadFiles];
+}
+
+////////////////////////////////////////////////////////////////////////
 #pragma mark - 文件操作
 ////////////////////////////////////////////////////////////////////////
 
 /// copy 文件
-- (void)copyFiles:(NSArray<OSFileAttributeItem *> *)fileItems toRootDirectory:(NSString *)rootPath {
+- (void)copyFiles:(NSArray<OSFileAttributeItem *> *)fileItems
+  toRootDirectory:(NSString *)rootPath
+completionHandler:(void (^)(NSError *error))completion {
     if (!fileItems.count) {
         return;
     }
@@ -975,13 +1030,14 @@ static const CGFloat windowHeight = 49.0;
             NSString *desPath = [rootPath stringByAppendingPathComponent:[obj.fullPath lastPathComponent]];
             if ([desPath isEqualToString:obj.fullPath]) {
                 NSLog(@"路径相同");
-                dispatch_async(dispatch_get_main_queue(), ^{
+                dispatch_main_safe_async(^{
                     self.hud.labelText = @"路径相同";
+                    if (completion) {
+                        completion([NSError errorWithDomain:NSURLErrorDomain code:10000 userInfo:@{@"error": @"不能拷贝到自己的目录"}]);
+                    }
                 });
-                return;
             }
-            
-            if ([[NSFileManager defaultManager] fileExistsAtPath:desPath]) {
+            else if ([[NSFileManager defaultManager] fileExistsAtPath:desPath]) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self.hud.labelText = @"存在相同文件，正在移除原文件";
                 });
@@ -1004,6 +1060,8 @@ static const CGFloat windowHeight = 49.0;
     
     
     operation.completionBlock = ^{
+        /// 当completionCopyNum为0 时 全部拷贝完成
+        __block NSInteger completionCopyNum = fileItems.count;
         [fileItems enumerateObjectsUsingBlock:^(OSFileAttributeItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             [hudDetailTextArray addObject:@(idx).stringValue];
             NSString *desPath = [rootPath stringByAppendingPathComponent:[obj.fullPath lastPathComponent]];
@@ -1018,7 +1076,13 @@ static const CGFloat windowHeight = 49.0;
                     hudDetailTextCallBack(detailText, idx);
                 });
             } completionHandler:^(id<OSFileOperation> fileOperation, NSError *error) {
-                
+                completionCopyNum--;
+                dispatch_main_safe_async(^{
+                    if (completionCopyNum == 0 && completion) {
+                        completion(error);
+                    }
+                });
+               
             }];
         }];
     };
@@ -1046,12 +1110,13 @@ static const CGFloat windowHeight = 49.0;
             });
         }
     };
+    
 }
 
 
 - (void)cancelFileOperation:(id)sender {
     [_fileManager cancelAllOperation];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [MBProgressHUD hideAllHUDsForView:[UIApplication sharedApplication].delegate.window animated:YES];
         self.hud = nil;
     });
