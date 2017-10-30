@@ -312,7 +312,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
     
     [_optionButton mas_updateConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.contentView).mas_offset(-OSFileDownloadCellGloabMargin);
-        make.centerY.equalTo(self.contentView);
+        make.top.equalTo(self.contentView);
     }];
     
     [_cycleView mas_remakeConstraints:^(MASConstraintMaker *make) {

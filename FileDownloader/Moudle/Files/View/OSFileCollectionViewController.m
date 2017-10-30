@@ -246,6 +246,7 @@ static const CGFloat windowHeight = 49.0;
             [self loadFileWithDirectoryArray:self.directoryArray completion:^(NSArray *fileItems) {
                 weakSelf.files = fileItems.copy;
                 [weakSelf.collectionView reloadData];
+                [weakSelf showBottomTip];
             }];
             break;
         }
@@ -253,6 +254,7 @@ static const CGFloat windowHeight = 49.0;
             [self loadFileWithDirectoryPath:self.rootDirectory completion:^(NSArray *fileItems) {
                 weakSelf.files = fileItems.copy;
                 [weakSelf.collectionView reloadData];
+                [weakSelf showBottomTip];
             }];
             break;
         }
@@ -866,22 +868,55 @@ static const CGFloat windowHeight = 49.0;
         [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[bottomTipButton(==49.0)]|" options:kNilOptions metrics:nil views:@{@"bottomTipButton": bottomTipButton}]];
         [bottomTipButton setBackgroundColor:[UIColor blueColor]];
         [bottomTipButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        bottomTipButton.titleLabel.numberOfLines = 3;
+        bottomTipButton.titleLabel.adjustsFontSizeToFitWidth = YES;
+        bottomTipButton.titleLabel.minimumScaleFactor = 0.5;
+        bottomTipButton.titleLabel.font = [UIFont systemFontOfSize:12.0];
         [_bottomTipButton addTarget:self action:@selector(chooseCompletion) forControlEvents:UIControlEventTouchUpInside];
     }
-    if (self.rootDirectory.length) {
-        _bottomTipButton.hidden = NO;
-        NSString *string = @"复制";
-        if (self.mode == OSFileCollectionViewControllerModeMove) {
-            string = @"移动";
-        }
-        [_bottomTipButton setTitle:[NSString stringWithFormat:@"%@到%@", string, self.rootDirectory.lastPathComponent] forState:UIControlStateNormal];
-    }
-    else {
-        _bottomTipButton.hidden = YES;
-    }
-    [self.view bringSubviewToFront:_bottomTipButton];
     
     return _bottomTipButton;
+}
+
+- (void)showBottomTip {
+    if ((self.mode != OSFileCollectionViewControllerModeCopy &&
+         self.mode != OSFileCollectionViewControllerModeMove) ||
+        !self.rootDirectory.length) {
+        _bottomTipButton.hidden = YES;
+        return;
+    }
+    
+    _bottomTipButton.hidden = NO;
+    NSString *string = @"复制";
+    if (self.mode == OSFileCollectionViewControllerModeMove) {
+        string = @"移动";
+    }
+    [_bottomTipButton setTitle:[NSString stringWithFormat:@"【%@到(%@)目录】", string, self.rootDirectory.lastPathComponent] forState:UIControlStateNormal];
+    /// 检测已选择的文件是否在当前文件中，如果在就提示用户
+    NSMutableArray *containFileArray = @[].mutableCopy;
+    if (self.files) {
+        [self.selectorFiles enumerateObjectsUsingBlock:^(OSFileAttributeItem * _Nonnull seleFile, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSUInteger foundIdx = [self.files indexOfObjectPassingTest:^BOOL(OSFileAttributeItem * _Nonnull file, NSUInteger idx, BOOL * _Nonnull stop) {
+                BOOL res = NO;
+                if ([seleFile.path isEqualToString:file.path]) {
+                    res = YES;
+                    *stop = YES;
+                }
+                return res;
+            }];
+            if (foundIdx != NSNotFound) {
+                [containFileArray addObject:seleFile.displayName];
+            }
+        }];
+        
+        if (containFileArray.count) {
+            string = [containFileArray componentsJoinedByString:@","];
+            string = [NSString stringWithFormat:@"请确认，已存在的文件会被替换:(%@)", string];
+            [_bottomTipButton setTitle:string forState:UIControlStateNormal];
+        }
+    }
+    
+    [self.view bringSubviewToFront:_bottomTipButton];
 }
 
 /// 将选择的文件拷贝到目标目录中
@@ -1000,7 +1035,9 @@ static const CGFloat windowHeight = 49.0;
 }
 
 - (void)fileCollectionViewCell:(OSFileCollectionViewCell *)cell needCopyFile:(OSFileAttributeItem *)fileModel {
-    
+    [self.selectorFiles removeAllObjects];
+    [self.selectorFiles addObject:fileModel];
+    [self chooseDesDirectoryToCopy];
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -1103,7 +1140,7 @@ completionHandler:(void (^)(NSError *error))completion {
             
         }
         if (progress.fractionCompleted >= 1.0 || progress.completedUnitCount >= progress.totalUnitCount) {
-            strongSelf.hud.labelText = @"copy success";
+            strongSelf.hud.labelText = @"完成";
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [MBProgressHUD hideAllHUDsForView:[UIApplication sharedApplication].delegate.window animated:YES];
                 strongSelf.hud = nil;

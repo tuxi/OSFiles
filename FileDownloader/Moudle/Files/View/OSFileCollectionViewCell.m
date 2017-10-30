@@ -120,33 +120,27 @@
 ////////////////////////////////////////////////////////////////////////
 
 - (void)optionBtnClick:(UIButton *)btn {
-    
-    [UIAlertView showWithTitle:nil message:nil style:UIAlertViewStyleDefault cancelButtonTitle:@"取消" otherButtonTitles:@[@"重命名", @"删除", @"共享", @"复制"] tapBlock:^(UIAlertView * _Nonnull alertView, NSInteger buttonIndex) {
-        switch (buttonIndex) {
-            case 0: { // cancel
-                
-                break;
-            }
-            case 1: {
-                [self renameFile];
-                break;
-            }
-            case 2: {
-                [self deleteFile];
-                break;
-            }
-            case 3: {
-                [self shareFile];
-                break;
-            }
-            case 4: {
-                [self copyFile];
-                break;
-            }
-            default:
-                break;
-        }
+    UIAlertController *alVc = [UIAlertController alertControllerWithTitle:self.fileModel.displayName message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertAction *renameAction = [UIAlertAction actionWithTitle:@"重命名" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        [self renameFile];
     }];
+    UIAlertAction *deleteAction = [UIAlertAction actionWithTitle:@"删除" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        [self deleteFile];
+    }];
+    UIAlertAction *shareAction = [UIAlertAction actionWithTitle:@"共享" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        [self shareFile];
+    }];
+    UIAlertAction *copyAction = [UIAlertAction actionWithTitle:@"复制" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        [self copyFile];
+    }];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:NULL];
+    [alVc addAction:renameAction];
+    [alVc addAction:deleteAction];
+    [alVc addAction:shareAction];
+    [alVc addAction:copyAction];
+    [alVc addAction:cancelAction];
+    [[UIViewController xy_topViewController] presentViewController:alVc animated:YES completion:nil];
 }
 
 - (void)renameFile {
