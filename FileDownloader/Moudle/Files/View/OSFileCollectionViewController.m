@@ -93,7 +93,6 @@ static const CGFloat windowHeight = 49.0;
 }
 
 - (void)commonInit {
-    _selectorFiles = @[].mutableCopy;
     _fileManager = [OSFileManager defaultManager];
      _displayHiddenFiles = NO;
     _loadFileQueue = [NSOperationQueue new];
@@ -878,6 +877,13 @@ static const CGFloat windowHeight = 49.0;
     return _bottomTipButton;
 }
 
+- (NSMutableArray<OSFileAttributeItem *> *)selectorFiles {
+    if (!_selectorFiles) {
+        _selectorFiles = @[].mutableCopy;
+    }
+    return _selectorFiles;
+}
+
 - (void)showBottomTip {
     if ((self.mode != OSFileCollectionViewControllerModeCopy &&
          self.mode != OSFileCollectionViewControllerModeMove) ||
@@ -1045,7 +1051,7 @@ static const CGFloat windowHeight = 49.0;
 ////////////////////////////////////////////////////////////////////////
 /// 文件操作文件，比如复制、移动文件完成
 - (void)optionFileCompletion:(NSNotification *)notification {
-    self.selectorFiles = nil;
+    [self.selectorFiles removeAllObjects];
     self.mode = OSFileCollectionViewControllerModeDefault;
     [self reloadFiles];
 }
