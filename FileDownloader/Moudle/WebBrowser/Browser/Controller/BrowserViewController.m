@@ -24,6 +24,7 @@
 #import "FindInPageBar.h"
 #import "KeyboardHelper.h"
 #import "NSURL+ZWUtility.h"
+#import "OSFileDownloaderManager.h"
 
 static NSString *const kBrowserViewControllerAddBookmarkSuccess = @"添加书签成功";
 static NSString *const kBrowserViewControllerAddBookmarkFailure = @"添加书签失败";
@@ -222,12 +223,30 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
           [SettingsMenuItem itemWithText:@"拷贝连接" image:[UIImage imageNamed:@"album"] action:^{
               [self_ handleCopyURLButtonClicked];
           }],
-//          [SettingsMenuItem itemWithText:@"下载" image:[UIImage imageNamed:@"album"] action:^{
+          [SettingsMenuItem itemWithText:@"下载网页中的图片" image:[UIImage imageNamed:@"album"] action:^{
 //              NSString *lJs = @"document.documentElement.innerHTML";
 //              NSString *lHtml = [self.browserContainerView.webView stringByEvaluatingJavaScriptFromString:lJs];
-////              NSArray *images = [self getImageurlFromHtml:lHtml];
-//              [[[UIAlertView alloc] initWithTitle:@"HTML" message:lHtml delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
-//          }]
+              [self getImgsFormHTML:^(NSArray *imageURLs) {
+                  NSString *string = [imageURLs componentsJoinedByString:@",\n"];
+                  if (!imageURLs.count) {
+                      string = @"无图片";
+                  }
+                  dispatch_async(dispatch_get_main_queue(), ^{
+                      [UIAlertView showWithTitle:[NSString stringWithFormat:@"%ld个图片", imageURLs.count] message:nil cancelButtonTitle:@"取消" otherButtonTitles:@[@"全部下载"] tapBlock:^(UIAlertView * _Nonnull alertView, NSInteger buttonIndex) {
+                          if (buttonIndex == 1) {
+                              [imageURLs enumerateObjectsUsingBlock:^(NSString *  _Nonnull url, NSUInteger idx, BOOL * _Nonnull stop) {
+                                  if (!url.length) {
+                                      return;
+                                  }
+                                  [[OSFileDownloaderManager sharedInstance] start:url];
+                              }];
+                          }
+                      }];
+                  });
+              }];
+            
+              
+          }]
           
           ];
         
@@ -249,40 +268,37 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
     }
 }
 
-//获取webView中的所有图片URL
-- (NSArray *) getImageurlFromHtml:(NSString *) webString
-{
-    NSMutableArray * imageurlArray = [NSMutableArray arrayWithCapacity:1];
-    
-    //标签匹配
-    NSString *parten = @"<img(.*?)>";
-    NSError* error = NULL;
-    NSRegularExpression *reg = [NSRegularExpression regularExpressionWithPattern:parten options:0 error:&error];
-    
-    NSArray* match = [reg matchesInString:webString options:0 range:NSMakeRange(0, [webString length] - 1)];
-    
-    for (NSTextCheckingResult * result in match) {
-        
-        //过去数组中的标签
-        NSRange range = [result range];
-        NSString * subString = [webString substringWithRange:range];
-        
-        
-        //从图片中的标签中提取ImageURL
-        NSRegularExpression *subReg = [NSRegularExpression regularExpressionWithPattern:@"http://(.*?)\"" options:0 error:NULL];
-        NSArray* match = [subReg matchesInString:subString options:0 range:NSMakeRange(0, [subString length] - 1)];
-        NSTextCheckingResult * subRes = match[0];
-        NSRange subRange = [subRes range];
-        subRange.length = subRange.length -1;
-        NSString * imagekUrl = [subString substringWithRange:subRange];
-        
-        //将提取出的图片URL添加到图片数组中
-        [imageurlArray addObject:imagekUrl];
+/// 获取HTML中的图片
+- (void)getImgsFormHTML:(void (^)(NSArray *imageURLs))completion {
+    if (!completion) {
+        return;
     }
-    
-    return imageurlArray;
+    NSMutableArray *arrImgURL = [[NSMutableArray alloc] init];
+    NSInteger imageCount = [self nodeCountOfTag:@"img"];
+    for (int i = 0; i < imageCount; i++) {
+//         NSString *jsString = [NSString stringWithFormat:@"document.getElementsByTagName('video')[%d].src", i];
+        NSString *jsString = [NSString stringWithFormat:@"document.getElementsByTagName('img')[%d].src", i];
+        [self.browserContainerView.webView evaluateJavaScript:jsString completionHandler:^(NSString *str, NSError *error) {
+            
+            if (error ==nil) {
+                [arrImgURL addObject:str];
+            }
+            if (i == imageCount-1) {
+                completion(arrImgURL);
+            }
+        }];
+    }
 }
 
+// 获取某个标签的结点个数
+- (NSInteger)nodeCountOfTag:(NSString *)tag {
+    
+    NSString *jsString = [NSString stringWithFormat:@"document.getElementsByTagName('%@').length", tag];
+    
+    int count =  [[self.browserContainerView.webView stringByEvaluatingJavaScriptFromString:jsString] intValue];
+    
+    return count;
+}
 
 - (void)pushTableViewControllerWithControllerName:(Class)class{
     if (![class isSubclassOfClass:[UITableViewController class]]) {

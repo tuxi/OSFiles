@@ -18,6 +18,8 @@
 @property (nonatomic, strong) NSNumber *shouldAutoDownloadWhenInitialize;
 /// 允许蜂窝网络下载，默认不允许
 @property (nonatomic, strong) NSNumber *shouldAllowDownloadOnCellularNetwork;
+/// 下载完成时发送通知, 默认关闭
+@property (nonatomic, strong) NSNumber *shouldSendNotificationWhenDownloadComplete;
 
 + (OSFileDownloaderConfiguration *)defaultConfiguration;
 

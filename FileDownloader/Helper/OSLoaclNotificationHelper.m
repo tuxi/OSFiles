@@ -44,6 +44,10 @@
 /// 发送本地通知
 - (void)sendLocalNotificationWithMessage:(NSString *)message {
     self.notifyMessage = message;
+    NSNumber *shouldSendNotificationWhenDownloadComplete = [[OSFileDownloaderConfiguration defaultConfiguration] shouldSendNotificationWhenDownloadComplete];
+    if (!shouldSendNotificationWhenDownloadComplete || ![shouldSendNotificationWhenDownloadComplete integerValue]) {
+        return;
+    }
     [[UIApplication sharedApplication] scheduleLocalNotification:self.localNotification];
 }
 

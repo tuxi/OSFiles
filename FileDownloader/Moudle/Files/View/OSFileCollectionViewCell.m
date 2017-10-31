@@ -151,12 +151,13 @@
         alert = [UIAlertController alertControllerWithTitle:@"rename" message:nil preferredStyle:UIAlertControllerStyleAlert];
     }
     else {
-        alert = [UIAlertController alertControllerWithTitle:@"rename" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+        alert = [UIAlertController alertControllerWithTitle:@"rename" message:nil preferredStyle:UIAlertControllerStyleAlert];
     }
     
     [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-        textField.text = self.fileModel.filename;
-        [textField setSelectedRange:NSRangeFromString(self.fileModel.fileExtension)];
+        NSString *fileName = self.fileModel.filename;
+        textField.text = fileName;
+//        [textField setSelectedRange:NSMakeRange(self.fileModel.filename.length-self.fileModel.fileExtension.length, self.fileModel.fileExtension.length)];
         textField.placeholder = @"请输入需要修改的名字";
         [textField addTarget:self action:@selector(alertViewTextFieldtextChange:) forControlEvents:UIControlEventEditingChanged];
     }];

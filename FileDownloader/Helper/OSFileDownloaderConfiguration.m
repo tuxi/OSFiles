@@ -12,6 +12,7 @@ static NSString * const OSFileDownloaderConfigurationMaxConcurrentDownloadsKey =
 static NSString * const OSFileDownloaderConfigurationAutoDownloadWhenFailureKey = @"OSFileDownloaderConfigurationAutoDownloadWhenFailureKey";
 static NSString * const OSFileDownloaderConfigurationAutoDownloadWhenInitializeKey = @"OSFileDownloaderConfigurationAutoDownloadWhenInitializeKey";
 static NSString * const OSFileDownloaderConfigurationAllowDownloadOnCellularNetworkKey = @"OSFileDownloaderConfigurationAllowDownloadOnCellularNetworkKey";
+static NSString * const OSFileDownloaderConfigurationSendNotificationWhenDownloadCompleteKey = @"OSFileDownloaderConfigurationSendNotificationWhenDownloadCompleteKey";
 
 @implementation OSFileDownloaderConfiguration
 
@@ -70,6 +71,15 @@ static NSString * const OSFileDownloaderConfigurationAllowDownloadOnCellularNetw
 
 - (NSNumber *)shouldAllowDownloadOnCellularNetwork {
     return [[NSUserDefaults standardUserDefaults] objectForKey:OSFileDownloaderConfigurationAllowDownloadOnCellularNetworkKey];
+}
+
+- (void)setShouldSendNotificationWhenDownloadComplete:(NSNumber *)shouldSendNotificationWhenDownloadComplete {
+    [[NSUserDefaults standardUserDefaults] setObject:shouldSendNotificationWhenDownloadComplete forKey:OSFileDownloaderConfigurationSendNotificationWhenDownloadCompleteKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (NSNumber *)shouldSendNotificationWhenDownloadComplete {
+    return [[NSUserDefaults standardUserDefaults] objectForKey:OSFileDownloaderConfigurationSendNotificationWhenDownloadCompleteKey];
 }
 
 + (NSString *)getDownloadLocalFolderPath {
