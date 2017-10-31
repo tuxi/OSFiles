@@ -145,7 +145,7 @@
 ////////////////////////////////////////////////////////////////////////
 
 - (void)noDataPlaceholder:(UIScrollView *)scrollView didClickReloadButton:(UIButton *)button {
-    [self noDataPlaceholder:scrollView didClickReloadButton:button];
+    [self didClickDataPlaceholderReloadButton:button];
 }
 
 - (BOOL)noDataPlaceholderShouldAllowScroll:(UIScrollView *)scrollView {
@@ -153,7 +153,7 @@
 }
 
 - (void)noDataPlaceholder:(UIScrollView *)scrollView didTapOnContentView:(UITapGestureRecognizer *)tap {
-    [self noDataPlaceholder:scrollView didTapOnContentView:tap];
+    [self didTapOnDataPlaceholderContentView:tap];
 }
 
 

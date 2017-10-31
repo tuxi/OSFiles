@@ -63,23 +63,14 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
     id<OSFileDownloadOperation> downloadItem = items[indexPath.row];
     [cell xy_configCellByModel:downloadItem indexPath:indexPath];
     __weak typeof(tableView) weaktableView = tableView;
-    [cell setLongPressGestureRecognizer:^(UILongPressGestureRecognizer *longPres) {
-        OSFileDownloadCell *cell = (OSFileDownloadCell *)longPres.view;
-        if (longPres.state == UIGestureRecognizerStateBegan) {
-            UIAlertController *alVc = [UIAlertController alertControllerWithTitle:cell.fileItem.urlPath message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-            
-            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"删除" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-                UIAlertController *alVc = [UIAlertController alertControllerWithTitle:nil message:@"删除后文件将无法恢复" preferredStyle:UIAlertControllerStyleActionSheet];
-                UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-                    
-                    [[OSFileDownloaderManager sharedInstance] cancel:downloadItem.urlPath];
-                    [weaktableView reloadData];
-                    
-                }];
-                [alVc addAction:okAction];
-                UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:NULL];
-                [alVc addAction:cancelAction];
-                [[tableView currentViewController] presentViewController:alVc animated:YES completion:nil];
+    
+    void (^alertBlock)(OSRemoteResourceItem *item) = ^(OSRemoteResourceItem *item) {
+        UIAlertController *alVc = [UIAlertController alertControllerWithTitle:item.urlPath message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+        
+        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"删除" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+            UIAlertController *alVc = [UIAlertController alertControllerWithTitle:nil message:@"删除后文件将无法恢复" preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+                
                 [[OSFileDownloaderManager sharedInstance] cancel:downloadItem.urlPath];
                 [weaktableView reloadData];
                 
@@ -88,21 +79,23 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
             UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:NULL];
             [alVc addAction:cancelAction];
             [[tableView currentViewController] presentViewController:alVc animated:YES completion:nil];
-        }
-    }];
-    
-    [cell setOptionButtonClick:^(UIButton *btn, OSFileDownloadCell *cell) {
-        UIAlertController *alVc = [UIAlertController alertControllerWithTitle:@"删除" message:@"删除后文件将无法恢复" preferredStyle:UIAlertControllerStyleActionSheet];
-        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-            
-            [[OSFileDownloaderManager sharedInstance] cancel:downloadItem.urlPath];
-            [weaktableView reloadData];
             
         }];
         [alVc addAction:okAction];
         UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:NULL];
         [alVc addAction:cancelAction];
         [[tableView currentViewController] presentViewController:alVc animated:YES completion:nil];
+    };
+    
+    [cell setLongPressGestureRecognizer:^(UILongPressGestureRecognizer *longPres) {
+        OSFileDownloadCell *cell = (OSFileDownloadCell *)longPres.view;
+        if (longPres.state == UIGestureRecognizerStateBegan) {
+            alertBlock(cell.fileItem);
+        }
+    }];
+    
+    [cell setOptionButtonClick:^(UIButton *btn, OSFileDownloadCell *cell) {
+        alertBlock(cell.fileItem);
     }];
     
     return cell;

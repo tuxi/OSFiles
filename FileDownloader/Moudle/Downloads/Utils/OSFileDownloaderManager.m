@@ -160,30 +160,35 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
 
 
 - (void)start:(NSString *)urlPath {
+    NSAssert(urlPath, @"urlPath is not nil");
+    NSUInteger foundIndexInDownloadItems = [self foundItemIndxInDownloadItemsByURL:urlPath];
+    OSRemoteResourceItem * item = nil;
+    if (foundIndexInDownloadItems == NSNotFound) {
+        NSUInteger foundIndexInDisplay = [self foundItemIndxInDisplayItemsByURL:urlPath];
+        if (foundIndexInDisplay != NSNotFound) {
+            item = [self.displayItems objectAtIndex:foundIndexInDisplay];
+            item.status = OSFileDownloadStatusNotStarted;
+            [self.downloadItems addObject:item];
+            [self.displayItems removeObjectAtIndex:foundIndexInDisplay];
+        } else {
+            item = [[OSRemoteResourceItem alloc] init];
+            item.urlPath = urlPath;
+            item.fileName = urlPath.lastPathComponent;
+            [self.downloadItems addObject:item];
+        }
+        [self storedDownloadItems];
+        [[NSNotificationCenter defaultCenter] postNotificationName:OSFileDownloadStartedNotification object:item];
+    }
+    else {
+        item = [self.downloadItems objectAtIndex:foundIndexInDownloadItems];
+    }
     
     dispatch_block_t block = ^ {
-        NSAssert(urlPath, @"urlPath is not nil");
+        NSAssert(item, @"item is not nil");
         
         @synchronized (_downloadItems) {
-            
-            NSUInteger foundIndexInDownloadItems = [self foundItemIndxInDownloadItemsByURL:urlPath];
-            if (foundIndexInDownloadItems == NSNotFound) {
-                NSUInteger foundIndexInDisplay = [self foundItemIndxInDisplayItemsByURL:urlPath];
-                if (foundIndexInDisplay != NSNotFound) {
-                    OSRemoteResourceItem * item = [self.displayItems objectAtIndex:foundIndexInDisplay];
-                    item.status = OSFileDownloadStatusNotStarted;
-                    [self.downloadItems addObject:item];
-                    [self.displayItems removeObjectAtIndex:foundIndexInDisplay];
-                    [self start:urlPath];
-                } else {
-                    OSRemoteResourceItem * item = [[OSRemoteResourceItem alloc] init];
-                    item.urlPath = urlPath;
-                    item.fileName = urlPath.lastPathComponent;
-                    [self.downloadItems addObject:item];
-                    [self start:urlPath];
-                }
-            } else {
-                OSRemoteResourceItem * item = [self.downloadItems objectAtIndex:foundIndexInDownloadItems];
+            {
+                
                 if (item.status != OSFileDownloadStatusSuccess) {
                     BOOL isDownloading = [self.downloader isDownloading:item.urlPath];
                     if (isDownloading == NO){
@@ -205,13 +210,19 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
                     }
                 }
             }
-            
         }
     };
     
+    NSNumber *shouldAllowDownloadOnCellularNetwork = [[OSFileDownloaderConfiguration defaultConfiguration] shouldAllowDownloadOnCellularNetwork];
     switch ([NetworkTypeUtils networkType]) {
         case NetworkTypeWWAN: {
-            [self xy_showMessage:@"请勿使用蜂窝网络下载"];
+            if (!shouldAllowDownloadOnCellularNetwork || ![shouldAllowDownloadOnCellularNetwork integerValue]) {
+                [self xy_showMessage:@"蜂窝网络下载处于关闭状态，您的任务已在下载队列中，切换到WIFI下即可下载"];
+            }
+            else {
+                [self xy_showMessage:@"您已开启蜂窝网络下载，此时使用的是您的流量"];
+                block();
+            }
             break;
         }
         case NetworkTypeWIFI: {

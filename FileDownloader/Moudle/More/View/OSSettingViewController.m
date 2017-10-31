@@ -89,10 +89,12 @@
     NSNumber *maxConcurrentDownloads = [OSFileDownloaderConfiguration defaultConfiguration].maxConcurrentDownloads;
     NSNumber *shouldAutoDownloadWhenFailure = [OSFileDownloaderConfiguration defaultConfiguration].shouldAutoDownloadWhenFailure;
     NSNumber *shouldAutoDownloadWhenInitialize = [OSFileDownloaderConfiguration defaultConfiguration].shouldAutoDownloadWhenInitialize;
+    NSNumber *shouldAllowDownloadOnCellularNetwork = [[OSFileDownloaderConfiguration defaultConfiguration] shouldAllowDownloadOnCellularNetwork];
     NSMutableArray *items = @[
                               [OSSettingsMenuItem cellForSel:@selector(setMaxConcurrentDownloads) target:self title:@"最大同时下载数量" disclosureText:[maxConcurrentDownloads stringValue] iconName:nil disclosureType:OSSettingsMenuItemDisclosureTypeViewControllerWithDisclosureText],
-                              [OSSettingsMenuItem switchCellForSel:@selector(autoDownloadFailure:) target:self title:@"下载失败后自动重试" iconName:nil on:[shouldAutoDownloadWhenFailure boolValue]],
-                              [OSSettingsMenuItem switchCellForSel:@selector(autoDownloadWhenInitialize:) target:self title:@"程序启动时自动下载上次任务" iconName:nil on:[shouldAutoDownloadWhenInitialize boolValue]],
+                              [OSSettingsMenuItem switchCellForSel:@selector(autoDownloadFailure:) target:self title:@"WIFI环境下失败后自动重试" iconName:nil on:[shouldAutoDownloadWhenFailure boolValue]],
+                              [OSSettingsMenuItem switchCellForSel:@selector(autoDownloadWhenInitialize:) target:self title:@"程序启动时自动下载" iconName:nil on:[shouldAutoDownloadWhenInitialize boolValue]],
+                              [OSSettingsMenuItem switchCellForSel:@selector(allowDownloadOnCellularNetwork:) target:self title:@"允许蜂窝网络下载" iconName:nil on:[shouldAllowDownloadOnCellularNetwork boolValue]],
                               ].mutableCopy;
     OSSettingsTableViewSection *section = [[OSSettingsTableViewSection alloc] initWithItem:items headerTitle:nil footerText:nil];
     return section;
@@ -249,6 +251,16 @@
     [[OSFileDownloaderConfiguration defaultConfiguration] setShouldAutoDownloadWhenInitialize:@(sw.isOn)];
     if (sw.isOn) {
         [self xy_showMessage:@"App在启动时会自动为您下载上次未完成任务"];
+    }
+}
+
+- (void)allowDownloadOnCellularNetwork:(UISwitch *)sw {
+    [[OSFileDownloaderConfiguration defaultConfiguration] setShouldAllowDownloadOnCellularNetwork:@(sw.isOn)];
+    if (sw.isOn) {
+        [self xy_showMessage:@"已为您开启蜂窝网络下载，建议您关闭此开关"];
+    }
+    else {
+        [self xy_showMessage:@"已为您关闭蜂窝网络下载"];
     }
 }
 

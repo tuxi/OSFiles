@@ -107,8 +107,12 @@
     return [self attributedStringWithText:@"查看下载页" color:[UIColor colorWithRed:49/255.0 green:194/255.0 blue:124/255.0 alpha:1.0] fontSize:15.0];
 }
 
-- (void)noDataPlaceholder:(UIScrollView *)scrollView didClickReloadButton:(UIButton *)button {
-    self.tabBarController.selectedIndex = 1;
+- (void)didClickDataPlaceholderReloadButton:(UIButton *)button {
+     self.tabBarController.selectedIndex = 1;
+}
+
+- (void)didTapOnDataPlaceholderContentView:(UITapGestureRecognizer *)tap {
+    
 }
 
 //- (NSAttributedString *)noDataDetailLabelAttributedString {

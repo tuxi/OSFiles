@@ -57,7 +57,7 @@ static NSString * const UserAgent = @"Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 li
 }
 
 - (void)handlePasteboardNotification:(NSNotification *)notify{
-    self.pasteboardChangeCount = [UIPasteboard generalPasteboard].changeCount;
+    self.pasteboardChangeCount = [ApplicationHelper helper].pasteboard.changeCount;
 }
 
 - (void)presentPasteboardChangedAlertWithURL:(NSURL *)url{
@@ -182,7 +182,7 @@ static NSString * const UserAgent = @"Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 li
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     [[OSAuthenticatorHelper sharedInstance] applicationDidBecomeActiveWithRemoveCoverImageView];
     
-    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+    UIPasteboard *pasteboard = [ApplicationHelper helper].pasteboard;
     
     if (self.pasteboardChangeCount != pasteboard.changeCount) {
         self.pasteboardChangeCount = pasteboard.changeCount;

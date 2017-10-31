@@ -29,8 +29,14 @@
     self = [super init];
     if (self) {
         [self addNotification];
+        [self commonInit];
     }
     return self;
+}
+
+- (void)commonInit {
+    
+    _pasteboard = [UIPasteboard generalPasteboard];
 }
 
 - (void)addNotification {

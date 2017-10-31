@@ -11,5 +11,6 @@
 @interface ApplicationHelper : NSObject
 
 @property (nonatomic, strong, class) ApplicationHelper *helper;
+@property (nonatomic, strong, readonly) UIPasteboard *pasteboard;
 
 @end

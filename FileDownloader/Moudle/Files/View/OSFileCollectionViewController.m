@@ -1231,7 +1231,7 @@ completionHandler:(void (^)(NSError *error))completion {
 - (NSAttributedString *)noDataTextLabelAttributedString {
     NSString *string = nil;
     if ([self isDownloadBrowser]) {
-        string = @"没有下载完成文件\n去查看下载页是否有文件在下载中";
+        string = @"下载完成的文件在这显示";
     }
     else {
         string = @"没有文件";

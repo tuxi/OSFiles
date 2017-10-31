@@ -227,10 +227,13 @@
     return [self attributedStringWithText:@"输入URL" color:[UIColor colorWithRed:49/255.0 green:194/255.0 blue:124/255.0 alpha:1.0] fontSize:15.0];
 }
 
-- (void)noDataPlaceholder:(UIScrollView *)scrollView didClickReloadButton:(UIButton *)button {
+- (void)didClickDataPlaceholderReloadButton:(UIButton *)button {
     [self addTask];
 }
 
+- (void)didTapOnDataPlaceholderContentView:(UITapGestureRecognizer *)tap {
+    
+}
 
 - (NSAttributedString *)noDataDetailLabelAttributedString {
     return [self attributedStringWithText:@"请输入URL开启下载任务" color:[UIColor grayColor] fontSize:16];

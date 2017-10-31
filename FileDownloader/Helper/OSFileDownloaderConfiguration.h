@@ -16,10 +16,13 @@
 @property (nonatomic, strong) NSNumber *shouldAutoDownloadWhenFailure;
 /// app启动时是否接着上次任务继续下载
 @property (nonatomic, strong) NSNumber *shouldAutoDownloadWhenInitialize;
+/// 允许蜂窝网络下载，默认不允许
+@property (nonatomic, strong) NSNumber *shouldAllowDownloadOnCellularNetwork;
 
 + (OSFileDownloaderConfiguration *)defaultConfiguration;
 
 + (NSString *)getDownloadLocalFolderPath;
+
 + (NSString *)getDocumentPath;
 + (NSString *)getLibraryPath;
 + (NSString *)getCachesPath;
