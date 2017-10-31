@@ -930,15 +930,9 @@ static const CGFloat windowHeight = 49.0;
     __weak typeof(self) weakSelf = self;
     [self copyFiles:self.selectorFiles toRootDirectory:self.rootDirectory completionHandler:^(NSError *error) {
         if (!error) {
-            if (weakSelf.mode == OSFileCollectionViewControllerModeMove) {
-                // 如果是移动文件，就移除那些选中的文件
-                NSFileManager *fileManager = [NSFileManager defaultManager];
-                [weakSelf.selectorFiles enumerateObjectsUsingBlock:^(OSFileAttributeItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                    [fileManager removeItemAtPath:obj.path error:nil];
-                }];
-            }
+            [weakSelf.selectorFiles removeAllObjects];
             [[NSNotificationCenter defaultCenter] postNotificationName:OSFileCollectionViewControllerOptionFileCompletionNotification object:nil userInfo:@{@"OSFileCollectionViewControllerMode": @(weakSelf.mode)}];
-            [self backButtonClick];
+            [weakSelf backButtonClick];
         }
     }];
     
@@ -1110,7 +1104,7 @@ completionHandler:(void (^)(NSError *error))completion {
             NSString *desPath = [rootPath stringByAppendingPathComponent:[obj.fullPath lastPathComponent]];
             NSURL *desURL = [NSURL fileURLWithPath:desPath];
             
-            __unused id<OSFileOperation> fileOperation = [_fileManager copyItemAtURL:[NSURL fileURLWithPath:obj.fullPath] toURL:desURL progress:^(NSProgress *progress) {
+            void (^ progressBlock)(NSProgress *progress) = ^ (NSProgress *progress) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSString *completionSize = [NSString transformedFileSizeValue:@(progress.completedUnitCount)];
                     NSString *totalSize = [NSString transformedFileSizeValue:@(progress.totalUnitCount)];
@@ -1118,15 +1112,30 @@ completionHandler:(void (^)(NSError *error))completion {
                     NSString *detailText = [NSString stringWithFormat:@"%@  %@/%@", prcent, completionSize, totalSize];
                     hudDetailTextCallBack(detailText, idx);
                 });
-            } completionHandler:^(id<OSFileOperation> fileOperation, NSError *error) {
+            };
+            
+            void (^ completionHandler)(id<OSFileOperation> fileOperation, NSError *error) = ^(id<OSFileOperation> fileOperation, NSError *error) {
                 completionCopyNum--;
                 dispatch_main_safe_async(^{
                     if (completionCopyNum == 0 && completion) {
                         completion(error);
                     }
                 });
-               
-            }];
+            };
+            NSURL *orgURL = [NSURL fileURLWithPath:obj.fullPath];
+            if (self.mode == OSFileCollectionViewControllerModeCopy) {
+                [_fileManager copyItemAtURL:orgURL
+                                      toURL:desURL
+                                   progress:progressBlock
+                          completionHandler:completionHandler];
+            }
+            else {
+                [_fileManager moveItemAtURL:orgURL
+                                      toURL:desURL
+                                   progress:progressBlock
+                          completionHandler:completionHandler];
+            }
+            
         }];
     };
     
