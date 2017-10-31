@@ -11,6 +11,7 @@
 #import "UIImageView+XYExtension.h"
 #import "NSString+OSFile.h"
 #import "OSFileManager.h"
+#import "UITextField+OSRangeExtension.h"
 
 @interface OSFileCollectionViewCell ()
 
@@ -145,15 +146,23 @@
 
 - (void)renameFile {
     
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"rename" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *alert = nil;
+    if (IS_IPAD) {
+        alert = [UIAlertController alertControllerWithTitle:@"rename" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    }
+    else {
+        alert = [UIAlertController alertControllerWithTitle:@"rename" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    }
+    
     [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
         textField.text = self.fileModel.filename;
+        [textField setSelectedRange:NSRangeFromString(self.fileModel.fileExtension)];
         textField.placeholder = @"请输入需要修改的名字";
         [textField addTarget:self action:@selector(alertViewTextFieldtextChange:) forControlEvents:UIControlEventEditingChanged];
     }];
     
-    [alert addAction:[UIAlertAction actionWithTitle:@"cancel" style:UIAlertActionStyleCancel handler:nil]];
-    [alert addAction:[UIAlertAction actionWithTitle:@"ok" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
+    [alert addAction:[UIAlertAction actionWithTitle:@"好的" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         
         if ([self.renameNewName containsString:@"/"]) {
             [self showInfo:@"名称中不符合的字符"];
