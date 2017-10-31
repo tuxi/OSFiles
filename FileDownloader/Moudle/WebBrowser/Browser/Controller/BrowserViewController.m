@@ -229,10 +229,10 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
               [self getImgsFormHTML:^(NSArray *imageURLs) {
                   NSString *string = [imageURLs componentsJoinedByString:@",\n"];
                   if (!imageURLs.count) {
-                      string = @"无图片";
+                      string = nil;
                   }
                   dispatch_async(dispatch_get_main_queue(), ^{
-                      [UIAlertView showWithTitle:[NSString stringWithFormat:@"%ld个图片", imageURLs.count] message:nil cancelButtonTitle:@"取消" otherButtonTitles:@[@"全部下载"] tapBlock:^(UIAlertView * _Nonnull alertView, NSInteger buttonIndex) {
+                      [UIAlertView showWithTitle:[NSString stringWithFormat:@"%ld个图片", imageURLs.count] message:string cancelButtonTitle:@"取消" otherButtonTitles:@[@"全部下载"] tapBlock:^(UIAlertView * _Nonnull alertView, NSInteger buttonIndex) {
                           if (buttonIndex == 1) {
                               [imageURLs enumerateObjectsUsingBlock:^(NSString *  _Nonnull url, NSUInteger idx, BOOL * _Nonnull stop) {
                                   if (!url.length) {
