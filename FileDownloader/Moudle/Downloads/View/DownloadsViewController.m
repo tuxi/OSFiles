@@ -127,9 +127,9 @@
 
 - (void)downloadProgressChange:(NSNotification *)note {
     
-    OSFileItem *item = note.object;
+    OSRemoteResourceItem *item = note.object;
     NSArray *downloadingArray = [[OSFileDownloaderManager sharedInstance] activeDownloadItems];
-    NSUInteger foundIdxInDownloading = [downloadingArray indexOfObjectPassingTest:^BOOL(OSFileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    NSUInteger foundIdxInDownloading = [downloadingArray indexOfObjectPassingTest:^BOOL(OSRemoteResourceItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         BOOL res = [obj.urlPath isEqualToString:item.urlPath];
         if (res) {
             *stop = YES;
@@ -138,7 +138,7 @@
     }];
     
     NSArray *displayArray = [[OSFileDownloaderManager sharedInstance] displayItems];
-    NSUInteger foundIdxInDisplay = [displayArray indexOfObjectPassingTest:^BOOL(OSFileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    NSUInteger foundIdxInDisplay = [displayArray indexOfObjectPassingTest:^BOOL(OSRemoteResourceItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         BOOL res = [obj.urlPath isEqualToString:item.urlPath];
         if (res) {
             *stop = YES;

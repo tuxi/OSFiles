@@ -11,7 +11,7 @@
 
 static NetworkType _networkType;
 
-NSString * const NetworkTypeChangeNotification = @"NetworkTypeChangeNotification";
+NSNotificationName const NetworkTypeChangeNotification = @"NetworkTypeChangeNotification";
 
 @implementation NetworkTypeUtils
 
@@ -36,7 +36,8 @@ NSString * const NetworkTypeChangeNotification = @"NetworkTypeChangeNotification
             type = NetworkTypeWIFI;
         }
         dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:NetworkTypeChangeNotification         object:nil userInfo:@{@"networkType": @(type)}];
+            [[NSNotificationCenter defaultCenter] postNotificationName:NetworkTypeChangeNotification
+                                                                object:nil userInfo:@{@"networkType": @(type)}];
             if (networkType) {
                 networkType(type);
             }

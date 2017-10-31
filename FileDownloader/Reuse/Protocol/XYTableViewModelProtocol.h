@@ -20,11 +20,11 @@
 @optional
 
 /// 获取模型数据源
-- (void)getDataSourceBlock:(id (^)())dataSource completion:(void(^)())completion;
+- (void)getDataSourceBlock:(id (^)(void))dataSource completion:(void(^)(void))completion;
 
 /// 获取模型数据源
 /// isNewData 是加载最新数据还是获取的更多数据
-- (void)getDataSourceWithRequestType:(BOOL)isNewData dataSourceBlock:(id (^)())dataSource completion:(void(^)())completion;
+- (void)getDataSourceWithRequestType:(BOOL)isNewData dataSourceBlock:(id (^)(void))dataSource completion:(void(^)(void))completion;
 
 /// 删除所有数据源
 - (void)removeAllObjctFromDataSource;

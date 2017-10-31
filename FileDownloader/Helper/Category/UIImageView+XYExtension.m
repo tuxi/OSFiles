@@ -7,7 +7,7 @@
 //
 
 #import "UIImageView+XYExtension.h"
-#import "OSFileConfigUtils.h"
+#import "OSFileDownloaderConfiguration.h"
 
 @implementation UIImageView (XYExtension)
 
@@ -55,7 +55,7 @@
 }
 
 + (NSString *)getCacheImageFolderPath {
-    NSString *cachesPath = [OSFileConfigUtils getLibraryPath];
+    NSString *cachesPath = [OSFileDownloaderConfiguration getLibraryPath];
     NSString *path = [cachesPath stringByAppendingPathComponent:@"OSCachehMediaVideoIconFolder"];
     BOOL isDirectory, isExist;
     isExist = [[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory];

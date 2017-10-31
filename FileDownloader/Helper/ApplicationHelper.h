@@ -10,4 +10,6 @@
 
 @interface ApplicationHelper : NSObject
 
+@property (nonatomic, strong, class) ApplicationHelper *helper;
+
 @end

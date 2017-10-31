@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "OSFileDownloadProtocol.h"
 #import "OSFileDownloader.h"
-#import "OSFileItem.h"
+#import "OSRemoteResourceItem.h"
 
 @protocol OSFileDownloaderDataSource <NSObject>
 
@@ -25,7 +25,7 @@
 
 @property (nonatomic, class) OSFileDownloaderManager *sharedInstance;
 
-@property (nonatomic, strong, readonly) NSMutableArray<OSFileItem *> *downloadItems;
+@property (nonatomic, strong, readonly) NSMutableArray<OSRemoteResourceItem *> *downloadItems;
 
 @property (nonatomic, weak) id<OSFileDownloaderDataSource> dataSource;
 
@@ -40,20 +40,24 @@
 /// 归档items
 - (void)storedDownloadItems;
 /// 从本地获取所有的downloadItem
-- (NSMutableArray<OSFileItem *> *)restoredDownloadItems;
+- (NSMutableArray<OSRemoteResourceItem *> *)restoredDownloadItems;
 
 - (void)start:(NSString *)url;
 - (void)cancel:(NSString *)url;
 - (void)pause:(NSString *)url;
 
-/// 下载失败时app每隔10秒下载自动下载一次全部失败的
+/// WIFI下 下载失败时app每隔10秒下载自动下载一次全部失败的
 - (void)autoDownloadFailure;
+/// 暂停所有下载任务
+- (void)pauseAllDownloadTask;
+/// 让所有任务暂停，并进入失败状态
+- (void)failureAllDownloadTask;
 
-- (NSArray<OSFileItem *> *)downloadedItems;
-- (NSArray<OSFileItem *> *)activeDownloadItems;
-- (NSArray<OSFileItem *> *)downloadFailureItems;
+- (NSArray<OSRemoteResourceItem *> *)downloadedItems;
+- (NSArray<OSRemoteResourceItem *> *)activeDownloadItems;
+- (NSArray<OSRemoteResourceItem *> *)downloadFailureItems;
 /// 所有展示中的文件，还未开始下载时存放的，当文件取消下载时也会存放到此数组
-- (NSMutableArray<OSFileItem *> *)displayItems;
+- (NSMutableArray<OSRemoteResourceItem *> *)displayItems;
 /// 获取某种状态的任务
 - (NSArray *)getDownloadItemsWithStatus:(OSFileDownloadStatus)state;
 // 查找urlPath在downloadItems中对应的OSFileDownloadOperation的索引

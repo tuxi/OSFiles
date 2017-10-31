@@ -15,7 +15,7 @@
 #import "BrowserViewController.h"
 #import "BaseNavigationViewController.h"
 #import "OSFileCollectionViewController.h"
-#import "OSFileConfigUtils.h"
+#import "OSFileDownloaderConfiguration.h"
 
 @interface MainTabBarController () <SmileAuthenticatorDelegate>
 
@@ -31,8 +31,8 @@
     [self addChildVC:[DownloadsViewController new] imageNamed:@"TabDownloads" title:@"下载"];
     
     [self addChildVC:[[OSFileCollectionViewController alloc] initWithDirectoryArray:@[
-                                                                                      [OSFileConfigUtils getDownloadLocalFolderPath],
-                                                                                      [OSFileConfigUtils getDocumentPath]
+                                                                                      [OSFileDownloaderConfiguration getDownloadLocalFolderPath],
+                                                                                      [OSFileDownloaderConfiguration getDocumentPath]
                                                                                       ]] imageNamed:@"TabFiles" title:@"文件管理"];
     [self addChildVC:[OSSettingViewController new] imageNamed:@"TabMore" title:@"更多"];
     

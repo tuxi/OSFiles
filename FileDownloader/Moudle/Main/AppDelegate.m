@@ -14,7 +14,7 @@
 #import "ExceptionUtils.h"
 #import "OSAuthenticatorHelper.h"
 #import "OSLoaclNotificationHelper.h"
-#import "OSFileConfigUtils.h"
+#import "OSFileDownloaderConfiguration.h"
 
 #import "KeyboardHelper.h"
 #import "MenuHelper.h"
@@ -70,11 +70,7 @@ static NSString * const UserAgent = @"Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 li
     }];
     UIAlertAction *downloadFileAction = [UIAlertAction actionWithTitle:@"下载" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action){
         
-        if ([NetworkTypeUtils networkType] == NetworkTypeWIFI) {
-            [[OSFileDownloaderManager sharedInstance] start:url.path];
-        } else {
-            [[[UIAlertView alloc] initWithTitle:@"非Wifi环境下不能下载" message:nil delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil, nil] show];
-        }
+        [[OSFileDownloaderManager sharedInstance] start:url.path];
         [UIViewController xy_tabBarController].selectedIndex = 1;
     }];
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
@@ -95,6 +91,7 @@ static NSString * const UserAgent = @"Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 li
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
+    [ApplicationHelper helper];
     [DDLog addLogger:[DDTTYLogger sharedInstance]];
     [DDLog addLogger:[DDASLLogger sharedInstance]];
     DDLogDebug(@"Home Path : %@", HomePath);
@@ -155,7 +152,7 @@ static NSString * const UserAgent = @"Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 li
     });
     
     OSFileDownloaderManager *module = [OSFileDownloaderManager sharedInstance];
-    module.shouldAutoDownloadWhenInitialize = [[OSFileConfigUtils manager].shouldAutoDownloadWhenInitialize boolValue];
+    module.shouldAutoDownloadWhenInitialize = [[OSFileDownloaderConfiguration defaultConfiguration].shouldAutoDownloadWhenInitialize boolValue];
     
     return YES;
 }

@@ -10,7 +10,7 @@
 #import "OSFileDownloadConst.h"
 #import "OSFileDownloadProgress.h"
 
-@interface OSFileItem : OSFile <NSCoding>
+@interface OSRemoteResourceItem : NSObject <NSCoding>
 
 @property (nonatomic, copy) NSString *packageId;
 @property (nonatomic, assign) OSFileDownloadStatus status;

@@ -1,15 +1,15 @@
 //
-//  OSFileItem.m
+//  OSRemoteResourceItem.m
 //  OSFileDownloader
 //
 //  Created by Swae on 2017/10/19.
 //  Copyright © 2017年 Ossey. All rights reserved.
 //
 
-#import "OSFileItem.h"
-#import "OSFileConfigUtils.h"
+#import "OSRemoteResourceItem.h"
+#import "OSFileDownloaderConfiguration.h"
 
-@implementation OSFileItem
+@implementation OSRemoteResourceItem
 
 - (instancetype)init
 {
@@ -51,7 +51,7 @@
 }
 
 - (NSString *)localFolderPath {
-    return [OSFileConfigUtils getDownloadLocalFolderPath];
+    return [OSFileDownloaderConfiguration getDownloadLocalFolderPath];
 }
 
 - (NSString *)localPath {

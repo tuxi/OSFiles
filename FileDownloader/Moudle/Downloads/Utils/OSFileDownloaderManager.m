@@ -11,7 +11,7 @@
 #import "OSFileDownloaderDelegate.h"
 #import "OSFileDownloadConst.h"
 #import "NSString+OSFile.h"
-#import "OSFileConfigUtils.h"
+#import "OSFileDownloaderConfiguration.h"
 #import "AutoTimer.h"
 
 static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
@@ -56,7 +56,7 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
         self.downloadDelegate = [OSFileDownloaderDelegate new];
         self.downloader = [OSFileDownloader new];
         self.downloader.downloadDelegate = self.downloadDelegate;
-        NSNumber *maxConcurrentDownloads = [[OSFileConfigUtils manager] maxConcurrentDownloads];
+        NSNumber *maxConcurrentDownloads = [[OSFileDownloaderConfiguration defaultConfiguration] maxConcurrentDownloads];
         self.maxConcurrentDownloads = [maxConcurrentDownloads integerValue];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate) name:UIApplicationWillTerminateNotification object:nil];
         self.downloadItems = [self restoredDownloadItems];
@@ -80,7 +80,7 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
 
 - (void)initDownloadTasks {
     NSIndexSet *indexSet = [self.downloadItems indexesOfObjectsPassingTest:
-                            ^BOOL(OSFileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                            ^BOOL(OSRemoteResourceItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                                 return
                                 obj.status == OSFileDownloadStatusDownloading |
                                 obj.status == OSFileDownloadStatusWaiting |
@@ -88,16 +88,16 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
                             }];
     NSArray *needDownloads = [self.downloadItems objectsAtIndexes:indexSet];
     if (self.shouldAutoDownloadWhenInitialize) {
-        needDownloads = [needDownloads sortedArrayUsingComparator:^NSComparisonResult(OSFileItem *  _Nonnull obj1, OSFileItem *  _Nonnull obj2) {
+        needDownloads = [needDownloads sortedArrayUsingComparator:^NSComparisonResult(OSRemoteResourceItem *  _Nonnull obj1, OSRemoteResourceItem *  _Nonnull obj2) {
             NSComparisonResult result = [@(obj1.status) compare:@(obj2.status)];
             return result == NSOrderedDescending;
         }];
         
-        [needDownloads enumerateObjectsUsingBlock:^(OSFileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [needDownloads enumerateObjectsUsingBlock:^(OSRemoteResourceItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             [self start:obj.urlPath];
         }];
     } else {
-        [needDownloads enumerateObjectsUsingBlock:^(OSFileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [needDownloads enumerateObjectsUsingBlock:^(OSRemoteResourceItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             obj.status = OSFileDownloadStatusPaused;
         }];
     }
@@ -125,15 +125,15 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
 }
 
 /// 根据url创建或获取一个OSFileDownloadIem 返回
-- (BOOL)addUrlPathToDisplayItemArray:(NSString *)urlPath downloadItem:(OSFileItem * *)downloadItem {
+- (BOOL)addUrlPathToDisplayItemArray:(NSString *)urlPath downloadItem:(OSRemoteResourceItem * *)downloadItem {
     @synchronized (self) {
-        OSFileItem *item = nil;
+        OSRemoteResourceItem *item = nil;
         // 下载任务中没有
         NSUInteger downloadItemIdx = [self foundItemIndxInDownloadItemsByURL:urlPath];
         // 显示的队列中也没有
         NSUInteger displayItemIdx = [self foundItemIndxInDisplayItemsByURL:urlPath];
         if (downloadItemIdx == NSNotFound && displayItemIdx == NSNotFound) {
-            item = [[OSFileItem alloc] init];
+            item = [[OSRemoteResourceItem alloc] init];
             item.urlPath = urlPath;
             item.fileName = urlPath.lastPathComponent;
             [self.displayItems addObject:item];
@@ -161,51 +161,67 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
 
 - (void)start:(NSString *)urlPath {
     
-    NSAssert(urlPath, @"urlPath is not nil");
-
-    @synchronized (_downloadItems) {
+    dispatch_block_t block = ^ {
+        NSAssert(urlPath, @"urlPath is not nil");
         
-        NSUInteger foundIndexInDownloadItems = [self foundItemIndxInDownloadItemsByURL:urlPath];
-        if (foundIndexInDownloadItems == NSNotFound) {
-            NSUInteger foundIndexInDisplay = [self foundItemIndxInDisplayItemsByURL:urlPath];
-            if (foundIndexInDisplay != NSNotFound) {
-                OSFileItem * item = [self.displayItems objectAtIndex:foundIndexInDisplay];
-                item.status = OSFileDownloadStatusNotStarted;
-                [self.downloadItems addObject:item];
-                [self.displayItems removeObjectAtIndex:foundIndexInDisplay];
-                [self start:urlPath];
+        @synchronized (_downloadItems) {
+            
+            NSUInteger foundIndexInDownloadItems = [self foundItemIndxInDownloadItemsByURL:urlPath];
+            if (foundIndexInDownloadItems == NSNotFound) {
+                NSUInteger foundIndexInDisplay = [self foundItemIndxInDisplayItemsByURL:urlPath];
+                if (foundIndexInDisplay != NSNotFound) {
+                    OSRemoteResourceItem * item = [self.displayItems objectAtIndex:foundIndexInDisplay];
+                    item.status = OSFileDownloadStatusNotStarted;
+                    [self.downloadItems addObject:item];
+                    [self.displayItems removeObjectAtIndex:foundIndexInDisplay];
+                    [self start:urlPath];
+                } else {
+                    OSRemoteResourceItem * item = [[OSRemoteResourceItem alloc] init];
+                    item.urlPath = urlPath;
+                    item.fileName = urlPath.lastPathComponent;
+                    [self.downloadItems addObject:item];
+                    [self start:urlPath];
+                }
             } else {
-                OSFileItem * item = [[OSFileItem alloc] init];
-                item.urlPath = urlPath;
-                item.fileName = urlPath.lastPathComponent;
-                [self.downloadItems addObject:item];
-                [self start:urlPath];
-            }
-        } else {
-            OSFileItem * item = [self.downloadItems objectAtIndex:foundIndexInDownloadItems];
-            if (item.status != OSFileDownloadStatusSuccess) {
-                BOOL isDownloading = [self.downloader isDownloading:item.urlPath];
-                if (isDownloading == NO){
-                    item.status = OSFileDownloadStatusDownloading;
-                   id<OSFileDownloadOperation> opeation = [self.downloader downloadTaskWithURLPath:urlPath localPath:item.localPath progress:^(NSProgress * _Nonnull progress) {
-                        
-                    } completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable localURL, NSError * _Nullable error) {
-                        if (error) {
-                            NSLog(@"%@", error);
-                        } else {
-                            NSLog(@"%@ 任务下载完成", localURL);
+                OSRemoteResourceItem * item = [self.downloadItems objectAtIndex:foundIndexInDownloadItems];
+                if (item.status != OSFileDownloadStatusSuccess) {
+                    BOOL isDownloading = [self.downloader isDownloading:item.urlPath];
+                    if (isDownloading == NO){
+                        item.status = OSFileDownloadStatusDownloading;
+                        id<OSFileDownloadOperation> opeation = [self.downloader downloadTaskWithURLPath:urlPath localPath:item.localPath progress:^(NSProgress * _Nonnull progress) {
+                            
+                        } completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable localURL, NSError * _Nullable error) {
+                            if (error) {
+                                NSLog(@"%@", error);
+                            } else {
+                                NSLog(@"%@ 任务下载完成", localURL);
+                            }
+                        }];
+                        BOOL isWaiting = [self.downloader isWaiting:opeation.urlPath];
+                        if (isWaiting) {
+                            item.status = OSFileDownloadStatusWaiting;
                         }
-                    }];
-                    BOOL isWaiting = [self.downloader isWaiting:opeation.urlPath];
-                    if (isWaiting) {
-                        item.status = OSFileDownloadStatusWaiting;
+                        [self storedDownloadItems];
                     }
-                    [self storedDownloadItems];
                 }
             }
+            
         }
-        
+    };
+    
+    switch ([NetworkTypeUtils networkType]) {
+        case NetworkTypeWWAN: {
+            [self xy_showMessage:@"请勿使用蜂窝网络下载"];
+            break;
+        }
+        case NetworkTypeWIFI: {
+            block();
+            break;
+        }
+        default:
+            break;
     }
+    
 }
 
 - (void)addDownloadItemByUrlPath:(NSString *)urlPath {
@@ -223,7 +239,7 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
         NSUInteger itemIdx = [self foundItemIndxInDownloadItemsByURL:urlPath];
         if (itemIdx != NSNotFound) {
             // 根据索引在self.downloadItems中取出OSFileDownloadOperation，修改状态，并进行归档
-            OSFileItem *item = [self.downloadItems objectAtIndex:itemIdx];
+            OSRemoteResourceItem *item = [self.downloadItems objectAtIndex:itemIdx];
             item.status = OSFileDownloadStatusNotStarted;
             id<OSFileDownloadOperation> operation = [self.downloader getDownloadOperationByURL:urlPath];
             if (operation.progressObj.nativeProgress) {
@@ -258,7 +274,7 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
     @synchronized (self) {
         NSUInteger foundItemIdx = [self foundItemIndxInDownloadItemsByURL:urlPath];
         if (foundItemIdx != NSNotFound) {
-            OSFileItem *item = [self.downloadItems objectAtIndex:foundItemIdx];
+            OSRemoteResourceItem *item = [self.downloadItems objectAtIndex:foundItemIdx];
             BOOL isDownloading = [self.downloader isDownloading:urlPath];
             id<OSFileDownloadOperation> operation = [self.downloader getDownloadOperationByURL:urlPath];
             if (isDownloading) {
@@ -302,7 +318,7 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
 - (void)clearAllDownloadTask {
     @synchronized (_downloadItems) {
         typeof(self) weakSelf = self;
-        [self.downloadItems enumerateObjectsUsingBlock:^(OSFileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [self.downloadItems enumerateObjectsUsingBlock:^(OSRemoteResourceItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             
             if (obj.status == OSFileDownloadStatusDownloading || obj.status == OSFileDownloadStatusWaiting) {
                 [self cancel:obj.urlPath];
@@ -316,13 +332,13 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
     
 }
 
-- (NSArray<OSFileItem *> *)downloadedItems {
+- (NSArray<OSRemoteResourceItem *> *)downloadedItems {
     if (!self.downloadItems.count) {
         return nil;
     }
     
     NSMutableArray *allSuccessItems = [NSMutableArray array];
-    [self.downloadItems enumerateObjectsUsingBlock:^(OSFileItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self.downloadItems enumerateObjectsUsingBlock:^(OSRemoteResourceItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if (obj.status == OSFileDownloadStatusSuccess) {
             [allSuccessItems addObject:obj];
         }
@@ -330,12 +346,12 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
     return allSuccessItems;
 }
 
-- (NSArray<OSFileItem *> *)activeDownloadItems {
+- (NSArray<OSRemoteResourceItem *> *)activeDownloadItems {
     if (!self.downloadItems.count) {
         return @[];
     }
     NSMutableArray *downloadingItems = [NSMutableArray array];
-    [self.downloadItems enumerateObjectsUsingBlock:^(OSFileItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self.downloadItems enumerateObjectsUsingBlock:^(OSRemoteResourceItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if (obj.status != OSFileDownloadStatusSuccess) {
             [downloadingItems addObject:obj];
         }
@@ -348,7 +364,7 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
 - (void)autoDownloadFailure {
     
     [AutoTimer startWithTimeInterval:10.0 block:^{
-        BOOL shouldAutoDownloadWhenFailure = [[OSFileConfigUtils manager].shouldAutoDownloadWhenFailure boolValue];
+        BOOL shouldAutoDownloadWhenFailure = [[OSFileDownloaderConfiguration defaultConfiguration].shouldAutoDownloadWhenFailure boolValue];
         if ([NetworkTypeUtils networkType] != NetworkTypeWIFI || !shouldAutoDownloadWhenFailure) {
             [AutoTimer cancel];
             return;
@@ -359,14 +375,38 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
             return;
         }
         
-        for (OSFileItem *item in  [self downloadFailureItems]) {
+        for (OSRemoteResourceItem *item in  [self downloadFailureItems]) {
             [self start:item.urlPath];
         }
         
     }];
 }
 
+- (void)pauseAllDownloadTask {
+    
+    if (!self.activeDownloadItems.count) {
+        return;
+    }
+    
+    for (OSRemoteResourceItem *item in self.activeDownloadItems) {
+        if (item.status != OSFileDownloadStatusSuccess &&
+            item.status != OSFileDownloadStatusNotStarted) {
+            [self pause:item.urlPath];
+        }
+    }
+}
 
+- (void)failureAllDownloadTask {
+    [self pauseAllDownloadTask];
+    for (OSRemoteResourceItem *item in [self activeDownloadItems]) {
+        if (item.status != OSFileDownloadStatusSuccess &&
+            item.status != OSFileDownloadStatusNotStarted) {
+            item.status = OSFileDownloadStatusFailure;
+        }
+    }
+    
+    [self storedDownloadItems];
+}
 
 ////////////////////////////////////////////////////////////////////////
 #pragma mark - 下载信息存储
@@ -374,16 +414,16 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
 
 
 /// 从本地获取所有的downloadItem
-- (NSMutableArray<OSFileItem *> *)restoredDownloadItems {
+- (NSMutableArray<OSRemoteResourceItem *> *)restoredDownloadItems {
     
-    NSMutableArray<OSFileItem *> *restoredDownloadItems = [NSMutableArray array];
+    NSMutableArray<OSRemoteResourceItem *> *restoredDownloadItems = [NSMutableArray array];
     NSMutableArray<NSData *> *restoredMutableDataArray = [[NSUserDefaults standardUserDefaults] objectForKey:OSFileDownloadOperationsKey];
     if (!restoredMutableDataArray) {
         restoredMutableDataArray = [NSMutableArray array];
     }
     
     [restoredMutableDataArray enumerateObjectsUsingBlock:^(NSData * _Nonnull data, NSUInteger idx, BOOL * _Nonnull stop) {
-        OSFileItem *item = nil;
+        OSRemoteResourceItem *item = nil;
         if (data) {
             @try {
                 // 解档
@@ -408,7 +448,7 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
     
     NSMutableArray<NSData *> *downloadItemsArchiveArray = [NSMutableArray arrayWithCapacity:self.downloadItems.count];
     
-    [self.downloadItems enumerateObjectsUsingBlock:^(OSFileItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self.downloadItems enumerateObjectsUsingBlock:^(OSRemoteResourceItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         NSData *itemData = nil;
         @try {
             itemData = [NSKeyedArchiver archivedDataWithRootObject:obj];
@@ -434,7 +474,7 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
 
 - (void)applicationWillTerminate {
     if (!self.shouldAutoDownloadWhenInitialize) {
-        [[self activeDownloadItems] enumerateObjectsUsingBlock:^(OSFileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [[self activeDownloadItems] enumerateObjectsUsingBlock:^(OSRemoteResourceItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             [self pause:obj.urlPath];
         }];
     }
@@ -450,7 +490,7 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
         return NSNotFound;
     }
     return [self.displayItems indexOfObjectPassingTest:
-            ^BOOL(OSFileItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            ^BOOL(OSRemoteResourceItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 return [urlPath isEqualToString:obj.urlPath];
             }];
 }
@@ -462,7 +502,7 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
         return NSNotFound;
     }
     return [self.downloadItems indexOfObjectPassingTest:
-            ^BOOL(OSFileItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            ^BOOL(OSRemoteResourceItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 return [urlPath isEqualToString:obj.urlPath];
             }];
 }
@@ -473,7 +513,7 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
         return NO;
     }
     @synchronized (_downloadItems) {
-        NSIndexSet *indexSet = [self.downloadItems indexesOfObjectsPassingTest:^BOOL(OSFileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSIndexSet *indexSet = [self.downloadItems indexesOfObjectsPassingTest:^BOOL(OSRemoteResourceItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             return [obj.fileName isEqualToString:packageId];
         }];
         if (!indexSet.count) {
@@ -488,7 +528,7 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
 
 - (NSArray *)getDownloadItemsWithStatus:(OSFileDownloadStatus)state {
     @synchronized (_downloadItems) {
-        NSIndexSet *indexSet = [_downloadItems indexesOfObjectsPassingTest:^BOOL(OSFileItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSIndexSet *indexSet = [_downloadItems indexesOfObjectsPassingTest:^BOOL(OSRemoteResourceItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             return obj.status == state;
         }];
         if (indexSet.count) {
@@ -498,7 +538,7 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
     }
 }
 
-- (NSArray<OSFileItem *> *)downloadFailureItems {
+- (NSArray<OSRemoteResourceItem *> *)downloadFailureItems {
     return [self getDownloadItemsWithStatus:OSFileDownloadStatusFailure];
 }
 @end

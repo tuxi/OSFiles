@@ -112,7 +112,7 @@ static const CGFloat windowHeight = 49.0;
     BOOL displayEdit = YES;
     if (self.directoryArray && self.directoryArray.count <= 2) {
         NSIndexSet *set = [self.directoryArray indexesOfObjectsPassingTest:^BOOL(NSString * _Nonnull path, NSUInteger idx, BOOL * _Nonnull stop) {
-            return [path isEqualToString:[OSFileConfigUtils getDownloadLocalFolderPath]] || [path isEqualToString:[OSFileConfigUtils getDocumentPath]];
+            return [path isEqualToString:[OSFileDownloaderConfiguration getDownloadLocalFolderPath]] || [path isEqualToString:[OSFileDownloaderConfiguration getDocumentPath]];
         }];
         if (set.count == self.directoryArray.count) {
             displayEdit = NO;
@@ -307,10 +307,10 @@ static const CGFloat windowHeight = 49.0;
     self.navigationItem.title = @"文件管理";
     if (self.rootDirectory.length) {
         self.navigationItem.title = [self.rootDirectory lastPathComponent];
-        if ([self.rootDirectory isEqualToString:[OSFileConfigUtils getDocumentPath]]) {
+        if ([self.rootDirectory isEqualToString:[OSFileDownloaderConfiguration getDocumentPath]]) {
             self.navigationItem.title = @"iTunes文件";
         }
-        else if ([self.rootDirectory isEqualToString:[OSFileConfigUtils getDownloadLocalFolderPath]]) {
+        else if ([self.rootDirectory isEqualToString:[OSFileDownloaderConfiguration getDownloadLocalFolderPath]]) {
             self.navigationItem.title = @"下载";
         }
     }
@@ -980,8 +980,8 @@ static const CGFloat windowHeight = 49.0;
 /// 选择文件最终复制的目标目录
 - (void)chooseDesDirectoryToCopy {
     OSFileCollectionViewController *vc = [[OSFileCollectionViewController alloc] initWithDirectoryArray:@[
-                                                                                                         [OSFileConfigUtils getDownloadLocalFolderPath],
-                                                                                                         [OSFileConfigUtils getDocumentPath]] controllerMode:OSFileCollectionViewControllerModeCopy];
+                                                                                                         [OSFileDownloaderConfiguration getDownloadLocalFolderPath],
+                                                                                                         [OSFileDownloaderConfiguration getDocumentPath]] controllerMode:OSFileCollectionViewControllerModeCopy];
     UINavigationController *nac = [[[self.navigationController class] alloc] initWithRootViewController:vc];
     vc.selectorFiles = self.selectorFiles.mutableCopy;
     [self showDetailViewController:nac sender:self];
@@ -989,8 +989,8 @@ static const CGFloat windowHeight = 49.0;
 
 - (void)chooseDesDirectoryToMove {
     OSFileCollectionViewController *vc = [[OSFileCollectionViewController alloc] initWithDirectoryArray:@[
-                                                                                                          [OSFileConfigUtils getDownloadLocalFolderPath],
-                                                                                                          [OSFileConfigUtils getDocumentPath]] controllerMode:OSFileCollectionViewControllerModeMove];
+                                                                                                          [OSFileDownloaderConfiguration getDownloadLocalFolderPath],
+                                                                                                          [OSFileDownloaderConfiguration getDocumentPath]] controllerMode:OSFileCollectionViewControllerModeMove];
     UINavigationController *nac = [[[self.navigationController class] alloc] initWithRootViewController:vc];
     vc.selectorFiles = self.selectorFiles.mutableCopy;
     [self showDetailViewController:nac sender:self];
@@ -1264,7 +1264,7 @@ completionHandler:(void (^)(NSError *error))completion {
 ////////////////////////////////////////////////////////////////////////
 
 - (BOOL)isDownloadBrowser {
-    return [self.rootDirectory isEqualToString:[OSFileConfigUtils getDownloadLocalFolderPath]];
+    return [self.rootDirectory isEqualToString:[OSFileDownloaderConfiguration getDownloadLocalFolderPath]];
 }
 
 

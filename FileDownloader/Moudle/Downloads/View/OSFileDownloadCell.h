@@ -9,11 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "UITableViewCell+XYConfigure.h"
 
-@class OSFileItem;
+@class OSRemoteResourceItem;
 
 @interface OSFileDownloadCell : UITableViewCell
 
-@property (nonatomic, strong) OSFileItem *fileItem;
+@property (nonatomic, strong) OSRemoteResourceItem *fileItem;
 @property (nonatomic, copy) void (^optionButtonClick)(UIButton *btn, OSFileDownloadCell *cell);
 
 - (void)setLongPressGestureRecognizer:(void (^)(UILongPressGestureRecognizer *longPres))block;

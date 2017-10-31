@@ -9,7 +9,7 @@
 #import "FilesTableViewModel.h"
 #import "OSFileDownloadCell.h"
 #import "XYImageViewer.h"
-#import "OSFileItem.h"
+#import "OSRemoteResourceItem.h"
 #import "XYCutVideoController.h"
 #import "UIView+Extend.h"
 
@@ -32,7 +32,7 @@ static NSString * const FilesViewControllerViewCellID = @"FilesViewController";
 
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ XYTableViewModelProtocol ~~~~~~~~~~~~~~~~~~~~~~~
 
-- (void)getDataSourceBlock:(id (^)())dataSource completion:(void (^)())completion {
+- (void)getDataSourceBlock:(id (^)(void))dataSource completion:(void (^)(void))completion {
     if (dataSource) {
         self.dataSource = [dataSource() mutableCopy];
         if (completion) {
@@ -81,7 +81,7 @@ static NSString * const FilesViewControllerViewCellID = @"FilesViewController";
 
 - (void)cutVideoWithIndexPath:(NSIndexPath *)indexPath {
     
-    OSFileItem *item = (OSFileItem *)self.dataSource[indexPath.row];
+    OSRemoteResourceItem *item = (OSRemoteResourceItem *)self.dataSource[indexPath.row];
     // _MIMEType	NSTaggedPointerString *	@"video/mp4"	0xa2304a003f0625c9
     if ([item.MIMEType isEqualToString:@"video/mp4"]) {
         XYCutVideoController *vc = [XYCutVideoController new];
@@ -99,7 +99,7 @@ static NSString * const FilesViewControllerViewCellID = @"FilesViewController";
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
 //    NSMutableArray *imageURLs = [NSMutableArray array];
 //    [self.dataSource enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-//        OSFileItem *item = (OSFileItem *)obj;
+//        OSRemoteResourceItem *item = (OSRemoteResourceItem *)obj;
 //        if ([item isKindOfClass:[FileItem class]]) {
 //            if ([item.MIMEType isEqualToString:@"image/jpeg"] || [item.MIMEType isEqualToString:@"image/png"]) {
 //                [imageURLs addObject:item.urlPath];
@@ -107,7 +107,7 @@ static NSString * const FilesViewControllerViewCellID = @"FilesViewController";
 //        }
 //    }];
     
-    OSFileItem *item = (OSFileItem *)self.dataSource[indexPath.row];
+    OSRemoteResourceItem *item = (OSRemoteResourceItem *)self.dataSource[indexPath.row];
     
     if ([item.MIMEType isEqualToString:@"image/jpeg"] || [item.MIMEType isEqualToString:@"image/png"]) {
         [[XYImageViewer prepareImages:@[item.localPath] pageTextList:nil endView:^UIView *(NSIndexPath *indexPath) {

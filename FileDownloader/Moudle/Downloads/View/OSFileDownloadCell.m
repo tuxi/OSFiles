@@ -118,7 +118,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
 ////////////////////////////////////////////////////////////////////////
 #pragma mark -
 ////////////////////////////////////////////////////////////////////////
-- (void)setFileItem:(OSFileItem *)fileItem {
+- (void)setFileItem:(OSRemoteResourceItem *)fileItem {
     _fileItem = fileItem;
     self.downloadStatusLabel.hidden = NO;
     self.speedLabel.hidden = NO;
@@ -227,11 +227,7 @@ static CGFloat const OSFileDownloadCellGloabMargin = 10.0;
 
 - (void)start:(NSString *)urlPath {
     
-    if ([NetworkTypeUtils networkType] == NetworkTypeWIFI) {
-        [[OSFileDownloaderManager sharedInstance] start:urlPath];
-    } else {
-        [[[UIAlertView alloc] initWithTitle:@"非Wifi环境下不能下载" message:nil delegate:nil cancelButtonTitle:@"好" otherButtonTitles:nil, nil] show];
-    }
+    [[OSFileDownloaderManager sharedInstance] start:urlPath];
 }
 
 - (void)cancel:(NSString *)urlPath {

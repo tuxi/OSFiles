@@ -11,7 +11,7 @@
 #import "OSSettingsTableViewSection.h"
 #import "SmileAuthenticator.h"
 #import "OSAuthenticatorHelper.h"
-#import "OSFileConfigUtils.h"
+#import "OSFileDownloaderConfiguration.h"
 #import "UIViewController+OSAlertExtension.h"
 #import "OSFileDownloaderManager.h"
 
@@ -86,9 +86,9 @@
 }
 
 - (OSSettingsTableViewSection *)section_2 {
-    NSNumber *maxConcurrentDownloads = [OSFileConfigUtils manager].maxConcurrentDownloads;
-    NSNumber *shouldAutoDownloadWhenFailure = [OSFileConfigUtils manager].shouldAutoDownloadWhenFailure;
-    NSNumber *shouldAutoDownloadWhenInitialize = [OSFileConfigUtils manager].shouldAutoDownloadWhenInitialize;
+    NSNumber *maxConcurrentDownloads = [OSFileDownloaderConfiguration defaultConfiguration].maxConcurrentDownloads;
+    NSNumber *shouldAutoDownloadWhenFailure = [OSFileDownloaderConfiguration defaultConfiguration].shouldAutoDownloadWhenFailure;
+    NSNumber *shouldAutoDownloadWhenInitialize = [OSFileDownloaderConfiguration defaultConfiguration].shouldAutoDownloadWhenInitialize;
     NSMutableArray *items = @[
                               [OSSettingsMenuItem cellForSel:@selector(setMaxConcurrentDownloads) target:self title:@"最大同时下载数量" disclosureText:[maxConcurrentDownloads stringValue] iconName:nil disclosureType:OSSettingsMenuItemDisclosureTypeViewControllerWithDisclosureText],
                               [OSSettingsMenuItem switchCellForSel:@selector(autoDownloadFailure:) target:self title:@"下载失败后自动重试" iconName:nil on:[shouldAutoDownloadWhenFailure boolValue]],
@@ -230,23 +230,23 @@
                                    NSNumberFormatter *nf = [[NSNumberFormatter alloc] init];
                                    NSNumber *strNum = [nf numberFromString:num];
                                    if (!strNum) {
-                                       strNum = [[OSFileConfigUtils manager] maxConcurrentDownloads];
+                                       strNum = [[OSFileDownloaderConfiguration defaultConfiguration] maxConcurrentDownloads];
                                    }
-                                   [[OSFileConfigUtils manager] setMaxConcurrentDownloads:strNum];
+                                   [[OSFileDownloaderConfiguration defaultConfiguration] setMaxConcurrentDownloads:strNum];
                                    [[OSFileDownloaderManager sharedInstance] setMaxConcurrentDownloads:[strNum integerValue]];
                                    [self loadSectionItems];
                                }];
 }
 
 - (void)autoDownloadFailure:(UISwitch *)sw {
-    [[OSFileConfigUtils manager] setShouldAutoDownloadWhenFailure:@(sw.isOn)];
+    [[OSFileDownloaderConfiguration defaultConfiguration] setShouldAutoDownloadWhenFailure:@(sw.isOn)];
     if (sw.isOn) {
         [self xy_showMessage:@"下载失败后，\n每隔10秒钟重试下载，\n只在WIFI下进行"];
     }
 }
 
 - (void)autoDownloadWhenInitialize:(UISwitch *)sw {
-    [[OSFileConfigUtils manager] setShouldAutoDownloadWhenInitialize:@(sw.isOn)];
+    [[OSFileDownloaderConfiguration defaultConfiguration] setShouldAutoDownloadWhenInitialize:@(sw.isOn)];
     if (sw.isOn) {
         [self xy_showMessage:@"App在启动时会自动为您下载上次未完成任务"];
     }

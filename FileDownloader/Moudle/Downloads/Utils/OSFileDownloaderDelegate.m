@@ -23,7 +23,7 @@
     
     // 根据aIdentifier在downloadOperation中查找对应的OSFileDownloadOperation，更改其下载状态，发送通知
     NSUInteger foundItemIdx = [[OSFileDownloaderManager sharedInstance] foundItemIndxInDownloadItemsByURL:downloadOperation.originalURLString];
-    OSFileItem *fileItem = nil;
+    OSRemoteResourceItem *fileItem = nil;
     if (foundItemIdx != NSNotFound) {
         DLog(@"INFO: Download success (id: %@)", downloadOperation.urlPath);
         
@@ -49,7 +49,7 @@
     
     // 根据aIdentifier在downloadOperation中查找对应的DownloadItem
     NSUInteger foundItemIdx = [[OSFileDownloaderManager sharedInstance] foundItemIndxInDownloadItemsByURL:downloadOperation.originalURLString];
-    OSFileItem *fileItem = nil;
+    OSRemoteResourceItem *fileItem = nil;
     if (foundItemIdx != NSNotFound) {
         fileItem = [[OSFileDownloaderManager sharedInstance].downloadItems objectAtIndex:foundItemIdx];
         fileItem.lastHttpStatusCode = downloadOperation.lastHttpStatusCode;
@@ -81,7 +81,7 @@
 - (void)beginDownloadTaskWithDownloadOperation:(id<OSFileDownloadOperation>)downloadOperation {
     [self toggleNetworkActivityIndicatorVisible:YES];
     NSUInteger foundItemIdx = [[OSFileDownloaderManager sharedInstance] foundItemIndxInDownloadItemsByURL:downloadOperation.originalURLString];
-    OSFileItem *fileItem = nil;
+    OSRemoteResourceItem *fileItem = nil;
     if (foundItemIdx != NSNotFound) {
         fileItem = [[OSFileDownloaderManager sharedInstance].downloadItems objectAtIndex:foundItemIdx];
         fileItem.status = OSFileDownloadStatusDownloading;
@@ -102,7 +102,7 @@
     
     NSUInteger foundItemIdx = [[OSFileDownloaderManager sharedInstance] foundItemIndxInDownloadItemsByURL:downloadOperation.originalURLString];
     
-    OSFileItem *item = nil;
+    OSRemoteResourceItem *item = nil;
     if (foundItemIdx != NSNotFound) {
         item = [[OSFileDownloaderManager sharedInstance].downloadItems objectAtIndex:foundItemIdx];
         item.progressObj = downloadOperation.progressObj;
@@ -118,7 +118,7 @@
     
     NSUInteger foundItemIdx = [[OSFileDownloaderManager sharedInstance] foundItemIndxInDownloadItemsByURL:url];
     
-    OSFileItem *item = nil;
+    OSRemoteResourceItem *item = nil;
     if (foundItemIdx != NSNotFound) {
         DLog(@"INFO: Download paused - id: %@", url);
         
@@ -162,7 +162,7 @@
 - (void)downloadDidWaitingWithURLPath:(NSString *)url progress:(OSFileDownloadProgress *)progress {
     NSUInteger foundItemIdx = [[OSFileDownloaderManager sharedInstance] foundItemIndxInDownloadItemsByURL:url];
     
-    OSFileItem *item = nil;
+    OSRemoteResourceItem *item = nil;
     if (foundItemIdx != NSNotFound) {
         item = [[OSFileDownloaderManager sharedInstance].downloadItems objectAtIndex:foundItemIdx];
         item.status = OSFileDownloadStatusWaiting;
@@ -178,7 +178,7 @@
 - (void)downloadStartFromWaitingQueueWithURLPath:(NSString *)url progress:(OSFileDownloadProgress *)progress {
     NSUInteger foundItemIdx = [[OSFileDownloaderManager sharedInstance] foundItemIndxInDownloadItemsByURL:url];
     
-    OSFileItem *item = nil;
+    OSRemoteResourceItem *item = nil;
     if (foundItemIdx != NSNotFound) {
         item = [[OSFileDownloaderManager sharedInstance].downloadItems objectAtIndex:foundItemIdx];
         item.progressObj = progress;

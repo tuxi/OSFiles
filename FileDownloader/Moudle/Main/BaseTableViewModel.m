@@ -26,7 +26,7 @@
 
 #pragma mark - ~~~~~~~~~~~~~~~~~~~~~~~ XYTableViewModelProtocol ~~~~~~~~~~~~~~~~~~~~~~~
 
-- (void)getDataSourceBlock:(id (^)())dataSource completion:(void (^)())completion {
+- (void)getDataSourceBlock:(id (^)(void))dataSource completion:(void (^)(void))completion {
 
     if (dataSource) {
         self.dataSource = [dataSource() mutableCopy];

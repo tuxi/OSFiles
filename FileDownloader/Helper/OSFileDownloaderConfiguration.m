@@ -1,24 +1,24 @@
 //
-//  OSFileConfigUtils.m
+//  OSFileDownloaderConfiguration.m
 //  FileDownloader
 //
 //  Created by Swae on 2017/10/28.
 //  Copyright © 2017年 Ossey. All rights reserved.
 //
 
-#import "OSFileConfigUtils.h"
+#import "OSFileDownloaderConfiguration.h"
 
-static NSString * const OSFileConfigMaxConcurrentDownloadsKey = @"OSFileConfigMaxConcurrentDownloadsKey";
-static NSString * const OSFileConfigAutoDownloadWhenFailureKey = @"OSFileConfigAutoDownloadWhenFailureKey";
-static NSString * const OSFileConfigAutoDownloadWhenInitializeKey = @"OSFileConfigAutoDownloadWhenInitializeKey";
+static NSString * const OSFileDownloaderConfigurationMaxConcurrentDownloadsKey = @"OSFileDownloaderConfigurationMaxConcurrentDownloadsKey";
+static NSString * const OSFileDownloaderConfigurationAutoDownloadWhenFailureKey = @"OSFileDownloaderConfigurationAutoDownloadWhenFailureKey";
+static NSString * const OSFileDownloaderConfigurationAutoDownloadWhenInitializeKey = @"OSFileDownloaderConfigurationAutoDownloadWhenInitializeKey";
 
-@implementation OSFileConfigUtils
+@implementation OSFileDownloaderConfiguration
 
-+ (OSFileConfigUtils *)manager {
-    static OSFileConfigUtils *_sharedInstance;
++ (OSFileDownloaderConfiguration *)defaultConfiguration {
+    static OSFileDownloaderConfiguration *_sharedInstance;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _sharedInstance = [OSFileConfigUtils new];
+        _sharedInstance = [OSFileDownloaderConfiguration new];
     });
     return _sharedInstance;
 }
@@ -28,12 +28,12 @@ static NSString * const OSFileConfigAutoDownloadWhenInitializeKey = @"OSFileConf
     if (maxConcurrentDownloads && [maxConcurrentDownloads integerValue] <= 0) {
         maxConcurrentDownloads = @(1);
     }
-    [[NSUserDefaults standardUserDefaults] setObject:maxConcurrentDownloads forKey:OSFileConfigMaxConcurrentDownloadsKey];
+    [[NSUserDefaults standardUserDefaults] setObject:maxConcurrentDownloads forKey:OSFileDownloaderConfigurationMaxConcurrentDownloadsKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (NSNumber *)maxConcurrentDownloads {
-    NSNumber * maxConcurrentDownloads = [[NSUserDefaults standardUserDefaults] objectForKey:OSFileConfigMaxConcurrentDownloadsKey];
+    NSNumber * maxConcurrentDownloads = [[NSUserDefaults standardUserDefaults] objectForKey:OSFileDownloaderConfigurationMaxConcurrentDownloadsKey];
     if (!maxConcurrentDownloads) {
         maxConcurrentDownloads = @(3);
     }
@@ -41,7 +41,7 @@ static NSString * const OSFileConfigAutoDownloadWhenInitializeKey = @"OSFileConf
 }
 
 - (NSNumber *)shouldAutoDownloadWhenFailure {
-    NSNumber * shouldAutoDownloadWhenFailure = [[NSUserDefaults standardUserDefaults] objectForKey:OSFileConfigAutoDownloadWhenFailureKey];
+    NSNumber * shouldAutoDownloadWhenFailure = [[NSUserDefaults standardUserDefaults] objectForKey:OSFileDownloaderConfigurationAutoDownloadWhenFailureKey];
     if (!shouldAutoDownloadWhenFailure) {
         shouldAutoDownloadWhenFailure = @(NO);
     }
@@ -49,17 +49,17 @@ static NSString * const OSFileConfigAutoDownloadWhenInitializeKey = @"OSFileConf
 }
 
 - (void)setShouldAutoDownloadWhenFailure:(NSNumber *)shouldAutoDownloadWhenFailure {
-    [[NSUserDefaults standardUserDefaults] setObject:shouldAutoDownloadWhenFailure forKey:OSFileConfigAutoDownloadWhenFailureKey];
+    [[NSUserDefaults standardUserDefaults] setObject:shouldAutoDownloadWhenFailure forKey:OSFileDownloaderConfigurationAutoDownloadWhenFailureKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)setShouldAutoDownloadWhenInitialize:(NSNumber *)shouldAutoDownloadWhenInitialize {
-    [[NSUserDefaults standardUserDefaults] setObject:shouldAutoDownloadWhenInitialize forKey:OSFileConfigAutoDownloadWhenInitializeKey];
+    [[NSUserDefaults standardUserDefaults] setObject:shouldAutoDownloadWhenInitialize forKey:OSFileDownloaderConfigurationAutoDownloadWhenInitializeKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (NSNumber *)shouldAutoDownloadWhenInitialize {
-    return [[NSUserDefaults standardUserDefaults] objectForKey:OSFileConfigAutoDownloadWhenInitializeKey];
+    return [[NSUserDefaults standardUserDefaults] objectForKey:OSFileDownloaderConfigurationAutoDownloadWhenInitializeKey];
 }
 
 + (NSString *)getDownloadLocalFolderPath {

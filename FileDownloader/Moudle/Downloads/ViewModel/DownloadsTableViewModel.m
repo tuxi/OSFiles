@@ -33,7 +33,7 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
     [OSFileDownloadCell xy_registerTableViewCell:tableView classIdentifier:DownloadCellIdentifierKey];
 }
 
-- (void)getDataSourceBlock:(id (^)(void))dataSource completion:(void (^)())completion {
+- (void)getDataSourceBlock:(id (^)(void))dataSource completion:(void (^)(void))completion {
     if (dataSource) {
         self.dataSource = [dataSource() mutableCopy];
         
@@ -64,10 +64,22 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
     [cell xy_configCellByModel:downloadItem indexPath:indexPath];
     __weak typeof(tableView) weaktableView = tableView;
     [cell setLongPressGestureRecognizer:^(UILongPressGestureRecognizer *longPres) {
+        OSFileDownloadCell *cell = (OSFileDownloadCell *)longPres.view;
         if (longPres.state == UIGestureRecognizerStateBegan) {
-            UIAlertController *alVc = [UIAlertController alertControllerWithTitle:@"删除" message:@"删除后文件将无法恢复" preferredStyle:UIAlertControllerStyleActionSheet];
-            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-                
+            UIAlertController *alVc = [UIAlertController alertControllerWithTitle:cell.fileItem.urlPath message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+            
+            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"删除" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+                UIAlertController *alVc = [UIAlertController alertControllerWithTitle:nil message:@"删除后文件将无法恢复" preferredStyle:UIAlertControllerStyleActionSheet];
+                UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+                    
+                    [[OSFileDownloaderManager sharedInstance] cancel:downloadItem.urlPath];
+                    [weaktableView reloadData];
+                    
+                }];
+                [alVc addAction:okAction];
+                UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:NULL];
+                [alVc addAction:cancelAction];
+                [[tableView currentViewController] presentViewController:alVc animated:YES completion:nil];
                 [[OSFileDownloaderManager sharedInstance] cancel:downloadItem.urlPath];
                 [weaktableView reloadData];
                 

@@ -15,7 +15,7 @@ typedef NS_ENUM(NSInteger, NetworkType) {
     NetworkTypeWIFI = 2,
 };
 
-FOUNDATION_EXTERN NSString * const NetworkTypeChangeNotification;
+FOUNDATION_EXTERN NSNotificationName const NetworkTypeChangeNotification;
 
 @interface NetworkTypeUtils : NSObject
 
