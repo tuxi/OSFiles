@@ -16,6 +16,7 @@
 		1855DF811FA390C0001CCAE8 /* XYSuspensionMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF7F1FA390C0001CCAE8 /* XYSuspensionMenu.m */; };
 		1855DF841FA3938C001CCAE8 /* OSFileCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF831FA3938C001CCAE8 /* OSFileCollectionViewController.m */; };
 		1855DF981FA3A8FB001CCAE8 /* OSFileConfigUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF971FA3A8FB001CCAE8 /* OSFileConfigUtils.m */; };
+		18566F8F1FA8ADA000EB5416 /* ApplicationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 18566F8E1FA8ADA000EB5416 /* ApplicationHelper.m */; };
 		185A8EAE1FA42ED4006077CE /* AutoTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = 185A8EAC1FA42ED3006077CE /* AutoTimer.m */; };
 		185A8EB11FA43416006077CE /* NSString+MD5.m in Sources */ = {isa = PBXBuildFile; fileRef = 185A8EAF1FA43416006077CE /* NSString+MD5.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		18A0F16A1FA57DBA00614E91 /* OSFileCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A0F1681FA57DBA00614E91 /* OSFileCollectionViewCell.m */; };
@@ -458,6 +459,8 @@
 		1855DF831FA3938C001CCAE8 /* OSFileCollectionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSFileCollectionViewController.m; sourceTree = "<group>"; };
 		1855DF961FA3A8FB001CCAE8 /* OSFileConfigUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSFileConfigUtils.h; sourceTree = "<group>"; };
 		1855DF971FA3A8FB001CCAE8 /* OSFileConfigUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSFileConfigUtils.m; sourceTree = "<group>"; };
+		18566F8D1FA8ADA000EB5416 /* ApplicationHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ApplicationHelper.h; sourceTree = "<group>"; };
+		18566F8E1FA8ADA000EB5416 /* ApplicationHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ApplicationHelper.m; sourceTree = "<group>"; };
 		185A8EAC1FA42ED3006077CE /* AutoTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AutoTimer.m; sourceTree = "<group>"; };
 		185A8EAD1FA42ED3006077CE /* AutoTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoTimer.h; sourceTree = "<group>"; };
 		185A8EAF1FA43416006077CE /* NSString+MD5.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MD5.m"; sourceTree = "<group>"; };
@@ -1093,6 +1096,8 @@
 				1855DF971FA3A8FB001CCAE8 /* OSFileConfigUtils.m */,
 				185A8EAD1FA42ED3006077CE /* AutoTimer.h */,
 				185A8EAC1FA42ED3006077CE /* AutoTimer.m */,
+				18566F8D1FA8ADA000EB5416 /* ApplicationHelper.h */,
+				18566F8E1FA8ADA000EB5416 /* ApplicationHelper.m */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -2588,6 +2593,7 @@
 				18ADEF191F9E4A530024BA40 /* XYMenuView.m in Sources */,
 				18ADEF371F9E4A860024BA40 /* OSUnlockBackgroundView.m in Sources */,
 				18ADEEC41F9E49F70024BA40 /* HTTPClient+SearchSug.m in Sources */,
+				18566F8F1FA8ADA000EB5416 /* ApplicationHelper.m in Sources */,
 				18ADEECC1F9E49FE0024BA40 /* NJKWebViewProgressView.m in Sources */,
 				18ADEEC81F9E49FB0024BA40 /* BaiduSugResponseModel.m in Sources */,
 				18ADEF181F9E4A530024BA40 /* XYCutVideoView.m in Sources */,
