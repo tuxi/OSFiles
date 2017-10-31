@@ -344,6 +344,7 @@
 		18ADEFF41F9E4B460024BA40 /* Socket@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 18ADECA21F9E2C450024BA40 /* Socket@2x.png */; };
 		18E68BB81FA6175F00708070 /* OSFileBottomHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E68BB71FA6175F00708070 /* OSFileBottomHUD.m */; };
 		88C9037378C7FDA243F02BF2 /* libPods-FileDownloader.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A5107F0693D00542CC3FA456 /* libPods-FileDownloader.a */; };
+		D017FF121FA89B16004B65CF /* UITextField+OSRangeExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = D017FF111FA89B16004B65CF /* UITextField+OSRangeExtension.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -906,6 +907,8 @@
 		18E68BB61FA6175F00708070 /* OSFileBottomHUD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSFileBottomHUD.h; sourceTree = "<group>"; };
 		18E68BB71FA6175F00708070 /* OSFileBottomHUD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSFileBottomHUD.m; sourceTree = "<group>"; };
 		A5107F0693D00542CC3FA456 /* libPods-FileDownloader.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FileDownloader.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D017FF101FA89B16004B65CF /* UITextField+OSRangeExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UITextField+OSRangeExtension.h"; sourceTree = "<group>"; };
+		D017FF111FA89B16004B65CF /* UITextField+OSRangeExtension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UITextField+OSRangeExtension.m"; sourceTree = "<group>"; };
 		FAEFFFFF9AB15F258CAC9CC7 /* Pods-FileDownloader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FileDownloader.release.xcconfig"; path = "Pods/Target Support Files/Pods-FileDownloader/Pods-FileDownloader.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1110,18 +1113,9 @@
 				18517BF81EEBD14B00B148C8 /* More */,
 				18517BF71EEBD13400B148C8 /* Downloads */,
 				18517BF61EEBD11300B148C8 /* Files */,
-				18517BEC1EEBCB2C00B148C8 /* Browser */,
 				18517BEF1EEBCB2C00B148C8 /* Main */,
 			);
 			path = Moudle;
-			sourceTree = "<group>";
-		};
-		18517BEC1EEBCB2C00B148C8 /* Browser */ = {
-			isa = PBXGroup;
-			children = (
-				18517C491EEBD8CB00B148C8 /* View */,
-			);
-			path = Browser;
 			sourceTree = "<group>";
 		};
 		18517BEF1EEBCB2C00B148C8 /* Main */ = {
@@ -1204,13 +1198,6 @@
 				A5107F0693D00542CC3FA456 /* libPods-FileDownloader.a */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		18517C491EEBD8CB00B148C8 /* View */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = View;
 			sourceTree = "<group>";
 		};
 		18517C4C1EEBD8D400B148C8 /* View */ = {
@@ -1332,6 +1319,8 @@
 				18A0F19E1FA5E09200614E91 /* UIViewController+XYExtensions.m */,
 				184F74FF1FA75D9500C2590D /* NSString+OSDrawingAdditions.h */,
 				184F75001FA75D9500C2590D /* NSString+OSDrawingAdditions.m */,
+				D017FF101FA89B16004B65CF /* UITextField+OSRangeExtension.h */,
+				D017FF111FA89B16004B65CF /* UITextField+OSRangeExtension.m */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -2590,6 +2579,7 @@
 				18ADEEE61F9E4A1F0024BA40 /* CardCollectionViewCell.m in Sources */,
 				18ADEEEB1F9E4A2E0024BA40 /* SearchInputView.m in Sources */,
 				18ADEEDE1F9E4A130024BA40 /* FindInPageBar.m in Sources */,
+				D017FF121FA89B16004B65CF /* UITextField+OSRangeExtension.m in Sources */,
 				18ADEF191F9E4A530024BA40 /* XYMenuView.m in Sources */,
 				18ADEF371F9E4A860024BA40 /* OSUnlockBackgroundView.m in Sources */,
 				18ADEEC41F9E49F70024BA40 /* HTTPClient+SearchSug.m in Sources */,
