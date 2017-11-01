@@ -83,7 +83,7 @@
     __weak typeof(self) weakSelf = self;
     [weakSelf.tableViewModel getDataSourceBlock:^id{
         NSArray *activeDownloadItems = [[OSFileDownloaderManager sharedInstance] activeDownloadItems];
-        return @[activeDownloadItems];
+        return @[activeDownloadItems==0x0?@[]:activeDownloadItems];
     } completion:^{
         [weakSelf.tableView reloadData];
     }];
