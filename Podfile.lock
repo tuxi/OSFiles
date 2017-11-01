@@ -29,6 +29,9 @@ PODS:
   - Masonry (1.1.0)
   - MBProgressHUD (1.0.0)
   - NODataPlaceholderView (1.0.2)
+  - OSFileBrowser (0.0.8):
+    - MBProgressHUD (~> 1.0.0)
+    - NODataPlaceholderView (~> 1.0.2)
   - SDWebImage (4.1.2):
     - SDWebImage/Core (= 4.1.2)
   - SDWebImage/Core (4.1.2)
@@ -41,6 +44,7 @@ DEPENDENCIES:
   - Masonry (~> 1.1.0)
   - MBProgressHUD (~> 1.0.0)
   - NODataPlaceholderView (~> 1.0.2)
+  - OSFileBrowser
   - SDWebImage (~> 4.1.2)
 
 SPEC CHECKSUMS:
@@ -51,8 +55,9 @@ SPEC CHECKSUMS:
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
   NODataPlaceholderView: 7a019c41d7439e819a45ac272adb17fc7f4e39cc
+  OSFileBrowser: 77f8c7ae0fde73a5b0164a451bb8c3ae9e0d8ab6
   SDWebImage: cb6f9f266a9977741efcbc21e618e8be3734c774
 
-PODFILE CHECKSUM: 4cf459d30847cece8cfe17a9f611aaf7f48db357
+PODFILE CHECKSUM: 845c76623e8ed7c423dd039099cb33f0544e7388
 
 COCOAPODS: 1.2.0
