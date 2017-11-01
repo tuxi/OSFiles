@@ -45,8 +45,6 @@
 - (NSArray<OSRemoteResourceItem *> *)downloadedItems;
 - (NSArray<OSRemoteResourceItem *> *)activeDownloadItems;
 - (NSArray<OSRemoteResourceItem *> *)downloadFailureItems;
-/// 所有展示中的文件，还未开始下载时存放的，当文件取消下载时也会存放到此数组
-- (NSMutableArray<OSRemoteResourceItem *> *)displayItems;
 /// 获取某种状态的任务
 - (NSArray *)getDownloadItemsWithStatus:(OSFileDownloadStatus)state;
 // 查找urlPath在downloadItems中对应的OSFileDownloadOperation的索引

@@ -137,20 +137,11 @@
         return res;
     }];
     
-    NSArray *displayArray = [[OSFileDownloaderManager sharedInstance] displayItems];
-    NSUInteger foundIdxInDisplay = [displayArray indexOfObjectPassingTest:^BOOL(OSRemoteResourceItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        BOOL res = [obj.urlPath isEqualToString:item.urlPath];
-        if (res) {
-            *stop = YES;
-        }
-        return res;
-    }];
-    
-    if (foundIdxInDownloading == NSNotFound && foundIdxInDisplay == NSNotFound) {
+    if (foundIdxInDownloading == NSNotFound) {
         return;
     }
-    NSInteger row = foundIdxInDownloading != NSNotFound ? foundIdxInDownloading : foundIdxInDisplay;
-    NSInteger section = foundIdxInDownloading != NSNotFound ? 0 : 1;
+    NSInteger row = foundIdxInDownloading;
+    NSInteger section = 0;
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:section];
     DownloadsTableViewModel *tableViewModel = self.tableViewModel;
     OSFileDownloadCell *cell = [tableViewModel getDownloadCellByIndexPath:indexPath];
