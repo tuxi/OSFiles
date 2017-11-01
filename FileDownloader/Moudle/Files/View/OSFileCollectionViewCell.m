@@ -1,9 +1,9 @@
 //
 //  OSFileCollectionViewCell.m
-//  FileDownloader
+//  FileBrowser
 //
-//  Created by Swae on 2017/10/29.
-//  Copyright © 2017年 Ossey. All rights reserved.
+//  Created by xiaoyuan on 05/08/2014.
+//  Copyright © 2014 xiaoyuan. All rights reserved.
 //
 
 #import "OSFileCollectionViewCell.h"
@@ -11,7 +11,9 @@
 #import "UIImageView+XYExtension.h"
 #import "NSString+OSFile.h"
 #import "OSFileManager.h"
-#import "UITextField+OSRangeExtension.h"
+#import "NSDate+Utilities.h"
+#import "UIViewController+XYExtensions.h"
+#import "NSObject+XYHUD.h"
 
 @interface OSFileCollectionViewCell ()
 
@@ -75,18 +77,18 @@
     [self setStatus:fileModel.status];
     
     /// 根据文件类型显示
-    self.titleLabel.text = [fileModel.fullPath lastPathComponent];
+    self.titleLabel.text = fileModel.displayName;
     if (fileModel.isDirectory) {
         self.iconView.image = [UIImage imageNamed:@"table-folder"];
-        self.subTitleLabel.text = [NSString stringWithFormat:@"%ld个文件", fileModel.subFileCount];
+        self.subTitleLabel.text = [NSString stringWithFormat:@"%ld个文件", fileModel.numberOfSubFiles];
     }
     else {
         
         self.subTitleLabel.text = [fileModel.creationDate shortDateString];
         if (fileModel.isImage) {
-            self.iconView.image = [UIImage imageWithContentsOfFile:fileModel.fullPath];
+            self.iconView.image = [UIImage imageWithContentsOfFile:fileModel.path];
         } else if (fileModel.isVideo) {
-            NSURL *videoURL = [NSURL fileURLWithPath:fileModel.fullPath];
+            NSURL *videoURL = [NSURL fileURLWithPath:fileModel.path];
             [self.iconView xy_imageWithMediaURL:videoURL placeholderImage:[UIImage imageNamed:@"table-fileicon-images"] completionHandlder:^(UIImage *image) {
                 
             }];
@@ -102,18 +104,21 @@
         }
     }
     
-    if (fileModel.fullPath.length) {
-        if ([fileModel.fullPath isEqualToString:[OSFileDownloaderConfiguration getDocumentPath]]) {
-            self.titleLabel.text  = @"iTunes文件";
+    if (fileModel.path) {
+        if ([fileModel.path isEqualToString:[NSString getDocumentPath]]) {
+            //            self.titleLabel.text  = @"iTunes文件";
             self.iconView.image = [UIImage imageNamed:@"table-folder-itunes-files-sharing"];
-            self.optionBtn.hidden = YES;
+            //            self.optionBtn.hidden = YES;
         }
-        else if ([fileModel.fullPath isEqualToString:[OSFileDownloaderConfiguration getDownloadLocalFolderPath]]) {
-            self.titleLabel.text  = @"下载";
+        else if ([fileModel.path isEqualToString:[NSString getRootPath]]) {
+            //            self.titleLabel.text  = @"下载";
+            //            self.optionBtn.hidden = YES;
+        }
+        if ([self.fileModel isRootDirectory]) {
             self.optionBtn.hidden = YES;
         }
     }
-   
+    
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -146,18 +151,12 @@
 
 - (void)renameFile {
     
-    UIAlertController *alert = nil;
-    if (IS_IPAD) {
-        alert = [UIAlertController alertControllerWithTitle:@"rename" message:nil preferredStyle:UIAlertControllerStyleAlert];
-    }
-    else {
-        alert = [UIAlertController alertControllerWithTitle:@"rename" message:nil preferredStyle:UIAlertControllerStyleAlert];
-    }
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"rename" message:nil preferredStyle:UIAlertControllerStyleAlert];
     
     [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
         NSString *fileName = self.fileModel.filename;
         textField.text = fileName;
-//        [textField setSelectedRange:NSMakeRange(self.fileModel.filename.length-self.fileModel.fileExtension.length, self.fileModel.fileExtension.length)];
+        //        [textField setSelectedRange:NSMakeRange(self.fileModel.filename.length-self.fileModel.fileExtension.length, self.fileModel.fileExtension.length)];
         textField.placeholder = @"请输入需要修改的名字";
         [textField addTarget:self action:@selector(alertViewTextFieldtextChange:) forControlEvents:UIControlEventEditingChanged];
     }];
@@ -183,7 +182,8 @@
         if (!moveError) {
             [newPath updateFileModificationDateForFilePath];
             [[NSFileManager defaultManager] removeItemAtPath:oldPath error:&moveError];
-            self.fileModel.fullPath = newPath;
+            NSError *error = nil;
+            [self.fileModel reloadFileWithPath:newPath error:&error];
             if (self.delegate && [self.delegate respondsToSelector:@selector(fileCollectionViewCell:fileAttributeChange:)]) {
                 [self.delegate fileCollectionViewCell:self fileAttributeChange:self.fileModel];
             }
@@ -281,7 +281,7 @@
         } else {
             [label setFont:[UIFont systemFontOfSize:13.0]];
         }
-         _titleLabel.numberOfLines = 2;
+        _titleLabel.numberOfLines = 2;
     }
     return _titleLabel;
 }
@@ -303,3 +303,5 @@
     return _subTitleLabel;
 }
 @end
+
+

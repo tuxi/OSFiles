@@ -14,6 +14,6 @@ target 'FileDownloader' do
   pod 'SDWebImage', '~> 4.1.2'
   pod 'Masonry', '~> 1.1.0'
   #pod "GCDWebServer", "~> 3.0"
-  pod 'NODataPlaceholderView', '~> 0.0.3'
+  pod 'NODataPlaceholderView', '~> 1.0.2'
 end
 

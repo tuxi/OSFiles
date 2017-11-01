@@ -55,7 +55,7 @@
 }
 
 + (NSString *)getCacheImageFolderPath {
-    NSString *cachesPath = [OSFileDownloaderConfiguration getLibraryPath];
+    NSString *cachesPath = [NSString getLibraryPath];
     NSString *path = [cachesPath stringByAppendingPathComponent:@"OSCachehMediaVideoIconFolder"];
     BOOL isDirectory, isExist;
     isExist = [[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory];

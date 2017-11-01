@@ -21,5 +21,11 @@
 
 /// Apple 官方提供的浮点型换算为百分比的方法，但是CFNumberFormatterRef不必多次malloc，会造成内存飙升
 + (NSString *)percentageString:(float)percent;
+
++ (NSString *)getDownloadLocalFolderPath;
++ (NSString *)getRootPath;
++ (NSString *)getDocumentPath;
++ (NSString *)getLibraryPath;
++ (NSString *)getCachesPath;
 @end
 

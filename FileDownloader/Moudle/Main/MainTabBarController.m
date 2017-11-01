@@ -31,8 +31,8 @@
     [self addChildVC:[DownloadsViewController new] imageNamed:@"TabDownloads" title:@"下载"];
     
     [self addChildVC:[[OSFileCollectionViewController alloc] initWithDirectoryArray:@[
-                                                                                      [OSFileDownloaderConfiguration getDownloadLocalFolderPath],
-                                                                                      [OSFileDownloaderConfiguration getDocumentPath]
+                                                                                      [NSString getDownloadLocalFolderPath],
+                                                                                      [NSString getDocumentPath]
                                                                                       ]] imageNamed:@"TabFiles" title:@"文件管理"];
     [self addChildVC:[OSSettingViewController new] imageNamed:@"TabMore" title:@"更多"];
     

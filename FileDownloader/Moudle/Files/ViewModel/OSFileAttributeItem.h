@@ -1,9 +1,9 @@
 //
 //  OSFileAttributeItem.h
-//  FileDownloader
+//  FileBrowser
 //
-//  Created by Swae on 2017/10/29.
-//  Copyright © 2017年 Ossey. All rights reserved.
+//  Created by xiaoyuan on 05/08/2014.
+//  Copyright © 2014 xiaoyuan. All rights reserved.
 //
 
 #import "OSFile.h"
@@ -19,8 +19,12 @@ typedef NS_ENUM(NSInteger, OSFileAttributeItemStatus) {
 
 @interface OSFileAttributeItem : OSFile
 
-@property (nonatomic, copy) NSString *fullPath;
-@property (nonatomic, assign) NSUInteger subFileCount;
 @property (nonatomic, assign) OSFileAttributeItemStatus status;
 
+/// 指的是展示在主页的文件夹
+- (BOOL)isRootDirectory;
+- (BOOL)isDownloadBrowser;
+
 @end
+
+

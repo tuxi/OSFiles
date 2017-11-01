@@ -1,9 +1,9 @@
 //
 //  OSFileCollectionViewController.h
-//  FileDownloader
+//  FileBrowser
 //
-//  Created by Swae on 2017/10/28.
-//  Copyright © 2017年 Ossey. All rights reserved.
+//  Created by xiaoyuan on 05/08/2014.
+//  Copyright © 2014 xiaoyuan. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -23,9 +23,8 @@ typedef NS_ENUM(NSInteger, OSFileCollectionViewControllerMode) {
 
 @interface OSFileCollectionViewController : UIViewController <QLPreviewControllerDataSource>
 
-@property (nonatomic, strong) NSString *rootDirectory;
 @property (nonatomic, strong) NSArray<OSFileAttributeItem *> *files;
-@property (nonatomic, assign) BOOL displayHiddenFiles;
+@property (nonatomic, assign) BOOL hideDisplayFiles;
 
 /// 通过文件目录路径，读取里面所有的文件并展示
 - (instancetype)initWithRootDirectory:(NSString *)path;
@@ -41,3 +40,4 @@ typedef NS_ENUM(NSInteger, OSFileCollectionViewControllerMode) {
 completionHandler:(void (^)(NSError *error))completion;
 
 @end
+

@@ -1,9 +1,9 @@
 //
 //  OSFile.m
-//  OSFileDownloader
+//  FileBrowser
 //
-//  Created by Swae on 2017/10/23.
-//  Copyright © 2017年 Ossey. All rights reserved.
+//  Created by xiaoyuan on 05/08/2014.
+//  Copyright © 2014 xiaoyuan. All rights reserved.
 //
 
 #import "OSFile.h"
@@ -55,74 +55,162 @@
 @synthesize humanReadablePermissions    = _humanReadablePermissions;
 @synthesize creationDate                = _creationDate;
 @synthesize modificationDate            = _modificationDate;
-@synthesize icon                        = _icon;
+//@synthesize icon                        = _icon;
 @synthesize targetFile                  = _targetFile;
+@synthesize hideDisplayFiles            = _hideDisplayFiles;
 
 + (instancetype)fileWithPath:(NSString *)filePath {
-    OSFile * fileInfos;
-    
-    fileInfos = [[self alloc] initWithPath:filePath];
-    return fileInfos;
-    
+    return [self fileWithPath:filePath error:NULL];
+}
+
++ (instancetype)fileWithPath:(NSString *)filePath error:(NSError *__autoreleasing *)error {
+    return [self fileWithPath:filePath hideDisplayFiles:YES error:error];
+}
+
++ (instancetype)fileWithPath:(NSString *)filePath hideDisplayFiles:(BOOL)hideDisplayFiles error:(NSError *__autoreleasing *)error {
+    return [[self alloc] initWithPath:filePath hideDisplayFiles:hideDisplayFiles error:error];
 }
 
 - (instancetype)initWithPath:(NSString *)filePath {
-    NSString *symLinkTarget;
-    NSError  *e;
+    return [self initWithPath:filePath error:NULL];
+}
+
+- (instancetype)initWithPath:(NSString *)filePath error:(NSError *__autoreleasing *)error {
+    return [self initWithPath:filePath hideDisplayFiles:YES error:error];
+}
+
+- (instancetype)initWithPath:(NSString *)filePath hideDisplayFiles:(BOOL)hideDisplayFiles error:(NSError *__autoreleasing *)error {
     
     if (self = [super init ]) {
+        _hideDisplayFiles = hideDisplayFiles;
         _path        = [ filePath copy ];
         _fileManager = [ NSFileManager defaultManager ];
-        
-        if ([ _fileManager fileExistsAtPath: _path ] == NO) {
-            return nil;
-        }
-        
-        e = nil;
-        _attributes = [ _fileManager attributesOfItemAtPath: _path error: &e ];
-        
-        if (_attributes == nil || e != nil) {
-            return nil;
-        }
-        
-        [self getPathInfos];
-        [self getFileType];
-        [self getOwnership];
-        [self getPermissions];
-        [self getFlags ];
-        [ self getSize ];
-        [ self getDates ];
-        [ self getFileSystemAttributes ];
-        
-        if( _isDirectory == YES )
-        {
-            _numberOfSubFiles = [ [ _fileManager contentsOfDirectoryAtPath: _path error: NULL ] count ];
-        }
-        
-        if( _isSymbolicLink == YES )
-        {
-            symLinkTarget = [ _fileManager destinationOfSymbolicLinkAtPath: _path error: NULL ];
-            
-            if( [ symLinkTarget characterAtIndex: 0 ] != '/' )
-            {
-                if( [ _parentDirectoryPath characterAtIndex: [ _parentDirectoryPath length ] - 1 ] == '/' )
-                {
-                    symLinkTarget = [ _parentDirectoryPath stringByAppendingString: symLinkTarget ];
-                }
-                else
-                {
-                    symLinkTarget = [ NSString stringWithFormat: @"%@/%@", _parentDirectoryPath, symLinkTarget ];
-                }
-            }
-            
-            _targetFile = [[OSFile alloc] initWithPath:symLinkTarget];
-        }
-        
-        [ self getSubTypes];
-        [ self getIcon ];
+        [self reloadFileWithError:error];
     }
     
     return self;
+}
+
+- (BOOL)reloadFile {
+    return [self reloadFileWithError:NULL];
+}
+
+- (BOOL)reloadFileWithPath:(NSString *)filePath error:(NSError *__autoreleasing *)error {
+    _path        = [ filePath copy ];
+    return [self reloadFileWithError:error];
+}
+
+- (BOOL)reloadFileWithError:(NSError *__autoreleasing *)error {
+    NSError  *e = nil;
+    NSString *symLinkTarget = nil;
+    if ([ _fileManager fileExistsAtPath: _path isDirectory:&_isDirectory] == NO) {
+        return NO;
+    }
+    _attributes = [ _fileManager attributesOfItemAtPath: _path error: &e ];
+    
+    if (_attributes == nil || e != nil) {
+        if (error) {
+            *error = e;
+        }
+        return NO;
+    }
+    
+    [self getPathInfos];
+    [self getFileType];
+    [self getOwnership];
+    [self getPermissions];
+    [self getFlags ];
+    [self getSize];
+    [self getDates];
+    [self getFileSystemAttributes];
+    
+    NSArray *(^processFileBlock)(NSString *path) = ^(NSString *path) {
+        /*
+         系统中某些文件没有权限加载
+         Error Domain=NSCocoaErrorDomain Code=257 "The file “var” couldn’t be opened because you don’t have permission to view it." UserInfo={NSFilePath=/var, NSUserStringVariant=(
+         Folder
+         ), NSUnderlyingError=0x1c8044c20 {Error Domain=NSPOSIXErrorDomain Code=1 "Operation not permitted"}}
+         */
+        NSArray *array = nil;
+        if ([path isEqualToString:@"/System"]) {
+            array = @[@"Library"];
+        }
+        
+        if ([path isEqualToString:@"/Library"]) {
+            array = @[@"Preferences"];
+        }
+        
+        if ([path isEqualToString:@"/var"]) {
+            array = @[@"mobile"];
+        }
+        
+        if ([path isEqualToString:@"/usr"]) {
+            array = @[@"lib", @"libexec", @"bin"];
+        }
+        return array;
+    };
+    
+    if( _isDirectory == YES )
+    {
+        _subFiles = [ _fileManager contentsOfDirectoryAtPath: _path error: &e ];
+        if (e) {
+            _subFiles = processFileBlock(_path);
+            if (error) {
+                *error = e;
+            }
+        }
+        else {
+            if (_hideDisplayFiles) {
+                [self removeHideFiles];
+            }
+        }
+    }
+    
+    if( _isSymbolicLink == YES )
+    {
+        symLinkTarget = [ _fileManager destinationOfSymbolicLinkAtPath: _path error: &e ];
+        if (error) {
+            *error = e;
+        }
+        
+        if( [ symLinkTarget characterAtIndex: 0 ] != '/' )
+        {
+            if( [ _parentDirectoryPath characterAtIndex: [ _parentDirectoryPath length ] - 1 ] == '/' )
+            {
+                symLinkTarget = [ _parentDirectoryPath stringByAppendingString: symLinkTarget ];
+            }
+            else
+            {
+                symLinkTarget = [ NSString stringWithFormat: @"%@/%@", _parentDirectoryPath, symLinkTarget ];
+            }
+        }
+        
+        _targetFile = [[OSFile alloc] initWithPath:symLinkTarget];
+    }
+    
+    [ self getSubTypes];
+    [self sortedSubFiles];
+    //        [ self getIcon ];
+    return YES;
+}
+
+- (void)removeHideFiles {
+    if (!self.subFiles.count) {
+        return;
+    }
+    NSMutableArray *tempFiles = [self.subFiles mutableCopy];
+    NSIndexSet *indexSet = [tempFiles indexesOfObjectsPassingTest:^BOOL(NSString * _Nonnull fileName, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([fileName isKindOfClass:[NSString class]]) {
+            return [fileName hasPrefix:@"."];
+        }
+        return NO;
+    }];
+    [tempFiles removeObjectsAtIndexes:indexSet];
+    _subFiles = tempFiles.copy;
+}
+
+- (NSUInteger)numberOfSubFiles {
+    return _subFiles.count;
 }
 
 
@@ -142,7 +230,10 @@
 
 - ( void )getFileType
 {
-    _isDirectory        = [ _attributes objectForKey: NSFileType ] == NSFileTypeDirectory;
+    if (!_isDirectory) {
+        // mark: _attributes 中获取的有时不是对的，所以如果_isDirectory是YES，就不再获取了
+        _isDirectory        = [ _attributes objectForKey: NSFileType ] == NSFileTypeDirectory;
+    }
     _isRegularFile      = [ _attributes objectForKey: NSFileType ] == NSFileTypeRegular;
     _isSymbolicLink     = [ _attributes objectForKey: NSFileType ] == NSFileTypeSymbolicLink;
     _isSocket           = [ _attributes objectForKey: NSFileType ] == NSFileTypeSocket;
@@ -296,6 +387,23 @@
     _systemFileNumber = ( [ _attributes objectForKey: NSFileSystemFileNumber ] == nil ) ? 0 : ( NSUInteger )[ [ _attributes objectForKey: NSFileSystemFileNumber ] integerValue ];
     _HFSCreatorCode   = ( [ _attributes objectForKey: NSFileHFSCreatorCode ]   == nil ) ? 0 : ( NSUInteger )[ [ _attributes objectForKey: NSFileHFSCreatorCode ]   integerValue ];
     _HFSTypeCode      = ( [ _attributes objectForKey: NSFileHFSTypeCode ]      == nil ) ? 0 : ( NSUInteger )[ [ _attributes objectForKey: NSFileHFSTypeCode ]      integerValue ];
+}
+
+- (void)sortedSubFiles {
+    _subFiles =  [_subFiles sortedArrayWithOptions:NSSortConcurrent usingComparator:^NSComparisonResult(NSString* file1, NSString* file2) {
+        NSString *newPath1 = [self.path stringByAppendingPathComponent:file1];
+        NSString *newPath2 = [self.path stringByAppendingPathComponent:file2];
+        
+        BOOL isDirectory1, isDirectory2;
+        [[NSFileManager defaultManager ] fileExistsAtPath:newPath1 isDirectory:&isDirectory1];
+        [[NSFileManager defaultManager ] fileExistsAtPath:newPath2 isDirectory:&isDirectory2];
+        
+        if (isDirectory1 && !isDirectory2) {
+            return NSOrderedAscending;
+        }
+        
+        return  NSOrderedDescending;
+    }];
 }
 
 - ( void )getSubTypes {
@@ -683,31 +791,33 @@
     return finalIcon;
 }
 
-- (void)getIcon {
-    OSFile  * infos;
-    UIImage * baseIcon;
-    
-    infos = ( _isSymbolicLink ) ? _targetFile : self;
-    
-    if( infos.isDirectory == YES ) {
-        baseIcon = [ UIImage imageNamed: @"Directory.png" ];
-    }
-    else if( infos.isExecutable == YES ) {
-        baseIcon = [ UIImage imageNamed: @"Executable.png" ];
-    }
-    else if( infos.isSocket == YES ) {
-        baseIcon = [ UIImage imageNamed: @"Socket.png" ];
-    }
-    else if( infos.isCharacterSpecial == YES ) {
-        baseIcon = [ UIImage imageNamed: @"Device-Character.png" ];
-    }
-    else if( infos.isBlockSpecial == YES ) {
-        baseIcon = [ UIImage imageNamed: @"Device-Block.png" ];
-    }
-    else {
-        baseIcon = [ UIImage imageNamed: @"File.png" ];
-    }
-    
-    _icon = [self iconByAddingEmblemsToImage: baseIcon];
-}
+//- (void)getIcon {
+//    OSFile  * infos;
+//    UIImage * baseIcon;
+//
+//    infos = ( _isSymbolicLink ) ? _targetFile : self;
+//
+//    if( infos.isDirectory == YES ) {
+//        baseIcon = [ UIImage imageNamed: @"Directory.png" ];
+//    }
+//    else if( infos.isExecutable == YES ) {
+//        baseIcon = [ UIImage imageNamed: @"Executable.png" ];
+//    }
+//    else if( infos.isSocket == YES ) {
+//        baseIcon = [ UIImage imageNamed: @"Socket.png" ];
+//    }
+//    else if( infos.isCharacterSpecial == YES ) {
+//        baseIcon = [ UIImage imageNamed: @"Device-Character.png" ];
+//    }
+//    else if( infos.isBlockSpecial == YES ) {
+//        baseIcon = [ UIImage imageNamed: @"Device-Block.png" ];
+//    }
+//    else {
+//        baseIcon = [ UIImage imageNamed: @"File.png" ];
+//    }
+//
+//    _icon = [self iconByAddingEmblemsToImage: baseIcon];
+//}
 @end
+
+

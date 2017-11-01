@@ -12,6 +12,17 @@
 #pragma clang diagnostic ignored "-Wformat-nonliteral"
 #endif
 
+#if TARGET_OS_SIMULATOR
+    #if !TARGET_OS_TV
+        static NSString * const rootPath = @"/Applications/Xcode-beta.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk";
+    #else
+        static NSString * const rootPath = @"/Applications/Xcode-beta.app/Contents/Developer/Platforms/AppleTVSimulator.platform/Developer/SDKs/AppleTVSimulator.sdk";
+    #endif
+
+    #else
+        static NSString * const rootPath = @"/";
+#endif
+
 @implementation NSString (OSFile)
 
 + (NSString *)transformedFileSizeValue:(NSNumber *)value {
@@ -175,4 +186,35 @@
     CFRelease(numberString);
     return (__bridge NSString *)numberString;
 }
+
++ (NSString *)getDownloadLocalFolderPath {
+    NSString *documents = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
+    NSString *localFolderPath = [documents stringByAppendingPathComponent:@"OSFileDownloader"];
+    BOOL isDirectory, isExist;
+    isExist = [[NSFileManager defaultManager] fileExistsAtPath:localFolderPath isDirectory:&isDirectory];
+    if (!isExist || !isDirectory) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:localFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    return localFolderPath;
+}
+
++ (NSString *)getRootPath {
+    return rootPath;
+}
+
++ (NSString *)getDocumentPath {
+    
+    return [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
+}
+
++ (NSString *)getLibraryPath {
+    NSArray *userPaths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
+    return [userPaths objectAtIndex:0];
+}
+
++ (NSString *)getCachesPath {
+    NSArray *userPaths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    return [userPaths objectAtIndex:0];
+}
+
 @end

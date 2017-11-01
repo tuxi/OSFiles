@@ -82,30 +82,5 @@ static NSString * const OSFileDownloaderConfigurationSendNotificationWhenDownloa
     return [[NSUserDefaults standardUserDefaults] objectForKey:OSFileDownloaderConfigurationSendNotificationWhenDownloadCompleteKey];
 }
 
-+ (NSString *)getDownloadLocalFolderPath {
-    NSString *documents = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
-    NSString *localFolderPath = [documents stringByAppendingPathComponent:@"OSFileDownloader"];
-    BOOL isDirectory, isExist;
-    isExist = [[NSFileManager defaultManager] fileExistsAtPath:localFolderPath isDirectory:&isDirectory];
-    if (!isExist || !isDirectory) {
-        [[NSFileManager defaultManager] createDirectoryAtPath:localFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
-    }
-    return localFolderPath;
-}
-
-+ (NSString *)getDocumentPath {
-    
-    return [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
-}
-
-+ (NSString *)getLibraryPath {
-    NSArray *userPaths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
-    return [userPaths objectAtIndex:0];
-}
-
-+ (NSString *)getCachesPath {
-    NSArray *userPaths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-    return [userPaths objectAtIndex:0];
-}
 
 @end

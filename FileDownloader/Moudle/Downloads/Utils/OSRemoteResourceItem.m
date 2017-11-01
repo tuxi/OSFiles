@@ -51,7 +51,7 @@
 }
 
 - (NSString *)localFolderPath {
-    return [OSFileDownloaderConfiguration getDownloadLocalFolderPath];
+    return [NSString getDownloadLocalFolderPath];
 }
 
 - (NSString *)localPath {

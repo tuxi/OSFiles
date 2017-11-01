@@ -23,10 +23,5 @@
 
 + (OSFileDownloaderConfiguration *)defaultConfiguration;
 
-+ (NSString *)getDownloadLocalFolderPath;
-
-+ (NSString *)getDocumentPath;
-+ (NSString *)getLibraryPath;
-+ (NSString *)getCachesPath;
 
 @end

@@ -12,7 +12,6 @@
 		1855DF6C1FA38B95001CCAE8 /* DirectoryWatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF6B1FA38B94001CCAE8 /* DirectoryWatcher.m */; };
 		1855DF6F1FA38BC8001CCAE8 /* NSObject+IvarList.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF6E1FA38BC8001CCAE8 /* NSObject+IvarList.m */; };
 		1855DF781FA38C0E001CCAE8 /* OSFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF751FA38C0D001CCAE8 /* OSFileManager.m */; };
-		1855DF7C1FA38C1C001CCAE8 /* FoldersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF7A1FA38C1C001CCAE8 /* FoldersViewController.m */; };
 		1855DF811FA390C0001CCAE8 /* XYSuspensionMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF7F1FA390C0001CCAE8 /* XYSuspensionMenu.m */; };
 		1855DF841FA3938C001CCAE8 /* OSFileCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF831FA3938C001CCAE8 /* OSFileCollectionViewController.m */; };
 		1855DF981FA3A8FB001CCAE8 /* OSFileDownloaderConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF971FA3A8FB001CCAE8 /* OSFileDownloaderConfiguration.m */; };
@@ -452,8 +451,6 @@
 		1855DF6E1FA38BC8001CCAE8 /* NSObject+IvarList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+IvarList.m"; sourceTree = "<group>"; };
 		1855DF751FA38C0D001CCAE8 /* OSFileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSFileManager.m; sourceTree = "<group>"; };
 		1855DF771FA38C0E001CCAE8 /* OSFileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSFileManager.h; sourceTree = "<group>"; };
-		1855DF7A1FA38C1C001CCAE8 /* FoldersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FoldersViewController.m; sourceTree = "<group>"; };
-		1855DF7B1FA38C1C001CCAE8 /* FoldersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FoldersViewController.h; sourceTree = "<group>"; };
 		1855DF7F1FA390C0001CCAE8 /* XYSuspensionMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XYSuspensionMenu.m; sourceTree = "<group>"; };
 		1855DF801FA390C0001CCAE8 /* XYSuspensionMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYSuspensionMenu.h; sourceTree = "<group>"; };
 		1855DF821FA3938C001CCAE8 /* OSFileCollectionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSFileCollectionViewController.h; sourceTree = "<group>"; };
@@ -1225,8 +1222,6 @@
 			children = (
 				18517C571EEBD95C00B148C8 /* FilesViewController.h */,
 				18517C581EEBD95C00B148C8 /* FilesViewController.m */,
-				1855DF7B1FA38C1C001CCAE8 /* FoldersViewController.h */,
-				1855DF7A1FA38C1C001CCAE8 /* FoldersViewController.m */,
 				1855DF821FA3938C001CCAE8 /* OSFileCollectionViewController.h */,
 				1855DF831FA3938C001CCAE8 /* OSFileCollectionViewController.m */,
 				18A0F1671FA57DBA00614E91 /* OSFileCollectionViewCell.h */,
@@ -2599,7 +2594,6 @@
 				18ADEF331F9E4A860024BA40 /* SmileKeychainWrapper.m in Sources */,
 				18ADEF3F1F9E4A860024BA40 /* FFCircularProgressView.m in Sources */,
 				18ADEF161F9E4A530024BA40 /* ArrowActivityView.m in Sources */,
-				1855DF7C1FA38C1C001CCAE8 /* FoldersViewController.m in Sources */,
 				18ADEF2D1F9E4A860024BA40 /* MainTabBarController.m in Sources */,
 				18ADEEE71F9E4A1F0024BA40 /* CardMainBottomView.m in Sources */,
 				18ADEEE81F9E4A1F0024BA40 /* CardMainView.m in Sources */,

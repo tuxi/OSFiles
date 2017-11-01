@@ -28,7 +28,7 @@ PODS:
   - Mantle/extobjc (2.1.0)
   - Masonry (1.1.0)
   - MBProgressHUD (1.0.0)
-  - NODataPlaceholderView (0.0.3)
+  - NODataPlaceholderView (1.0.2)
   - SDWebImage (4.1.2):
     - SDWebImage/Core (= 4.1.2)
   - SDWebImage/Core (4.1.2)
@@ -40,7 +40,7 @@ DEPENDENCIES:
   - Mantle (~> 2.1.0)
   - Masonry (~> 1.1.0)
   - MBProgressHUD (~> 1.0.0)
-  - NODataPlaceholderView (~> 0.0.3)
+  - NODataPlaceholderView (~> 1.0.2)
   - SDWebImage (~> 4.1.2)
 
 SPEC CHECKSUMS:
@@ -50,9 +50,9 @@ SPEC CHECKSUMS:
   Mantle: 2fa750afa478cd625a94230fbf1c13462f29395b
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
-  NODataPlaceholderView: 886d7db8beea4fcc7e06c01654ec269456b11a34
+  NODataPlaceholderView: 7a019c41d7439e819a45ac272adb17fc7f4e39cc
   SDWebImage: cb6f9f266a9977741efcbc21e618e8be3734c774
 
-PODFILE CHECKSUM: 29e020771dc7383bda3047d18bd9f188b8277e52
+PODFILE CHECKSUM: 4cf459d30847cece8cfe17a9f611aaf7f48db357
 
 COCOAPODS: 1.2.0

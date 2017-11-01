@@ -10,7 +10,7 @@
 #import <objc/runtime.h>
 #import "XYSuspensionMenu.h"
 #import "NSString+OSFile.h"
-#import "FoldersViewController.h"
+#import "OSFileCollectionViewController.h"
 
 #define APPVERSION_STRING [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
@@ -76,7 +76,12 @@ static void suspensionMenuWindow()
         }
         {
             item = [HypotenuseAction actionWithType:UIButtonTypeSystem handler:^(HypotenuseAction * _Nonnull action, SuspensionMenuView * _Nonnull menuView) {
-                FoldersViewController *vc = [[FoldersViewController  alloc] initWithRootDirectory:NSHomeDirectory()];
+                
+                OSFileCollectionViewController *vc = [[OSFileCollectionViewController alloc]
+                                                      initWithDirectoryArray:@[                                                                                                            [NSString getRootPath],[NSString getDocumentPath]]
+                                                      
+                                                      controllerMode:OSFileCollectionViewControllerModeDefault];
+                
                 [menuView showViewController:vc animated:YES];
             }];
             [menuView addAction:item];
