@@ -11,23 +11,12 @@
 #import "OSFileDownloader.h"
 #import "OSRemoteResourceItem.h"
 
-@protocol OSFileDownloaderDataSource <NSObject>
-
-@optional
-/// 需要下载的任务, 默认按照url在数组中的索引顺序下载
-/// @return 所有需要下载的url 字符串
-- (NSArray<NSString *> *)OSFileDownloaderAddTasksFromRemoteURLPaths;
-
-@end
-
 
 @interface OSFileDownloaderManager : NSObject
 
 @property (nonatomic, class) OSFileDownloaderManager *sharedInstance;
 
 @property (nonatomic, strong, readonly) NSMutableArray<OSRemoteResourceItem *> *downloadItems;
-
-@property (nonatomic, weak) id<OSFileDownloaderDataSource> dataSource;
 
 @property (nonatomic, strong) OSFileDownloader *downloader;
 
@@ -63,4 +52,7 @@
 // 查找urlPath在downloadItems中对应的OSFileDownloadOperation的索引
 - (NSUInteger)foundItemIndxInDownloadItemsByURL:(NSString *)urlPath;
 - (BOOL)removeDownloadItemByPackageId:(NSString *)packageId;
+- (void)removeAllWaitingDownloadArray;
+- (void)removeFromDownloadIemsByStatus:(OSFileDownloadStatus)status;
+- (void)removeActiveDownloadItems;
 @end

@@ -21,8 +21,6 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
 @property (nonatomic, strong) OSFileDownloaderDelegate *downloadDelegate;
 /// 所有添加到下载中的热任务，包括除了未开始和成功状态的所有下载任务
 @property (nonatomic, strong) NSMutableArray *downloadItems;
-/// 所有展示中的文件，还未开始下载时存放的，当文件取消下载时也会存放到此数组
-@property (nonatomic, strong) NSMutableArray *displayItems;
 
 @end
 
@@ -52,7 +50,6 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
     self = [super init];
     if (self) {
         
-        _displayItems = [NSMutableArray array];
         self.downloadDelegate = [OSFileDownloaderDelegate new];
         self.downloader = [OSFileDownloader new];
         self.downloader.downloadDelegate = self.downloadDelegate;
@@ -104,56 +101,6 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
     [self storedDownloadItems];
 }
 
-- (void)setDataSource:(id<OSFileDownloaderDataSource>)dataSource {
-    if (dataSource != _dataSource) {
-        _dataSource = dataSource;
-        
-        [self _addDownloadTaskFromDataSource];
-    }
-}
-
-- (void)_addDownloadTaskFromDataSource {
-    if (self.dataSource
-        && [self.dataSource respondsToSelector:@selector(OSFileDownloaderAddTasksFromRemoteURLPaths)]) {
-        NSArray *urls = [self.dataSource OSFileDownloaderAddTasksFromRemoteURLPaths];
-        [self.displayItems removeAllObjects];
-        [urls enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            [self addUrlPathToDisplayItemArray:obj downloadItem:nil];
-        }];
-        
-    }
-}
-
-/// 根据url创建或获取一个OSFileDownloadIem 返回
-- (BOOL)addUrlPathToDisplayItemArray:(NSString *)urlPath downloadItem:(OSRemoteResourceItem * *)downloadItem {
-    @synchronized (self) {
-        OSRemoteResourceItem *item = nil;
-        // 下载任务中没有
-        NSUInteger downloadItemIdx = [self foundItemIndxInDownloadItemsByURL:urlPath];
-        // 显示的队列中也没有
-        NSUInteger displayItemIdx = [self foundItemIndxInDisplayItemsByURL:urlPath];
-        if (downloadItemIdx == NSNotFound && displayItemIdx == NSNotFound) {
-            item = [[OSRemoteResourceItem alloc] init];
-            item.urlPath = urlPath;
-            item.fileName = urlPath.lastPathComponent;
-            [self.displayItems addObject:item];
-            if (downloadItem) {
-                *downloadItem = item;
-            }
-            return YES;
-        }
-        if (displayItemIdx != NSNotFound) {
-            if (downloadItem) {
-                item = [self.displayItems objectAtIndex:displayItemIdx];
-                *downloadItem = item;
-            }
-            return YES;
-        }
-        return NO;
-    }
-}
-
-
 ////////////////////////////////////////////////////////////////////////
 #pragma mark - Public
 ////////////////////////////////////////////////////////////////////////
@@ -164,17 +111,11 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
     NSUInteger foundIndexInDownloadItems = [self foundItemIndxInDownloadItemsByURL:urlPath];
     OSRemoteResourceItem * item = nil;
     if (foundIndexInDownloadItems == NSNotFound) {
-        NSUInteger foundIndexInDisplay = [self foundItemIndxInDisplayItemsByURL:urlPath];
-        if (foundIndexInDisplay != NSNotFound) {
-            item = [self.displayItems objectAtIndex:foundIndexInDisplay];
-            item.status = OSFileDownloadStatusNotStarted;
-            [self.downloadItems addObject:item];
-            [self.displayItems removeObjectAtIndex:foundIndexInDisplay];
-        } else {
+        {
             item = [[OSRemoteResourceItem alloc] init];
             item.urlPath = urlPath;
             item.fileName = urlPath.lastPathComponent;
-            [self.downloadItems addObject:item];
+            [self addToDownloadItemsByItem:item];
         }
         [self storedDownloadItems];
         [[NSNotificationCenter defaultCenter] postNotificationName:OSFileDownloadStartedNotification object:item];
@@ -235,13 +176,6 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
     
 }
 
-- (void)addDownloadItemByUrlPath:(NSString *)urlPath {
-    NSAssert(urlPath, @"urlPath is not nil");
-    NSUInteger foundIdxInDispaly = [self foundItemIndxInDisplayItemsByURL:urlPath];
-    if (foundIdxInDispaly != NSNotFound) {
-        [self.displayItems removeObjectAtIndex:foundIdxInDispaly];
-    }
-}
 
 - (void)cancel:(NSString *)urlPath {
     NSAssert(urlPath, @"urlPath is not nil");
@@ -258,17 +192,8 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
             } else {
                 [self.downloader cancelWithURL:urlPath];
             }
-            // 将其从downloadItem中移除，并添加到display中 重新归档
-            NSUInteger founIdxInDisplay = [self foundItemIndxInDisplayItemsByURL:urlPath];
             [self deleteFile:item.localPath];
             [self.downloadItems removeObject:item];
-            item.urlPath = urlPath;
-            item.fileName = urlPath.lastPathComponent;
-            if (founIdxInDisplay == NSNotFound) {
-                [self.displayItems addObject:item];
-            } else {
-                [self.displayItems replaceObjectAtIndex:founIdxInDisplay withObject:item];
-            }
             [self storedDownloadItems];
             [[NSNotificationCenter defaultCenter] postNotificationName:OSFileDownloadCanceldNotification object:nil];
         }
@@ -338,38 +263,11 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
         }];
         [self.downloadItems removeAllObjects];
         [self storedDownloadItems];
-        [self _addDownloadTaskFromDataSource];
     }
     
 }
 
-- (NSArray<OSRemoteResourceItem *> *)downloadedItems {
-    if (!self.downloadItems.count) {
-        return nil;
-    }
-    
-    NSMutableArray *allSuccessItems = [NSMutableArray array];
-    [self.downloadItems enumerateObjectsUsingBlock:^(OSRemoteResourceItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if (obj.status == OSFileDownloadStatusSuccess) {
-            [allSuccessItems addObject:obj];
-        }
-    }];
-    return allSuccessItems;
-}
 
-- (NSArray<OSRemoteResourceItem *> *)activeDownloadItems {
-    if (!self.downloadItems.count) {
-        return @[];
-    }
-    NSMutableArray *downloadingItems = [NSMutableArray array];
-    [self.downloadItems enumerateObjectsUsingBlock:^(OSRemoteResourceItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if (obj.status != OSFileDownloadStatusSuccess) {
-            [downloadingItems addObject:obj];
-        }
-    }];
-    return downloadingItems;
-    
-}
 
 // 地图下载失败时app每隔10秒下载自动下载一次全部失败的
 - (void)autoDownloadFailure {
@@ -409,6 +307,7 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
 
 - (void)failureAllDownloadTask {
     [self pauseAllDownloadTask];
+    [self removeAllWaitingDownloadArray];
     for (OSRemoteResourceItem *item in [self activeDownloadItems]) {
         if (item.status != OSFileDownloadStatusSuccess &&
             item.status != OSFileDownloadStatusNotStarted) {
@@ -495,18 +394,6 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
 #pragma mark - Other
 ////////////////////////////////////////////////////////////////////////
 
-// 查找urlPath在displayItems中对应的OSFileDownloadOperation的索引
-- (NSUInteger)foundItemIndxInDisplayItemsByURL:(NSString *)urlPath {
-    if (!urlPath.length) {
-        return NSNotFound;
-    }
-    return [self.displayItems indexOfObjectPassingTest:
-            ^BOOL(OSRemoteResourceItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                return [urlPath isEqualToString:obj.urlPath];
-            }];
-}
-
-
 // 查找urlPath在downloadItems中对应的OSFileDownloadOperation的索引
 - (NSUInteger)foundItemIndxInDownloadItemsByURL:(NSString *)urlPath {
     if (!urlPath.length) {
@@ -549,7 +436,105 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
     }
 }
 
+
+- (void)removeAllWaitingDownloadArray {
+    [self.downloader removeAllWaitingDownloadArray];
+}
+
+- (void)removeActiveDownloadItems {
+    if (!self.downloadItems.count) {
+        return;
+    }
+    NSIndexSet *indexSet = [self.downloadItems indexesOfObjectsPassingTest:^BOOL(OSRemoteResourceItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        return obj.status != OSFileDownloadStatusSuccess;
+    }];
+    if (indexSet.count) {
+        [self.downloadItems removeObjectsAtIndexes:indexSet];
+    }
+}
+
+- (void)removeFromDownloadIemsByStatus:(OSFileDownloadStatus)status {
+    if (!self.downloadItems.count) {
+        return;
+    }
+    NSIndexSet *indexSet = [self.downloadItems indexesOfObjectsPassingTest:^BOOL(OSRemoteResourceItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        return obj.status == status;
+    }];
+    if (indexSet.count) {
+        [self.downloadItems removeObjectsAtIndexes:indexSet];
+    }
+}
+
+- (BOOL)addToArray:(NSMutableArray<OSRemoteResourceItem *> *)array item:(OSRemoteResourceItem *)item {
+    NSAssert(array && [array isKindOfClass:[NSMutableArray class]], @"array must be a NSMutableArray instance");
+    
+    NSUInteger foundIdx = [array indexOfObjectPassingTest:^BOOL(OSRemoteResourceItem *  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        BOOL res = [obj.urlPath isEqualToString:item.urlPath];
+        if (res) {
+            *stop = YES;
+        }
+        return res;
+    }];
+    
+    if (foundIdx != NSNotFound) {
+        return NO;
+    }
+    
+    [array addObject:item];
+    return YES;
+}
+
+- (BOOL)addToDownloadItemsByItem:(OSRemoteResourceItem *)item {
+    return [self addToArray:self.downloadItems item:item];
+}
+
+////////////////////////////////////////////////////////////////////////
+#pragma mark - 获取各种状态的任务
+////////////////////////////////////////////////////////////////////////
+
+- (NSArray<OSRemoteResourceItem *> *)downloadedSuccessItems {
+    if (!self.downloadItems.count) {
+        return nil;
+    }
+    
+    NSMutableArray *allSuccessItems = [NSMutableArray array];
+    [self.downloadItems enumerateObjectsUsingBlock:^(OSRemoteResourceItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (obj.status == OSFileDownloadStatusSuccess) {
+            [allSuccessItems addObject:obj];
+        }
+    }];
+    return allSuccessItems;
+}
+- (NSArray<OSRemoteResourceItem *> *)downloadedItems {
+    if (!self.downloadItems.count) {
+        return nil;
+    }
+    
+    NSMutableArray *allSuccessItems = [NSMutableArray array];
+    [self.downloadItems enumerateObjectsUsingBlock:^(OSRemoteResourceItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (obj.status == OSFileDownloadStatusSuccess) {
+            [allSuccessItems addObject:obj];
+        }
+    }];
+    return allSuccessItems;
+}
+
+- (NSArray<OSRemoteResourceItem *> *)activeDownloadItems {
+    if (!self.downloadItems.count) {
+        return nil;
+    }
+    NSMutableArray *downloadingItems = [NSMutableArray array];
+    [self.downloadItems enumerateObjectsUsingBlock:^(OSRemoteResourceItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (obj.status != OSFileDownloadStatusSuccess) {
+            [downloadingItems addObject:obj];
+        }
+    }];
+    return downloadingItems;
+    
+}
+
 - (NSArray<OSRemoteResourceItem *> *)downloadFailureItems {
     return [self getDownloadItemsWithStatus:OSFileDownloadStatusFailure];
 }
+
 @end
