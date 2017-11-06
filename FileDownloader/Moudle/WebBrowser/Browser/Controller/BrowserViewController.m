@@ -223,18 +223,18 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
           [SettingsMenuItem itemWithText:@"拷贝连接" image:[UIImage imageNamed:@"album"] action:^{
               [self_ handleCopyURLButtonClicked];
           }],
-          [SettingsMenuItem itemWithText:@"下载网页中的图片" image:[UIImage imageNamed:@"album"] action:^{
+          [SettingsMenuItem itemWithText:@"缓存" image:[UIImage imageNamed:@"album"] action:^{
 //              NSString *lJs = @"document.documentElement.innerHTML";
 //              NSString *lHtml = [self.browserContainerView.webView stringByEvaluatingJavaScriptFromString:lJs];
-              [self getImgsFormHTML:^(NSArray *imageURLs) {
-                  NSString *string = [imageURLs componentsJoinedByString:@",\n"];
-                  if (!imageURLs.count) {
+              [self getVideosFormHTML:^(NSArray *videoURLs) {
+                  NSString *string = [videoURLs componentsJoinedByString:@",\n"];
+                  if (!videoURLs.count) {
                       string = nil;
                   }
                   dispatch_async(dispatch_get_main_queue(), ^{
-                      [UIAlertView showWithTitle:[NSString stringWithFormat:@"%ld个图片", imageURLs.count] message:string cancelButtonTitle:@"取消" otherButtonTitles:@[@"全部下载"] tapBlock:^(UIAlertView * _Nonnull alertView, NSInteger buttonIndex) {
+                      [UIAlertView showWithTitle:[NSString stringWithFormat:@"%ld个视频", videoURLs.count] message:string cancelButtonTitle:@"取消" otherButtonTitles:@[@"全部缓存"] tapBlock:^(UIAlertView * _Nonnull alertView, NSInteger buttonIndex) {
                           if (buttonIndex == 1) {
-                              [imageURLs enumerateObjectsUsingBlock:^(NSString *  _Nonnull url, NSUInteger idx, BOOL * _Nonnull stop) {
+                              [videoURLs enumerateObjectsUsingBlock:^(NSString *  _Nonnull url, NSUInteger idx, BOOL * _Nonnull stop) {
                                   if (!url.length) {
                                       return;
                                   }
@@ -244,8 +244,25 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
                       }];
                   });
               }];
+//              [self getImgsFormHTML:^(NSArray *imageURLs) {
+//                  NSString *string = [imageURLs componentsJoinedByString:@",\n"];
+//                  if (!imageURLs.count) {
+//                      string = nil;
+//                  }
+//                  dispatch_async(dispatch_get_main_queue(), ^{
+//                      [UIAlertView showWithTitle:[NSString stringWithFormat:@"%ld个图片", imageURLs.count] message:string cancelButtonTitle:@"取消" otherButtonTitles:@[@"全部缓存"] tapBlock:^(UIAlertView * _Nonnull alertView, NSInteger buttonIndex) {
+//                          if (buttonIndex == 1) {
+//                              [imageURLs enumerateObjectsUsingBlock:^(NSString *  _Nonnull url, NSUInteger idx, BOOL * _Nonnull stop) {
+//                                  if (!url.length) {
+//                                      return;
+//                                  }
+//                                  [[OSFileDownloaderManager sharedInstance] start:url];
+//                              }];
+//                          }
+//                      }];
+//                  });
+//              }];
             
-              
           }]
           
           ];
@@ -275,19 +292,53 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
     }
     NSMutableArray *arrImgURL = [[NSMutableArray alloc] init];
     NSInteger imageCount = [self nodeCountOfTag:@"img"];
-    for (int i = 0; i < imageCount; i++) {
-//         NSString *jsString = [NSString stringWithFormat:@"document.getElementsByTagName('video')[%d].src", i];
-        NSString *jsString = [NSString stringWithFormat:@"document.getElementsByTagName('img')[%d].src", i];
-        [self.browserContainerView.webView evaluateJavaScript:jsString completionHandler:^(NSString *str, NSError *error) {
-            
-            if (error ==nil) {
-                [arrImgURL addObject:str];
-            }
-            if (i == imageCount-1) {
-                completion(arrImgURL);
-            }
-        }];
+    if (!imageCount) {
+        [self xy_showMessage:@"未找到文件"];
     }
+    else {
+        for (int i = 0; i < imageCount; i++) {
+            //         NSString *jsString = [NSString stringWithFormat:@"document.getElementsByTagName('video')[%d].src", i];
+            NSString *jsString = [NSString stringWithFormat:@"document.getElementsByTagName('img')[%d].src", i];
+            [self.browserContainerView.webView evaluateJavaScript:jsString completionHandler:^(NSString *str, NSError *error) {
+                
+                if (error ==nil) {
+                    [arrImgURL addObject:str];
+                }
+                if (i == imageCount-1) {
+                    completion(arrImgURL);
+                }
+            }];
+        }
+    }
+   
+}
+
+/// 获取HTML中的视频
+- (void)getVideosFormHTML:(void (^)(NSArray *videoURLs))completion {
+    if (!completion) {
+        return;
+    }
+    NSMutableArray *videoURLs = [[NSMutableArray alloc] init];
+    NSInteger videoCount = [self nodeCountOfTag:@"video"];
+    if (!videoCount) {
+        [self xy_showMessage:@"未找到文件"];
+    }
+    else {
+        for (int i = 0; i < videoCount; i++) {
+            //         NSString *jsString = [NSString stringWithFormat:@"document.getElementsByTagName('video')[%d].src", i];
+            NSString *jsString = [NSString stringWithFormat:@"document.getElementsByTagName('video')[%d].src", i];
+            [self.browserContainerView.webView evaluateJavaScript:jsString completionHandler:^(NSString *str, NSError *error) {
+                
+                if (error ==nil) {
+                    [videoURLs addObject:str];
+                }
+                if (i == videoCount-1) {
+                    completion(videoURLs);
+                }
+            }];
+        }
+    }
+    
 }
 
 // 获取某个标签的结点个数
