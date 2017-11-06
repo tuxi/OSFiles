@@ -330,6 +330,8 @@
 		18ADEFF21F9E4B460024BA40 /* Protected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 18ADECA01F9E2C450024BA40 /* Protected@2x.png */; };
 		18ADEFF31F9E4B460024BA40 /* Socket.png in Resources */ = {isa = PBXBuildFile; fileRef = 18ADECA11F9E2C450024BA40 /* Socket.png */; };
 		18ADEFF41F9E4B460024BA40 /* Socket@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 18ADECA21F9E2C450024BA40 /* Socket@2x.png */; };
+		18C565141FB0197B00699F41 /* YCXMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C565111FB0197B00699F41 /* YCXMenu.m */; };
+		18C565151FB0197B00699F41 /* YCXMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C565131FB0197B00699F41 /* YCXMenuItem.m */; };
 		88C9037378C7FDA243F02BF2 /* libPods-FileDownloader.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A5107F0693D00542CC3FA456 /* libPods-FileDownloader.a */; };
 		D017FF121FA89B16004B65CF /* UITextField+OSRangeExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = D017FF111FA89B16004B65CF /* UITextField+OSRangeExtension.m */; };
 /* End PBXBuildFile section */
@@ -863,6 +865,10 @@
 		18ADEEBD1F9E49940024BA40 /* libxml2.2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.2.tbd; path = usr/lib/libxml2.2.tbd; sourceTree = SDKROOT; };
 		18ADEEBF1F9E499F0024BA40 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		18ADEEC31F9E49D40024BA40 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		18C565101FB0197B00699F41 /* YCXMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YCXMenu.h; sourceTree = "<group>"; };
+		18C565111FB0197B00699F41 /* YCXMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YCXMenu.m; sourceTree = "<group>"; };
+		18C565121FB0197B00699F41 /* YCXMenuItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YCXMenuItem.h; sourceTree = "<group>"; };
+		18C565131FB0197B00699F41 /* YCXMenuItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YCXMenuItem.m; sourceTree = "<group>"; };
 		18DCFC3F1F263D8F00AC21CA /* OSFileDownloaderDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSFileDownloaderDelegate.h; sourceTree = "<group>"; };
 		18DCFC401F263D8F00AC21CA /* OSFileDownloaderDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSFileDownloaderDelegate.m; sourceTree = "<group>"; };
 		18DCFC411F263D8F00AC21CA /* OSFileDownloaderManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSFileDownloaderManager.h; sourceTree = "<group>"; };
@@ -1035,6 +1041,7 @@
 		18517BE91EEBCB2C00B148C8 /* Helper */ = {
 			isa = PBXGroup;
 			children = (
+				18C5650F1FB0197B00699F41 /* YCXMenu */,
 				1855DF801FA390C0001CCAE8 /* XYSuspensionMenu.h */,
 				1855DF7F1FA390C0001CCAE8 /* XYSuspensionMenu.m */,
 				18ADEBEC1F9E21910024BA40 /* FileSystem */,
@@ -2044,6 +2051,17 @@
 			path = Lib;
 			sourceTree = "<group>";
 		};
+		18C5650F1FB0197B00699F41 /* YCXMenu */ = {
+			isa = PBXGroup;
+			children = (
+				18C565101FB0197B00699F41 /* YCXMenu.h */,
+				18C565111FB0197B00699F41 /* YCXMenu.m */,
+				18C565121FB0197B00699F41 /* YCXMenuItem.h */,
+				18C565131FB0197B00699F41 /* YCXMenuItem.m */,
+			);
+			path = YCXMenu;
+			sourceTree = "<group>";
+		};
 		18DCFC3E1F263D8F00AC21CA /* Utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -2353,6 +2371,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1855DF6F1FA38BC8001CCAE8 /* NSObject+IvarList.m in Sources */,
+				18C565151FB0197B00699F41 /* YCXMenuItem.m in Sources */,
 				18ADEF3E1F9E4A860024BA40 /* XYImageViewer.m in Sources */,
 				18ADEEFA1F9E4A3D0024BA40 /* BrowserWebView.m in Sources */,
 				18ADEF231F9E4A860024BA40 /* OSFileDownloaderDelegate.m in Sources */,
@@ -2367,6 +2386,7 @@
 				18ADEF4F1F9E4A860024BA40 /* NSObject+XYProperties.m in Sources */,
 				18ADEEED1F9E4A2E0024BA40 /* SettingsTableViewController.m in Sources */,
 				184F75011FA75D9500C2590D /* NSString+OSDrawingAdditions.m in Sources */,
+				18C565141FB0197B00699F41 /* YCXMenu.m in Sources */,
 				18ADEEDC1F9E4A130024BA40 /* BrowserBottomToolBar.m in Sources */,
 				18ADEECB1F9E49FE0024BA40 /* NJKWebViewProgress.m in Sources */,
 				18ADEED81F9E4A0C0024BA40 /* BookmarkSectionHeaderView.m in Sources */,

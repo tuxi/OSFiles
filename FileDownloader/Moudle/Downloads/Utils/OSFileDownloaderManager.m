@@ -318,6 +318,22 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
     [self storedDownloadItems];
 }
 
+- (void)startAllDownloadTask {
+    if (!self.activeDownloadItems.count) {
+        return;
+    }
+    
+    for (OSRemoteResourceItem *item in self.activeDownloadItems) {
+        if (item.status != OSFileDownloadStatusSuccess) {
+            [self start:item.urlPath];
+        }
+    }
+}
+
+- (void)cancelAllDownloadTask {
+    [self clearAllDownloadTask];
+}
+
 ////////////////////////////////////////////////////////////////////////
 #pragma mark - 下载信息存储
 ////////////////////////////////////////////////////////////////////////

@@ -16,8 +16,11 @@
 #import "UINavigationController+OSProgressBar.h"
 #import "UIViewController+OSAlertExtension.h"
 #import "NSString+OSFile.h"
+#import "YCXMenu.h"
 
 @interface DownloadsViewController ()
+
+@property (nonatomic, strong) NSMutableArray *navigationBarMenuitems;
 
 @end
 
@@ -74,7 +77,7 @@
     self.navigationController.progressView.progressTintColor = [UIColor redColor];
     self.navigationController.progressView.trackTintColor = [[UIColor greenColor] colorWithAlphaComponent:0.5];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"添加下载任务" style:UIBarButtonItemStylePlain target:self action:@selector(addTask)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(optionClick)];
     
 }
 
@@ -234,6 +237,20 @@
     return [self attributedStringWithText:@"无下载任务" color:[UIColor grayColor] fontSize:16];;
 }
 
+////////////////////////////////////////////////////////////////////////
+#pragma mark - Actions
+////////////////////////////////////////////////////////////////////////
+- (void)optionClick {
+    [YCXMenu setTintColor:[UIColor colorWithRed:0.118 green:0.573 blue:0.820 alpha:1]];
+    [YCXMenu setSelectedColor:[UIColor redColor]];
+    if ([YCXMenu isShow]){
+        [YCXMenu dismissMenu];
+    } else {
+        [YCXMenu showMenuInView:self.navigationController.view fromRect:CGRectMake(self.view.frame.size.width - 50, self.navigationController.navigationBar.height+20-5, 50, 0) menuItems:self.navigationBarMenuitems selected:^(NSInteger index, YCXMenuItem *item) {
+            NSLog(@"%@",item);
+        }];
+    }
+}
 
 - (void)addTask {
     [self alertControllerWithTitle:@"输入URL"
@@ -256,5 +273,39 @@
                                    [self reloadTableData];
                                }];
 }
+
+////////////////////////////////////////////////////////////////////////
+#pragma mark -
+////////////////////////////////////////////////////////////////////////
+
+- (NSMutableArray *)navigationBarMenuitems {
+    if (!_navigationBarMenuitems) {
+        
+        _navigationBarMenuitems = [@[
+                                     [YCXMenuItem menuItem:@"添加缓存"
+                                                     image:nil
+                                                    target:self
+                                                    action:@selector(addTask)],
+                                     [YCXMenuItem menuItem:@"取消所有缓存"
+                                                     image:nil
+                                                    target:self
+                                                    action:@selector(cancelAllTask)],
+                                     [YCXMenuItem menuItem:@"开始所有缓存"
+                                                     image:nil
+                                                    target:self
+                                                    action:@selector(startAllTask)],
+                    ] mutableCopy];
+    }
+    return _navigationBarMenuitems;
+}
+
+- (void)cancelAllTask {
+    [[OSFileDownloaderManager sharedInstance] cancelAllDownloadTask];
+}
+
+- (void)startAllTask {
+    [[OSFileDownloaderManager sharedInstance] startAllDownloadTask];
+}
+
 
 @end

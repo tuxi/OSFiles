@@ -41,6 +41,10 @@
 - (void)pauseAllDownloadTask;
 /// 让所有任务暂停，并进入失败状态
 - (void)failureAllDownloadTask;
+/// 执行下载全部任务
+- (void)startAllDownloadTask;
+/// 取消下载所有任务并删除临时文件
+- (void)cancelAllDownloadTask;
 
 - (NSArray<OSRemoteResourceItem *> *)downloadedItems;
 - (NSArray<OSRemoteResourceItem *> *)activeDownloadItems;
