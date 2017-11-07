@@ -40,7 +40,9 @@
     XYDispatch_main_async_safe((^{
         [[NSNotificationCenter defaultCenter] postNotificationName:OSFileDownloadSussessNotification object:fileItem];
         [self downloadTaskDidEnd];
-        [[OSLoaclNotificationHelper sharedInstance] sendLocalNotificationWithMessage:[NSString stringWithFormat:@"%@-下载成功", fileItem.fileName]];
+        if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
+            [[OSLoaclNotificationHelper sharedInstance] sendLocalNotificationWithMessage:[NSString stringWithFormat:@"%@-下载成功", fileItem.fileName]];
+        }
     }))
 }
 
