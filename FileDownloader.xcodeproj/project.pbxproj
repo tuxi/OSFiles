@@ -10,7 +10,6 @@
 		184F75011FA75D9500C2590D /* NSString+OSDrawingAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 184F75001FA75D9500C2590D /* NSString+OSDrawingAdditions.m */; };
 		1855DF1B1FA37CBD001CCAE8 /* UIViewController+OSAlertExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF1A1FA37CBD001CCAE8 /* UIViewController+OSAlertExtension.m */; };
 		1855DF6F1FA38BC8001CCAE8 /* NSObject+IvarList.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF6E1FA38BC8001CCAE8 /* NSObject+IvarList.m */; };
-		1855DF811FA390C0001CCAE8 /* XYSuspensionMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF7F1FA390C0001CCAE8 /* XYSuspensionMenu.m */; };
 		1855DF981FA3A8FB001CCAE8 /* OSFileDownloaderConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF971FA3A8FB001CCAE8 /* OSFileDownloaderConfiguration.m */; };
 		18566F8F1FA8ADA000EB5416 /* ApplicationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 18566F8E1FA8ADA000EB5416 /* ApplicationHelper.m */; };
 		185A8EAE1FA42ED4006077CE /* AutoTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = 185A8EAC1FA42ED3006077CE /* AutoTimer.m */; };
@@ -435,8 +434,6 @@
 		1855DF1A1FA37CBD001CCAE8 /* UIViewController+OSAlertExtension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+OSAlertExtension.m"; sourceTree = "<group>"; };
 		1855DF6D1FA38BC8001CCAE8 /* NSObject+IvarList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+IvarList.h"; sourceTree = "<group>"; };
 		1855DF6E1FA38BC8001CCAE8 /* NSObject+IvarList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+IvarList.m"; sourceTree = "<group>"; };
-		1855DF7F1FA390C0001CCAE8 /* XYSuspensionMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XYSuspensionMenu.m; sourceTree = "<group>"; };
-		1855DF801FA390C0001CCAE8 /* XYSuspensionMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYSuspensionMenu.h; sourceTree = "<group>"; };
 		1855DF961FA3A8FB001CCAE8 /* OSFileDownloaderConfiguration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSFileDownloaderConfiguration.h; sourceTree = "<group>"; };
 		1855DF971FA3A8FB001CCAE8 /* OSFileDownloaderConfiguration.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSFileDownloaderConfiguration.m; sourceTree = "<group>"; };
 		18566F8D1FA8ADA000EB5416 /* ApplicationHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ApplicationHelper.h; sourceTree = "<group>"; };
@@ -1042,8 +1039,6 @@
 			isa = PBXGroup;
 			children = (
 				18C5650F1FB0197B00699F41 /* YCXMenu */,
-				1855DF801FA390C0001CCAE8 /* XYSuspensionMenu.h */,
-				1855DF7F1FA390C0001CCAE8 /* XYSuspensionMenu.m */,
 				18ADEBEC1F9E21910024BA40 /* FileSystem */,
 				1813E8371F9BAE73002C661E /* SmileAuth */,
 				1813E7AA1F9B6E74002C661E /* ProgressBar */,
@@ -2405,7 +2400,6 @@
 				18ADEEDB1F9E4A100024BA40 /* BrowserViewController.m in Sources */,
 				18ADEF281F9E4A860024BA40 /* DownloadsTableViewModel.m in Sources */,
 				18ADEECF1F9E4A020024BA40 /* OSFileDownloaderSessionPrivateDelegate.m in Sources */,
-				1855DF811FA390C0001CCAE8 /* XYSuspensionMenu.m in Sources */,
 				18ADEF101F9E4A4A0024BA40 /* BaseTableViewController.m in Sources */,
 				18ADEEC61F9E49F70024BA40 /* HTTPManager.m in Sources */,
 				185A8EAE1FA42ED4006077CE /* AutoTimer.m in Sources */,

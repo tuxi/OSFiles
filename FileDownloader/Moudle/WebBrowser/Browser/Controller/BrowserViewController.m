@@ -25,6 +25,7 @@
 #import "KeyboardHelper.h"
 #import "NSURL+ZWUtility.h"
 #import "OSFileDownloaderManager.h"
+#import "YCXMenu.h"
 
 static NSString *const kBrowserViewControllerAddBookmarkSuccess = @"添加书签成功";
 static NSString *const kBrowserViewControllerAddBookmarkFailure = @"添加书签失败";
@@ -206,68 +207,50 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
     if (tag == BottomToolBarMoreButtonTag) {
         // weak self_ must not nil
         WEAK_REF(self)
-        NSArray<SettingsMenuItem *> *items =
-        @[
-          [SettingsMenuItem itemWithText:@"加入书签" image:[UIImage imageNamed:@"album"] action:^{
-              [self_ addBookmark];
-          }],
-          [SettingsMenuItem itemWithText:@"书签" image:[UIImage imageNamed:@"album"] action:^{
-              [self_ pushTableViewControllerWithControllerName:[BookmarkTableViewController class]];
-          }],
-          [SettingsMenuItem itemWithText:@"历史" image:[UIImage imageNamed:@"album"] action:^{
-              [self_ pushTableViewControllerWithControllerName:[HistoryTableViewController class]];
-          }],
-          [SettingsMenuItem itemWithText:@"设置" image:[UIImage imageNamed:@"album"] action:^{
-              [self_ pushTableViewControllerWithControllerName:[SettingsTableViewController class]];
-          }],
-          [SettingsMenuItem itemWithText:@"拷贝连接" image:[UIImage imageNamed:@"album"] action:^{
-              [self_ handleCopyURLButtonClicked];
-          }],
-          [SettingsMenuItem itemWithText:@"缓存" image:[UIImage imageNamed:@"album"] action:^{
-//              NSString *lJs = @"document.documentElement.innerHTML";
-//              NSString *lHtml = [self.browserContainerView.webView stringByEvaluatingJavaScriptFromString:lJs];
-              [self getVideosFormHTML:^(NSArray *videoURLs) {
-                  NSString *string = [videoURLs componentsJoinedByString:@",\n"];
-                  if (!videoURLs.count) {
-                      string = nil;
-                  }
-                  dispatch_async(dispatch_get_main_queue(), ^{
-                      [UIAlertView showWithTitle:[NSString stringWithFormat:@"%ld个视频", videoURLs.count] message:string cancelButtonTitle:@"取消" otherButtonTitles:@[@"全部缓存"] tapBlock:^(UIAlertView * _Nonnull alertView, NSInteger buttonIndex) {
-                          if (buttonIndex == 1) {
-                              [videoURLs enumerateObjectsUsingBlock:^(NSString *  _Nonnull url, NSUInteger idx, BOOL * _Nonnull stop) {
-                                  if (!url.length) {
-                                      return;
-                                  }
-                                  [[OSFileDownloaderManager sharedInstance] start:url];
-                              }];
-                          }
-                      }];
-                  });
-              }];
-//              [self getImgsFormHTML:^(NSArray *imageURLs) {
-//                  NSString *string = [imageURLs componentsJoinedByString:@",\n"];
-//                  if (!imageURLs.count) {
-//                      string = nil;
-//                  }
-//                  dispatch_async(dispatch_get_main_queue(), ^{
-//                      [UIAlertView showWithTitle:[NSString stringWithFormat:@"%ld个图片", imageURLs.count] message:string cancelButtonTitle:@"取消" otherButtonTitles:@[@"全部缓存"] tapBlock:^(UIAlertView * _Nonnull alertView, NSInteger buttonIndex) {
-//                          if (buttonIndex == 1) {
-//                              [imageURLs enumerateObjectsUsingBlock:^(NSString *  _Nonnull url, NSUInteger idx, BOOL * _Nonnull stop) {
-//                                  if (!url.length) {
-//                                      return;
-//                                  }
-//                                  [[OSFileDownloaderManager sharedInstance] start:url];
-//                              }];
-//                          }
-//                      }];
-//                  });
-//              }];
-            
-          }]
-          
-          ];
+        [YCXMenu setSelectedColor:[UIColor redColor]];
+        [YCXMenu setHasShadow:NO];
+        [YCXMenu setArrowSize:6];
+        [YCXMenu setCornerRadius:2];
+        [YCXMenu setBackgrounColorEffect:YCXMenuBackgrounColorEffectSolid];
+        [YCXMenu setTintColor:[UIColor colorWithRed:0.212 green:0.255 blue:0.678 alpha:1]];
+        if ([YCXMenu isShow]){
+            [YCXMenu dismissMenu];
+        } else {
+            NSArray *menuItemArray = [@[
+                                        [YCXMenuItem menuItem:@"加入书签"
+                                                        image:nil
+                                                       target:self
+                                                       action:@selector(addBookmark)],
+                                        [YCXMenuItem menuItem:@"书签"
+                                                        image:nil
+                                                       target:self
+                                                       action:@selector(pushBookmarkController)],
+                                        [YCXMenuItem menuItem:@"历史"
+                                                        image:nil
+                                                       target:self
+                                                       action:@selector(pushHistoryController)],
+                                        [YCXMenuItem menuItem:@"设置"
+                                                        image:nil
+                                                       target:self
+                                                       action:@selector(pushSettingController)],
+                                        [YCXMenuItem menuItem:@"拷贝连接"
+                                                        image:nil
+                                                       target:self
+                                                       action:@selector(handleCopyURLButtonClicked)],
+                                        [YCXMenuItem menuItem:@"缓存"
+                                                        image:nil
+                                                       target:self
+                                                       action:@selector(cacheHTMLResourcesWithMenuItem:)],
+                                        ] mutableCopy];
+
+            CGRect fromRect = self.bottomToolBar.frame;
+            CGFloat widthOfOne = self.bottomToolBar.frame.size.width / 4;
+            fromRect.origin.x = widthOfOne * 3;
+            [YCXMenu showMenuInView:self.view fromRect:fromRect menuItems:menuItemArray selected:^(NSInteger index, YCXMenuItem *item) {
+                NSLog(@"%@",item);
+            }];
+        }
         
-        [SettingsViewController presentFromViewController:self withItems:items completion:nil];
     }
     if (tag == BottomToolBarMultiWindowButtonTag) {
         CardMainView *cardMainView = [[CardMainView alloc] initWithFrame:self.view.bounds];
@@ -284,6 +267,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
         }];
     }
 }
+
 
 /// 获取HTML中的图片
 - (void)getImgsFormHTML:(void (^)(NSArray *imageURLs))completion {
@@ -349,6 +333,99 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
     int count =  [[self.browserContainerView.webView stringByEvaluatingJavaScriptFromString:jsString] intValue];
     
     return count;
+}
+
+/// 缓存网页中的资源文件
+- (void)cacheHTMLResourcesWithMenuItem:(YCXMenuItem *)menuItem {
+    
+    [YCXMenu setSelectedColor:[UIColor redColor]];
+    [YCXMenu setHasShadow:NO];
+    [YCXMenu setArrowSize:6];
+    [YCXMenu setCornerRadius:2];
+    [YCXMenu setBackgrounColorEffect:YCXMenuBackgrounColorEffectSolid];
+    [YCXMenu setTintColor:[UIColor colorWithRed:0.212 green:0.255 blue:0.678 alpha:1]];
+    if ([YCXMenu isShow]){
+        [YCXMenu dismissMenu];
+    } else {
+        NSArray *menuItemArray = [@[
+                                    [YCXMenuItem menuItem:@"视频"
+                                                    image:nil
+                                                   target:self
+                                                   action:@selector(cacheVideos)],
+                                    [YCXMenuItem menuItem:@"图片"
+                                                    image:nil
+                                                   target:self
+                                                   action:@selector(cacheImages)],
+                                    ] mutableCopy];
+        
+        CGRect fromRect = self.bottomToolBar.frame;
+        CGFloat widthOfOne = self.bottomToolBar.frame.size.width / 4;
+        fromRect.origin.x = widthOfOne * 3;
+        [YCXMenu showMenuInView:self.view fromRect:fromRect menuItems:menuItemArray selected:^(NSInteger index, YCXMenuItem *item) {
+            NSLog(@"%@",item);
+        }];
+    }
+}
+
+/// 缓存视频
+- (void)cacheVideos {
+    //    NSString *lJs = @"document.documentElement.innerHTML";
+    //              NSString *lHtml = [self.browserContainerView.webView stringByEvaluatingJavaScriptFromString:lJs];
+    [self getVideosFormHTML:^(NSArray *videoURLs) {
+        NSString *string = [videoURLs componentsJoinedByString:@",\n"];
+        if (!videoURLs.count) {
+            string = nil;
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [UIAlertView showWithTitle:[NSString stringWithFormat:@"%ld个视频", videoURLs.count] message:string cancelButtonTitle:@"取消" otherButtonTitles:@[@"全部缓存"] tapBlock:^(UIAlertView * _Nonnull alertView, NSInteger buttonIndex) {
+                if (buttonIndex == 1) {
+                    [videoURLs enumerateObjectsUsingBlock:^(NSString *  _Nonnull url, NSUInteger idx, BOOL * _Nonnull stop) {
+                        if (!url.length) {
+                            return;
+                        }
+                        [[OSFileDownloaderManager sharedInstance] start:url];
+                    }];
+                }
+            }];
+        });
+    }];
+}
+
+/// 缓存图片
+- (void)cacheImages {
+    [self getImgsFormHTML:^(NSArray *imageURLs) {
+        NSString *string = [imageURLs componentsJoinedByString:@",\n"];
+        if (!imageURLs.count) {
+            string = nil;
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [UIAlertView showWithTitle:[NSString stringWithFormat:@"%ld个图片", imageURLs.count] message:string cancelButtonTitle:@"取消" otherButtonTitles:@[@"全部缓存"] tapBlock:^(UIAlertView * _Nonnull alertView, NSInteger buttonIndex) {
+                if (buttonIndex == 1) {
+                    [imageURLs enumerateObjectsUsingBlock:^(NSString *  _Nonnull url, NSUInteger idx, BOOL * _Nonnull stop) {
+                        if (!url.length) {
+                            return;
+                        }
+                        [[OSFileDownloaderManager sharedInstance] start:url];
+                    }];
+                }
+            }];
+        });
+    }];
+}
+
+/// 查看设置页
+- (void)pushSettingController {
+    [self pushTableViewControllerWithControllerName:[SettingsTableViewController class]];
+}
+
+/// 查看历史
+- (void)pushHistoryController {
+    [self pushTableViewControllerWithControllerName:[HistoryTableViewController class]];
+}
+
+/// 查看书签
+- (void)pushBookmarkController {
+    [self pushTableViewControllerWithControllerName:[BookmarkTableViewController class]];
 }
 
 - (void)pushTableViewControllerWithControllerName:(Class)class{

@@ -15,6 +15,7 @@ target 'FileDownloader' do
   pod 'Masonry', '~> 1.1.0'
   #pod "GCDWebServer", "~> 3.0"
   pod 'NODataPlaceholderView', '~> 1.0.2'
-  pod 'OSFileBrowser', '~> 0.1.0'
+  pod 'OSFileBrowser', '~> 0.1.1'
+  pod 'XYSuspensionMenu'
 end
 

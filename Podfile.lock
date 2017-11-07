@@ -29,7 +29,7 @@ PODS:
   - Masonry (1.1.0)
   - MBProgressHUD (1.0.0)
   - NODataPlaceholderView (1.0.2)
-  - OSFileBrowser (0.1.0):
+  - OSFileBrowser (0.1.1):
     - MBProgressHUD (~> 1.0.0)
     - NODataPlaceholderView (~> 1.0.2)
     - OSFileManager (~> 0.0.2)
@@ -37,6 +37,7 @@ PODS:
   - SDWebImage (4.1.2):
     - SDWebImage/Core (= 4.1.2)
   - SDWebImage/Core (4.1.2)
+  - XYSuspensionMenu (1.0.5)
 
 DEPENDENCIES:
   - AFNetworking (~> 3.1.0)
@@ -46,8 +47,9 @@ DEPENDENCIES:
   - Masonry (~> 1.1.0)
   - MBProgressHUD (~> 1.0.0)
   - NODataPlaceholderView (~> 1.0.2)
-  - OSFileBrowser (~> 0.1.0)
+  - OSFileBrowser (~> 0.1.1)
   - SDWebImage (~> 4.1.2)
+  - XYSuspensionMenu
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
@@ -57,10 +59,11 @@ SPEC CHECKSUMS:
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
   NODataPlaceholderView: 7a019c41d7439e819a45ac272adb17fc7f4e39cc
-  OSFileBrowser: 1d3351a10a96544406dc382d4dcaa760a66ab95d
+  OSFileBrowser: 9bfb9dbf80d2d090d9c74dac97d39def64f48438
   OSFileManager: 7672e237a0d773a6339bc5ba79a4aa0ed8c676a7
   SDWebImage: cb6f9f266a9977741efcbc21e618e8be3734c774
+  XYSuspensionMenu: 41656922389e95fadf6fb42ed9f918e9f591a9e1
 
-PODFILE CHECKSUM: 45357306991b900e59d19f6d594b399ac85da249
+PODFILE CHECKSUM: 5162dccb6d88399741144387d556cc28cf2e757f
 
 COCOAPODS: 1.2.0
