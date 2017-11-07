@@ -143,7 +143,39 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
         bottomRect.origin.y = self.view.height - BOTTOM_TOOL_BAR_HEIGHT;
         self.bottomToolBar.frame = bottomRect;
         self.browserContainerView.scrollView.contentInset = UIEdgeInsetsMake(TOP_TOOL_BAR_HEIGHT, 0, BOTTOM_TOOL_BAR_HEIGHT, 0);
+//        [self showTabBar];
     }];
+}
+
+- (void)hideTabBar {
+    if (self.tabBarController.tabBar.hidden == YES) {
+        return;
+    }
+    UIView *contentView;
+    if ( [[self.tabBarController.view.subviews objectAtIndex:0] isKindOfClass:[UITabBar class]] )
+        contentView = [self.tabBarController.view.subviews objectAtIndex:1];
+    else
+        contentView = [self.tabBarController.view.subviews objectAtIndex:0];
+    contentView.frame = CGRectMake(contentView.bounds.origin.x,  contentView.bounds.origin.y,  contentView.bounds.size.width, contentView.bounds.size.height + self.tabBarController.tabBar.frame.size.height);
+    self.tabBarController.tabBar.hidden = YES;
+    
+}
+
+- (void)showTabBar {
+    if (self.tabBarController.tabBar.hidden == NO) {
+        return;
+    }
+    UIView *contentView;
+    if ([[self.tabBarController.view.subviews objectAtIndex:0] isKindOfClass:[UITabBar class]])
+        
+        contentView = [self.tabBarController.view.subviews objectAtIndex:1];
+    
+    else
+        
+        contentView = [self.tabBarController.view.subviews objectAtIndex:0];
+    contentView.frame = CGRectMake(contentView.bounds.origin.x, contentView.bounds.origin.y,  contentView.bounds.size.width, contentView.bounds.size.height - self.tabBarController.tabBar.frame.size.height);
+    self.tabBarController.tabBar.hidden = NO;
+    
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
@@ -196,6 +228,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
     }
     
     self.bottomToolBar.frame = bottomRect;
+//    [self hideTabBar];
 }
 
 #pragma mark - BrowserBottomToolBarButtonClickedDelegate
