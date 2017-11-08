@@ -26,7 +26,13 @@
     OSRemoteResourceItem *fileItem = nil;
     if (foundItemIdx != NSNotFound) {
         DLog(@"INFO: Download success (id: %@)", downloadOperation.urlPath);
-        
+        // 有些下载的文件扩展名，后面会有些乱七八糟的参数，影响我们显示，这里更改下
+        NSString *localPath = downloadOperation.localURL.path;
+        if ([localPath.pathExtension containsString:@"?"]) {
+            NSString *newPath = [localPath componentsSeparatedByString:@"?"].firstObject;
+            NSError *moveError = nil;
+            [[NSFileManager defaultManager] moveItemAtPath:localPath toPath:newPath error:&moveError];
+        }
         fileItem = [[OSFileDownloaderManager sharedInstance].downloadItems objectAtIndex:foundItemIdx];
         fileItem.status = OSFileDownloadStatusSuccess;
         fileItem.MIMEType = downloadOperation.MIMEType;

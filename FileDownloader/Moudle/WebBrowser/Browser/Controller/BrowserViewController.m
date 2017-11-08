@@ -64,6 +64,10 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
     self.restorationClass = [self class];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+}
+
 - (void)initializeView{
     self.view.backgroundColor = UIColorFromRGB(0xF8F8F8);
     
@@ -143,7 +147,6 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
         bottomRect.origin.y = self.view.height - BOTTOM_TOOL_BAR_HEIGHT;
         self.bottomToolBar.frame = bottomRect;
         self.browserContainerView.scrollView.contentInset = UIEdgeInsetsMake(TOP_TOOL_BAR_HEIGHT, 0, BOTTOM_TOOL_BAR_HEIGHT, 0);
-//        [self showTabBar];
     }];
 }
 
@@ -318,7 +321,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
             NSString *jsString = [NSString stringWithFormat:@"document.getElementsByTagName('img')[%d].src", i];
             [self.browserContainerView.webView evaluateJavaScript:jsString completionHandler:^(NSString *str, NSError *error) {
                 
-                if (error ==nil) {
+                if (error ==nil && str.length) {
                     [arrImgURL addObject:str];
                 }
                 if (i == imageCount-1) {
@@ -346,10 +349,10 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
             NSString *jsString = [NSString stringWithFormat:@"document.getElementsByTagName('video')[%d].src", i];
             [self.browserContainerView.webView evaluateJavaScript:jsString completionHandler:^(NSString *str, NSError *error) {
                 
-                if (error ==nil) {
+                if (error == nil && str.length) {
                     [videoURLs addObject:str];
                 }
-                if (i == videoCount-1) {
+                if (i == videoCount - 1) {
                     completion(videoURLs);
                 }
             }];
@@ -406,11 +409,13 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
     //              NSString *lHtml = [self.browserContainerView.webView stringByEvaluatingJavaScriptFromString:lJs];
     [self getVideosFormHTML:^(NSArray *videoURLs) {
         NSString *string = [videoURLs componentsJoinedByString:@",\n"];
+        NSArray *otherButtonTitles = @[@"全部缓存"];
         if (!videoURLs.count) {
             string = nil;
+            otherButtonTitles = nil;
         }
         dispatch_async(dispatch_get_main_queue(), ^{
-            [UIAlertView showWithTitle:[NSString stringWithFormat:@"%ld个视频", videoURLs.count] message:string cancelButtonTitle:@"取消" otherButtonTitles:@[@"全部缓存"] tapBlock:^(UIAlertView * _Nonnull alertView, NSInteger buttonIndex) {
+            [UIAlertView showWithTitle:[NSString stringWithFormat:@"%ld个视频", videoURLs.count] message:string cancelButtonTitle:@"取消" otherButtonTitles:otherButtonTitles tapBlock:^(UIAlertView * _Nonnull alertView, NSInteger buttonIndex) {
                 if (buttonIndex == 1) {
                     [videoURLs enumerateObjectsUsingBlock:^(NSString *  _Nonnull url, NSUInteger idx, BOOL * _Nonnull stop) {
                         if (!url.length) {

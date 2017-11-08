@@ -285,7 +285,7 @@
 #pragma mark - private method
 
 //得到title回调
-- (void)zwWebView:(id)sender didReceiveTitle:(id)title forFrame:(id)frame{
+- (void)zwWebView:(id)sender didReceiveTitle:(id)title forFrame:(id)frame {
     if(![title isKindOfClass:[NSString class]])
         return;
 

@@ -29,7 +29,7 @@ PODS:
   - Masonry (1.1.0)
   - MBProgressHUD (1.0.0)
   - NODataPlaceholderView (1.0.2)
-  - OSFileBrowser (0.1.1):
+  - OSFileBrowser (0.1.5):
     - MBProgressHUD (~> 1.0.0)
     - NODataPlaceholderView (~> 1.0.2)
     - OSFileManager (~> 0.0.2)
@@ -47,7 +47,7 @@ DEPENDENCIES:
   - Masonry (~> 1.1.0)
   - MBProgressHUD (~> 1.0.0)
   - NODataPlaceholderView (~> 1.0.2)
-  - OSFileBrowser (~> 0.1.1)
+  - OSFileBrowser (~> 0.1.5)
   - SDWebImage (~> 4.1.2)
   - XYSuspensionMenu
 
@@ -59,11 +59,11 @@ SPEC CHECKSUMS:
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
   NODataPlaceholderView: 7a019c41d7439e819a45ac272adb17fc7f4e39cc
-  OSFileBrowser: 9bfb9dbf80d2d090d9c74dac97d39def64f48438
+  OSFileBrowser: 1b32a573e81831d7dfd8248c0b0bb2e0cc2ef9a3
   OSFileManager: 7672e237a0d773a6339bc5ba79a4aa0ed8c676a7
   SDWebImage: cb6f9f266a9977741efcbc21e618e8be3734c774
   XYSuspensionMenu: 41656922389e95fadf6fb42ed9f918e9f591a9e1
 
-PODFILE CHECKSUM: 5162dccb6d88399741144387d556cc28cf2e757f
+PODFILE CHECKSUM: 254cea233fedd35209c3032bc00838e171d04002
 
 COCOAPODS: 1.2.0
