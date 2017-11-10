@@ -6,139 +6,44 @@
       "scale" : "2x"
     },
     {
-      "size" : "20x20",
-      "idiom" : "iphone",
-      "display-gamut" : "sRGB",
-      "scale" : "2x"
-    },
-    {
-      "size" : "20x20",
-      "idiom" : "iphone",
-      "display-gamut" : "display-P3",
-      "scale" : "2x"
-    },
-    {
       "idiom" : "iphone",
       "size" : "20x20",
       "scale" : "3x"
     },
     {
-      "size" : "20x20",
-      "idiom" : "iphone",
-      "display-gamut" : "sRGB",
-      "scale" : "3x"
-    },
-    {
-      "size" : "20x20",
-      "idiom" : "iphone",
-      "display-gamut" : "display-P3",
-      "scale" : "3x"
-    },
-    {
-      "idiom" : "iphone",
       "size" : "29x29",
+      "idiom" : "iphone",
+      "filename" : "iPhoneSpootlight5_29pt@2x.png",
       "scale" : "2x"
     },
     {
       "size" : "29x29",
       "idiom" : "iphone",
-      "display-gamut" : "sRGB",
-      "scale" : "2x"
-    },
-    {
-      "size" : "29x29",
-      "idiom" : "iphone",
-      "display-gamut" : "display-P3",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "iphone",
-      "size" : "29x29",
-      "scale" : "3x"
-    },
-    {
-      "size" : "29x29",
-      "idiom" : "iphone",
-      "display-gamut" : "sRGB",
-      "scale" : "3x"
-    },
-    {
-      "size" : "29x29",
-      "idiom" : "iphone",
-      "filename" : "AppIcon60x60@3x-1.png",
-      "display-gamut" : "display-P3",
-      "scale" : "3x"
-    },
-    {
-      "idiom" : "iphone",
-      "size" : "40x40",
-      "scale" : "2x"
-    },
-    {
-      "size" : "40x40",
-      "idiom" : "iphone",
-      "display-gamut" : "sRGB",
-      "scale" : "2x"
-    },
-    {
-      "size" : "40x40",
-      "idiom" : "iphone",
-      "filename" : "AppIcon60x60@2x-1.png",
-      "display-gamut" : "display-P3",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "iphone",
-      "size" : "40x40",
+      "filename" : "iPhoneSpootlight5_29pt@3x.png",
       "scale" : "3x"
     },
     {
       "size" : "40x40",
       "idiom" : "iphone",
-      "display-gamut" : "sRGB",
-      "scale" : "3x"
+      "filename" : "iPhoneSpootlight7_40pt@2x.png",
+      "scale" : "2x"
     },
     {
       "size" : "40x40",
       "idiom" : "iphone",
-      "display-gamut" : "display-P3",
-      "scale" : "3x"
-    },
-    {
-      "idiom" : "iphone",
-      "size" : "60x60",
-      "scale" : "2x"
-    },
-    {
-      "size" : "60x60",
-      "idiom" : "iphone",
-      "display-gamut" : "sRGB",
-      "scale" : "2x"
-    },
-    {
-      "size" : "60x60",
-      "idiom" : "iphone",
-      "filename" : "AppIcon60x60@2x-2.png",
-      "display-gamut" : "display-P3",
-      "scale" : "2x"
-    },
-    {
-      "size" : "60x60",
-      "idiom" : "iphone",
-      "filename" : "AppIcon60x60@3x-3.png",
+      "filename" : "iPhoneSpootlight7_40pt@3x.png",
       "scale" : "3x"
     },
     {
       "size" : "60x60",
       "idiom" : "iphone",
-      "display-gamut" : "sRGB",
-      "scale" : "3x"
+      "filename" : "iPhoneApp_60pt@2x.png",
+      "scale" : "2x"
     },
     {
       "size" : "60x60",
       "idiom" : "iphone",
-      "filename" : "AppIcon60x60@3x-2.png",
-      "display-gamut" : "display-P3",
+      "filename" : "iPhoneApp_60pt@3x.png",
       "scale" : "3x"
     },
     {
@@ -147,168 +52,55 @@
       "scale" : "1x"
     },
     {
-      "size" : "20x20",
-      "idiom" : "ipad",
-      "display-gamut" : "sRGB",
-      "scale" : "1x"
-    },
-    {
-      "size" : "20x20",
-      "idiom" : "ipad",
-      "display-gamut" : "display-P3",
-      "scale" : "1x"
-    },
-    {
       "idiom" : "ipad",
       "size" : "20x20",
       "scale" : "2x"
     },
     {
-      "size" : "20x20",
-      "idiom" : "ipad",
-      "display-gamut" : "sRGB",
-      "scale" : "2x"
-    },
-    {
-      "size" : "20x20",
-      "idiom" : "ipad",
-      "display-gamut" : "display-P3",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "ipad",
       "size" : "29x29",
+      "idiom" : "ipad",
+      "filename" : "iPadSpootlight5_29pt.png",
       "scale" : "1x"
     },
     {
       "size" : "29x29",
       "idiom" : "ipad",
-      "display-gamut" : "sRGB",
-      "scale" : "1x"
-    },
-    {
-      "size" : "29x29",
-      "idiom" : "ipad",
-      "display-gamut" : "display-P3",
-      "scale" : "1x"
-    },
-    {
-      "idiom" : "ipad",
-      "size" : "29x29",
-      "scale" : "2x"
-    },
-    {
-      "size" : "29x29",
-      "idiom" : "ipad",
-      "display-gamut" : "sRGB",
-      "scale" : "2x"
-    },
-    {
-      "size" : "29x29",
-      "idiom" : "ipad",
-      "display-gamut" : "display-P3",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "ipad",
-      "size" : "40x40",
-      "scale" : "1x"
-    },
-    {
-      "size" : "40x40",
-      "idiom" : "ipad",
-      "display-gamut" : "sRGB",
-      "scale" : "1x"
-    },
-    {
-      "size" : "40x40",
-      "idiom" : "ipad",
-      "display-gamut" : "display-P3",
-      "scale" : "1x"
-    },
-    {
-      "idiom" : "ipad",
-      "size" : "40x40",
+      "filename" : "iPadSpootlight5_29pt@2x.png",
       "scale" : "2x"
     },
     {
       "size" : "40x40",
       "idiom" : "ipad",
-      "display-gamut" : "sRGB",
-      "scale" : "2x"
+      "filename" : "iPadSpootlight7_40pt.png",
+      "scale" : "1x"
     },
     {
       "size" : "40x40",
       "idiom" : "ipad",
-      "display-gamut" : "display-P3",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "ipad",
-      "size" : "76x76",
-      "scale" : "1x"
-    },
-    {
-      "size" : "76x76",
-      "idiom" : "ipad",
-      "filename" : "AppIcon76x76~ipad.png",
-      "display-gamut" : "sRGB",
-      "scale" : "1x"
-    },
-    {
-      "size" : "76x76",
-      "idiom" : "ipad",
-      "display-gamut" : "display-P3",
-      "scale" : "1x"
-    },
-    {
-      "idiom" : "ipad",
-      "size" : "76x76",
+      "filename" : "iPadSpootlight7_40pt@2x.png",
       "scale" : "2x"
     },
     {
       "size" : "76x76",
       "idiom" : "ipad",
-      "display-gamut" : "sRGB",
-      "scale" : "2x"
+      "filename" : "iPadApp_76pt.png",
+      "scale" : "1x"
     },
     {
       "size" : "76x76",
       "idiom" : "ipad",
-      "filename" : "AppIcon76x76@2x~ipad.png",
-      "display-gamut" : "display-P3",
+      "filename" : "iPadApp_76pt@2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "ipad",
       "size" : "83.5x83.5",
-      "scale" : "2x"
-    },
-    {
-      "size" : "83.5x83.5",
-      "idiom" : "ipad",
-      "display-gamut" : "sRGB",
-      "scale" : "2x"
-    },
-    {
-      "size" : "83.5x83.5",
-      "idiom" : "ipad",
-      "filename" : "AppIcon83.5x83.5@2x~ipad.png",
-      "display-gamut" : "display-P3",
       "scale" : "2x"
     },
     {
       "idiom" : "ios-marketing",
       "size" : "1024x1024",
       "scale" : "1x"
-    },
-    {
-      "filename" : "AppIcon60x60@2x.png",
-      "unassigned" : true
-    },
-    {
-      "filename" : "AppIcon60x60@3x.png",
-      "unassigned" : true
     }
   ],
   "info" : {
