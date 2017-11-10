@@ -45,6 +45,10 @@ static const CGFloat windowHeight = 49.0;
 @interface OSFileCollectionViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NoDataPlaceholderDelegate, OSFileCollectionViewCellDelegate, OSFileBottomHUDDelegate>
 #endif
 
+{
+    NSString *_newFolderName;
+}
+
 @property (nonatomic, strong) OSFileCollectionViewFlowLayout *flowLayout;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPress;
@@ -763,6 +767,7 @@ static const CGFloat windowHeight = 49.0;
                                                               [[OSFileBottomHUDItem alloc] initWithTitle:@"复制" image:nil],
                                                               [[OSFileBottomHUDItem alloc] initWithTitle:@"移动" image:nil],
                                                               [[OSFileBottomHUDItem alloc] initWithTitle:@"删除" image:nil],
+                                                              [[OSFileBottomHUDItem alloc] initWithTitle:@"新建文件夹" image:nil],
                                                               ] toView:self.view];
         _bottomHUD.delegate = self;
     }
@@ -940,9 +945,53 @@ static const CGFloat windowHeight = 49.0;
             }
             break;
         }
+        case 4: { // 新建文件夹
+            [self createNewFolderPath];
+            break;
+        }
         default:
             break;
     }
+}
+
+- (void)alertViewTextFieldtextChange:(UITextField *)tf {
+    _newFolderName = tf.text;
+}
+
+- (void)createNewFolderPath {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"新建文件" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.placeholder = @"请输入文件夹名称";
+        [textField addTarget:self action:@selector(alertViewTextFieldtextChange:) forControlEvents:UIControlEventEditingChanged];
+    }];
+    
+    [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
+    [alert addAction:[UIAlertAction actionWithTitle:@"好的" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+        if ([_newFolderName containsString:@"/"]) {
+            [self xy_showMessage:@"名称中包含不符合的字符"];
+            
+            return;
+        }
+        
+        NSString *currentDirectory = self.rootDirectoryItem.path;
+        NSString *newPath = [currentDirectory stringByAppendingPathComponent:_newFolderName];
+        BOOL res = [[NSFileManager defaultManager] fileExistsAtPath:newPath];
+        if (res) {
+            [self xy_showMessage:@"存在同名的文件"];
+            return;
+        }
+        NSError *moveError = nil;
+        [[NSFileManager defaultManager] createDirectoryAtPath:newPath withIntermediateDirectories:YES attributes:nil error:&moveError];
+        if (!moveError) {
+            [self reloadFiles];
+        } else {
+            NSLog(@"%@", moveError.localizedDescription);
+        }
+        _newFolderName = nil;
+    }]];
+    [[UIViewController xy_topViewController] presentViewController:alert animated:true completion:nil];
 }
 
 /// 选择文件最终复制的目标目录
