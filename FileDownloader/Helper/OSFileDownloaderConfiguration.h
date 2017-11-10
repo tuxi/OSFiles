@@ -20,6 +20,8 @@
 @property (nonatomic, strong) NSNumber *shouldAllowDownloadOnCellularNetwork;
 /// 下载完成时发送通知, 默认关闭
 @property (nonatomic, strong) NSNumber *shouldSendNotificationWhenDownloadComplete;
+/// 设置UseAgent
+@property (nonatomic, copy) NSString *userAgent;
 
 + (OSFileDownloaderConfiguration *)defaultConfiguration;
 

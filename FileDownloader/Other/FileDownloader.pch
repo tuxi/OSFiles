@@ -32,7 +32,7 @@
 #import "NSObject+XYHUD.h"
 #import "UIViewController+XYHUD.h"
 #import "OSFileDownloaderConfiguration.h"
-#import "NSDate+Utilities.h"
+#import "NSDate+ESUtilities.h"
 #import "UIAlertView+Blocks.h"
 #import "UIViewController+XYExtensions.h"
 #import "NSString+OSDrawingAdditions.h"

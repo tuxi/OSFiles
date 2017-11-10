@@ -26,6 +26,7 @@
 #import "NSURL+ZWUtility.h"
 #import "OSFileDownloaderManager.h"
 #import "YCXMenu.h"
+#import "NSObject+InterfaceOrientationExtensions.h"
 
 static NSString *const kBrowserViewControllerAddBookmarkSuccess = @"添加书签成功";
 static NSString *const kBrowserViewControllerAddBookmarkFailure = @"添加书签失败";
@@ -62,10 +63,16 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
     
     self.restorationIdentifier = NSStringFromClass([self class]);
     self.restorationClass = [self class];
+//    [self recoverToolBar];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    [self recoverToolBar];
+    [self applyInterfaceOrientation:UIDeviceOrientationPortrait interfaceOrientationDidChangeBlock:^(InterfaceOrientation orientation) {
+        [self recoverToolBar];
+    }];
 }
 
 - (void)initializeView{
@@ -75,7 +82,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
     [self.navigationItem setBackBarButtonItem:backItem];
     
     self.browserContainerView = ({
-        BrowserContainerView *browserContainerView = [[BrowserContainerView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height)];
+        BrowserContainerView *browserContainerView = [[BrowserContainerView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height-49)];
         [self.view addSubview:browserContainerView];
         
         self.browserButtonDelegate = browserContainerView;
@@ -113,32 +120,32 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
 
 #pragma mark - UIScrollViewDelegate Method
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    //点击新链接或返回时，scrollView会调用该方法
-    if (!(!scrollView.decelerating && !scrollView.dragging && !scrollView.tracking)) {
-        CGFloat yOffset = scrollView.contentOffset.y - self.lastContentOffset;
-        
-        if (self.lastContentOffset > scrollView.contentOffset.y) {
-            if (_isWebViewDecelerate || (scrollView.contentOffset.y >= -TOP_TOOL_BAR_HEIGHT && scrollView.contentOffset.y <= 0)) {
-                //浮点数不能做精确匹配，不过此处用等于满足我的需求
-                if (!(self.browserTopToolBar.height == TOP_TOOL_BAR_HEIGHT)) {
-                    [self recoverToolBar];
-                }
-            }
-            self.webViewScrollDirection = ScrollDirectionDown;
-        }
-        else if (self.lastContentOffset < scrollView.contentOffset.y && scrollView.contentOffset.y >= - TOP_TOOL_BAR_HEIGHT)
-        {
-            if (!(scrollView.contentOffset.y < 0 && scrollView.decelerating)) {
-                [self handleToolBarWithOffset:yOffset];
-            }
-            self.webViewScrollDirection = ScrollDirectionUp;
-        }
-    }
-    
-    self.lastContentOffset = scrollView.contentOffset.y;
-    
-}
+//- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+//    //点击新链接或返回时，scrollView会调用该方法
+//    if (!(!scrollView.decelerating && !scrollView.dragging && !scrollView.tracking)) {
+//        CGFloat yOffset = scrollView.contentOffset.y - self.lastContentOffset;
+//
+//        if (self.lastContentOffset > scrollView.contentOffset.y) {
+//            if (_isWebViewDecelerate || (scrollView.contentOffset.y >= -TOP_TOOL_BAR_HEIGHT && scrollView.contentOffset.y <= 0)) {
+//                //浮点数不能做精确匹配，不过此处用等于满足我的需求
+//                if (!(self.browserTopToolBar.height == TOP_TOOL_BAR_HEIGHT)) {
+//                    [self recoverToolBar];
+//                }
+//            }
+//            self.webViewScrollDirection = ScrollDirectionDown;
+//        }
+//        else if (self.lastContentOffset < scrollView.contentOffset.y && scrollView.contentOffset.y >= - TOP_TOOL_BAR_HEIGHT)
+//        {
+//            if (!(scrollView.contentOffset.y < 0 && scrollView.decelerating)) {
+//                [self handleToolBarWithOffset:yOffset];
+//            }
+//            self.webViewScrollDirection = ScrollDirectionUp;
+//        }
+//    }
+//
+//    self.lastContentOffset = scrollView.contentOffset.y;
+//
+//}
 
 - (void)recoverToolBar{
     [UIView animateWithDuration:.2 animations:^{
@@ -610,4 +617,15 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
     [Notifier removeObserver:self];
 }
 
+////////////////////////////////////////////////////////////////////////
+#pragma mark - 屏幕方向
+////////////////////////////////////////////////////////////////////////
+- (BOOL)shouldAutorotate {
+    return YES;
+}
+
+// 支持的方向 只需要支持竖屏
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskPortrait;
+}
 @end

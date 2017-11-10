@@ -248,14 +248,24 @@ static NSString * const UserAgent = @"Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 li
 }
 
 // Enable UIWebView video landscape
-- (UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window{
-    static NSString *kAVFullScreenViewControllerStr = @"AVFullScreenViewController";
-    UIViewController *presentedViewController = [window.rootViewController presentedViewController];
-    
-    if (presentedViewController && [presentedViewController isKindOfClass:NSClassFromString(kAVFullScreenViewControllerStr)] && [presentedViewController isBeingDismissed] == NO) {
-        return UIInterfaceOrientationMaskAll;
+- (UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window {
+//    static NSString *kAVFullScreenViewControllerStr = @"AVFullScreenViewController";
+    UITabBarController *tabBarController = (UITabBarController *)window.rootViewController;
+    if ([tabBarController isKindOfClass:[UITabBarController class]]) {
+        if (tabBarController.selectedIndex == 0) {
+            return UIInterfaceOrientationMaskPortrait;
+        }
+        
+//        UINavigationController *nac = tabBarController.selectedViewController;
+//        if ([nac isKindOfClass:[UINavigationController class]]) {
+//            UIViewController *presentedViewController = [nac presentedViewController];
+//            if (presentedViewController && [presentedViewController isKindOfClass:NSClassFromString(kAVFullScreenViewControllerStr)] && [presentedViewController isBeingDismissed] == NO) {
+//                return UIInterfaceOrientationMaskAll;
+//            }
+//        }
+        
     }
-    return UIInterfaceOrientationMaskPortrait;
+    return UIInterfaceOrientationMaskAll;
 }
 
 #pragma mark - Preseving and Restoring State
