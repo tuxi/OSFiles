@@ -15,6 +15,7 @@
 		185A8EAE1FA42ED4006077CE /* AutoTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = 185A8EAC1FA42ED3006077CE /* AutoTimer.m */; };
 		185A8EB11FA43416006077CE /* NSString+MD5.m in Sources */ = {isa = PBXBuildFile; fileRef = 185A8EAF1FA43416006077CE /* NSString+MD5.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		188458401FB5EB3A00863317 /* NSObject+InterfaceOrientationExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1884583F1FB5EB3A00863317 /* NSObject+InterfaceOrientationExtensions.m */; };
+		188458491FB6007600863317 /* OSAboutAppViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 188458481FB6007600863317 /* OSAboutAppViewController.m */; };
 		18A0F19C1FA5DE4F00614E91 /* UIAlertView+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A0F19A1FA5DE4F00614E91 /* UIAlertView+Blocks.m */; };
 		18ADEEAB1F9E48D30024BA40 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18ADEEAA1F9E48D30024BA40 /* LaunchScreen.storyboard */; };
 		18ADEEAD1F9E48DE0024BA40 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18ADEEAC1F9E48DE0024BA40 /* Main.storyboard */; };
@@ -473,6 +474,8 @@
 		1871AD201EEEF76E00ABC452 /* XYViewModelProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYViewModelProtocol.h; sourceTree = "<group>"; };
 		1884583E1FB5EB3A00863317 /* NSObject+InterfaceOrientationExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+InterfaceOrientationExtensions.h"; sourceTree = "<group>"; };
 		1884583F1FB5EB3A00863317 /* NSObject+InterfaceOrientationExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+InterfaceOrientationExtensions.m"; sourceTree = "<group>"; };
+		188458471FB6007600863317 /* OSAboutAppViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSAboutAppViewController.h; sourceTree = "<group>"; };
+		188458481FB6007600863317 /* OSAboutAppViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSAboutAppViewController.m; sourceTree = "<group>"; };
 		18878A1E1EF01B87005C0185 /* XYImageBrowerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYImageBrowerView.h; sourceTree = "<group>"; };
 		18878A1F1EF01B87005C0185 /* XYImageBrowerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XYImageBrowerView.m; sourceTree = "<group>"; };
 		18878A201EF01B87005C0185 /* XYImageViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYImageViewer.h; sourceTree = "<group>"; };
@@ -1217,6 +1220,8 @@
 				1813E81A1F9B8FA5002C661E /* OSSettingsTableViewCell.xib */,
 				1813E82E1F9B96F5002C661E /* OSProminentSwitch.h */,
 				1813E82F1F9B96F5002C661E /* OSProminentSwitch.m */,
+				188458471FB6007600863317 /* OSAboutAppViewController.h */,
+				188458481FB6007600863317 /* OSAboutAppViewController.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -2531,6 +2536,7 @@
 				18ADEF2E1F9E4A860024BA40 /* OSBaseViewController.m in Sources */,
 				18ADEEDF1F9E4A130024BA40 /* TopToolBarShapeView.m in Sources */,
 				18E893381FB5DFED00727EF1 /* UIViewController+XYExtensions.m in Sources */,
+				188458491FB6007600863317 /* OSAboutAppViewController.m in Sources */,
 				18ADEF021F9E4A3D0024BA40 /* ZWUtility.m in Sources */,
 				18ADEEEC1F9E4A2E0024BA40 /* SearchTableViewCell.m in Sources */,
 				18ADEF341F9E4A860024BA40 /* SmilePasswordContainerView.m in Sources */,
@@ -2692,7 +2698,6 @@
 			baseConfigurationReference = 0C8B7998687A11DE8FCA96A2 /* Pods-FileDownloader.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-2";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_COMMA = YES;
@@ -2724,7 +2729,6 @@
 			baseConfigurationReference = FAEFFFFF9AB15F258CAC9CC7 /* Pods-FileDownloader.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-2";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_COMMA = YES;

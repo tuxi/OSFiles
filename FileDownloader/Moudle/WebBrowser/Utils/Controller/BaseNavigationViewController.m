@@ -7,6 +7,7 @@
 //
 
 #import "BaseNavigationViewController.h"
+#import "NSObject+InterfaceOrientationExtensions.h"
 
 @implementation BaseNavigationViewController
 
@@ -18,5 +19,19 @@
     
     self.restorationIdentifier = @"baseNavigationController";
 }
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+  
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [self applyInterfaceOrientation:UIDeviceOrientationPortrait interfaceOrientationDidChangeBlock:^(InterfaceOrientation orientation) {
+        
+    }];
+}
+
 
 @end

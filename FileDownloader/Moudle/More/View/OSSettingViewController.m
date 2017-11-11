@@ -14,6 +14,7 @@
 #import "OSFileDownloaderConfiguration.h"
 #import "UIViewController+OSAlertExtension.h"
 #import "OSFileDownloaderManager.h"
+#import "OSAboutAppViewController.h"
 
 @interface OSSettingViewController () <UITableViewDelegate, UITableViewDataSource, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
@@ -36,7 +37,7 @@
                              ];
     [self.view addConstraints:[constraints valueForKeyPath:@"@unionOfArrays.self"]];
     
-    self.navigationItem.title = @"更多";
+    self.navigationItem.title = @"设置";
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -60,6 +61,7 @@
     self.sectionItems = [NSMutableArray arrayWithCapacity:0];
     [self.sectionItems addObject:[self section_1]];
     [self.sectionItems addObject:[self section_2]];
+    [self.sectionItems addObject:[self section_3]];
     [self.settingTableView reloadData];
 }
 
@@ -99,6 +101,14 @@
                               [OSSettingsMenuItem switchCellForSel:@selector(sendNotificationWhenDownloadComplete:) target:self title:@"下载完成后通知您" iconName:nil on:[shouldSendNotificationWhenDownloadComplete boolValue]],
                               ].mutableCopy;
     OSSettingsTableViewSection *section = [[OSSettingsTableViewSection alloc] initWithItem:items headerTitle:@"下载" footerText:nil];
+    return section;
+}
+
+- (OSSettingsTableViewSection *)section_3 {
+    NSArray *items = @[
+                       [OSSettingsMenuItem normalCellForSel:@selector(aboutApp) target:self title:@"关于" iconName:nil]
+                              ];
+    OSSettingsTableViewSection *section = [[OSSettingsTableViewSection alloc] initWithItem:items headerTitle:@"" footerText:nil];
     return section;
 }
 
@@ -268,6 +278,11 @@
 
 - (void)sendNotificationWhenDownloadComplete:(UISwitch *)sw {
     [[OSFileDownloaderConfiguration defaultConfiguration] setShouldSendNotificationWhenDownloadComplete:@(sw.isOn)];
+}
+
+- (void)aboutApp {
+    OSAboutAppViewController *vc = [OSAboutAppViewController new];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 #pragma mark - UIImagePickerControllerDelegate

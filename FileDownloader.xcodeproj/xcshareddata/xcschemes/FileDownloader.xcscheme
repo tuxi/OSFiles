@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "18517BC21EEBC86600B148C8"
+               BlueprintIdentifier = "18ADEE911F9E48140024BA40"
                BuildableName = "FileDownloader.app"
                BlueprintName = "FileDownloader"
                ReferencedContainer = "container:FileDownloader.xcodeproj">
@@ -33,7 +33,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "18517BC21EEBC86600B148C8"
+            BlueprintIdentifier = "18ADEE911F9E48140024BA40"
             BuildableName = "FileDownloader.app"
             BlueprintName = "FileDownloader"
             ReferencedContainer = "container:FileDownloader.xcodeproj">
@@ -43,7 +43,7 @@
       </AdditionalOptions>
    </TestAction>
    <LaunchAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       language = ""
@@ -57,7 +57,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "18517BC21EEBC86600B148C8"
+            BlueprintIdentifier = "18ADEE911F9E48140024BA40"
             BuildableName = "FileDownloader.app"
             BlueprintName = "FileDownloader"
             ReferencedContainer = "container:FileDownloader.xcodeproj">
@@ -82,7 +82,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "18517BC21EEBC86600B148C8"
+            BlueprintIdentifier = "18ADEE911F9E48140024BA40"
             BuildableName = "FileDownloader.app"
             BlueprintName = "FileDownloader"
             ReferencedContainer = "container:FileDownloader.xcodeproj">

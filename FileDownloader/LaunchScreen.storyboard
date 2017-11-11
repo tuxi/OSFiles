@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13524"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -20,12 +21,52 @@
                     <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="frames" translatesAutoresizingMaskIntoConstraints="NO" id="RGN-Yg-YWP">
+                                <rect key="frame" x="157" y="60" width="60" height="60"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="60" id="78O-e6-Z1F"/>
+                                    <constraint firstAttribute="width" constant="60" id="PXG-7Z-KzT"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="文件缓存" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OCk-ki-Hx3">
+                                <rect key="frame" x="152" y="208" width="70" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" name="selectedKnobColor" catalog="System" colorSpace="catalog"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="文件浏览" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="l06-AK-Erw">
+                                <rect key="frame" x="152" y="259" width="70" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" name="selectedKnobColor" catalog="System" colorSpace="catalog"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="文件管理" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DeP-br-fZ2">
+                                <rect key="frame" x="152" y="310" width="70" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" name="selectedKnobColor" catalog="System" colorSpace="catalog"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="DeP-br-fZ2" firstAttribute="centerX" secondItem="l06-AK-Erw" secondAttribute="centerX" id="Nbs-ic-snH"/>
+                            <constraint firstItem="RGN-Yg-YWP" firstAttribute="top" secondItem="XS5-8U-h4c" secondAttribute="bottom" multiplier="3" id="Nqf-N1-f4x"/>
+                            <constraint firstItem="l06-AK-Erw" firstAttribute="top" secondItem="OCk-ki-Hx3" secondAttribute="bottom" constant="30" id="O6k-D9-h5E"/>
+                            <constraint firstItem="RGN-Yg-YWP" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="Q8a-eo-Ylj"/>
+                            <constraint firstItem="OCk-ki-Hx3" firstAttribute="top" secondItem="RGN-Yg-YWP" secondAttribute="bottom" constant="88" id="Qj7-Db-HH4"/>
+                            <constraint firstItem="DeP-br-fZ2" firstAttribute="top" secondItem="l06-AK-Erw" secondAttribute="bottom" constant="30" id="fID-9a-ELO"/>
+                            <constraint firstItem="OCk-ki-Hx3" firstAttribute="centerX" secondItem="RGN-Yg-YWP" secondAttribute="centerX" id="gt6-ho-g5g"/>
+                            <constraint firstItem="l06-AK-Erw" firstAttribute="centerX" secondItem="OCk-ki-Hx3" secondAttribute="centerX" id="uCL-6b-mxO"/>
+                        </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="53" y="375"/>
+            <point key="canvasLocation" x="52" y="374.66266866566718"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="frames" width="128" height="128"/>
+    </resources>
 </document>

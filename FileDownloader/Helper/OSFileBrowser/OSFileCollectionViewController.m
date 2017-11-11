@@ -612,6 +612,9 @@ static const CGFloat windowHeight = 49.0;
 
 - (void)jumpToDetailControllerToViewController:(UIViewController *)viewController atIndexPath:(NSIndexPath *)indexPath {
     NSString *newPath = self.files[indexPath.row].path;
+    if (!newPath.length) {
+        return;
+    }
     BOOL isDirectory;
     BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:newPath isDirectory:&isDirectory];
     NSURL *url = [NSURL fileURLWithPath:newPath];
@@ -770,6 +773,7 @@ static const CGFloat windowHeight = 49.0;
                                                               [[OSFileBottomHUDItem alloc] initWithTitle:@"新建文件夹" image:nil],
                                                               ] toView:self.view];
         _bottomHUD.delegate = self;
+        _bottomHUD.backgroundColor = [UIColor colorWithRed:78/255.0 green:93/255.0 blue:115/255.0 alpha:1.0];
     }
     return _bottomHUD;
 }

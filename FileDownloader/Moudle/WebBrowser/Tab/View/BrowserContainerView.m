@@ -113,6 +113,7 @@ static NSString *const BaiduSearchPath = @"https://m.baidu.com/s?ie=utf-8&word="
                 // If the transform property is not the identity transform, the value of frame is undefined and therefore should be ignored.
                 oldBrowserView.frame = CGRectMake(0, 0, self__.width, self__.height);
                 
+                
                 [UIView transitionWithView:self__ duration:.5f options:UIViewAnimationOptionCurveEaseInOut animations:^{
                     oldBrowserView.transform = CGAffineTransformMakeTranslation(- self__.width, 0);
                     [self__ addSubview:browserWebView];

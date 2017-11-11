@@ -33,9 +33,26 @@
             fileName = [[localPath componentsSeparatedByString:@"?"].firstObject lastPathComponent];
         }
         
+        NSString *newPath = nil;
+        OSFileType fileType = [fileName os_fileType];
+        switch (fileType) {
+            case OSFileTypeOther: {
+                 newPath = [[NSString getDownloadDisplayOtherFolderPath] stringByAppendingPathComponent:fileName];
+                break;
+            }
+            case OSFileTypeImage: {
+                newPath = [[NSString getDownloadDisplayImageFolderPath] stringByAppendingPathComponent:fileName];
+                break;
+            }
+            case OSFileTypeVideo: {
+                newPath = [[NSString getDownloadDisplayVideoFolderPath] stringByAppendingPathComponent:fileName];
+                break;
+            }
+            default:
+                break;
+        }
         // 将文件移动到最终目录下
         NSError *moveError = nil;
-        NSString *newPath = [[NSString getDownloadDisplayFolderPath] stringByAppendingPathComponent:fileName];
         [[NSFileManager defaultManager] moveItemAtPath:localPath toPath:newPath error:&moveError];
         fileItem = [[OSFileDownloaderManager sharedInstance].downloadItems objectAtIndex:foundItemIdx];
         fileItem.status = OSFileDownloadStatusSuccess;

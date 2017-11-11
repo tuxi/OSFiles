@@ -8,6 +8,42 @@
 
 #import "OSFileBottomHUD.h"
 
+@interface OSFileBottomHUDViewController : UIViewController
+
+@end
+
+@implementation OSFileBottomHUDViewController
+
+- (BOOL)shouldAutorotate{
+    return YES;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskAll;
+}
+
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
+    return UIInterfaceOrientationPortrait;
+}
+
+
+
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    UIWindow *window = self.view.window;
+    [window bringSubviewToFront:window.rootViewController.view];
+}
+
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
+{
+    UIWindow *window = self.view.window;
+    [window bringSubviewToFront:window.rootViewController.view];
+}
+
+
+
+@end
+
 @interface OSFileBottomHUDButton : UIButton
 
 @property (nonatomic) CGFloat imageTitleSpace;
@@ -49,7 +85,7 @@
 - (void)commonInit {
     UIWindow *window = [[UIWindow alloc] initWithFrame:CGRectMake(0, self.toView.frame.size.height, self.toView.frame.size.width, self.frame.size.height)];
     _xy_parentWindow = window;
-    UIViewController *vc = [[UIViewController alloc] init];
+    OSFileBottomHUDViewController *vc = [[OSFileBottomHUDViewController alloc] init];
     window.rootViewController = vc;
     [vc.view addSubview:self];
     self.translatesAutoresizingMaskIntoConstraints = NO;
@@ -57,6 +93,7 @@
     [vc.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|" options:kNilOptions metrics:nil views:@{@"view": self}]];
     self.backgroundColor = [UIColor whiteColor];
     vc.view.backgroundColor = [UIColor whiteColor];
+    window.layer.masksToBounds = YES;
     window.hidden = NO;
     
     [self setupViews];
@@ -66,7 +103,7 @@
     NSMutableArray *btnlist =@[].mutableCopy;
     NSInteger i = 0;
     for (OSFileBottomHUDItem *item in self.items) {
-        OSFileBottomHUDButton *btn = [OSFileBottomHUDButton buttonWithType:UIButtonTypeSystem];
+        OSFileBottomHUDButton *btn = [OSFileBottomHUDButton buttonWithType:UIButtonTypeCustom];
         item.button = btn;
         btn.imageView.contentMode = UIViewContentModeScaleAspectFit;
         btn.contentMode = UIViewContentModeScaleAspectFit;
@@ -76,7 +113,7 @@
         [btn setTitle:item.title forState:UIControlStateNormal];
         [btn setImage:item.image forState:UIControlStateNormal];
         btn.translatesAutoresizingMaskIntoConstraints = NO;
-        [btn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+        [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         btn.titleLabel.font = [UIFont systemFontOfSize:12.0];
         btn.hidden = NO;
         [btn addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
@@ -89,6 +126,10 @@
     self.buttons = btnlist;
     
     [self updateSubViewsConstraints];
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
 }
 
 - (void)updateSubViewsConstraints {

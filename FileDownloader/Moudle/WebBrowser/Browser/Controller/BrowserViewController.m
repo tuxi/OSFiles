@@ -75,6 +75,10 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
     }];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+}
+
 - (void)initializeView{
     self.view.backgroundColor = UIColorFromRGB(0xF8F8F8);
     
@@ -82,8 +86,30 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
     [self.navigationItem setBackBarButtonItem:backItem];
     
     self.browserContainerView = ({
-        BrowserContainerView *browserContainerView = [[BrowserContainerView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height-49)];
+        BrowserContainerView *browserContainerView = [[BrowserContainerView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height)];
         [self.view addSubview:browserContainerView];
+        browserContainerView.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        if (@available(iOS 11.0, *)) {
+            NSLayoutConstraint *top = [browserContainerView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor constant:0.0];
+            NSLayoutConstraint *left = [browserContainerView.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor constant:0.0];
+            NSLayoutConstraint *right = [browserContainerView.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor constant:0.0];
+            NSLayoutConstraint *bottom = [browserContainerView.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor constant:0];
+            [NSLayoutConstraint activateConstraints:@[top, bottom, left, right]];
+        } else {
+            if (@available(iOS 9.0, *)) {
+                NSLayoutConstraint *top = [browserContainerView.topAnchor constraintEqualToAnchor:self.topLayoutGuide.bottomAnchor];
+                NSLayoutConstraint *bottom = [browserContainerView.bottomAnchor constraintEqualToAnchor:self.bottomLayoutGuide.topAnchor constant:0];
+                NSLayoutConstraint *left = [browserContainerView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor];
+                NSLayoutConstraint *right = [browserContainerView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor];
+                [NSLayoutConstraint activateConstraints:@[top, bottom, left, right]];
+            } else {
+                [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|[browserContainerView]|" options:kNilOptions metrics:nil views:@{@"browserContainerView": browserContainerView}]];
+                [self.view addConstraint:[NSLayoutConstraint constraintWithItem:browserContainerView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0]];
+                [self.view addConstraint:[NSLayoutConstraint constraintWithItem:browserContainerView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
+            }
+        }
+        
         
         self.browserButtonDelegate = browserContainerView;
 
@@ -93,6 +119,28 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
     self.browserTopToolBar = ({
         BrowserTopToolBar *browserTopToolBar = [[BrowserTopToolBar alloc] initWithFrame:CGRectMake(0, 0, self.view.width, TOP_TOOL_BAR_HEIGHT)];
         [self.view addSubview:browserTopToolBar];
+        browserTopToolBar.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        if (@available(iOS 11.0, *)) {
+            NSLayoutConstraint *top = [browserTopToolBar.topAnchor     constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor];
+             NSLayoutConstraint *height = [NSLayoutConstraint constraintWithItem:browserTopToolBar attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:TOP_TOOL_BAR_HEIGHT];
+            NSLayoutConstraint *left = [browserTopToolBar.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor];
+            NSLayoutConstraint *right = [browserTopToolBar.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor];
+            [NSLayoutConstraint activateConstraints:@[top, height, left, right]];
+        } else {
+            if (@available(iOS 9.0, *)) {
+                NSLayoutConstraint *top = [browserTopToolBar.topAnchor constraintEqualToAnchor:self.topLayoutGuide.bottomAnchor];
+                NSLayoutConstraint *height = [NSLayoutConstraint constraintWithItem:browserTopToolBar attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:TOP_TOOL_BAR_HEIGHT];
+                NSLayoutConstraint *left = [browserTopToolBar.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor];
+                NSLayoutConstraint *right = [browserTopToolBar.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor];
+                [NSLayoutConstraint activateConstraints:@[top, height, left, right]];
+            } else {
+                [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|[browserTopToolBar]|" options:kNilOptions metrics:nil views:@{@"browserTopToolBar": browserTopToolBar}]];
+                [self.view addConstraint:[NSLayoutConstraint constraintWithItem:browserTopToolBar attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0]];
+                 NSLayoutConstraint *height = [NSLayoutConstraint constraintWithItem:browserTopToolBar attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:TOP_TOOL_BAR_HEIGHT];
+                [self.view addConstraint:height];
+            }
+        }
         
         browserTopToolBar.backgroundColor = UIColorFromRGB(0xF8F8F8);
         
@@ -102,6 +150,22 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
     self.bottomToolBar = ({
         BrowserBottomToolBar *toolBar = [[BrowserBottomToolBar alloc] initWithFrame:CGRectMake(0, self.view.height - BOTTOM_TOOL_BAR_HEIGHT, self.view.width, BOTTOM_TOOL_BAR_HEIGHT)];
         [self.view addSubview:toolBar];
+        
+        toolBar.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        if (@available(iOS 11.0, *)) {
+            NSLayoutConstraint *height = [NSLayoutConstraint constraintWithItem:toolBar attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:BOTTOM_TOOL_BAR_HEIGHT];
+            NSLayoutConstraint *left = [toolBar.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor];
+            NSLayoutConstraint *right = [toolBar.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor];
+            NSLayoutConstraint *bottom = [toolBar.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor constant:0.0];
+            [NSLayoutConstraint activateConstraints:@[height, left, right, bottom]];
+        } else {
+            [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|[toolBar]|" options:kNilOptions metrics:nil views:@{@"toolBar": toolBar}]];
+            [self.view addConstraint:[NSLayoutConstraint constraintWithItem:toolBar attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0]];
+            NSLayoutConstraint *height = [NSLayoutConstraint constraintWithItem:toolBar attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:BOTTOM_TOOL_BAR_HEIGHT];
+            [self.view addConstraint:height];
+        }
+        
         
         toolBar.browserButtonDelegate = self;
         
@@ -148,13 +212,14 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
 //}
 
 - (void)recoverToolBar{
-    [UIView animateWithDuration:.2 animations:^{
-        self.browserTopToolBar.height = TOP_TOOL_BAR_HEIGHT;
-        CGRect bottomRect = self.bottomToolBar.frame;
-        bottomRect.origin.y = self.view.height - BOTTOM_TOOL_BAR_HEIGHT;
-        self.bottomToolBar.frame = bottomRect;
-        self.browserContainerView.scrollView.contentInset = UIEdgeInsetsMake(TOP_TOOL_BAR_HEIGHT, 0, BOTTOM_TOOL_BAR_HEIGHT, 0);
-    }];
+//    [UIView animateWithDuration:.2 animations:^{
+//        self.browserTopToolBar.height = TOP_TOOL_BAR_HEIGHT;
+//        CGRect bottomRect = self.bottomToolBar.frame;
+//        bottomRect.origin.y = self.view.height - BOTTOM_TOOL_BAR_HEIGHT;
+//        self.bottomToolBar.frame = bottomRect;
+//        self.browserContainerView.scrollView.contentInset = UIEdgeInsetsMake(TOP_TOOL_BAR_HEIGHT, 0, BOTTOM_TOOL_BAR_HEIGHT, 0);
+//    }];
+    self.browserContainerView.scrollView.contentInset = UIEdgeInsetsMake(TOP_TOOL_BAR_HEIGHT, 0, BOTTOM_TOOL_BAR_HEIGHT, 0);
 }
 
 - (void)hideTabBar {

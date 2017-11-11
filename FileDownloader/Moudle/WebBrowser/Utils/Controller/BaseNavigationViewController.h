@@ -6,8 +6,8 @@
 //  Copyright © 2017年 Null. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "MainNavigationController.h"
 
-@interface BaseNavigationViewController : UINavigationController
+@interface BaseNavigationViewController : MainNavigationController
 
 @end

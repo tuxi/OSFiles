@@ -148,6 +148,10 @@
     [self didClickDataPlaceholderReloadButton:button];
 }
 
+- (void)didClickDataPlaceholderReloadButton:(UIButton *)button {
+    
+}
+
 - (BOOL)noDataPlaceholderShouldAllowScroll:(UIScrollView *)scrollView {
     return YES;
 }

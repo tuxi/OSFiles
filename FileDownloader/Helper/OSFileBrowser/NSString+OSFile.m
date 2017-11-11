@@ -209,6 +209,39 @@
     return localFolderPath;
 }
 
++ (NSString *)getDownloadDisplayImageFolderPath {
+    NSString *cacheFolder = [self getDownloadDisplayFolderPath];
+    NSString *localFolderPath = [cacheFolder stringByAppendingPathComponent:@"图片"];
+    BOOL isDirectory, isExist;
+    isExist = [[NSFileManager defaultManager] fileExistsAtPath:localFolderPath isDirectory:&isDirectory];
+    if (!isExist || !isDirectory) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:localFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    return localFolderPath;
+}
+
++ (NSString *)getDownloadDisplayVideoFolderPath {
+    NSString *cacheFolder = [self getDownloadDisplayFolderPath];
+    NSString *localFolderPath = [cacheFolder stringByAppendingPathComponent:@"视频"];
+    BOOL isDirectory, isExist;
+    isExist = [[NSFileManager defaultManager] fileExistsAtPath:localFolderPath isDirectory:&isDirectory];
+    if (!isExist || !isDirectory) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:localFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    return localFolderPath;
+}
+
++ (NSString *)getDownloadDisplayOtherFolderPath {
+    NSString *cacheFolder = [self getDownloadDisplayFolderPath];
+    NSString *localFolderPath = [cacheFolder stringByAppendingPathComponent:@"其他"];
+    BOOL isDirectory, isExist;
+    isExist = [[NSFileManager defaultManager] fileExistsAtPath:localFolderPath isDirectory:&isDirectory];
+    if (!isExist || !isDirectory) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:localFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    return localFolderPath;
+}
+
 
 + (NSString *)getRootPath {
     return rootPath;
@@ -229,4 +262,83 @@
     return [userPaths objectAtIndex:0];
 }
 
+////////////////////////////////////////////////////////////////////////
+#pragma mark -
+////////////////////////////////////////////////////////////////////////
+
+- (OSFileType)os_fileType {
+    
+    if
+        (
+         ([[self.pathExtension lowercaseString] isEqualToString: @"mp3"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"aac"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"aifc"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"aiff"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"caf"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"m4a"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"m4r"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"3gp"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"wav"])
+         )
+    {
+        return OSFileTypeAudio;
+    }
+    
+    if
+        (
+         ([[self.pathExtension lowercaseString] isEqualToString: @"m4v"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"mov"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"avi"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"mpg"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"mp4"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"mov"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"wmv"])
+         )
+    {
+        return OSFileTypeVideo;
+    }
+    
+    if
+        (
+         ([[self.pathExtension lowercaseString] isEqualToString: @"png"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"tif"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"tiff"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"jpg"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"jpeg"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"gif"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"bmp"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"bmpf"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"ico"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"cur"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"xbm"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"webp"])
+         )
+    {
+        return OSFileTypeImage;
+    }
+    if
+        (
+         ([[self.pathExtension lowercaseString] isEqualToString: @"zip"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"rar"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"7zf"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"tar"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"tgz"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"tbz"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"dmg"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"app"]
+          || [[self.pathExtension lowercaseString] isEqualToString: @"ipa"])
+         )
+    {
+        return OSFileTypeArchive;
+    }
+    
+    if
+        (
+         ([[self.pathExtension lowercaseString] isEqualToString: @"exe"])
+         )
+    {
+        return OSFileTypeWindows;
+    }
+    return OSFileTypeOther;
+}
 @end

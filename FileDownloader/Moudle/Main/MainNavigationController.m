@@ -17,7 +17,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.navigationBarHidden = NO;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -25,15 +25,25 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (UIViewController *)getTopViewController {
+    UIViewController *vc = [self.viewControllers lastObject];
+    return vc;
 }
-*/
+
+- (BOOL)shouldAutorotate{
+    UIViewController *vc = [self getTopViewController];
+    return vc.shouldAutorotate;
+}
+
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation{
+    UIViewController *vc = [self getTopViewController];
+    return [vc preferredInterfaceOrientationForPresentation];
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations{
+    UIViewController *vc = [self getTopViewController];
+    return [vc supportedInterfaceOrientations];
+}
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated{
     if (self.childViewControllers.count == 1) {
