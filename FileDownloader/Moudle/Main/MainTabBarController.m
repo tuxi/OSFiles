@@ -28,7 +28,7 @@
     [super viewDidLoad];
     
     [self addChildVC:[BrowserViewController sharedInstance] imageNamed:@"TabBrowser" title:@"浏览器" navClass:[BaseNavigationViewController class]];
-    [self addChildVC:[DownloadsViewController new] imageNamed:@"TabDownloads" title:@"下载"];
+    [self addChildVC:[DownloadsViewController new] imageNamed:@"TabDownloads" title:@"缓存"];
     
     [self addChildVC:[[OSFileCollectionViewController alloc] initWithDirectoryArray:@[
                                                                                       [NSString getDownloadDisplayFolderPath],

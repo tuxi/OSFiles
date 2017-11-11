@@ -68,7 +68,7 @@ static NSString * const UserAgent = @"Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 li
         [Notifier postNotification:notify];
         [UIViewController xy_tabBarController].selectedIndex = 0;
     }];
-    UIAlertAction *downloadFileAction = [UIAlertAction actionWithTitle:@"下载" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action){
+    UIAlertAction *downloadFileAction = [UIAlertAction actionWithTitle:@"缓存" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action){
         
         [[OSFileDownloaderManager sharedInstance] start:url.path];
         [UIViewController xy_tabBarController].selectedIndex = 1;

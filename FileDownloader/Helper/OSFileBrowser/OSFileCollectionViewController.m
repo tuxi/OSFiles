@@ -1294,7 +1294,7 @@ __weak id _fileOperationDelegate;
 
 
 - (NSAttributedString *)noDataReloadButtonAttributedStringWithState:(UIControlState)state {
-    return [self attributedStringWithText:@"查看下载页" color:[UIColor colorWithRed:49/255.0 green:194/255.0 blue:124/255.0 alpha:1.0] fontSize:15.0];
+    return [self attributedStringWithText:@"查看缓存页" color:[UIColor colorWithRed:49/255.0 green:194/255.0 blue:124/255.0 alpha:1.0] fontSize:15.0];
 }
 
 - (void)noDataPlaceholder:(UIScrollView *)scrollView didClickReloadButton:(UIButton *)button {
@@ -1308,7 +1308,7 @@ __weak id _fileOperationDelegate;
 - (NSAttributedString *)noDataTextLabelAttributedString {
     NSString *string = nil;
     if ([self.rootDirectoryItem isDownloadBrowser]) {
-        string = @"下载完成的文件在这显示";
+        string = @"缓存完成的文件在这显示";
     }
     else {
         string = @"没有文件";

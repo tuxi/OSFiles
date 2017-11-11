@@ -128,7 +128,7 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (section == 0) {
         if ([self.dataSource[section] count]) {
-            return @"下载任务";
+            return @"缓存任务";
         } else {
             return @"";
         }

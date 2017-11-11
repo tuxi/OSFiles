@@ -100,7 +100,7 @@
                               [OSSettingsMenuItem switchCellForSel:@selector(allowDownloadOnCellularNetwork:) target:self title:@"允许蜂窝网络下载" iconName:nil on:[shouldAllowDownloadOnCellularNetwork boolValue]],
                               [OSSettingsMenuItem switchCellForSel:@selector(sendNotificationWhenDownloadComplete:) target:self title:@"下载完成后通知您" iconName:nil on:[shouldSendNotificationWhenDownloadComplete boolValue]],
                               ].mutableCopy;
-    OSSettingsTableViewSection *section = [[OSSettingsTableViewSection alloc] initWithItem:items headerTitle:@"下载" footerText:nil];
+    OSSettingsTableViewSection *section = [[OSSettingsTableViewSection alloc] initWithItem:items headerTitle:@"缓存" footerText:nil];
     return section;
 }
 

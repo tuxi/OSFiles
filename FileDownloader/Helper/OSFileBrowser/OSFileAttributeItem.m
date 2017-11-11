@@ -24,7 +24,7 @@
         return @"iTunes文件";
     }
     else if ([self isDownloadBrowser]) {
-        return @"下载";
+        return @"缓存";
     }
     return [super displayName];
 }

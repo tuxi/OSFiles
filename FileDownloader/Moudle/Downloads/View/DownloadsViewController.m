@@ -62,7 +62,7 @@
 
 - (void)setup {
     
-    self.navigationItem.title = @"下载";
+    self.navigationItem.title = @"缓存";
     self.tableViewModel = [DownloadsTableViewModel new];
     [self.tableViewModel prepareTableView:self.tableView];
 //    OSFileDownloaderManager *module = [OSFileDownloaderManager sharedInstance];
@@ -230,11 +230,11 @@
 }
 
 - (NSAttributedString *)noDataDetailLabelAttributedString {
-    return [self attributedStringWithText:@"请输入URL开启下载任务" color:[UIColor grayColor] fontSize:16];
+    return [self attributedStringWithText:@"请输入URL开启缓存任务" color:[UIColor grayColor] fontSize:16];
 }
 
 - (NSAttributedString *)noDataTextLabelAttributedString {
-    return [self attributedStringWithText:@"无下载任务" color:[UIColor grayColor] fontSize:16];;
+    return [self attributedStringWithText:@"无缓存任务" color:[UIColor grayColor] fontSize:16];;
 }
 
 
