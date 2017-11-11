@@ -831,7 +831,7 @@ static const CGFloat windowHeight = 49.0;
         bottomTipButton.translatesAutoresizingMaskIntoConstraints = NO;
         [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|[bottomTipButton]|" options:kNilOptions metrics:nil views:@{@"bottomTipButton": bottomTipButton}]];
         [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[bottomTipButton(==49.0)]|" options:kNilOptions metrics:nil views:@{@"bottomTipButton": bottomTipButton}]];
-        [bottomTipButton setBackgroundColor:[UIColor blueColor]];
+        _bottomTipButton.backgroundColor = [UIColor colorWithRed:78/255.0 green:93/255.0 blue:115/255.0 alpha:1.0];
         [bottomTipButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         bottomTipButton.titleLabel.numberOfLines = 3;
         bottomTipButton.titleLabel.adjustsFontSizeToFitWidth = YES;
@@ -893,7 +893,7 @@ static const CGFloat windowHeight = 49.0;
         
         if (containFileArray.count) {
             string = [containFileArray componentsJoinedByString:@","];
-            string = [NSString stringWithFormat:@"请确认，已存在的文件会被替换:(%@)", string];
+            string = [NSString stringWithFormat:@"请确认：已存在的文件会被替换:(%@)", string];
             [_bottomTipButton setTitle:string forState:UIControlStateNormal];
         }
     }
