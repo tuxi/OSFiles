@@ -10,6 +10,7 @@
 #import "ApplicationHelper.h"
 #import "NetworkTypeUtils.h"
 #import "OSFileDownloaderManager.h"
+#import "AppGroupManager.h"
 
 @implementation ApplicationHelper
 
@@ -30,6 +31,7 @@
     if (self) {
         [self addNotification];
         [self commonInit];
+        [AppGroupManager defaultManager];
     }
     return self;
 }

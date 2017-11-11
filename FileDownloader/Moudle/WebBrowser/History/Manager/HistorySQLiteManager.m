@@ -31,7 +31,7 @@ static NSString *const kHistorySQLiteName = @"history.db";
 SYNTHESIZE_SINGLETON_FOR_CLASS(HistorySQLiteManager)
 
 - (instancetype)init{
-    if (self = [super initWithPath:[DocumentPath stringByAppendingPathComponent:kHistorySQLiteName]]) {
+    if (self = [super initWithPath:[CachePath stringByAppendingPathComponent:kHistorySQLiteName]]) {
     }
     return self;
 }

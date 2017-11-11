@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>文件管理</string>
+	<string>文件浏览</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -29,6 +29,7 @@
 				<string>public.data</string>
 				<string>public.content</string>
 				<string>public.archives</string>
+				<string>public.image</string>
 			</array>
 		</dict>
 	</array>
@@ -48,10 +49,29 @@
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>CFBundleURLIconFile</key>
+			<string>Directory</string>
+			<key>CFBundleURLName</key>
+			<string>com.ossey.filedownloader</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>OSFiledownloader</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>LSApplicationCategoryType</key>
 	<string></string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>OSFiledownloader</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -59,6 +79,10 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>App需要使用您的相机权限..</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>App需要访问您的相册..</string>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

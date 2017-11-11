@@ -146,7 +146,9 @@ static const CGFloat windowHeight = 49.0;
         DirectoryWatcher *watcher = [DirectoryWatcher watchFolderWithPath:path directoryDidChange:^(DirectoryWatcher *folderWatcher) {
             [weakSelf reloadFiles];
         }];
-        [self.directoryWatcherArray addObject:watcher];
+        if (watcher) {
+            [self.directoryWatcherArray addObject:watcher];
+        }
     }
 }
 
@@ -208,7 +210,7 @@ static const CGFloat windowHeight = 49.0;
 }
 
 - (void)setupViews {
-    self.navigationItem.title = @"文件管理";
+    self.navigationItem.title = @"文件浏览";
     if (self.rootDirectoryItem) {
         self.navigationItem.title = self.rootDirectoryItem.displayName;
     }
@@ -589,7 +591,7 @@ static const CGFloat windowHeight = 49.0;
     } else {
         self.indexPath = indexPath;
         UIViewController *vc = [self previewControllerByIndexPath:indexPath];
-        [self jumpToDetailControllerToViewController:vc atIndexPath:indexPath];
+        [self showDetailController:vc atIndexPath:indexPath];
     }
 }
 
@@ -610,14 +612,10 @@ static const CGFloat windowHeight = 49.0;
 #pragma mark -
 ////////////////////////////////////////////////////////////////////////
 
-- (void)jumpToDetailControllerToViewController:(UIViewController *)viewController atIndexPath:(NSIndexPath *)indexPath {
-    NSString *newPath = self.files[indexPath.row].path;
-    if (!newPath.length) {
-        return;
-    }
+- (void)showDetailController:(UIViewController *)viewController parentPath:(NSString *)parentPath {
     BOOL isDirectory;
-    BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:newPath isDirectory:&isDirectory];
-    NSURL *url = [NSURL fileURLWithPath:newPath];
+    BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:parentPath isDirectory:&isDirectory];
+    NSURL *url = [NSURL fileURLWithPath:parentPath];
     if (fileExists) {
         if (isDirectory) {
             OSFileCollectionViewController *vc = (OSFileCollectionViewController *)viewController;
@@ -637,6 +635,14 @@ static const CGFloat windowHeight = 49.0;
             [self.navigationController showDetailViewController:detailNavController sender:self];
         }
     }
+}
+
+- (void)showDetailController:(UIViewController *)viewController atIndexPath:(NSIndexPath *)indexPath {
+    NSString *newPath = self.files[indexPath.row].path;
+    if (!newPath.length) {
+        return;
+    }
+    [self showDetailController:viewController parentPath:newPath];
 }
 
 - (void)backButtonClick {
@@ -664,39 +670,70 @@ static const CGFloat windowHeight = 49.0;
     
 }
 
+- (UIViewController *)previewControllerWithFilePath:(NSString *)filePath {
+    OSFileAttributeItem *newItem = [self getFileItemByPath:filePath];
+    return [self previewControllerWithFileItem:newItem];
+}
+
+- (UIViewController *)previewControllerWithFileItem:(OSFileAttributeItem *)newItem {
+    if (newItem) {
+        BOOL isDirectory;
+        BOOL fileExists = [[NSFileManager defaultManager ] fileExistsAtPath:newItem.path isDirectory:&isDirectory];
+        UIViewController *vc = nil;
+        if (fileExists) {
+            if (newItem.isDirectory) {
+                /// 如果当前界面是OSFileCollectionViewControllerModeCopy，那么下一个界面也要是同样的模式
+                OSFileCollectionViewControllerMode mode = OSFileCollectionViewControllerModeDefault;
+                if (self.mode == OSFileCollectionViewControllerModeCopy ||
+                    self.mode == OSFileCollectionViewControllerModeMove) {
+                    mode = self.mode;
+                }
+                vc = [[OSFileCollectionViewController alloc] initWithRootDirectory:newItem.path controllerMode:mode];
+                if (self.mode == OSFileCollectionViewControllerModeCopy ||
+                    self.mode == OSFileCollectionViewControllerModeMove) {
+                    OSFileCollectionViewController *viewController = (OSFileCollectionViewController *)vc;
+                    viewController.selectedFiles = self.selectedFiles.mutableCopy;
+                }
+                
+            } else if (![QLPreviewController canPreviewItem:[NSURL fileURLWithPath:newItem.path]]) {
+                vc = [[OSFilePreviewViewController alloc] initWithPath:newItem.path];
+            } else {
+                QLPreviewController *preview= [[QLPreviewController alloc] init];
+                preview.dataSource = self;
+                vc = preview;
+            }
+        }
+        return vc;
+    }
+    return nil;
+}
+
+- (OSFileAttributeItem *)getFileItemByPath:(NSString *)path {
+    NSUInteger foundIdx = [self.files indexOfObjectPassingTest:^BOOL(OSFileAttributeItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        BOOL res = [obj.path isEqualToString:path];
+        if (res) {
+            *stop = YES;
+        }
+        return res;
+    }];
+    
+    OSFileAttributeItem *newItem = nil;
+    if (foundIdx != NSNotFound) {
+        newItem = self.files[foundIdx];
+    }
+    else {
+        NSError *error = nil;
+        newItem = [OSFileAttributeItem fileWithPath:path error:&error];
+    }
+    return newItem;
+}
 
 - (UIViewController *)previewControllerByIndexPath:(NSIndexPath *)indexPath {
     if (!indexPath || !self.files.count) {
         return nil;
     }
     OSFileAttributeItem *newItem = self.files[indexPath.row];
-    BOOL isDirectory;
-    BOOL fileExists = [[NSFileManager defaultManager ] fileExistsAtPath:newItem.path isDirectory:&isDirectory];
-    UIViewController *vc = nil;
-    if (fileExists) {
-        if (newItem.isDirectory) {
-            /// 如果当前界面是OSFileCollectionViewControllerModeCopy，那么下一个界面也要是同样的模式
-            OSFileCollectionViewControllerMode mode = OSFileCollectionViewControllerModeDefault;
-            if (self.mode == OSFileCollectionViewControllerModeCopy ||
-                self.mode == OSFileCollectionViewControllerModeMove) {
-                mode = self.mode;
-            }
-            vc = [[OSFileCollectionViewController alloc] initWithRootDirectory:newItem.path controllerMode:mode];
-            if (self.mode == OSFileCollectionViewControllerModeCopy ||
-                self.mode == OSFileCollectionViewControllerModeMove) {
-                OSFileCollectionViewController *viewController = (OSFileCollectionViewController *)vc;
-                viewController.selectedFiles = self.selectedFiles.mutableCopy;
-            }
-            
-        } else if (![QLPreviewController canPreviewItem:[NSURL fileURLWithPath:newItem.path]]) {
-            vc = [[OSFilePreviewViewController alloc] initWithPath:newItem.path];
-        } else {
-            QLPreviewController *preview= [[QLPreviewController alloc] init];
-            preview.dataSource = self;
-            vc = preview;
-        }
-    }
-    return vc;
+    return [self previewControllerWithFileItem:newItem];
 }
 
 #pragma mark *** QLPreviewControllerDataSource ***
@@ -738,7 +775,7 @@ static const CGFloat windowHeight = 49.0;
         
         self.longPress.enabled = NO;
         UIViewController *vc = [self previewControllerByIndexPath:indexPath];
-        [self jumpToDetailControllerToViewController:vc atIndexPath:indexPath];
+        [self showDetailController:vc atIndexPath:indexPath];
     }
 }
 

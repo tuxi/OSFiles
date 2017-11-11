@@ -92,8 +92,8 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(TabManager)
 
 - (instancetype)init{
     if (self = [super init]) {
-        _filePath = [DocumentPath stringByAppendingPathComponent:MULTI_WINDOW_FILE_NAME];
-        _imagesFolderPath = [DocumentPath stringByAppendingPathComponent:MULTI_WINDOW_IMAGE_FOLDER];
+        _filePath = [CachePath stringByAppendingPathComponent:MULTI_WINDOW_FILE_NAME];
+        _imagesFolderPath = [CachePath stringByAppendingPathComponent:MULTI_WINDOW_IMAGE_FOLDER];
         
         NSString *queueName = [NSString stringWithFormat:@"com.zhongwu.TabManager-%@", [[NSUUID UUID] UUIDString]];
         _synchQueue = dispatch_queue_create([queueName cStringUsingEncoding:NSASCIIStringEncoding], DISPATCH_QUEUE_SERIAL);

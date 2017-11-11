@@ -138,7 +138,7 @@
 }
 
 - (NSString *)backgroundImagePath {
-    NSString *imageFolder = [[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:@"backgroundImage"];
+    NSString *imageFolder = [CachePath stringByAppendingPathComponent:@"backgroundImage"];
     BOOL isExist, isDirectory;
     isExist = [[NSFileManager defaultManager] fileExistsAtPath:imageFolder isDirectory:&isDirectory];
     if (!isExist || !isDirectory) {

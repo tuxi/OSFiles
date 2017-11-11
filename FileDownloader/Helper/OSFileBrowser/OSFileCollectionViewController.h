@@ -69,5 +69,15 @@ completionHandler:(void (^)(NSError *error))completion;
 /// 刷新已读取的文件
 - (void)reloadCollectionData;
 
+/// 通过当前控制器查看indexPath对应的子文件
+/// @param viewController 展示文件的控制器对象
+/// @param indexPath 当前目录下的子文件
+- (void)showDetailController:(UIViewController *)viewController atIndexPath:(NSIndexPath *)indexPath;
+/// 根据indexPath获取当前文件目录中的子文件，并创建对象的控制器返回
+- (UIViewController *)previewControllerByIndexPath:(NSIndexPath *)indexPath;
+- (UIViewController *)previewControllerWithFilePath:(NSString *)filePath;
+- (void)showDetailController:(UIViewController *)viewController parentPath:(NSString *)parentPath;
+/// 根据文件路径获取一个OSFileAttributeItem，如果当前控制器的files数组中有就会返回，没有就会创建一个OSFileAttributeItem对象
+- (OSFileAttributeItem *)getFileItemByPath:(NSString *)path;
 @end
 

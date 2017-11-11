@@ -8,7 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import <Social/Social.h>
+#import <AudioToolbox/AudioToolbox.h>
+
+typedef void (^OSShareResultHandler)(void);
 
 @interface ShareViewController : SLComposeServiceViewController
+
+@property SystemSoundID sound;
 
 @end

@@ -8,6 +8,7 @@
 
 #import "OSFileAttributeItem.h"
 #import "NSString+OSFile.h"
+#import "AppGroupManager.h"
 
 @implementation OSFileAttributeItem
 
@@ -25,6 +26,9 @@
     }
     else if ([self isDownloadBrowser]) {
         return @"缓存";
+    }
+    else if ([self.path isEqualToString:[AppGroupManager getAPPGroupSharePath]]) {
+        return @"分享";
     }
     return [super displayName];
 }

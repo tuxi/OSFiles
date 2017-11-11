@@ -10,6 +10,18 @@
 		1801ED881FB6B162005DBDE2 /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1801ED871FB6B162005DBDE2 /* ShareViewController.m */; };
 		1801ED8B1FB6B162005DBDE2 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1801ED891FB6B162005DBDE2 /* MainInterface.storyboard */; };
 		1801ED8F1FB6B162005DBDE2 /* FileManagerShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1801ED841FB6B162005DBDE2 /* FileManagerShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		1845A63A1FB6F3750000E39A /* OSItemProviderHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A6391FB6F3750000E39A /* OSItemProviderHelper.m */; };
+		1845A63D1FB6F4A40000E39A /* OSPhoneNumberModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A63C1FB6F4A40000E39A /* OSPhoneNumberModel.m */; };
+		1845A63E1FB6F4A80000E39A /* OSPhoneNumberModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A63C1FB6F4A40000E39A /* OSPhoneNumberModel.m */; };
+		1845A6411FB6F4FA0000E39A /* OSPhoneUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A6401FB6F4FA0000E39A /* OSPhoneUtils.m */; };
+		1845A6421FB6F4FA0000E39A /* OSPhoneUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A6401FB6F4FA0000E39A /* OSPhoneUtils.m */; };
+		1845A6451FB6F5730000E39A /* RMPhoneFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A6431FB6F5730000E39A /* RMPhoneFormat.m */; };
+		1845A6461FB6F5730000E39A /* RMPhoneFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A6431FB6F5730000E39A /* RMPhoneFormat.m */; };
+		1845A6471FB6F6C30000E39A /* OSItemProviderHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A6391FB6F3750000E39A /* OSItemProviderHelper.m */; };
+		1845A64A1FB6F7770000E39A /* OSMimeTypeMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A6491FB6F7770000E39A /* OSMimeTypeMap.m */; };
+		1845A64B1FB6F7770000E39A /* OSMimeTypeMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A6491FB6F7770000E39A /* OSMimeTypeMap.m */; };
+		1845A65F1FB71C7E0000E39A /* AppGroupManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A65E1FB71C7E0000E39A /* AppGroupManager.m */; };
+		1845A6601FB71C7E0000E39A /* AppGroupManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A65E1FB71C7E0000E39A /* AppGroupManager.m */; };
 		184F75011FA75D9500C2590D /* NSString+OSDrawingAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 184F75001FA75D9500C2590D /* NSString+OSDrawingAdditions.m */; };
 		1855DF1B1FA37CBD001CCAE8 /* UIViewController+OSAlertExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF1A1FA37CBD001CCAE8 /* UIViewController+OSAlertExtension.m */; };
 		1855DF6F1FA38BC8001CCAE8 /* NSObject+IvarList.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF6E1FA38BC8001CCAE8 /* NSObject+IvarList.m */; };
@@ -346,6 +358,22 @@
 		18E893361FB5DFED00727EF1 /* UIImage+XYImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E893251FB5DFED00727EF1 /* UIImage+XYImage.m */; };
 		18E893371FB5DFED00727EF1 /* UIImageView+XYExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E893271FB5DFED00727EF1 /* UIImageView+XYExtension.m */; };
 		18E893381FB5DFED00727EF1 /* UIViewController+XYExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E893291FB5DFED00727EF1 /* UIViewController+XYExtensions.m */; };
+		18EF90D81FB733E70016B969 /* NSString+OSFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E893141FB5DFED00727EF1 /* NSString+OSFile.m */; };
+		18EF90EA1FB7467B0016B969 /* DirectoryWatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E8930E1FB5DFED00727EF1 /* DirectoryWatcher.m */; };
+		18EF90EB1FB7467B0016B969 /* NSDate+ESUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E893101FB5DFED00727EF1 /* NSDate+ESUtilities.m */; };
+		18EF90EC1FB7467B0016B969 /* NSObject+XYHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E893121FB5DFED00727EF1 /* NSObject+XYHUD.m */; };
+		18EF90ED1FB746820016B969 /* OSFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E893161FB5DFED00727EF1 /* OSFile.m */; };
+		18EF90EE1FB746820016B969 /* OSFileAttributeItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E893181FB5DFED00727EF1 /* OSFileAttributeItem.m */; };
+		18EF90EF1FB746820016B969 /* OSFileBottomHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E8931A1FB5DFED00727EF1 /* OSFileBottomHUD.m */; };
+		18EF90F01FB7468E0016B969 /* OSFileCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E8931D1FB5DFED00727EF1 /* OSFileCollectionViewCell.m */; };
+		18EF90F11FB7468E0016B969 /* OSFileCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E8931F1FB5DFED00727EF1 /* OSFileCollectionViewController.m */; };
+		18EF90F21FB7468E0016B969 /* OSFileCollectionViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E893211FB5DFED00727EF1 /* OSFileCollectionViewFlowLayout.m */; };
+		18EF90F31FB7468E0016B969 /* OSFilePreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E893231FB5DFED00727EF1 /* OSFilePreviewViewController.m */; };
+		18EF90F41FB7468E0016B969 /* UIImage+XYImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E893251FB5DFED00727EF1 /* UIImage+XYImage.m */; };
+		18EF90F51FB7468E0016B969 /* UIImageView+XYExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E893271FB5DFED00727EF1 /* UIImageView+XYExtension.m */; };
+		18EF90F61FB7468E0016B969 /* UIViewController+XYExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E893291FB5DFED00727EF1 /* UIViewController+XYExtensions.m */; };
+		18EF90F71FB746A70016B969 /* OSFileBrowser.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 18E8931B1FB5DFED00727EF1 /* OSFileBrowser.bundle */; };
+		7C3B9B8363EE5A43DE03F256 /* libPods-FileManagerShareExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 950E19EAA123C77002296D25 /* libPods-FileManagerShareExtension.a */; };
 		88C9037378C7FDA243F02BF2 /* libPods-FileDownloader.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A5107F0693D00542CC3FA456 /* libPods-FileDownloader.a */; };
 		D017FF121FA89B16004B65CF /* UITextField+OSRangeExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = D017FF111FA89B16004B65CF /* UITextField+OSRangeExtension.m */; };
 /* End PBXBuildFile section */
@@ -452,6 +480,18 @@
 		18300FC71EED38820035D6EE /* FFCircularProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFCircularProgressView.m; sourceTree = "<group>"; };
 		18300FC81EED38820035D6EE /* UIColor+iOS7.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+iOS7.h"; sourceTree = "<group>"; };
 		18300FC91EED38820035D6EE /* UIColor+iOS7.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+iOS7.m"; sourceTree = "<group>"; };
+		1845A6381FB6F3750000E39A /* OSItemProviderHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSItemProviderHelper.h; sourceTree = "<group>"; };
+		1845A6391FB6F3750000E39A /* OSItemProviderHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSItemProviderHelper.m; sourceTree = "<group>"; };
+		1845A63B1FB6F4A40000E39A /* OSPhoneNumberModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSPhoneNumberModel.h; sourceTree = "<group>"; };
+		1845A63C1FB6F4A40000E39A /* OSPhoneNumberModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSPhoneNumberModel.m; sourceTree = "<group>"; };
+		1845A63F1FB6F4FA0000E39A /* OSPhoneUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSPhoneUtils.h; sourceTree = "<group>"; };
+		1845A6401FB6F4FA0000E39A /* OSPhoneUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSPhoneUtils.m; sourceTree = "<group>"; };
+		1845A6431FB6F5730000E39A /* RMPhoneFormat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMPhoneFormat.m; sourceTree = "<group>"; };
+		1845A6441FB6F5730000E39A /* RMPhoneFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMPhoneFormat.h; sourceTree = "<group>"; };
+		1845A6481FB6F7770000E39A /* OSMimeTypeMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSMimeTypeMap.h; sourceTree = "<group>"; };
+		1845A6491FB6F7770000E39A /* OSMimeTypeMap.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSMimeTypeMap.m; sourceTree = "<group>"; };
+		1845A65D1FB71C7E0000E39A /* AppGroupManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppGroupManager.h; sourceTree = "<group>"; };
+		1845A65E1FB71C7E0000E39A /* AppGroupManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppGroupManager.m; sourceTree = "<group>"; };
 		184F74FF1FA75D9500C2590D /* NSString+OSDrawingAdditions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+OSDrawingAdditions.h"; sourceTree = "<group>"; };
 		184F75001FA75D9500C2590D /* NSString+OSDrawingAdditions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+OSDrawingAdditions.m"; sourceTree = "<group>"; };
 		18517BC71EEBC86600B148C8 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -936,6 +976,9 @@
 		18E893271FB5DFED00727EF1 /* UIImageView+XYExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+XYExtension.m"; sourceTree = "<group>"; };
 		18E893281FB5DFED00727EF1 /* UIViewController+XYExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+XYExtensions.h"; sourceTree = "<group>"; };
 		18E893291FB5DFED00727EF1 /* UIViewController+XYExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+XYExtensions.m"; sourceTree = "<group>"; };
+		443E6FA8B3627D780D4DF5E4 /* Pods-FileManagerShareExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FileManagerShareExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FileManagerShareExtension/Pods-FileManagerShareExtension.debug.xcconfig"; sourceTree = "<group>"; };
+		8AEDED77DC07199FAFAC3954 /* Pods-FileManagerShareExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FileManagerShareExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-FileManagerShareExtension/Pods-FileManagerShareExtension.release.xcconfig"; sourceTree = "<group>"; };
+		950E19EAA123C77002296D25 /* libPods-FileManagerShareExtension.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FileManagerShareExtension.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5107F0693D00542CC3FA456 /* libPods-FileDownloader.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FileDownloader.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D017FF101FA89B16004B65CF /* UITextField+OSRangeExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UITextField+OSRangeExtension.h"; sourceTree = "<group>"; };
 		D017FF111FA89B16004B65CF /* UITextField+OSRangeExtension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UITextField+OSRangeExtension.m"; sourceTree = "<group>"; };
@@ -947,6 +990,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7C3B9B8363EE5A43DE03F256 /* libPods-FileManagerShareExtension.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -972,6 +1016,12 @@
 				1801EDA51FB6C817005DBDE2 /* FileManagerShareExtension.entitlements */,
 				1801ED861FB6B162005DBDE2 /* ShareViewController.h */,
 				1801ED871FB6B162005DBDE2 /* ShareViewController.m */,
+				1845A6381FB6F3750000E39A /* OSItemProviderHelper.h */,
+				1845A6391FB6F3750000E39A /* OSItemProviderHelper.m */,
+				1845A63B1FB6F4A40000E39A /* OSPhoneNumberModel.h */,
+				1845A63C1FB6F4A40000E39A /* OSPhoneNumberModel.m */,
+				1845A63F1FB6F4FA0000E39A /* OSPhoneUtils.h */,
+				1845A6401FB6F4FA0000E39A /* OSPhoneUtils.m */,
 				1801ED891FB6B162005DBDE2 /* MainInterface.storyboard */,
 				1801ED8C1FB6B162005DBDE2 /* Info.plist */,
 			);
@@ -1124,6 +1174,8 @@
 		18517BE91EEBCB2C00B148C8 /* Helper */ = {
 			isa = PBXGroup;
 			children = (
+				1845A6441FB6F5730000E39A /* RMPhoneFormat.h */,
+				1845A6431FB6F5730000E39A /* RMPhoneFormat.m */,
 				18E8930C1FB5DFED00727EF1 /* OSFileBrowser */,
 				18C5650F1FB0197B00699F41 /* YCXMenu */,
 				18ADEBEC1F9E21910024BA40 /* FileSystem */,
@@ -1147,6 +1199,10 @@
 				185A8EAC1FA42ED3006077CE /* AutoTimer.m */,
 				18566F8D1FA8ADA000EB5416 /* ApplicationHelper.h */,
 				18566F8E1FA8ADA000EB5416 /* ApplicationHelper.m */,
+				1845A6481FB6F7770000E39A /* OSMimeTypeMap.h */,
+				1845A6491FB6F7770000E39A /* OSMimeTypeMap.m */,
+				1845A65D1FB71C7E0000E39A /* AppGroupManager.h */,
+				1845A65E1FB71C7E0000E39A /* AppGroupManager.m */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -1232,6 +1288,7 @@
 				18ADEEBD1F9E49940024BA40 /* libxml2.2.tbd */,
 				18517C401EEBD67C00B148C8 /* libsqlite3.0.tbd */,
 				A5107F0693D00542CC3FA456 /* libPods-FileDownloader.a */,
+				950E19EAA123C77002296D25 /* libPods-FileManagerShareExtension.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -2194,6 +2251,8 @@
 			children = (
 				0C8B7998687A11DE8FCA96A2 /* Pods-FileDownloader.debug.xcconfig */,
 				FAEFFFFF9AB15F258CAC9CC7 /* Pods-FileDownloader.release.xcconfig */,
+				443E6FA8B3627D780D4DF5E4 /* Pods-FileManagerShareExtension.debug.xcconfig */,
+				8AEDED77DC07199FAFAC3954 /* Pods-FileManagerShareExtension.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -2205,9 +2264,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1801ED901FB6B162005DBDE2 /* Build configuration list for PBXNativeTarget "FileManagerShareExtension" */;
 			buildPhases = (
+				AFA303447BCFCBBC8357910A /* [CP] Check Pods Manifest.lock */,
 				1801ED801FB6B162005DBDE2 /* Sources */,
 				1801ED811FB6B162005DBDE2 /* Frameworks */,
 				1801ED821FB6B162005DBDE2 /* Resources */,
+				2F4E8FB13A4F7CA3617A2561 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -2256,7 +2317,7 @@
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
-								enabled = 0;
+								enabled = 1;
 							};
 						};
 					};
@@ -2299,6 +2360,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18EF90F71FB746A70016B969 /* OSFileBrowser.bundle in Resources */,
 				1801ED8B1FB6B162005DBDE2 /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2494,7 +2556,37 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-FileDownloader/Pods-FileDownloader-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		2F4E8FB13A4F7CA3617A2561 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-FileManagerShareExtension/Pods-FileManagerShareExtension-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		3F391FF56B034B66B1B5FBEC /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		AFA303447BCFCBBC8357910A /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2531,7 +2623,27 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18EF90F41FB7468E0016B969 /* UIImage+XYImage.m in Sources */,
+				18EF90F11FB7468E0016B969 /* OSFileCollectionViewController.m in Sources */,
+				18EF90F61FB7468E0016B969 /* UIViewController+XYExtensions.m in Sources */,
 				1801ED881FB6B162005DBDE2 /* ShareViewController.m in Sources */,
+				18EF90D81FB733E70016B969 /* NSString+OSFile.m in Sources */,
+				18EF90F01FB7468E0016B969 /* OSFileCollectionViewCell.m in Sources */,
+				1845A63A1FB6F3750000E39A /* OSItemProviderHelper.m in Sources */,
+				1845A64B1FB6F7770000E39A /* OSMimeTypeMap.m in Sources */,
+				1845A6421FB6F4FA0000E39A /* OSPhoneUtils.m in Sources */,
+				18EF90F31FB7468E0016B969 /* OSFilePreviewViewController.m in Sources */,
+				18EF90F51FB7468E0016B969 /* UIImageView+XYExtension.m in Sources */,
+				1845A6601FB71C7E0000E39A /* AppGroupManager.m in Sources */,
+				1845A63D1FB6F4A40000E39A /* OSPhoneNumberModel.m in Sources */,
+				1845A6461FB6F5730000E39A /* RMPhoneFormat.m in Sources */,
+				18EF90EF1FB746820016B969 /* OSFileBottomHUD.m in Sources */,
+				18EF90EA1FB7467B0016B969 /* DirectoryWatcher.m in Sources */,
+				18EF90EE1FB746820016B969 /* OSFileAttributeItem.m in Sources */,
+				18EF90F21FB7468E0016B969 /* OSFileCollectionViewFlowLayout.m in Sources */,
+				18EF90ED1FB746820016B969 /* OSFile.m in Sources */,
+				18EF90EC1FB7467B0016B969 /* NSObject+XYHUD.m in Sources */,
+				18EF90EB1FB7467B0016B969 /* NSDate+ESUtilities.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2541,6 +2653,7 @@
 			files = (
 				1855DF6F1FA38BC8001CCAE8 /* NSObject+IvarList.m in Sources */,
 				18C565151FB0197B00699F41 /* YCXMenuItem.m in Sources */,
+				1845A64A1FB6F7770000E39A /* OSMimeTypeMap.m in Sources */,
 				18ADEF3E1F9E4A860024BA40 /* XYImageViewer.m in Sources */,
 				18ADEEFA1F9E4A3D0024BA40 /* BrowserWebView.m in Sources */,
 				18ADEF231F9E4A860024BA40 /* OSFileDownloaderDelegate.m in Sources */,
@@ -2572,8 +2685,10 @@
 				18E8932D1FB5DFED00727EF1 /* NSString+OSFile.m in Sources */,
 				18ADEF551F9E4A860024BA40 /* XYNetworkRequest.m in Sources */,
 				18ADEEF61F9E4A2E0024BA40 /* SessionData.m in Sources */,
+				1845A63E1FB6F4A80000E39A /* OSPhoneNumberModel.m in Sources */,
 				18ADEEDB1F9E4A100024BA40 /* BrowserViewController.m in Sources */,
 				18ADEF281F9E4A860024BA40 /* DownloadsTableViewModel.m in Sources */,
+				1845A6451FB6F5730000E39A /* RMPhoneFormat.m in Sources */,
 				18E893301FB5DFED00727EF1 /* OSFileBottomHUD.m in Sources */,
 				18ADEECF1F9E4A020024BA40 /* OSFileDownloaderSessionPrivateDelegate.m in Sources */,
 				18ADEF101F9E4A4A0024BA40 /* BaseTableViewController.m in Sources */,
@@ -2611,6 +2726,7 @@
 				1855DF1B1FA37CBD001CCAE8 /* UIViewController+OSAlertExtension.m in Sources */,
 				18ADEEFF1F9E4A3D0024BA40 /* MenuHelper.m in Sources */,
 				18ADEF461F9E4A860024BA40 /* UINavigationItem+MultipleItems.m in Sources */,
+				1845A6471FB6F6C30000E39A /* OSItemProviderHelper.m in Sources */,
 				18ADEF0A1F9E4A3D0024BA40 /* NSURLCache+ZWUtility.m in Sources */,
 				18E893331FB5DFED00727EF1 /* OSFileCollectionViewController.m in Sources */,
 				18E893341FB5DFED00727EF1 /* OSFileCollectionViewFlowLayout.m in Sources */,
@@ -2651,6 +2767,7 @@
 				188458401FB5EB3A00863317 /* NSObject+InterfaceOrientationExtensions.m in Sources */,
 				18ADEED61F9E4A090024BA40 /* BookmarkSectionInfo.m in Sources */,
 				18ADEF1E1F9E4A860024BA40 /* OSSettingViewController.m in Sources */,
+				1845A6411FB6F4FA0000E39A /* OSPhoneUtils.m in Sources */,
 				18ADEEE21F9E4A180024BA40 /* HistorySQLiteManager.m in Sources */,
 				18ADEF4B1F9E4A860024BA40 /* UIView+Extend.m in Sources */,
 				18ADEF391F9E4A860024BA40 /* UINavigationController+OSProgressBar.m in Sources */,
@@ -2698,6 +2815,7 @@
 				18ADEF161F9E4A530024BA40 /* ArrowActivityView.m in Sources */,
 				18ADEF2D1F9E4A860024BA40 /* MainTabBarController.m in Sources */,
 				18ADEEE71F9E4A1F0024BA40 /* CardMainBottomView.m in Sources */,
+				1845A65F1FB71C7E0000E39A /* AppGroupManager.m in Sources */,
 				18ADEEE81F9E4A1F0024BA40 /* CardMainView.m in Sources */,
 				18ADEED41F9E4A050024BA40 /* BookmarkTableViewController.m in Sources */,
 				18ADEF1F1F9E4A860024BA40 /* OSSettingsTableViewCell.m in Sources */,
@@ -2731,7 +2849,9 @@
 /* Begin XCBuildConfiguration section */
 		1801ED911FB6B162005DBDE2 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 443E6FA8B3627D780D4DF5E4 /* Pods-FileManagerShareExtension.debug.xcconfig */;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_COMMA = YES;
@@ -2744,7 +2864,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = NKW67GFDHM;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = FileManagerShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -2760,7 +2880,9 @@
 		};
 		1801ED921FB6B162005DBDE2 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8AEDED77DC07199FAFAC3954 /* Pods-FileManagerShareExtension.release.xcconfig */;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_COMMA = YES;
@@ -2773,7 +2895,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution: 孝远 杨 (NKW67GFDHM)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = NKW67GFDHM;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = FileManagerShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
