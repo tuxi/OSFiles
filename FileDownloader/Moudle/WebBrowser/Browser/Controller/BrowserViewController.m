@@ -441,6 +441,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
 
 /// 缓存图片
 - (void)cacheImages {
+
     [OSXMLDocumentItem parseElementWithHTMLString:[self getCurrentPageHTMLString] parseCompletion:^(NSArray *videoURLs, NSArray *imageURLs) {
         NSString *string = [imageURLs componentsJoinedByString:@",\n"];
         if (!imageURLs.count) {

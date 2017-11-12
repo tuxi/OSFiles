@@ -191,7 +191,7 @@
 }
 
 - (NSArray *)__parseImageURLsWithDocument:(ONOXMLDocument *)doc {
-    NSMutableArray *imageURLs= [NSMutableArray array];
+    NSMutableArray *imageURLs= [NSMutableArray array]; //@"//*[@id='posts']"
     [doc enumerateElementsWithXPath:@".//div" usingBlock:^(ONOXMLElement *element, NSUInteger idx, BOOL *stop) {
         /// 提取每个子节点的图片img
         NSArray *imgArr = [element childrenWithTag:@"img"];
