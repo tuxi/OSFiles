@@ -18,7 +18,7 @@ target 'FileDownloader' do
   pod 'XYSuspensionMenu'
   pod 'OSFileManager'
   #pod 'SSignalKit', '~> 0.0.2'
- 
+  pod 'Ono'
 
 end
 

@@ -22,6 +22,7 @@
 		1845A64B1FB6F7770000E39A /* OSMimeTypeMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A6491FB6F7770000E39A /* OSMimeTypeMap.m */; };
 		1845A65F1FB71C7E0000E39A /* AppGroupManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A65E1FB71C7E0000E39A /* AppGroupManager.m */; };
 		1845A6601FB71C7E0000E39A /* AppGroupManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A65E1FB71C7E0000E39A /* AppGroupManager.m */; };
+		184DA3F31FB843C0009F29B0 /* OSXMLDocumentItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 184DA3F21FB843C0009F29B0 /* OSXMLDocumentItem.m */; };
 		184F75011FA75D9500C2590D /* NSString+OSDrawingAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 184F75001FA75D9500C2590D /* NSString+OSDrawingAdditions.m */; };
 		1855DF1B1FA37CBD001CCAE8 /* UIViewController+OSAlertExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF1A1FA37CBD001CCAE8 /* UIViewController+OSAlertExtension.m */; };
 		1855DF6F1FA38BC8001CCAE8 /* NSObject+IvarList.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF6E1FA38BC8001CCAE8 /* NSObject+IvarList.m */; };
@@ -492,6 +493,8 @@
 		1845A6491FB6F7770000E39A /* OSMimeTypeMap.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSMimeTypeMap.m; sourceTree = "<group>"; };
 		1845A65D1FB71C7E0000E39A /* AppGroupManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppGroupManager.h; sourceTree = "<group>"; };
 		1845A65E1FB71C7E0000E39A /* AppGroupManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppGroupManager.m; sourceTree = "<group>"; };
+		184DA3F11FB843C0009F29B0 /* OSXMLDocumentItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSXMLDocumentItem.h; sourceTree = "<group>"; };
+		184DA3F21FB843C0009F29B0 /* OSXMLDocumentItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSXMLDocumentItem.m; sourceTree = "<group>"; };
 		184F74FF1FA75D9500C2590D /* NSString+OSDrawingAdditions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+OSDrawingAdditions.h"; sourceTree = "<group>"; };
 		184F75001FA75D9500C2590D /* NSString+OSDrawingAdditions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+OSDrawingAdditions.m"; sourceTree = "<group>"; };
 		18517BC71EEBC86600B148C8 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -1203,6 +1206,8 @@
 				1845A6491FB6F7770000E39A /* OSMimeTypeMap.m */,
 				1845A65D1FB71C7E0000E39A /* AppGroupManager.h */,
 				1845A65E1FB71C7E0000E39A /* AppGroupManager.m */,
+				184DA3F11FB843C0009F29B0 /* OSXMLDocumentItem.h */,
+				184DA3F21FB843C0009F29B0 /* OSXMLDocumentItem.m */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -2800,6 +2805,7 @@
 				18ADEF0F1F9E4A4A0024BA40 /* BaseNavigationViewController.m in Sources */,
 				18ADEF111F9E4A4A0024BA40 /* BaseViewController.m in Sources */,
 				18ADEF1C1F9E4A530024BA40 /* ICGThumbView.m in Sources */,
+				184DA3F31FB843C0009F29B0 /* OSXMLDocumentItem.m in Sources */,
 				18ADEF541F9E4A860024BA40 /* XYDBUtil.m in Sources */,
 				18ADEEE61F9E4A1F0024BA40 /* CardCollectionViewCell.m in Sources */,
 				18ADEEEB1F9E4A2E0024BA40 /* SearchInputView.m in Sources */,
