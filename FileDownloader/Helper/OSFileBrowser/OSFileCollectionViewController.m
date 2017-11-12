@@ -1026,7 +1026,16 @@ static const CGFloat windowHeight = 49.0;
         NSError *moveError = nil;
         [[NSFileManager defaultManager] createDirectoryAtPath:newPath withIntermediateDirectories:YES attributes:nil error:&moveError];
         if (!moveError) {
-            [self reloadFiles];
+            // 将选中的文件移动到创建的目录中
+            __weak typeof(&*self) weakSelf = self;
+            [self copyFiles:self.selectedFiles toRootDirectory:newPath completionHandler:^(NSError *error) {
+                __strong typeof(&*weakSelf) self = weakSelf;
+                if (!error) {
+                    [self.selectedFiles removeAllObjects];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:OSFileCollectionViewControllerOptionFileCompletionNotification object:nil userInfo:@{@"OSFileCollectionViewControllerMode": @(weakSelf.mode)}];
+                }
+               [self reloadFiles];
+            }];
         } else {
             NSLog(@"%@", moveError.localizedDescription);
         }
