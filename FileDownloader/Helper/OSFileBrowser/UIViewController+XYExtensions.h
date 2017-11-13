@@ -13,4 +13,6 @@
 + (UIViewController *)xy_topViewController;
 + (UINavigationController *)xy_currentNavigationController;
 + (UITabBarController *)xy_tabBarController;
+
++ (UIViewController *)xy_getCurrentUIVC;
 @end
