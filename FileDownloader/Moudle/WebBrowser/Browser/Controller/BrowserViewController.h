@@ -11,7 +11,7 @@
 
 @interface BrowserViewController : BaseViewController<UIScrollViewDelegate>
 
-SYNTHESIZE_SINGLETON_FOR_CLASS_HEADER(BrowserViewController)
++ (instancetype)sharedInstance;
 
 - (void)findInPageDidUpdateCurrentResult:(NSInteger)currentResult;
 - (void)findInPageDidUpdateTotalResults:(NSInteger)totalResults;

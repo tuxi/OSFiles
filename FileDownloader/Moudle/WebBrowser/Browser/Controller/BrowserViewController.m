@@ -48,7 +48,22 @@ static NSString *const kBrowserViewControllerAddBookmarkFailure = @"添加书签
 
 @implementation BrowserViewController
 
-SYNTHESIZE_SINGLETON_FOR_CLASS(BrowserViewController)
++ (instancetype)sharedInstance {
+    static id _instance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _instance = [[super allocWithZone:NULL] init];
+    });
+    return _instance;
+}
+
++ (id)allocWithZone:(NSZone*)zone {
+    return [self sharedInstance];
+}
+- (id)copyWithZone:(NSZone *)zone {
+    return self;
+}
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];

@@ -22,31 +22,31 @@
 	<string>1.0.1</string>
 	<key>MinimumOSVersion</key>
 	<string>8.0</string>
-    <key>NSAppTransportSecurity</key>
-    <dict>
-        <key>NSAllowsArbitraryLoads</key>
-        <true/>
-    </dict>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>NSExtension</key>
 	<dict>
-        <key>NSExtensionAttributes</key>
-        <dict>
-            <key>NSExtensionActivationRule</key>
-            <dict>
-                <key>NSExtensionActivationSupportsFileWithMaxCount</key>
-                <integer>100</integer>
-                <key>NSExtensionActivationSupportsImageWithMaxCount</key>
-                <integer>100</integer>
-                <key>NSExtensionActivationSupportsText</key>
-                <true/>
-                <key>NSExtensionActivationSupportsVideoWithMaxCount</key>
-                <integer>100</integer>
-                <key>NSExtensionActivationSupportsWebPageWithMaxCount</key>
-                <integer>100</integer>
-                <key>NSExtensionActivationSupportsWebURLWithMaxCount</key>
-                <integer>100</integer>
-            </dict>
-        </dict>
+		<key>NSExtensionAttributes</key>
+		<dict>
+			<key>NSExtensionActivationRule</key>
+			<dict>
+				<key>NSExtensionActivationSupportsFileWithMaxCount</key>
+				<integer>100</integer>
+				<key>NSExtensionActivationSupportsImageWithMaxCount</key>
+				<integer>100</integer>
+				<key>NSExtensionActivationSupportsVideoWithMaxCount</key>
+				<integer>100</integer>
+				<key>NSExtensionActivationSupportsWebPageWithMaxCount</key>
+				<integer>100</integer>
+				<key>NSExtensionActivationSupportsWebURLWithMaxCount</key>
+				<integer>100</integer>
+				<key>NSExtensionActivationSupportsMovieWithMaxCount </key>
+				<string>100</string>
+			</dict>
+		</dict>
 		<key>NSExtensionMainStoryboard</key>
 		<string>MainInterface</string>
 		<key>NSExtensionPointIdentifier</key>

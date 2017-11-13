@@ -9,11 +9,14 @@
 #import "AppGroupManager.h"
 #import "OSFileCollectionViewController.h"
 #import "UIViewController+XYExtensions.h"
+#import "MacroMethod.h"
+#import "MacroConstants.h"
 
 NSString * const APP_URL_SCHEMES = @"OSFiledownloader://";
 NSString * const APP_GROUP_IDENTIFIER = @"group.com.ossey.Lister.Documents";
 NSString * const AppGroupFuncNameKey = @"funcName";
 NSString * const AppGroupFolderPathKey = @"filePath";
+NSString * const AppGroupRemoteURLPathKey = @"URL";
 
 @interface AppGroupManager ()
 
@@ -180,11 +183,11 @@ NSString * const AppGroupFolderPathKey = @"filePath";
 - (void)openUrlCallBack {
     NSDictionary *info = [self readInfoFromDocument];
     NSString *funcName = info[AppGroupFuncNameKey];
-    NSString *folderPath = info[AppGroupFolderPathKey];
-    if (!folderPath.length || !funcName.length) {
+    if (!funcName.length) {
         return;
     }
     if ([funcName isEqualToString:@"share"]) {
+        //        NSString *folderPath = info[AppGroupFolderPathKey];
         UITabBarController *tabBarVc = [UIViewController xy_tabBarController];
         tabBarVc.selectedIndex = 2;
         UINavigationController *nac = [UIViewController xy_currentNavigationController];
@@ -198,6 +201,16 @@ NSString * const AppGroupFolderPathKey = @"filePath";
         /// 只进入分享页面
         UIViewController *subFolderVc = [vc previewControllerWithFilePath:[self.class getAPPGroupSharePath]];
         [vc showDetailController:subFolderVc parentPath:[self.class getAPPGroupSharePath]];
+    }
+    else if ([funcName isEqualToString:@"openURL"]) {
+        NSURL *url = info[AppGroupRemoteURLPathKey];
+        if ([url isKindOfClass:[NSString class]]) {
+            url = [NSURL URLWithString:(NSString *)url];
+        }
+        // 打开网页
+        NSNotification *notify = [NSNotification notificationWithName:kOpenInNewWindowNotification object:self userInfo:@{@"url": url}];
+        [Notifier postNotification:notify];
+        [UIViewController xy_tabBarController].selectedIndex = 0;
     }
 }
 
@@ -213,10 +226,12 @@ NSString * const AppGroupFolderPathKey = @"filePath";
         if ([APP_URL_SCHEMES hasPrefix:url]) {
             NSString *infoPath = [jumpPath stringByAppendingPathComponent:url];
             return [NSDictionary dictionaryWithContentsOfFile:infoPath];
-        }else{
+        }
+        else {
             return nil;
         }
-    }else{
+    }
+    else {
         return nil;
     }
 }

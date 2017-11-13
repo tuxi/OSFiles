@@ -12,6 +12,7 @@ extern NSString * const APP_URL_SCHEMES;
 extern NSString * const APP_GROUP_IDENTIFIER;
 extern NSString * const AppGroupFuncNameKey;
 extern NSString * const AppGroupFolderPathKey;
+extern NSString * const AppGroupRemoteURLPathKey;
 
 @interface AppGroupManager : NSObject
 

@@ -12,6 +12,8 @@
 #import "AppGroupManager.h"
 #import <OSFileManager.h>
 #import <MBProgressHUD.h>
+#import "BrowserViewController.h"
+#import "UIViewController+XYExtensions.h"
 
 #define dispatch_main_safe_async(block)\
 if ([NSThread isMainThread]) {\
@@ -113,8 +115,8 @@ dispatch_async(dispatch_get_main_queue(), block);\
                 }];
                 return;
             }
-            if ([item.scheme isEqualToString:@"file"]) {
-                    NSLog(@"%@ %@",self.contentText,item.absoluteString);
+            if ([item.scheme.lowercaseString isEqualToString:@"file"]) {
+                NSLog(@"%@ %@",self.contentText,item.absoluteString);
                 [self copyFiles:@[item.path] toRootDirectory:[AppGroupManager getAPPGroupSharePath] completionHandler:^(void) {
                     if (!error) {
                         self.resultHandler();
@@ -133,7 +135,15 @@ dispatch_async(dispatch_get_main_queue(), block);\
                     }
                 }];
                 
-                }
+            }
+            else if ([item.scheme.lowercaseString isEqualToString:@"http"] ||
+                     [item.scheme.lowercaseString isEqualToString:@"https"]) {
+                self.resultHandler();
+                [[AppGroupManager defaultManager] openAPP:APP_URL_SCHEMES info:@{AppGroupFuncNameKey: @"url", AppGroupRemoteURLPathKey: item}];
+            }
+            else {
+                [self.extensionContext completeRequestReturningItems:nil completionHandler:nil];
+            }
             
         };
         
@@ -278,6 +288,7 @@ completionHandler:(void (^)(void))completion {
     [_fileManager cancelAllOperation];
     [self.hud hideAnimated:YES afterDelay:0.5];
     self.hud = nil;
+    [self cancel];
     [self.extensionContext completeRequestReturningItems:nil completionHandler:nil];
 }
 @end
