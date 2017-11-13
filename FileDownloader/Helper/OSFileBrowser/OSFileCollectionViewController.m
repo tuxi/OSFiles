@@ -940,11 +940,12 @@ static const CGFloat windowHeight = 49.0;
 
 /// 将选择的文件拷贝到目标目录中
 - (void)chooseCompletion {
-    __weak typeof(self) weakSelf = self;
+    __weak typeof(&*self) weakSelf = self;
     [self copyFiles:self.selectedFiles toRootDirectory:self.rootDirectoryItem.path completionHandler:^(void) {
-        [weakSelf.selectedFiles removeAllObjects];
+        __strong typeof(&*weakSelf) self = weakSelf;
+        [self.selectedFiles removeAllObjects];
         [[NSNotificationCenter defaultCenter] postNotificationName:OSFileCollectionViewControllerOptionFileCompletionNotification object:nil userInfo:@{@"OSFileCollectionViewControllerMode": @(weakSelf.mode)}];
-        [weakSelf backButtonClick];
+        [self backButtonClick];
     }];
     
 }
