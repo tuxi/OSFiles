@@ -12,6 +12,7 @@
 
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSArray<NSDictionary<NSString *, NSString *> *> *dataArray;
+@property (nonatomic, strong) UIView *tableFooterView;
 
 @end
 
@@ -80,8 +81,44 @@
         _tableView.delegate = self;
         _tableView.dataSource = self;
         _tableView.translatesAutoresizingMaskIntoConstraints = NO;
+        _tableView.tableFooterView = [self tableFooterView];
     }
     return _tableView;
+}
+
+- (UIView *)tableFooterView {
+    if (!_tableFooterView) {
+        UIView *view = [UIView new];
+        CGRect frame = view.frame;
+        frame.size.height = 44.0;
+        view.frame = frame;
+        _tableFooterView = view;
+        UILabel *label = [UILabel new];
+        [_tableFooterView addSubview:label];
+        label.translatesAutoresizingMaskIntoConstraints = NO;
+        label.textAlignment = NSTextAlignmentCenter;
+        label.text = @"2017 Ossey Inc.";
+        if (@available(iOS 8.2, *)) {
+            label.font = [UIFont systemFontOfSize:13 weight:1.5];
+        } else {
+            label.font = [UIFont systemFontOfSize:13];
+        }
+        NSLayoutConstraint *top, *bottom, *left, *right;
+        if (@available(iOS 9.0, *)) {
+            top = [label.topAnchor constraintEqualToAnchor:view.topAnchor];
+            bottom = [label.bottomAnchor constraintEqualToAnchor:view.bottomAnchor];
+            left = [label.leadingAnchor constraintEqualToAnchor:view.leadingAnchor];
+            right = [label.trailingAnchor constraintEqualToAnchor:view.trailingAnchor];
+        } else {
+            top = [NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0];
+            bottom = [NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0];
+            left = [NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0];
+            right = [NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0.0];
+        }
+        [NSLayoutConstraint activateConstraints:@[top, bottom, left, right]];
+    
+    }
+    return _tableFooterView;
 }
 
 @end
