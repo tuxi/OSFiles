@@ -9,13 +9,17 @@
 #import <Foundation/Foundation.h>
 #import "MBProgressHUD.h"
 
+typedef void(^HUDCancelCallBack)(MBProgressHUD *hud);
+
 @interface NSObject (XYHUD)
 
-@property (nonatomic, weak, readonly) MBProgressHUD *hud;
+@property (nonatomic, readonly) MBProgressHUD *hud;
 
 - (void)xy_showMessage:(NSString *)meeeage;
 - (void)xy_showHudToView:(UIView *)view message:(NSString *)message;
 - (void)xy_showHudToView:(UIView *)view message:(NSString *)message offsetY:(CGFloat)offsetY;
+- (void)xy_showHudWithMessage:(NSString *)message cancelCallBack:(HUDCancelCallBack)callBack;
 - (void)hideHud;
 
 @end
+
