@@ -19,6 +19,7 @@ target 'FileDownloader' do
   pod 'OSFileManager', '~> 0.0.4'
   #pod 'SSignalKit', '~> 0.0.2'
   pod 'Ono'
+  pod 'Aspects'
 
 end
 

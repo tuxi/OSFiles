@@ -276,7 +276,8 @@ completionHandler:(void (^)(void))completion {
 
 - (void)cancelFileOperation:(id)sender {
     [_fileManager cancelAllOperation];
-    [self.hud hideAnimated:YES afterDelay:2.0];
+    [self.hud hideAnimated:YES afterDelay:0.5];
     self.hud = nil;
+    [self.extensionContext completeRequestReturningItems:nil completionHandler:nil];
 }
 @end

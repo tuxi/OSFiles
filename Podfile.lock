@@ -14,6 +14,7 @@ PODS:
   - AFNetworking/Serialization (3.1.0)
   - AFNetworking/UIKit (3.1.0):
     - AFNetworking/NSURLSession
+  - Aspects (1.4.1)
   - CocoaLumberjack (3.3.0):
     - CocoaLumberjack/Default (= 3.3.0)
     - CocoaLumberjack/Extensions (= 3.3.0)
@@ -38,6 +39,7 @@ PODS:
 
 DEPENDENCIES:
   - AFNetworking (~> 3.1.0)
+  - Aspects
   - CocoaLumberjack (~> 3.3.0)
   - FMDB (~> 2.7.2)
   - Mantle (~> 2.1.0)
@@ -52,6 +54,7 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
+  Aspects: 7595ba96a6727a58ebcbfc954497fc5d2fdde546
   CocoaLumberjack: 3c8c74683302f9012bb168e1c4b7ae3c0b558431
   FMDB: 6198a90e7b6900cfc046e6bc0ef6ebb7be9236aa
   Mantle: 2fa750afa478cd625a94230fbf1c13462f29395b
@@ -63,6 +66,6 @@ SPEC CHECKSUMS:
   SDWebImage: cb6f9f266a9977741efcbc21e618e8be3734c774
   XYSuspensionMenu: 41656922389e95fadf6fb42ed9f918e9f591a9e1
 
-PODFILE CHECKSUM: 8a38365adeb40bacedac64145dbf72d41e6a3d15
+PODFILE CHECKSUM: 21d408c53bd441e7a3959c8e237fc4dc90a9d5d4
 
 COCOAPODS: 1.2.0
