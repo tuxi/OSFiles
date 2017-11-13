@@ -251,7 +251,7 @@ completionHandler:(void (^)(void))completion {
             
         }
     };
-    [_fileManager setCurrentOperationsFinishedCallBack:^{
+    [_fileManager setCurrentOperationsFinishedBlock:^{
         if (completion) {
             completion();
         }

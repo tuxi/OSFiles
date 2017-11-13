@@ -30,7 +30,7 @@ PODS:
   - MBProgressHUD (1.0.0)
   - NODataPlaceholderView (1.0.2)
   - Ono (1.2.2)
-  - OSFileManager (0.0.3)
+  - OSFileManager (0.0.4)
   - SDWebImage (4.1.2):
     - SDWebImage/Core (= 4.1.2)
   - SDWebImage/Core (4.1.2)
@@ -46,7 +46,7 @@ DEPENDENCIES:
   - NODataPlaceholderView (~> 1.0.2)
   - Ono
   - OSFileManager
-  - OSFileManager (= 0.0.3)
+  - OSFileManager (~> 0.0.4)
   - SDWebImage (~> 4.1.2)
   - XYSuspensionMenu
 
@@ -59,10 +59,10 @@ SPEC CHECKSUMS:
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
   NODataPlaceholderView: 7a019c41d7439e819a45ac272adb17fc7f4e39cc
   Ono: 80b1c686777d3f6d5d5ce6fcac8a74afef4ca197
-  OSFileManager: fe5d7628c0f04db0940ba3eabf7241b57c421495
+  OSFileManager: 0c888473bd0e9ad962b7a91652d4c6e3345fed2f
   SDWebImage: cb6f9f266a9977741efcbc21e618e8be3734c774
   XYSuspensionMenu: 41656922389e95fadf6fb42ed9f918e9f591a9e1
 
-PODFILE CHECKSUM: aa13c69b54e1da087a1ac8402aab804fdbaa9ec9
+PODFILE CHECKSUM: 8a38365adeb40bacedac64145dbf72d41e6a3d15
 
 COCOAPODS: 1.2.0

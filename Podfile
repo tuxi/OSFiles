@@ -16,7 +16,7 @@ target 'FileDownloader' do
   pod 'NODataPlaceholderView', '~> 1.0.2'
   #pod 'OSFileBrowser', '~> 0.1.5'
   pod 'XYSuspensionMenu'
-  pod 'OSFileManager', '~> 0.0.3'
+  pod 'OSFileManager', '~> 0.0.4'
   #pod 'SSignalKit', '~> 0.0.2'
   pod 'Ono'
 
