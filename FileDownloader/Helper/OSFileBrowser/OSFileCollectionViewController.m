@@ -941,12 +941,10 @@ static const CGFloat windowHeight = 49.0;
 /// 将选择的文件拷贝到目标目录中
 - (void)chooseCompletion {
     __weak typeof(self) weakSelf = self;
-    [self copyFiles:self.selectedFiles toRootDirectory:self.rootDirectoryItem.path completionHandler:^(NSError *error) {
-        if (!error) {
-            [weakSelf.selectedFiles removeAllObjects];
-            [[NSNotificationCenter defaultCenter] postNotificationName:OSFileCollectionViewControllerOptionFileCompletionNotification object:nil userInfo:@{@"OSFileCollectionViewControllerMode": @(weakSelf.mode)}];
-            [weakSelf backButtonClick];
-        }
+    [self copyFiles:self.selectedFiles toRootDirectory:self.rootDirectoryItem.path completionHandler:^(void) {
+        [weakSelf.selectedFiles removeAllObjects];
+        [[NSNotificationCenter defaultCenter] postNotificationName:OSFileCollectionViewControllerOptionFileCompletionNotification object:nil userInfo:@{@"OSFileCollectionViewControllerMode": @(weakSelf.mode)}];
+        [weakSelf backButtonClick];
     }];
     
 }
@@ -1028,13 +1026,11 @@ static const CGFloat windowHeight = 49.0;
         if (!moveError) {
             // 将选中的文件移动到创建的目录中
             __weak typeof(&*self) weakSelf = self;
-            [self copyFiles:self.selectedFiles toRootDirectory:newPath completionHandler:^(NSError *error) {
+            [self copyFiles:self.selectedFiles toRootDirectory:newPath completionHandler:^(void) {
                 __strong typeof(&*weakSelf) self = weakSelf;
-                if (!error) {
-                    [self.selectedFiles removeAllObjects];
-                    [[NSNotificationCenter defaultCenter] postNotificationName:OSFileCollectionViewControllerOptionFileCompletionNotification object:nil userInfo:@{@"OSFileCollectionViewControllerMode": @(weakSelf.mode)}];
-                }
-               [self reloadFiles];
+                [self.selectedFiles removeAllObjects];
+                [[NSNotificationCenter defaultCenter] postNotificationName:OSFileCollectionViewControllerOptionFileCompletionNotification object:nil userInfo:@{@"OSFileCollectionViewControllerMode": @(weakSelf.mode)}];
+                [self reloadFiles];
             }];
         } else {
             NSLog(@"%@", moveError.localizedDescription);
@@ -1185,7 +1181,7 @@ static const CGFloat windowHeight = 49.0;
 /// copy 文件
 - (void)copyFiles:(NSArray<OSFileAttributeItem *> *)fileItems
   toRootDirectory:(NSString *)rootPath
-completionHandler:(void (^)(NSError *error))completion {
+completionHandler:(void (^)(void))completion {
     if (!fileItems.count) {
         return;
     }
@@ -1197,7 +1193,7 @@ completionHandler:(void (^)(NSError *error))completion {
             dispatch_main_safe_async(^{
                 self.hud.label.text = @"路径相同";
                 if (completion) {
-                    completion([NSError errorWithDomain:NSURLErrorDomain code:10000 userInfo:@{@"error": @"不能拷贝到自己的目录"}]);
+                    completion();
                 }
             });
         }
@@ -1241,11 +1237,7 @@ completionHandler:(void (^)(NSError *error))completion {
         
         void (^ completionHandler)(id<OSFileOperation> fileOperation, NSError *error) = ^(id<OSFileOperation> fileOperation, NSError *error) {
             completionCopyNum--;
-            dispatch_main_safe_async(^{
-                if (completionCopyNum == 0 && completion) {
-                    completion(error);
-                }
-            });
+            NSLog(@"剩余文件个数%ld", completionCopyNum);
         };
         NSURL *orgURL = [NSURL fileURLWithPath:obj.path];
         if (self.mode == OSFileCollectionViewControllerModeCopy) {
@@ -1274,16 +1266,21 @@ completionHandler:(void (^)(NSError *error))completion {
         @synchronized (hudDetailTextArray) {
             NSString *detailStr = [hudDetailTextArray componentsJoinedByString:@",\n"];
             strongSelf.hud.detailsLabel.text = detailStr;
-            
-        }
-        if (progress.fractionCompleted >= 1.0 || progress.completedUnitCount >= progress.totalUnitCount) {
-            strongSelf.hud.label.text = @"完成";
-            [strongSelf.hud hideAnimated:YES afterDelay:2.0];
-            strongSelf.hud = nil;
         }
     };
     
+    [_fileManager setCurrentOperationsFinishedCallBack:^{
+        if (completion) {
+            completion();
+        }
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        strongSelf.hud.label.text = @"完成";
+        [strongSelf.hud hideAnimated:YES afterDelay:2.0];
+        strongSelf.hud = nil;
+    }];
+    
 }
+
 
 
 - (void)cancelFileOperation:(id)sender {

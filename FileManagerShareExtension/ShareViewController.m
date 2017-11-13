@@ -115,10 +115,10 @@ dispatch_async(dispatch_get_main_queue(), block);\
             }
             if ([item.scheme isEqualToString:@"file"]) {
                     NSLog(@"%@ %@",self.contentText,item.absoluteString);
-                [self copyFiles:@[item.path] toRootDirectory:[AppGroupManager getAPPGroupSharePath] completionHandler:^(NSError *error, NSString *newPath) {
+                [self copyFiles:@[item.path] toRootDirectory:[AppGroupManager getAPPGroupSharePath] completionHandler:^(void) {
                     if (!error) {
                         self.resultHandler();
-                        [[AppGroupManager defaultManager] openAPP:APP_URL_SCHEMES info:@{AppGroupFuncNameKey: @"share", AppGroupFilePathKey: newPath}];
+                        [[AppGroupManager defaultManager] openAPP:APP_URL_SCHEMES info:@{AppGroupFuncNameKey: @"share", AppGroupFolderPathKey: [AppGroupManager getAPPGroupSharePath]}];
                     }
                     else {
                         NSLog(@"%@", error);
@@ -171,7 +171,7 @@ dispatch_async(dispatch_get_main_queue(), block);\
 /// copy 文件
 - (void)copyFiles:(NSArray<NSString *> *)fileItems
   toRootDirectory:(NSString *)rootPath
-completionHandler:(void (^)(NSError *error, NSString *newPath))completion {
+completionHandler:(void (^)(void))completion {
     if (!fileItems.count) {
         return;
     }
@@ -183,7 +183,7 @@ completionHandler:(void (^)(NSError *error, NSString *newPath))completion {
             dispatch_main_safe_async(^{
                 self.hud.label.text = @"路径相同";
                 if (completion) {
-                    completion([NSError errorWithDomain:NSURLErrorDomain code:10000 userInfo:@{@"error": @"不能拷贝到自己的目录"}], nil);
+                    completion();
                 }
             });
         }
@@ -229,11 +229,6 @@ completionHandler:(void (^)(NSError *error, NSString *newPath))completion {
         
         void (^ completionHandler)(id<OSFileOperation> fileOperation, NSError *error) = ^(id<OSFileOperation> fileOperation, NSError *error) {
             completionCopyNum--;
-            dispatch_main_safe_async(^{
-                if (completionCopyNum == 0 && completion) {
-                    completion(error, fileOperation.dstURL.path);
-                }
-            });
         };
         NSURL *orgURL = [NSURL fileURLWithPath:path];
         [_fileManager copyItemAtURL:orgURL
@@ -255,13 +250,16 @@ completionHandler:(void (^)(NSError *error, NSString *newPath))completion {
             strongSelf.hud.detailsLabel.text = detailStr;
             
         }
-        if (progress.fractionCompleted >= 1.0 || progress.completedUnitCount >= progress.totalUnitCount) {
-            strongSelf.hud.label.text = @"分享完成";
-            [strongSelf.hud hideAnimated:YES afterDelay:2.0];
-            strongSelf.hud = nil;
-        }
     };
-    
+    [_fileManager setCurrentOperationsFinishedCallBack:^{
+        if (completion) {
+            completion();
+        }
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        strongSelf.hud.label.text = @"分享完成";
+        [strongSelf.hud hideAnimated:YES afterDelay:2.0];
+        strongSelf.hud = nil;
+    }];
 }
 
 

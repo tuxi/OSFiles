@@ -13,7 +13,7 @@
 NSString * const APP_URL_SCHEMES = @"OSFiledownloader://";
 NSString * const APP_GROUP_IDENTIFIER = @"group.com.ossey.Lister.Documents";
 NSString * const AppGroupFuncNameKey = @"funcName";
-NSString * const AppGroupFilePathKey = @"filePath";
+NSString * const AppGroupFolderPathKey = @"filePath";
 
 @interface AppGroupManager ()
 
@@ -180,8 +180,8 @@ NSString * const AppGroupFilePathKey = @"filePath";
 - (void)openUrlCallBack {
     NSDictionary *info = [self readInfoFromDocument];
     NSString *funcName = info[AppGroupFuncNameKey];
-    NSString *filePath = info[AppGroupFilePathKey];
-    if (!filePath.length || !funcName.length) {
+    NSString *folderPath = info[AppGroupFolderPathKey];
+    if (!folderPath.length || !funcName.length) {
         return;
     }
     if ([funcName isEqualToString:@"share"]) {

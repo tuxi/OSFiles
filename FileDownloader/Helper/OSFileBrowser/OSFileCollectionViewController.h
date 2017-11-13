@@ -61,7 +61,7 @@ typedef NS_ENUM(NSInteger, OSFileCollectionViewControllerMode) {
 /// 拷贝文件到指定目录
 - (void)copyFiles:(NSArray<OSFileAttributeItem *> *)fileItems
   toRootDirectory:(NSString *)rootPath
-completionHandler:(void (^)(NSError *error))completion;
+completionHandler:(void (^)(void))completion;
 
 /// 重新加载本地文件，并刷新
 - (void)reloadFilesWithCallBack:(void (^)(void))callBack;
