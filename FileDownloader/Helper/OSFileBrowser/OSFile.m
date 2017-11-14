@@ -9,6 +9,7 @@
 #import "OSFile.h"
 #import "NSString+OSFile.h"
 #include <sys/stat.h>
+#import "NSDate+ESUtilities.h"
 
 @implementation OSFile
 @synthesize isDirectory                 = _isDirectory;
@@ -209,12 +210,6 @@
 
 - (NSUInteger)numberOfSubFiles {
     return _subFiles.count;
-}
-
-
-- (NSString *)description
-{
-    return [NSString stringWithFormat: @"%@ - %@", [super description], self.path];
 }
 
 #pragma mark *** Private methods ***
@@ -818,5 +813,31 @@
 //    
 //    _icon = [self iconByAddingEmblemsToImage: baseIcon];
 //}
+
+
+- (NSString *)description {
+    NSMutableString *attstring = @"".mutableCopy;
+    if (self.filename) {
+        [attstring appendString:[NSString stringWithFormat:@"%@: %@\n", NSStringFromSelector(@selector(filename)), self.filename]];
+    }
+    if (self.type) {
+        [attstring appendString:[NSString stringWithFormat:@"%@: %@\n",  NSStringFromSelector(@selector(type)), self.type]];
+    }
+    [attstring appendString:[NSString stringWithFormat:@"%@: %@\n",  NSStringFromSelector(@selector(size)), [NSString transformedFileSizeValue:@(self.size)]]];
+    if (self.isDirectory) {
+        [attstring appendString:[NSString stringWithFormat:@"%@: %@\n",  NSStringFromSelector(@selector(numberOfSubFiles)), @(self.numberOfSubFiles)]];
+    }
+    if (self.creationDate) {
+        [attstring appendString:[NSString stringWithFormat:@"%@: %@\n",  NSStringFromSelector(@selector(creationDate)), self.creationDate.mediumString]];
+    }
+    if (self.modificationDate) {
+        [attstring appendString:[NSString stringWithFormat:@"%@: %@\n",  NSStringFromSelector(@selector(modificationDate)), self.modificationDate.mediumString]];
+    }
+    if (self.path) {
+        [attstring appendString:[NSString stringWithFormat:@"\n\n%@: %@\n", NSStringFromSelector(@selector(path)), self.path]];
+    }
+    return attstring;
+}
+
 @end
 

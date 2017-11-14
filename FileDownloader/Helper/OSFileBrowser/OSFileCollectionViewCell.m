@@ -111,13 +111,13 @@
     
     if (fileModel.path) {
         if ([fileModel.path isEqualToString:[NSString getDocumentPath]]) {
-//            self.titleLabel.text  = @"iTunes文件";
+            //            self.titleLabel.text  = @"iTunes文件";
             self.iconView.image = [UIImage OSFileBrowserImageNamed:@"table-folder-itunes-files-sharing"];
-//            self.optionBtn.hidden = YES;
+            //            self.optionBtn.hidden = YES;
         }
         else if ([fileModel.path isEqualToString:[NSString getRootPath]]) {
-//            self.titleLabel.text  = @"下载";
-//            self.optionBtn.hidden = YES;
+            //            self.titleLabel.text  = @"下载";
+            //            self.optionBtn.hidden = YES;
         }
         if ([self.fileModel isRootDirectory]) {
             self.optionBtn.hidden = YES;
@@ -144,16 +144,22 @@
     UIAlertAction *copyAction = [UIAlertAction actionWithTitle:@"复制" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         [self copyFile];
     }];
-    
+    UIAlertAction *infoAction = [UIAlertAction actionWithTitle:@"详情" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        [self infoAction];
+    }];
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:NULL];
     [alVc addAction:renameAction];
     [alVc addAction:deleteAction];
     [alVc addAction:shareAction];
     [alVc addAction:copyAction];
+    [alVc addAction:infoAction];
     [alVc addAction:cancelAction];
     [[UIViewController xy_topViewController] presentViewController:alVc animated:YES completion:nil];
 }
-
+- (void)infoAction {
+    
+    [[[UIAlertView alloc] initWithTitle:@"文件详情" message:[self.fileModel description] delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil, nil] show];
+}
 - (void)renameFile {
     
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"rename" message:nil preferredStyle:UIAlertControllerStyleAlert];
