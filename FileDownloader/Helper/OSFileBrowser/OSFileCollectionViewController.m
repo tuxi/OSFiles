@@ -1177,7 +1177,7 @@ completionHandler:(void (^)(void))completion {
     
     UIView *view = (UIView *)[UIApplication sharedApplication].delegate.window;
     __weak typeof(&*self) weakSelf = self;
-    [view bb_showActivityHudWithActionCallBack:^(MBProgressHUD *hud) {
+    [view bb_showProgressHudWithActionCallBack:^(MBProgressHUD *hud) {
          __strong typeof(&*weakSelf) self = weakSelf;
         [self.fileManager cancelAllOperation];
          hud.label.text = @"已取消";

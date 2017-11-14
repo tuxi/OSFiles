@@ -43,6 +43,9 @@ typedef void(^BBHUDActionCallBack)(MBProgressHUD *hud);
 /// @param callBack 触发取消按钮的回调
 - (void)bb_showActivityHudWithMessage:(NSString *)message
                        actionCallBack:(BBHUDActionCallBack)callBack;
+- (void)bb_showProgressHudWithActionCallBack:(BBHUDActionCallBack)callBack;
+- (void)bb_showProgressHudWithMessage:(NSString *)message
+                       actionCallBack:(BBHUDActionCallBack)callBack;
 
 #pragma mark *** Custom hud ***
 
@@ -104,6 +107,8 @@ typedef void(^BBHUDActionCallBack)(MBProgressHUD *hud);
 /// @param message 菊花下面显示的文本
 /// @param callBack 触发取消按钮的回调
 + (void)bb_showActivityHudWithMessage:(NSString *)message
+                       actionCallBack:(BBHUDActionCallBack)callBack;
++ (void)bb_showProgressHudWithMessage:(NSString *)message
                        actionCallBack:(BBHUDActionCallBack)callBack;
 
 #pragma mark *** Custom hud ***
