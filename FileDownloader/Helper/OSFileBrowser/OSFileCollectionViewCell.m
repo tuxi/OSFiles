@@ -13,7 +13,7 @@
 #import "OSFileManager.h"
 #import "NSDate+ESUtilities.h"
 #import "UIViewController+XYExtensions.h"
-#import "NSObject+XYHUD.h"
+#import "MBProgressHUD+BBHUD.h"
 #import "UIImage+XYImage.h"
 
 @interface OSFileCollectionViewCell ()
@@ -176,8 +176,7 @@
     [alert addAction:[UIAlertAction actionWithTitle:@"好的" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         
         if ([self.renameNewName containsString:@"/"]) {
-            [self xy_showMessage:@"名称中不符合的字符"];
-            
+            [MBProgressHUD bb_showMessage:@"名称中不符合的字符" delayTime:2.0];
             return;
         }
         
@@ -186,7 +185,7 @@
         NSString *newPath = [currentDirectory stringByAppendingPathComponent:self.renameNewName];
         BOOL res = [[NSFileManager defaultManager] fileExistsAtPath:newPath];
         if (res) {
-            [self xy_showMessage:@"存在同名的文件"];
+            [MBProgressHUD bb_showMessage:@"存在同名的文件" delayTime:2.0];
             return;
         }
         NSError *moveError = nil;

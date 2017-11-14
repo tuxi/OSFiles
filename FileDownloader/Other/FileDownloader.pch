@@ -29,7 +29,6 @@
 #import "ZWFastEnumeration.h"
 #import "NetworkTypeUtils.h"
 #import "NSString+MD5.h"
-#import "NSObject+XYHUD.h"
 #import "UIViewController+XYHUD.h"
 #import "OSFileDownloaderConfiguration.h"
 #import "NSDate+ESUtilities.h"
@@ -38,6 +37,7 @@
 #import "NSString+OSDrawingAdditions.h"
 #import "NSString+OSFile.h"
 #import "ApplicationHelper.h"
+#import "MBProgressHUD+BBHUD.h"
 
 
 static NSString * const OSFileDownloaderResetDownloadsNotification = @"OSFileDownloaderResetDownloadsNotification";

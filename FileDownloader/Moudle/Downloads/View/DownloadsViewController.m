@@ -8,7 +8,6 @@
 
 #import "DownloadsViewController.h"
 #import "NetworkTypeUtils.h"
-#import "NSObject+XYHUD.h"
 #import "DownloadsTableViewModel.h"
 #import "OSFileDownloaderManager.h"
 #import "OSFileDownloaderManager.h"

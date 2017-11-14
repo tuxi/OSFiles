@@ -16,16 +16,16 @@
 #import "UIScrollView+NoDataExtend.h"
 #import "OSFileBottomHUD.h"
 #import "NSString+OSFile.h"
-#import "NSObject+XYHUD.h"
 #import "UIViewController+XYExtensions.h"
 #import "UIImage+XYImage.h"
+#import "MBProgressHUD+BBHUD.h"
 
 #define dispatch_main_safe_async(block)\
-    if ([NSThread isMainThread]) {\
-        block();\
-    } else {\
-        dispatch_async(dispatch_get_main_queue(), block);\
-    }
+if ([NSThread isMainThread]) {\
+block();\
+} else {\
+dispatch_async(dispatch_get_main_queue(), block);\
+}
 
 NSNotificationName const OSFileCollectionViewControllerOptionFileCompletionNotification = @"OptionFileCompletionNotification";
 NSNotificationName const OSFileCollectionViewControllerOptionSelectedFileForCopyNotification = @"OptionSelectedFileForCopyNotification";
@@ -56,7 +56,6 @@ static const CGFloat windowHeight = 49.0;
 @property (nonatomic, strong) NSIndexPath *indexPath;
 @property (nonatomic, strong) NSOperationQueue *loadFileQueue;
 @property (nonatomic, strong) OSFileManager *fileManager;
-@property (nonatomic, strong) MBProgressHUD *hud;
 @property (nonatomic, strong) NSArray<NSString *> *directoryArray;
 @property (nonatomic, assign) OSFileLoadType fileLoadType;
 @property (nonatomic, strong) NSMutableArray<OSFileAttributeItem *> *selectedFiles;
@@ -849,16 +848,6 @@ static const CGFloat windowHeight = 49.0;
     return _collectionView;
 }
 
-- (MBProgressHUD *)hud {
-    if (!_hud) {
-        _hud = [MBProgressHUD showHUDAddedTo:[UIApplication sharedApplication].delegate.window animated:YES];
-        [_hud.button setTitle:NSLocalizedString(@"Cancel", @"HUD cancel button title") forState:UIControlStateNormal];
-        _hud.mode = MBProgressHUDModeDeterminate;
-        [_hud.button addTarget:self action:@selector(cancelFileOperation:) forControlEvents:UIControlEventTouchUpInside];
-    }
-    
-    return _hud;
-}
 
 - (UIButton *)bottomTipButton {
     if (!_bottomTipButton) {
@@ -959,7 +948,7 @@ static const CGFloat windowHeight = 49.0;
         }
         case 1: { // 复制
             if (!self.selectedFiles.count) {
-                [self xy_showMessage:@"请选择需要复制的文件"];
+                [self.view bb_showMessage:@"请选择需要复制的文件"];
             }
             else {
                 [self chooseDesDirectoryToCopy];
@@ -969,7 +958,7 @@ static const CGFloat windowHeight = 49.0;
         }
         case 2: { // 移动
             if (!self.selectedFiles.count) {
-                [self xy_showMessage:@"请选择需要移动的文件"];
+                [self.view bb_showMessage:@"请选择需要移动的文件"];
             }
             else {
                 [self chooseDesDirectoryToMove];
@@ -978,7 +967,7 @@ static const CGFloat windowHeight = 49.0;
         }
         case 3: { // 删除
             if (!self.selectedFiles.count) {
-                [self xy_showMessage:@"请选择需要删除的文件"];
+                [self.view bb_showMessage:@"请选择需要删除的文件"];
             }
             else {
                 [self deleteSelectFiles];
@@ -1010,8 +999,7 @@ static const CGFloat windowHeight = 49.0;
     [alert addAction:[UIAlertAction actionWithTitle:@"好的" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         
         if ([_newFolderName containsString:@"/"]) {
-            [self xy_showMessage:@"名称中包含不符合的字符"];
-            
+            [self.view bb_showMessage:@"名称中包含不符合的字符"];
             return;
         }
         
@@ -1019,7 +1007,7 @@ static const CGFloat windowHeight = 49.0;
         NSString *newPath = [currentDirectory stringByAppendingPathComponent:_newFolderName];
         BOOL res = [[NSFileManager defaultManager] fileExistsAtPath:newPath];
         if (res) {
-            [self xy_showMessage:@"存在同名的文件"];
+            [self.view bb_showMessage:@"存在同名的文件"];
             return;
         }
         NSError *moveError = nil;
@@ -1164,7 +1152,7 @@ static const CGFloat windowHeight = 49.0;
     NSError *error = nil;
     BOOL res = [[NSFileManager defaultManager] removeItemAtPath:fileModel.path error:&error];
     if (!res || error) {
-        [self xy_showMessage:[NSString stringWithFormat:@"删除出错%@", error.localizedDescription]];
+        [self.view bb_showMessage:[NSString stringWithFormat:@"删除出错%@", error.localizedDescription]];
     }
     [self reloadCollectionData];
 }
@@ -1186,13 +1174,25 @@ completionHandler:(void (^)(void))completion {
     if (!fileItems.count) {
         return;
     }
+    
+    UIView *view = (UIView *)[UIApplication sharedApplication].delegate.window;
+    __weak typeof(&*self) weakSelf = self;
+    [view bb_showActivityHudWithActionCallBack:^(MBProgressHUD *hud) {
+         __strong typeof(&*weakSelf) self = weakSelf;
+        [self.fileManager cancelAllOperation];
+         hud.label.text = @"已取消";
+        if (completion) {
+            completion();
+        }
+    }];
+    
     [fileItems enumerateObjectsUsingBlock:^(OSFileAttributeItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         
         NSString *desPath = [rootPath stringByAppendingPathComponent:[obj.path lastPathComponent]];
         if ([desPath isEqualToString:obj.path]) {
             NSLog(@"路径相同");
             dispatch_main_safe_async(^{
-                self.hud.label.text = @"路径相同";
+                view.bb_hud.label.text = @"路径相同";
                 if (completion) {
                     completion();
                 }
@@ -1200,7 +1200,7 @@ completionHandler:(void (^)(void))completion {
         }
         else if ([[NSFileManager defaultManager] fileExistsAtPath:desPath]) {
             dispatch_main_safe_async(^{
-                self.hud.label.text = @"存在相同文件，正在移除原文件";
+                view.bb_hud.label.text = @"存在相同文件，正在移除原文件";
             });
             NSError *removeError = nil;
             [[NSFileManager defaultManager] removeItemAtPath:desPath error:&removeError];
@@ -1257,16 +1257,12 @@ completionHandler:(void (^)(void))completion {
     }];
     
     
-    
-    __weak typeof(self) weakSelf = self;
-    
     _fileManager.totalProgressBlock = ^(NSProgress *progress) {
-        __strong typeof(weakSelf) strongSelf = weakSelf;
-        strongSelf.hud.label.text = [NSString stringWithFormat:@"total:%@  %lld/%lld", [NSString percentageString:progress.fractionCompleted], progress.completedUnitCount, progress.totalUnitCount];
-        strongSelf.hud.progress = progress.fractionCompleted;
+        view.bb_hud.label.text = [NSString stringWithFormat:@"total:%@  %lld/%lld", [NSString percentageString:progress.fractionCompleted], progress.completedUnitCount, progress.totalUnitCount];
+        view.bb_hud.progress = progress.fractionCompleted;
         @synchronized (hudDetailTextArray) {
             NSString *detailStr = [hudDetailTextArray componentsJoinedByString:@",\n"];
-            strongSelf.hud.detailsLabel.text = detailStr;
+            view.bb_hud.detailsLabel.text = detailStr;
         }
     };
     
@@ -1274,20 +1270,10 @@ completionHandler:(void (^)(void))completion {
         if (completion) {
             completion();
         }
-        __strong typeof(weakSelf) strongSelf = weakSelf;
-        strongSelf.hud.label.text = @"完成";
-        [strongSelf.hud hideAnimated:YES afterDelay:2.0];
-        strongSelf.hud = nil;
+        view.bb_hud.label.text = @"完成";
+        [view.bb_hud hideAnimated:YES afterDelay:2.0];
     }];
     
-}
-
-
-
-- (void)cancelFileOperation:(id)sender {
-    [_fileManager cancelAllOperation];
-    [self.hud hideAnimated:YES afterDelay:2.0];
-    self.hud = nil;
 }
 
 #pragma mark *** _fileOperationDelegate ***

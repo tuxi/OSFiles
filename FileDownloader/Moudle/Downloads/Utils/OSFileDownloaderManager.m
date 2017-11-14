@@ -158,10 +158,10 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
     switch ([NetworkTypeUtils networkType]) {
         case NetworkTypeWWAN: {
             if (!shouldAllowDownloadOnCellularNetwork || ![shouldAllowDownloadOnCellularNetwork integerValue]) {
-                [self xy_showMessage:@"蜂窝网络下载处于关闭状态，您的任务已在下载队列中，切换到WIFI下即可下载"];
+                [MBProgressHUD bb_showMessage:@"蜂窝网络下载处于关闭状态，您的任务已在下载队列中，切换到WIFI下即可下载"];
             }
             else {
-                [self xy_showMessage:@"您已开启蜂窝网络下载，此时使用的是您的流量"];
+                [MBProgressHUD bb_showMessage:@"您已开启蜂窝网络下载，此时使用的是您的流量"];
                 block();
             }
             break;
