@@ -10,6 +10,8 @@
 		1801ED881FB6B162005DBDE2 /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1801ED871FB6B162005DBDE2 /* ShareViewController.m */; };
 		1801ED8B1FB6B162005DBDE2 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1801ED891FB6B162005DBDE2 /* MainInterface.storyboard */; };
 		1801ED8F1FB6B162005DBDE2 /* FileManagerShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1801ED841FB6B162005DBDE2 /* FileManagerShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		18183FA11FBCA07A007DE8BB /* OSDrawerAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 18183F9E1FBCA07A007DE8BB /* OSDrawerAnimation.m */; };
+		18183FA21FBCA07A007DE8BB /* OSDrawerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18183FA01FBCA07A007DE8BB /* OSDrawerController.m */; };
 		1845A63A1FB6F3750000E39A /* OSItemProviderHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A6391FB6F3750000E39A /* OSItemProviderHelper.m */; };
 		1845A63D1FB6F4A40000E39A /* OSPhoneNumberModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A63C1FB6F4A40000E39A /* OSPhoneNumberModel.m */; };
 		1845A63E1FB6F4A80000E39A /* OSPhoneNumberModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A63C1FB6F4A40000E39A /* OSPhoneNumberModel.m */; };
@@ -469,6 +471,10 @@
 		1813E8D91F9C3CE5002C661E /* OSUnlockBackgroundView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSUnlockBackgroundView.m; sourceTree = "<group>"; };
 		1813E8F21F9CE49F002C661E /* OSUnlockViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSUnlockViewController.h; sourceTree = "<group>"; };
 		1813E8F31F9CE49F002C661E /* OSUnlockViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSUnlockViewController.m; sourceTree = "<group>"; };
+		18183F9D1FBCA07A007DE8BB /* OSDrawerAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSDrawerAnimation.h; sourceTree = "<group>"; };
+		18183F9E1FBCA07A007DE8BB /* OSDrawerAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSDrawerAnimation.m; sourceTree = "<group>"; };
+		18183F9F1FBCA07A007DE8BB /* OSDrawerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSDrawerController.h; sourceTree = "<group>"; };
+		18183FA01FBCA07A007DE8BB /* OSDrawerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSDrawerController.m; sourceTree = "<group>"; };
 		1819EFB31EF2E3FE00208A20 /* UITextField+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITextField+Blocks.h"; sourceTree = "<group>"; };
 		1819EFB41EF2E3FE00208A20 /* UITextField+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextField+Blocks.m"; sourceTree = "<group>"; };
 		18300F761EEC57280035D6EE /* UIViewController+XYHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+XYHUD.h"; sourceTree = "<group>"; };
@@ -1096,6 +1102,17 @@
 			path = Classes;
 			sourceTree = "<group>";
 		};
+		18183F9C1FBCA07A007DE8BB /* OSDrawerController */ = {
+			isa = PBXGroup;
+			children = (
+				18183F9D1FBCA07A007DE8BB /* OSDrawerAnimation.h */,
+				18183F9E1FBCA07A007DE8BB /* OSDrawerAnimation.m */,
+				18183F9F1FBCA07A007DE8BB /* OSDrawerController.h */,
+				18183FA01FBCA07A007DE8BB /* OSDrawerController.m */,
+			);
+			path = OSDrawerController;
+			sourceTree = "<group>";
+		};
 		18300F711EEC57280035D6EE /* HUD */ = {
 			isa = PBXGroup;
 			children = (
@@ -1661,6 +1678,7 @@
 		18ADED551F9E3CBA0024BA40 /* Vendors */ = {
 			isa = PBXGroup;
 			children = (
+				18183F9C1FBCA07A007DE8BB /* OSDrawerController */,
 				18ADEE6F1F9E40FC0024BA40 /* Netwrok */,
 				18ADED561F9E3CBA0024BA40 /* NJKWebViewProgress */,
 			);
@@ -2774,6 +2792,7 @@
 				18ADEF531F9E4A860024BA40 /* UIView+XYConfigure.m in Sources */,
 				18ADEECA1F9E49FB0024BA40 /* WebServer.m in Sources */,
 				18ADEEE01F9E4A150024BA40 /* HistoryTableViewController.m in Sources */,
+				18183FA21FBCA07A007DE8BB /* OSDrawerController.m in Sources */,
 				18ADEF581F9E4A970024BA40 /* main.m in Sources */,
 				18ADEF2E1F9E4A860024BA40 /* OSBaseViewController.m in Sources */,
 				18ADEEDF1F9E4A130024BA40 /* TopToolBarShapeView.m in Sources */,
@@ -2810,6 +2829,7 @@
 				18ADEEE61F9E4A1F0024BA40 /* CardCollectionViewCell.m in Sources */,
 				18ADEEEB1F9E4A2E0024BA40 /* SearchInputView.m in Sources */,
 				18ADEEDE1F9E4A130024BA40 /* FindInPageBar.m in Sources */,
+				18183FA11FBCA07A007DE8BB /* OSDrawerAnimation.m in Sources */,
 				D017FF121FA89B16004B65CF /* UITextField+OSRangeExtension.m in Sources */,
 				18ADEF191F9E4A530024BA40 /* XYMenuView.m in Sources */,
 				18ADEF371F9E4A860024BA40 /* OSUnlockBackgroundView.m in Sources */,
