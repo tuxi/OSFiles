@@ -7,12 +7,10 @@
 //
 
 #import <StoreKit/StoreKit.h>
-
 #import "BrowserViewController.h"
 #import "BrowserContainerView.h"
 #import "BrowserTopToolBar.h"
 #import "BrowserHeader.h"
-#import "BrowserBottomToolBar.h"
 #import "CardMainView.h"
 #import "SettingsViewController.h"
 #import "SettingsTableViewController.h"
@@ -28,14 +26,18 @@
 #import "YCXMenu.h"
 #import "NSObject+InterfaceOrientationExtensions.h"
 #import "OSXMLDocumentItem.h"
+#import "OSDrawerController.h"
 
 static NSString *const kBrowserViewControllerAddBookmarkSuccess = @"添加书签成功";
 static NSString *const kBrowserViewControllerAddBookmarkFailure = @"添加书签失败";
 
+@interface BrowserViewControllerView : UIView
+
+@end
+
 @interface BrowserViewController () <BrowserBottomToolBarButtonClickedDelegate,  UIViewControllerRestoration, KeyboardHelperDelegate>
 
 @property (nonatomic, strong) BrowserContainerView *browserContainerView;
-@property (nonatomic, strong) BrowserBottomToolBar *bottomToolBar;
 @property (nonatomic, strong) BrowserTopToolBar *browserTopToolBar;
 @property (nonatomic, assign) CGFloat lastContentOffset;
 @property (nonatomic, assign) BOOL isWebViewDecelerate;
@@ -80,6 +82,7 @@ static NSString *const kBrowserViewControllerAddBookmarkFailure = @"添加书签
     self.restorationIdentifier = NSStringFromClass([self class]);
     self.restorationClass = [self class];
 //    [self recoverToolBar];
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -97,7 +100,7 @@ static NSString *const kBrowserViewControllerAddBookmarkFailure = @"添加书签
 
 - (void)initializeView{
     self.view.backgroundColor = UIColorFromRGB(0xF8F8F8);
-    
+    [self.view setClipsToBounds:NO];
     UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
     [self.navigationItem setBackBarButtonItem:backItem];
     
@@ -166,7 +169,11 @@ static NSString *const kBrowserViewControllerAddBookmarkFailure = @"添加书签
     self.bottomToolBar = ({
         BrowserBottomToolBar *toolBar = [[BrowserBottomToolBar alloc] initWithFrame:CGRectMake(0, self.view.height - BOTTOM_TOOL_BAR_HEIGHT, self.view.width, BOTTOM_TOOL_BAR_HEIGHT)];
         [self.view addSubview:toolBar];
-        
+        toolBar.switchPageButtonActionBlock = ^(UIButton *btn) {
+            [[ApplicationHelper helper].drawerViewController toggleWithSide:OSDrawerSideLeft animated:YES completion:^(BOOL isFinished) {
+                
+            }];
+        };
         toolBar.translatesAutoresizingMaskIntoConstraints = NO;
         
         if (@available(iOS 11.0, *)) {
@@ -189,6 +196,7 @@ static NSString *const kBrowserViewControllerAddBookmarkFailure = @"添加书签
     
         toolBar;
     });
+    
 }
 
 #pragma mark - Notification
@@ -645,4 +653,6 @@ static NSString *const kBrowserViewControllerAddBookmarkFailure = @"添加书签
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations {
     return UIInterfaceOrientationMaskPortrait;
 }
+
+
 @end

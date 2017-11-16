@@ -103,7 +103,8 @@ static NSString * const UserAgent = @"Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 li
     
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    self.window.rootViewController = [MainTabBarController new];
+    [[ApplicationHelper helper] configureDrawerViewController];
+    self.window.rootViewController = [ApplicationHelper helper].drawerViewController;
     [self.window makeKeyAndVisible];
     [ExceptionUtils configExceptionHandler];
     

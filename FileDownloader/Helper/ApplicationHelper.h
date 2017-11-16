@@ -7,10 +7,15 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "OSDrawerController.h"
 
 @interface ApplicationHelper : NSObject
 
 @property (nonatomic, strong, class) ApplicationHelper *helper;
 @property (nonatomic, strong, readonly) UIPasteboard *pasteboard;
+
+@property (nonatomic, strong) OSDrawerController *drawerViewController;
+
+- (void)configureDrawerViewController;
 
 @end

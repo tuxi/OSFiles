@@ -18,17 +18,21 @@
 #import "OSFileDownloaderConfiguration.h"
 #import "AppGroupManager.h"
 
+@interface MainTabBarControllerView : UIView
+
+@end
+
 @interface MainTabBarController () <SmileAuthenticatorDelegate>
 
 @end
 
-@implementation MainTabBarController
 
+@implementation MainTabBarController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self addChildVC:[BrowserViewController sharedInstance] imageNamed:@"TabBrowser" title:@"浏览器" navClass:[BaseNavigationViewController class]];
+//    [self addChildVC:[BrowserViewController sharedInstance] imageNamed:@"TabBrowser" title:@"浏览器" navClass:[BaseNavigationViewController class]];
     [self addChildVC:[DownloadsViewController new] imageNamed:@"TabDownloads" title:@"缓存"];
     
     [self addChildVC:[[OSFileCollectionViewController alloc] initWithDirectoryArray:@[

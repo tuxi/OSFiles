@@ -8,8 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "BaseViewController.h"
+#import "BrowserBottomToolBar.h"
 
 @interface BrowserViewController : BaseViewController<UIScrollViewDelegate>
+
+@property (nonatomic, strong) BrowserBottomToolBar *bottomToolBar;
 
 + (instancetype)sharedInstance;
 

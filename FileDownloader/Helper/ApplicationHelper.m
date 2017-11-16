@@ -11,6 +11,34 @@
 #import "NetworkTypeUtils.h"
 #import "OSFileDownloaderManager.h"
 #import "AppGroupManager.h"
+#import "MainTabBarController.h"
+#import "BrowserViewController.h"
+#import "ZWUtility.h"
+
+@implementation UIView (ApplicationHelperExtension)
+
++ (void)load {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+         MethodSwizzle([UIView class], @selector(hitTest:withEvent:), @selector(xy_hitTest:withEvent:));
+    });
+}
+
+/// 解决在leftViewController时BrowserViewController的switchPageButton超出父控件不响应事件的问题
+- (UIView *)xy_hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    UIView *touchView = [self xy_hitTest:point withEvent:event];
+    MainTabBarController *tabBarVc = (MainTabBarController *)[ApplicationHelper helper].drawerViewController.leftViewController;
+    if (!tabBarVc) {
+        return touchView;
+    }
+    CGRect rect =[[BrowserViewController sharedInstance].bottomToolBar convertRect:[BrowserViewController sharedInstance].bottomToolBar.switchPageButton.frame toView:tabBarVc.view];
+    if (CGRectContainsPoint(rect, point)) {
+        return [BrowserViewController sharedInstance].bottomToolBar.switchPageButton;
+    }
+    return touchView;
+}
+
+@end
 
 @implementation ApplicationHelper
 
@@ -61,6 +89,28 @@
             break;
     }
 }
+
+////////////////////////////////////////////////////////////////////////
+#pragma mark - drawerViewController
+////////////////////////////////////////////////////////////////////////
+
+- (OSDrawerController *)drawerViewController {
+    if (!_drawerViewController) {
+        _drawerViewController = [[OSDrawerController alloc] init];
+    }
+    return _drawerViewController;
+}
+
+- (void)configureDrawerViewController {
+    
+    self.drawerViewController.leftViewController = [MainTabBarController new];
+    //    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:[BrowserViewController sharedInstance]];
+    self.drawerViewController.centerViewController = [BrowserViewController sharedInstance];
+    self.drawerViewController.leftDrawerWidth = [UIScreen mainScreen].bounds.size.width;
+    
+    self.drawerViewController.animator = [[OSDrawerAnimation alloc] init];
+}
+
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
