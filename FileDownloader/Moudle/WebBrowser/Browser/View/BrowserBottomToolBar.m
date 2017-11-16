@@ -178,10 +178,11 @@
 }
 
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
+    BOOL res = [super pointInside:point withEvent:event];
     if (CGRectContainsPoint(self.switchPageButton.frame, point)) {
-        return YES;
+        res = YES;
     }
-    return NO;
+    return res;
 }
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {

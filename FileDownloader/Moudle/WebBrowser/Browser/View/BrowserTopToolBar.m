@@ -159,6 +159,11 @@
     }
 }
 
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    UIView *touchView = [super hitTest:point withEvent:event];
+    return touchView;
+}
+
 #pragma mark - Dealloc
 
 - (void)dealloc{
