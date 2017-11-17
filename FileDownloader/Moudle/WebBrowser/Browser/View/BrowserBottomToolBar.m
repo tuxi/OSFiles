@@ -38,7 +38,6 @@
 - (void)initializeView{
     self.backgroundColor = [UIColor whiteColor];
     self.clipsToBounds = NO;
-    
     UIBarButtonItem *placeholderItem = [self createBottomToolBarButtonWithImage:TOOLBAR_BUTTON_BACK_HILIGHT_STRING tag:BottomToolBarBackButtonTag];
     [placeholderItem setEnabled:NO];
     

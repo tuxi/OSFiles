@@ -31,6 +31,10 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.navigationBarHidden = NO;
+    
+    for (UIView *view in self.view.subviews) {
+        view.clipsToBounds = NO;
+    }
 }
 
 - (void)didReceiveMemoryWarning {
