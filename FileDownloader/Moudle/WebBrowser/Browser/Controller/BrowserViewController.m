@@ -26,7 +26,6 @@
 #import "YCXMenu.h"
 #import "NSObject+InterfaceOrientationExtensions.h"
 #import "OSXMLDocumentItem.h"
-#import "OSDrawerController.h"
 
 static NSString *const kBrowserViewControllerAddBookmarkSuccess = @"添加书签成功";
 static NSString *const kBrowserViewControllerAddBookmarkFailure = @"添加书签失败";
@@ -170,9 +169,8 @@ static NSString *const kBrowserViewControllerAddBookmarkFailure = @"添加书签
         BrowserBottomToolBar *toolBar = [[BrowserBottomToolBar alloc] initWithFrame:CGRectMake(0, self.view.height - BOTTOM_TOOL_BAR_HEIGHT, self.view.width, BOTTOM_TOOL_BAR_HEIGHT)];
         [self.view addSubview:toolBar];
         toolBar.switchPageButtonActionBlock = ^(UIButton *btn) {
-            [[ApplicationHelper helper].drawerViewController toggleWithSide:OSDrawerSideLeft animated:YES completion:^(BOOL isFinished) {
+            [[ApplicationHelper helper].drawerViewController toggle];
                 
-            }];
         };
         toolBar.translatesAutoresizingMaskIntoConstraints = NO;
         
@@ -651,7 +649,7 @@ static NSString *const kBrowserViewControllerAddBookmarkFailure = @"添加书签
 
 // 支持的方向 只需要支持竖屏
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations {
-    return UIInterfaceOrientationMaskPortrait;
+    return UIInterfaceOrientationMaskAll;
 }
 
 

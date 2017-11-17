@@ -142,5 +142,24 @@ void swizzleMethod(Class class, SEL originalSelector, SEL swizzledSelector) {
     }
 }
 
+#pragma mark - ICSDrawerControllerPresenting
+
+- (void)drawerControllerWillOpen:(ICSDrawerController *)drawerController {
+    self.view.userInteractionEnabled = NO;
+}
+
+- (void)drawerControllerDidOpen:(ICSDrawerController *)drawerController {
+    self.view.userInteractionEnabled = YES;
+}
+
+- (void)drawerControllerWillClose:(ICSDrawerController *)drawerController {
+    self.view.userInteractionEnabled = NO;
+}
+
+- (void)drawerControllerDidClose:(ICSDrawerController *)drawerController {
+    self.view.userInteractionEnabled = YES;
+}
+
+
 
 @end

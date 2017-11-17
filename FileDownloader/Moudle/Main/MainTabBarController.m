@@ -18,10 +18,6 @@
 #import "OSFileDownloaderConfiguration.h"
 #import "AppGroupManager.h"
 
-@interface MainTabBarControllerView : UIView
-
-@end
-
 @interface MainTabBarController () <SmileAuthenticatorDelegate>
 
 @end
@@ -109,5 +105,24 @@
         [self presentViewController:previousPresentedVC animated:YES completion:nil];
     }
 }
+
+#pragma mark - ICSDrawerControllerPresenting
+
+- (void)drawerControllerWillOpen:(ICSDrawerController *)drawerController {
+    self.view.userInteractionEnabled = NO;
+}
+
+- (void)drawerControllerDidOpen:(ICSDrawerController *)drawerController {
+    self.view.userInteractionEnabled = YES;
+}
+
+- (void)drawerControllerWillClose:(ICSDrawerController *)drawerController {
+    self.view.userInteractionEnabled = NO;
+}
+
+- (void)drawerControllerDidClose:(ICSDrawerController *)drawerController {
+    self.view.userInteractionEnabled = YES;
+}
+
 
 @end

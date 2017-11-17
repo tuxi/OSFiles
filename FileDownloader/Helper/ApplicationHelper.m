@@ -14,6 +14,7 @@
 #import "MainTabBarController.h"
 #import "BrowserViewController.h"
 #import "ZWUtility.h"
+#import "MainNavigationController.h"
 
 @implementation UIView (ApplicationHelperExtension)
 
@@ -28,7 +29,7 @@
 - (UIView *)xy_hitTest:(CGPoint)point withEvent:(UIEvent *)event {
     UIView *touchView = [self xy_hitTest:point withEvent:event];
     MainTabBarController *tabBarVc = (MainTabBarController *)[ApplicationHelper helper].drawerViewController.leftViewController;
-    if (!tabBarVc) {
+    if (!tabBarVc || touchView) {
         return touchView;
     }
     CGRect rect =[[BrowserViewController sharedInstance].bottomToolBar convertRect:[BrowserViewController sharedInstance].bottomToolBar.switchPageButton.frame toView:tabBarVc.view];
@@ -37,6 +38,10 @@
     }
     return touchView;
 }
+
+@end
+
+@interface ApplicationHelper () <ICSDrawerControllerDelegate>
 
 @end
 
@@ -94,21 +99,21 @@
 #pragma mark - drawerViewController
 ////////////////////////////////////////////////////////////////////////
 
-- (OSDrawerController *)drawerViewController {
-    if (!_drawerViewController) {
-        _drawerViewController = [[OSDrawerController alloc] init];
-    }
-    return _drawerViewController;
-}
 
 - (void)configureDrawerViewController {
     
-    self.drawerViewController.leftViewController = [MainTabBarController new];
-    //    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:[BrowserViewController sharedInstance]];
-    self.drawerViewController.centerViewController = [BrowserViewController sharedInstance];
-    self.drawerViewController.leftDrawerWidth = [UIScreen mainScreen].bounds.size.width;
-    
-    self.drawerViewController.animator = [[OSDrawerAnimation alloc] init];
+    MainNavigationController *nav = [[MainNavigationController alloc] initWithRootViewController:[BrowserViewController sharedInstance]];
+    self.drawerViewController  = [[ICSDrawerController alloc] initWithLeftViewController:[MainTabBarController new]
+                                                                     centerViewController:nav];
+    self.drawerViewController.delegate = self;
+}
+
+////////////////////////////////////////////////////////////////////////
+#pragma mark - ICSDrawerControllerDelegate
+////////////////////////////////////////////////////////////////////////
+
+- (CGFloat)drawerDepthOfDrawerController:(ICSDrawerController *)drawerController {
+    return [UIScreen mainScreen].bounds.size.width;
 }
 
 

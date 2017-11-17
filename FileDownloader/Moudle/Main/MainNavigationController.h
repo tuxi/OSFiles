@@ -8,6 +8,8 @@
 
 @import UIKit;
 
-@interface MainNavigationController : UINavigationController
+@interface MainNavigationController : UINavigationController <ICSDrawerControllerChild, ICSDrawerControllerPresenting>
+
+@property (nonatomic, weak) ICSDrawerController *drawer;
 
 @end
