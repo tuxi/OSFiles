@@ -274,8 +274,8 @@ static void initializeMapping()
                        mimeToExtension[@"text/json"] = @"json"; extensionToMime[@"json"] = @"text/json";
                       mimeToExtension[@"text/plain"] = @"pch"; extensionToMime[@"pch"] = @"text/plain";
                       mimeToExtension[@"text/plain"] = @"pch"; extensionToMime[@"pch"] = @"text/plain";
-                      mimeToExtension[@"text/xml"] = @"storyboard"; extensionToMime[@"storyboard"] = @"text/xml";
-                      mimeToExtension[@"text/xml"] = @"xib"; extensionToMime[@"xib"] = @"text/xml";
+                      mimeToExtension[@"text/plain"] = @"storyboard"; extensionToMime[@"storyboard"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"xib"; extensionToMime[@"xib"] = @"text/plain";
                       // reserve "pot" for vnd.ms-powerpoint
                       mimeToExtension[@"text/richtext"] = @"rtx"; extensionToMime[@"rtx"] = @"text/richtext";
                       mimeToExtension[@"text/rtf"] = @"rtf"; extensionToMime[@"rtf"] = @"text/rtf";

@@ -341,4 +341,29 @@
     }
     return OSFileTypeOther;
 }
+
++ (BOOL)isPDF:(NSString *)filePath {
+    BOOL state = NO;
+    
+    if (filePath != nil) // Must have a file path
+    {
+        const char *path = [filePath fileSystemRepresentation];
+        
+        int fd = open(path, O_RDONLY); // Open the file
+        
+        if (fd > 0) // We have a valid file descriptor
+        {
+            const char sig[1024]; // File signature buffer
+            
+            ssize_t len = read(fd, (void *)&sig, sizeof(sig));
+            
+            state = (strnstr(sig, "%PDF", len) != NULL);
+            
+            close(fd); // Close the file
+        }
+    }
+    
+    return state;
+}
+
 @end

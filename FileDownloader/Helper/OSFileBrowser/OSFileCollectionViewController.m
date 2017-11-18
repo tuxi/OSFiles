@@ -634,16 +634,16 @@ static const CGFloat windowHeight = 49.0;
     if (!viewController) {
         return;
     }
-    if ([viewController isKindOfClass:[OSFileCollectionViewController class]]) {
-        OSFileCollectionViewController *vc = (OSFileCollectionViewController *)viewController;
-        [self.navigationController showViewController:vc sender:self];
-    }
-    else {
-        
-        viewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:self action:@selector(backButtonClick)];
-        UINavigationController *detailNavController = [[UINavigationController alloc] initWithRootViewController:viewController];
-        [self.navigationController showDetailViewController:detailNavController sender:self];
-    }
+//    if ([viewController isKindOfClass:[OSFileCollectionViewController class]]) {
+//        OSFileCollectionViewController *vc = (OSFileCollectionViewController *)viewController;
+//        [self.navigationController showViewController:vc sender:self];
+//    }
+//    else {
+//
+//        viewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:self action:@selector(backButtonClick)];
+//        [self.navigationController showViewController:viewController sender:self];
+//    }
+    [self.navigationController showViewController:viewController sender:self];
 }
 
 - (void)showDetailController:(UIViewController *)viewController atIndexPath:(NSIndexPath *)indexPath {
@@ -775,6 +775,12 @@ static const CGFloat windowHeight = 49.0;
     return [NSURL fileURLWithPath:newPath];
 }
 
+#pragma mark *** QLPreviewControllerDelegate ***
+
+- (CGRect)previewController:(QLPreviewController *)controller frameForPreviewItem:(id <QLPreviewItem>)item inSourceView:(UIView * _Nullable * __nonnull)view {
+    return self.view.frame;
+}
+
 #pragma mark *** Actions ***
 
 - (UILongPressGestureRecognizer *)longPress {
@@ -898,6 +904,7 @@ static const CGFloat windowHeight = 49.0;
     }
     return _selectedFiles;
 }
+
 
 - (void)addSelectedFile:(OSFileAttributeItem *)item {
     if (![self.selectedFiles containsObject:item] && !item.isRootDirectory) {

@@ -141,15 +141,8 @@
         // 可以读取数据库后展示
         [_textView setText:@"db"];
         self.view = _textView;
-        
     }
     
-    else if ([item.fileExtension.lowercaseString isEqualToString:@"plist"] ||
-             [item.fileExtension.lowercaseString isEqualToString:@"archive"]) {
-        NSDictionary *d = [NSDictionary dictionaryWithContentsOfFile:item.path];
-        [_textView setText:[d description]];
-        self.view = _textView;
-    }
     else {
         if (@available(iOS 9.0, *)) {
             NSData *data = [NSData dataWithContentsOfFile:item.path];
@@ -157,10 +150,18 @@
              self.view = _webView;
             _textView = nil;
         } else {
-            NSString *d = [NSString stringWithContentsOfFile:item.path encoding:NSUTF8StringEncoding error:nil];
-            [_textView setText:d];
-            self.view = _textView;
-            _webView = nil;
+            if ([item.fileExtension.lowercaseString isEqualToString:@"plist"] ||
+                     [item.fileExtension.lowercaseString isEqualToString:@"archive"]) {
+                NSDictionary *d = [NSDictionary dictionaryWithContentsOfFile:item.path];
+                [_textView setText:[d description]];
+                self.view = _textView;
+                _webView = nil;
+            } else {
+                NSString *d = [NSString stringWithContentsOfFile:item.path encoding:NSUTF8StringEncoding error:nil];
+                [_textView setText:d];
+                self.view = _textView;
+                _webView = nil;
+            }
         }
     }
     

@@ -6,33 +6,7 @@
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
 	<string>文件浏览</string>
-	<key>CFBundleDocumentTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeName</key>
-			<string>folder</string>
-			<key>LSHandlerRank</key>
-			<string>Alternate</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>public.folder</string>
-				<string>public.directory</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeName</key>
-			<string>All Files</string>
-			<key>LSHandlerRank</key>
-			<string>Alternate</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>public.data</string>
-				<string>public.content</string>
-				<string>public.archives</string>
-				<string>public.image</string>
-			</array>
-		</dict>
-	</array>
+	
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIcons</key>
@@ -64,6 +38,33 @@
 			</array>
 		</dict>
 	</array>
+    <key>CFBundleDocumentTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeName</key>
+            <string>folder</string>
+            <key>LSHandlerRank</key>
+            <string>Alternate</string>
+            <key>LSItemContentTypes</key>
+            <array>
+                <string>public.folder</string>
+                <string>public.directory</string>
+            </array>
+        </dict>
+        <dict>
+            <key>CFBundleTypeName</key>
+            <string>All Files</string>
+            <key>LSHandlerRank</key>
+            <string>Alternate</string>
+            <key>LSItemContentTypes</key>
+            <array>
+                <string>public.data</string>
+                <string>public.content</string>
+                <string>public.archives</string>
+                <string>public.image</string>
+            </array>
+        </dict>
+    </array>
 	<key>CFBundleVersion</key>
 	<string>1.0.1</string>
 	<key>LSApplicationCategoryType</key>
