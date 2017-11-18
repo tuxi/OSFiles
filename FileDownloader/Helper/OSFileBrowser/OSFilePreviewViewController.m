@@ -112,8 +112,19 @@
              @"xcconfig",
              @"version",
              @"archive",
-             @"db",
-             @"gps"];
+             @"gps",
+             @"txt",
+             @"md"];
+}
+
++ (BOOL)canOpenFile:(NSString *)filePath {
+    if (!filePath.length || ![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+        return NO;
+    }
+    if ([[self fileExtensions] containsObject:filePath.pathExtension.lowercaseString]) {
+        return YES;
+    }
+    return NO;
 }
 
 
@@ -126,7 +137,11 @@
     }
     
     else if ([file.pathExtension.lowercaseString isEqualToString:@"xcconfig"] ||
-             [file.pathExtension.lowercaseString isEqualToString:@"version"]) {
+             [file.pathExtension.lowercaseString isEqualToString:@"version"] ||
+             [file.pathExtension.lowercaseString isEqualToString:@"gps"] ||
+             [file.pathExtension.lowercaseString isEqualToString:@"strings"] ||
+             [file.pathExtension.lowercaseString isEqualToString:@"text"] ||
+             [file.pathExtension.lowercaseString isEqualToString:@"md"]) {
         NSString *d = [NSString stringWithContentsOfFile:file encoding:NSUTF8StringEncoding error:nil];
         [_textView setText:d];
         self.view = _textView;

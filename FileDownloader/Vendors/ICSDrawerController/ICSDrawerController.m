@@ -383,6 +383,9 @@ typedef NS_ENUM(NSUInteger, ICSDrawerControllerState)
     NSParameterAssert(self.leftViewController);
     NSParameterAssert(self.centerViewController);
     
+    [self.leftViewController viewWillAppear:YES];
+    [self.centerViewController viewWillDisappear:YES];
+    
     // Keep track that the drawer is opening
     self.drawerState = ICSDrawerControllerStateOpening;
     
@@ -411,25 +414,29 @@ typedef NS_ENUM(NSUInteger, ICSDrawerControllerState)
 
 - (void)didOpen
 {
-    NSParameterAssert(self.drawerState == ICSDrawerControllerStateOpening);
+//    NSParameterAssert(self.drawerState == ICSDrawerControllerStateOpening);
     NSParameterAssert(self.leftViewController);
     NSParameterAssert(self.centerViewController);
+        [self.leftViewController viewDidAppear:YES];
+        [self.centerViewController viewDidDisappear:YES];
+        
+        // Complete adding the left controller to the container
+        [self.leftViewController didMoveToParentViewController:self];
+        
+        [self addClosingGestureRecognizers];
+        
+        // Keep track that the drawer is open
+        self.drawerState = ICSDrawerControllerStateOpen;
+        
+        // Notify the child view controllers that the drawer is open
+        if ([self.leftViewController respondsToSelector:@selector(drawerControllerDidOpen:)]) {
+            [self.leftViewController drawerControllerDidOpen:self];
+        }
+        if ([self.centerViewController respondsToSelector:@selector(drawerControllerDidOpen:)]) {
+            [self.centerViewController drawerControllerDidOpen:self];
+        }
     
-    // Complete adding the left controller to the container
-    [self.leftViewController didMoveToParentViewController:self];
     
-    [self addClosingGestureRecognizers];
-    
-    // Keep track that the drawer is open
-    self.drawerState = ICSDrawerControllerStateOpen;
-    
-    // Notify the child view controllers that the drawer is open
-    if ([self.leftViewController respondsToSelector:@selector(drawerControllerDidOpen:)]) {
-        [self.leftViewController drawerControllerDidOpen:self];
-    }
-    if ([self.centerViewController respondsToSelector:@selector(drawerControllerDidOpen:)]) {
-        [self.centerViewController drawerControllerDidOpen:self];
-    }
 }
 
 #pragma mark - Closing the drawer
@@ -448,7 +455,8 @@ typedef NS_ENUM(NSUInteger, ICSDrawerControllerState)
     NSParameterAssert(self.drawerState == ICSDrawerControllerStateOpen);
     NSParameterAssert(self.leftViewController);
     NSParameterAssert(self.centerViewController);
-    
+    [self.centerViewController viewWillAppear:YES];
+    [self.leftViewController viewWillDisappear:YES];
     // Start removing the left controller from the container
     [self.leftViewController willMoveToParentViewController:nil];
     
@@ -466,31 +474,34 @@ typedef NS_ENUM(NSUInteger, ICSDrawerControllerState)
 
 - (void)didClose
 {
-    NSParameterAssert(self.drawerState == ICSDrawerControllerStateClosing);
+//    NSParameterAssert(self.drawerState == ICSDrawerControllerStateClosing);
     NSParameterAssert(self.leftView);
     NSParameterAssert(self.centerView);
     NSParameterAssert(self.leftViewController);
     NSParameterAssert(self.centerViewController);
+        [self.centerViewController viewDidAppear:YES];
+        [self.leftViewController viewDidDisappear:YES];
+        // Complete removing the left view controller from the container
+        [self.leftViewController.view removeFromSuperview];
+        [self.leftViewController removeFromParentViewController];
+        
+        // Remove the left view from the view hierarchy
+        [self.leftView removeFromSuperview];
+        
+        [self removeClosingGestureRecognizers];
+        
+        // Keep track that the drawer is closed
+        self.drawerState = ICSDrawerControllerStateClosed;
+        
+        // Notify the child view controllers that the drawer is closed
+        if ([self.leftViewController respondsToSelector:@selector(drawerControllerDidClose:)]) {
+            [self.leftViewController drawerControllerDidClose:self];
+        }
+        if ([self.centerViewController respondsToSelector:@selector(drawerControllerDidClose:)]) {
+            [self.centerViewController drawerControllerDidClose:self];
+        }
     
-    // Complete removing the left view controller from the container
-    [self.leftViewController.view removeFromSuperview];
-    [self.leftViewController removeFromParentViewController];
-    
-    // Remove the left view from the view hierarchy
-    [self.leftView removeFromSuperview];
-    
-    [self removeClosingGestureRecognizers];
-    
-    // Keep track that the drawer is closed
-    self.drawerState = ICSDrawerControllerStateClosed;
-    
-    // Notify the child view controllers that the drawer is closed
-    if ([self.leftViewController respondsToSelector:@selector(drawerControllerDidClose:)]) {
-        [self.leftViewController drawerControllerDidClose:self];
-    }
-    if ([self.centerViewController respondsToSelector:@selector(drawerControllerDidClose:)]) {
-        [self.centerViewController drawerControllerDidClose:self];
-    }
+   
 }
 
 - (void)toggle {
@@ -567,6 +578,13 @@ typedef NS_ENUM(NSUInteger, ICSDrawerControllerState)
                          // Finally, close the drawer
                          [self animateClosing];
                      }];
+}
+
+- (UIViewController *)ics_visibleViewController {
+    if (self.drawerState == ICSDrawerControllerStateOpen) {
+        return self.leftViewController;
+    }
+    return self.centerViewController;
 }
 
 #pragma mark *** Private delegate methods ***

@@ -101,8 +101,8 @@
 
 
 - (void)configureDrawerViewController {
-    
-    MainNavigationController *nav = [[MainNavigationController alloc] initWithRootViewController:[BrowserViewController sharedInstance]];
+    BrowserViewController *bvc = [BrowserViewController sharedInstance];
+    MainNavigationController *nav = [[MainNavigationController alloc] initWithRootViewController:bvc];
     self.drawerViewController  = [[ICSDrawerController alloc] initWithLeftViewController:[MainTabBarController new]
                                                                      centerViewController:nav];
     self.drawerViewController.delegate = self;

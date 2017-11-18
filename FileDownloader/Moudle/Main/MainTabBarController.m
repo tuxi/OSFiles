@@ -29,15 +29,14 @@
     [super viewDidLoad];
     
 //    [self addChildVC:[BrowserViewController sharedInstance] imageNamed:@"TabBrowser" title:@"浏览器" navClass:[BaseNavigationViewController class]];
-    [self addChildVC:[DownloadsViewController new] imageNamed:@"TabDownloads" title:@"缓存"];
     
     [self addChildVC:[[OSFileCollectionViewController alloc] initWithDirectoryArray:@[
                                                                                       [NSString getDownloadDisplayFolderPath],
                                                                                       [NSString getDocumentPath],
                                                                                       [AppGroupManager getAPPGroupSharePath]
                                                                                       ]] imageNamed:@"TabFiles" title:@"我的文件"];
+    [self addChildVC:[DownloadsViewController new] imageNamed:@"TabDownloads" title:@"缓存"];
     [self addChildVC:[OSSettingViewController new] imageNamed:@"TabMore" title:@"更多"];
-    
     [SmileAuthenticator sharedInstance].delegate = self;
     self.view.backgroundColor = [UIColor whiteColor];
 
@@ -60,8 +59,9 @@
         navClass = [MainNavigationController class];
     }
     MainNavigationController *nav = [[navClass alloc] initWithRootViewController:vc];
-    nav.tabBarItem.image = [UIImage imageNamed:name].xy_originalMode;
-    nav.tabBarItem.selectedImage = [UIImage imageNamed:[name stringByAppendingString:@"Filled"]];
+    nav.tabBarItem.image = [[UIImage imageNamed:name] xy_changeImageColorWithColor:[UIColor whiteColor]];
+    UIImage *selectedImage = [UIImage imageNamed:[name stringByAppendingString:@"Filled"]];
+    nav.tabBarItem.selectedImage = [selectedImage xy_changeImageColorWithColor:ColorRedGreenBlue(110, 206, 250)];
     nav.tabBarItem.title = title;
     [self addChildViewController:nav];
 }

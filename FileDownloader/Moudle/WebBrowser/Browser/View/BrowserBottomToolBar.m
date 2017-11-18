@@ -38,7 +38,7 @@
 - (void)initializeView{
     self.backgroundColor = [UIColor whiteColor];
     self.clipsToBounds = NO;
-    UIBarButtonItem *placeholderItem = [self createBottomToolBarButtonWithImage:TOOLBAR_BUTTON_BACK_HILIGHT_STRING tag:BottomToolBarBackButtonTag];
+    UIBarButtonItem *placeholderItem = [self createBottomToolBarButtonWithImage:nil tag:BottomToolBarPlaceholderTag];
     [placeholderItem setEnabled:NO];
     
     UIBarButtonItem *backItem = [self createBottomToolBarButtonWithImage:TOOLBAR_BUTTON_BACK_HILIGHT_STRING tag:BottomToolBarBackButtonTag];
@@ -65,10 +65,10 @@
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
         btn.translatesAutoresizingMaskIntoConstraints = NO;
         [self addSubview:btn];
-        [btn setBackgroundColor:[UIColor yellowColor]];
+        [btn setBackgroundImage:[UIImage imageNamed:@"browser_dragger"] forState:UIControlStateNormal];
         [btn addTarget:self action:@selector(switchPageButtonClick:) forControlEvents:UIControlEventTouchUpInside];
         [self addConstraint:[NSLayoutConstraint constraintWithItem:btn attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeading multiplier:1.0 constant:-50]];
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:btn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:150.0]];
+        [self addConstraint:[NSLayoutConstraint constraintWithItem:btn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:100.0]];
         [self addConstraint:[NSLayoutConstraint constraintWithItem:btn attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0.0]];
         btn;
     });
@@ -167,6 +167,9 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{
     if ([keyPath isEqualToString:@"webView"] && [object isKindOfClass:[BrowserContainerView class]]) {
         self.containerView = object;
+    }
+    else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
 

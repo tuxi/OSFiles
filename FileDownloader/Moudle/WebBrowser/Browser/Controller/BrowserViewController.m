@@ -91,6 +91,12 @@ static NSString *const kBrowserViewControllerAddBookmarkFailure = @"添加书签
     [self applyInterfaceOrientation:UIDeviceOrientationPortrait interfaceOrientationDidChangeBlock:^(InterfaceOrientation orientation) {
         [self recoverToolBar];
     }];
+    [self.navigationController setNavigationBarHidden:YES];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [self.navigationController setNavigationBarHidden:NO];
 }
 
 - (void)viewDidAppear:(BOOL)animated {

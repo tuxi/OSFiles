@@ -28,6 +28,7 @@
 @protocol ICSDrawerControllerPresenting;
 @protocol ICSDrawerControllerDelegate;
 
+
 /**
  ICSDrawerController is a left-side drawer controller for iPhone (iOS 7 or later).
  
@@ -86,6 +87,9 @@
  */
 @property (nonatomic, strong, readonly) UIViewController<ICSDrawerControllerChild, ICSDrawerControllerPresenting> *centerViewController;
 
+/// 未实现
+//@property (nonatomic, strong, readonly) UIViewController<ICSDrawerControllerChild, ICSDrawerControllerPresenting> *rightViewController;
+
 @property (nonatomic, weak) id<ICSDrawerControllerDelegate> delegate;
 
 /**
@@ -140,6 +144,7 @@
  */
 - (void)replaceCenterViewControllerWithViewController:(UIViewController<ICSDrawerControllerChild, ICSDrawerControllerPresenting> *)viewController;
 
+- (UIViewController *)ics_visibleViewController;
 
 @end
 

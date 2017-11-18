@@ -19,6 +19,7 @@
 #import "UIViewController+XYExtensions.h"
 #import "UIImage+XYImage.h"
 #import "MBProgressHUD+BBHUD.h"
+#import "ICSDrawerController.h"
 
 #define dispatch_main_safe_async(block)\
 if ([NSThread isMainThread]) {\
@@ -612,27 +613,18 @@ static const CGFloat windowHeight = 49.0;
 ////////////////////////////////////////////////////////////////////////
 
 - (void)showDetailController:(UIViewController *)viewController parentPath:(NSString *)parentPath {
-    BOOL isDirectory;
-    BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:parentPath isDirectory:&isDirectory];
-    NSURL *url = [NSURL fileURLWithPath:parentPath];
-    if (fileExists) {
-        if (isDirectory) {
-            OSFileCollectionViewController *vc = (OSFileCollectionViewController *)viewController;
-            [self.navigationController showViewController:vc sender:self];
-            
-        } else if (![QLPreviewController canPreviewItem:url]) {
-            OSFilePreviewViewController *preview = (OSFilePreviewViewController *)viewController;
-            preview.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:self action:@selector(backButtonClick)];
-            UINavigationController *detailNavController = [[UINavigationController alloc] initWithRootViewController:preview];
-            
-            [self.navigationController showDetailViewController:detailNavController sender:self];
-        } else {
-            
-            QLPreviewController *preview = (QLPreviewController *)viewController;
-            preview.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:self action:@selector(backButtonClick)];
-            UINavigationController *detailNavController = [[UINavigationController alloc] initWithRootViewController:preview];
-            [self.navigationController showDetailViewController:detailNavController sender:self];
-        }
+    if (!viewController) {
+        return;
+    }
+    if ([viewController isKindOfClass:[OSFileCollectionViewController class]]) {
+        OSFileCollectionViewController *vc = (OSFileCollectionViewController *)viewController;
+        [self.navigationController showViewController:vc sender:self];
+    }
+    else {
+        
+        viewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:self action:@selector(backButtonClick)];
+        UINavigationController *detailNavController = [[UINavigationController alloc] initWithRootViewController:viewController];
+        [self.navigationController showDetailViewController:detailNavController sender:self];
     }
 }
 
@@ -646,6 +638,10 @@ static const CGFloat windowHeight = 49.0;
 
 - (void)backButtonClick {
     UIViewController *rootViewController = (UINavigationController *)[UIApplication sharedApplication].delegate.window.rootViewController;
+    [self backButtonClickWithRootViewController:rootViewController];
+}
+
+- (void)backButtonClickWithRootViewController:(UIViewController *)rootViewController {
     if ([rootViewController isKindOfClass:[UINavigationController class]]) {
         UINavigationController *nac = (UINavigationController *)rootViewController;
         if (self.presentedViewController || nac.topViewController.presentedViewController) {
@@ -666,7 +662,10 @@ static const CGFloat windowHeight = 49.0;
         }
         
     }
-    
+    else if ([rootViewController isKindOfClass:NSClassFromString(@"ICSDrawerController")]) {
+        ICSDrawerController *vc = (ICSDrawerController *)rootViewController;
+        [self backButtonClickWithRootViewController:vc.ics_visibleViewController];
+    }
 }
 
 - (UIViewController *)previewControllerWithFilePath:(NSString *)filePath {
@@ -694,12 +693,17 @@ static const CGFloat windowHeight = 49.0;
                     viewController.selectedFiles = self.selectedFiles.mutableCopy;
                 }
                 
-            } else if (![QLPreviewController canPreviewItem:[NSURL fileURLWithPath:newItem.path]]) {
+            }
+            else if ([OSFilePreviewViewController canOpenFile:newItem.path]) {
                 vc = [[OSFilePreviewViewController alloc] initWithPath:newItem.path];
-            } else {
+            }
+            else if ([QLPreviewController canPreviewItem:[NSURL fileURLWithPath:newItem.path]]) {
                 QLPreviewController *preview= [[QLPreviewController alloc] init];
                 preview.dataSource = self;
                 vc = preview;
+            }
+            else {
+                [self.view bb_showMessage:@"无法识别的文件"];
             }
         }
         return vc;

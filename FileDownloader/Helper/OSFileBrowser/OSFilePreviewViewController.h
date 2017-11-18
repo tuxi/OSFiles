@@ -16,6 +16,7 @@
 @property (nonatomic, copy) NSString *filePath;
 
 - (instancetype)initWithPath:(NSString *)file;
++ (BOOL)canOpenFile:(NSString *)filePath;
 
 @end
 

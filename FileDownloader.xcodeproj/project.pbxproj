@@ -12,6 +12,10 @@
 		1801ED8F1FB6B162005DBDE2 /* FileManagerShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1801ED841FB6B162005DBDE2 /* FileManagerShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		181A65C31FBF30E4005619B0 /* ICSDrawerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 181A65C01FBF30E4005619B0 /* ICSDrawerController.m */; };
 		181A65C41FBF30E4005619B0 /* ICSDropShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 181A65C21FBF30E4005619B0 /* ICSDropShadowView.m */; };
+		182797E91FC00A28005905EE /* FXDeallocMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 182797E11FC00A28005905EE /* FXDeallocMonitor.m */; };
+		182797EA1FC00A28005905EE /* FXTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 182797E31FC00A28005905EE /* FXTabBar.m */; };
+		182797EB1FC00A28005905EE /* FXTabBarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 182797E61FC00A28005905EE /* FXTabBarItem.m */; };
+		182797EC1FC00A28005905EE /* UITabBarController+FXCustomTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 182797E81FC00A28005905EE /* UITabBarController+FXCustomTabBar.m */; };
 		1845A63A1FB6F3750000E39A /* OSItemProviderHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A6391FB6F3750000E39A /* OSItemProviderHelper.m */; };
 		1845A63D1FB6F4A40000E39A /* OSPhoneNumberModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A63C1FB6F4A40000E39A /* OSPhoneNumberModel.m */; };
 		1845A63E1FB6F4A80000E39A /* OSPhoneNumberModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A63C1FB6F4A40000E39A /* OSPhoneNumberModel.m */; };
@@ -477,6 +481,15 @@
 		181A65C01FBF30E4005619B0 /* ICSDrawerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ICSDrawerController.m; sourceTree = "<group>"; };
 		181A65C11FBF30E4005619B0 /* ICSDropShadowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ICSDropShadowView.h; sourceTree = "<group>"; };
 		181A65C21FBF30E4005619B0 /* ICSDropShadowView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ICSDropShadowView.m; sourceTree = "<group>"; };
+		182797E01FC00A28005905EE /* FXDeallocMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FXDeallocMonitor.h; sourceTree = "<group>"; };
+		182797E11FC00A28005905EE /* FXDeallocMonitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FXDeallocMonitor.m; sourceTree = "<group>"; };
+		182797E21FC00A28005905EE /* FXTabBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FXTabBar.h; sourceTree = "<group>"; };
+		182797E31FC00A28005905EE /* FXTabBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FXTabBar.m; sourceTree = "<group>"; };
+		182797E41FC00A28005905EE /* FXTabBarAppearanceConfigs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FXTabBarAppearanceConfigs.h; sourceTree = "<group>"; };
+		182797E51FC00A28005905EE /* FXTabBarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FXTabBarItem.h; sourceTree = "<group>"; };
+		182797E61FC00A28005905EE /* FXTabBarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FXTabBarItem.m; sourceTree = "<group>"; };
+		182797E71FC00A28005905EE /* UITabBarController+FXCustomTabBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITabBarController+FXCustomTabBar.h"; sourceTree = "<group>"; };
+		182797E81FC00A28005905EE /* UITabBarController+FXCustomTabBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITabBarController+FXCustomTabBar.m"; sourceTree = "<group>"; };
 		18300F761EEC57280035D6EE /* UIViewController+XYHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+XYHUD.h"; sourceTree = "<group>"; };
 		18300F771EEC57280035D6EE /* UIViewController+XYHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+XYHUD.m"; sourceTree = "<group>"; };
 		18300F7B1EEC57280035D6EE /* NetworkTypeUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkTypeUtils.h; sourceTree = "<group>"; };
@@ -1113,6 +1126,22 @@
 			path = ICSDrawerController;
 			sourceTree = "<group>";
 		};
+		182797DF1FC00A28005905EE /* FXCustomTabBarController */ = {
+			isa = PBXGroup;
+			children = (
+				182797E01FC00A28005905EE /* FXDeallocMonitor.h */,
+				182797E11FC00A28005905EE /* FXDeallocMonitor.m */,
+				182797E21FC00A28005905EE /* FXTabBar.h */,
+				182797E31FC00A28005905EE /* FXTabBar.m */,
+				182797E41FC00A28005905EE /* FXTabBarAppearanceConfigs.h */,
+				182797E51FC00A28005905EE /* FXTabBarItem.h */,
+				182797E61FC00A28005905EE /* FXTabBarItem.m */,
+				182797E71FC00A28005905EE /* UITabBarController+FXCustomTabBar.h */,
+				182797E81FC00A28005905EE /* UITabBarController+FXCustomTabBar.m */,
+			);
+			path = FXCustomTabBarController;
+			sourceTree = "<group>";
+		};
 		18300F711EEC57280035D6EE /* HUD */ = {
 			isa = PBXGroup;
 			children = (
@@ -1678,6 +1707,7 @@
 		18ADED551F9E3CBA0024BA40 /* Vendors */ = {
 			isa = PBXGroup;
 			children = (
+				182797DF1FC00A28005905EE /* FXCustomTabBarController */,
 				181A65BE1FBF30E4005619B0 /* ICSDrawerController */,
 				18ADEE6F1F9E40FC0024BA40 /* Netwrok */,
 				18ADED561F9E3CBA0024BA40 /* NJKWebViewProgress */,
@@ -2767,6 +2797,7 @@
 				1845A6471FB6F6C30000E39A /* OSItemProviderHelper.m in Sources */,
 				18ADEF0A1F9E4A3D0024BA40 /* NSURLCache+ZWUtility.m in Sources */,
 				18E893331FB5DFED00727EF1 /* OSFileCollectionViewController.m in Sources */,
+				182797EA1FC00A28005905EE /* FXTabBar.m in Sources */,
 				18E893341FB5DFED00727EF1 /* OSFileCollectionViewFlowLayout.m in Sources */,
 				18ADEEF11F9E4A2E0024BA40 /* SettingsCollectionViewCell.m in Sources */,
 				18ADEF4D1F9E4A860024BA40 /* OSAuthenticatorHelper.m in Sources */,
@@ -2799,7 +2830,9 @@
 				18E893381FB5DFED00727EF1 /* UIViewController+XYExtensions.m in Sources */,
 				188458491FB6007600863317 /* OSAboutAppViewController.m in Sources */,
 				18ADEF021F9E4A3D0024BA40 /* ZWUtility.m in Sources */,
+				182797EB1FC00A28005905EE /* FXTabBarItem.m in Sources */,
 				18ADEEEC1F9E4A2E0024BA40 /* SearchTableViewCell.m in Sources */,
+				182797E91FC00A28005905EE /* FXDeallocMonitor.m in Sources */,
 				18ADEF341F9E4A860024BA40 /* SmilePasswordContainerView.m in Sources */,
 				18ADEEF71F9E4A2E0024BA40 /* WebViewBackForwardList.m in Sources */,
 				188458401FB5EB3A00863317 /* NSObject+InterfaceOrientationExtensions.m in Sources */,
@@ -2827,6 +2860,7 @@
 				184DA3F31FB843C0009F29B0 /* OSXMLDocumentItem.m in Sources */,
 				18ADEF541F9E4A860024BA40 /* XYDBUtil.m in Sources */,
 				18ADEEE61F9E4A1F0024BA40 /* CardCollectionViewCell.m in Sources */,
+				182797EC1FC00A28005905EE /* UITabBarController+FXCustomTabBar.m in Sources */,
 				18ADEEEB1F9E4A2E0024BA40 /* SearchInputView.m in Sources */,
 				18ADEEDE1F9E4A130024BA40 /* FindInPageBar.m in Sources */,
 				D017FF121FA89B16004B65CF /* UITextField+OSRangeExtension.m in Sources */,

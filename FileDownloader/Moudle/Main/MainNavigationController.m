@@ -32,6 +32,12 @@
     // Do any additional setup after loading the view.
     self.navigationBarHidden = NO;
     
+    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
+    [[UINavigationBar appearance] setBarTintColor:kGlobalColor];
+    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor whiteColor]}];
+    [[UINavigationBar appearance] setShadowImage:[UIImage new]];
+    
+    // 为了显示浏览器中超出父控件的子控件
     for (UIView *view in self.view.subviews) {
         view.clipsToBounds = NO;
     }
@@ -164,6 +170,8 @@ void swizzleMethod(Class class, SEL originalSelector, SEL swizzledSelector) {
     self.view.userInteractionEnabled = YES;
 }
 
-
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
+}
 
 @end
