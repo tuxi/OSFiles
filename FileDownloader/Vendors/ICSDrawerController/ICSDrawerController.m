@@ -417,24 +417,24 @@ typedef NS_ENUM(NSUInteger, ICSDrawerControllerState)
 //    NSParameterAssert(self.drawerState == ICSDrawerControllerStateOpening);
     NSParameterAssert(self.leftViewController);
     NSParameterAssert(self.centerViewController);
-        [self.leftViewController viewDidAppear:YES];
-        [self.centerViewController viewDidDisappear:YES];
-        
-        // Complete adding the left controller to the container
-        [self.leftViewController didMoveToParentViewController:self];
-        
-        [self addClosingGestureRecognizers];
-        
-        // Keep track that the drawer is open
-        self.drawerState = ICSDrawerControllerStateOpen;
-        
-        // Notify the child view controllers that the drawer is open
-        if ([self.leftViewController respondsToSelector:@selector(drawerControllerDidOpen:)]) {
-            [self.leftViewController drawerControllerDidOpen:self];
-        }
-        if ([self.centerViewController respondsToSelector:@selector(drawerControllerDidOpen:)]) {
-            [self.centerViewController drawerControllerDidOpen:self];
-        }
+    [self.leftViewController viewDidAppear:YES];
+    [self.centerViewController viewDidDisappear:YES];
+    
+    // Complete adding the left controller to the container
+    [self.leftViewController didMoveToParentViewController:self];
+    
+    [self addClosingGestureRecognizers];
+    
+    // Keep track that the drawer is open
+    self.drawerState = ICSDrawerControllerStateOpen;
+    
+    // Notify the child view controllers that the drawer is open
+    if ([self.leftViewController respondsToSelector:@selector(drawerControllerDidOpen:)]) {
+        [self.leftViewController drawerControllerDidOpen:self];
+    }
+    if ([self.centerViewController respondsToSelector:@selector(drawerControllerDidOpen:)]) {
+        [self.centerViewController drawerControllerDidOpen:self];
+    }
     
     
 }
@@ -474,41 +474,43 @@ typedef NS_ENUM(NSUInteger, ICSDrawerControllerState)
 
 - (void)didClose
 {
-//    NSParameterAssert(self.drawerState == ICSDrawerControllerStateClosing);
+    //    NSParameterAssert(self.drawerState == ICSDrawerControllerStateClosing);
     NSParameterAssert(self.leftView);
     NSParameterAssert(self.centerView);
     NSParameterAssert(self.leftViewController);
     NSParameterAssert(self.centerViewController);
-        [self.centerViewController viewDidAppear:YES];
-        [self.leftViewController viewDidDisappear:YES];
-        // Complete removing the left view controller from the container
-        [self.leftViewController.view removeFromSuperview];
-        [self.leftViewController removeFromParentViewController];
-        
-        // Remove the left view from the view hierarchy
-        [self.leftView removeFromSuperview];
-        
-        [self removeClosingGestureRecognizers];
-        
-        // Keep track that the drawer is closed
-        self.drawerState = ICSDrawerControllerStateClosed;
-        
-        // Notify the child view controllers that the drawer is closed
-        if ([self.leftViewController respondsToSelector:@selector(drawerControllerDidClose:)]) {
-            [self.leftViewController drawerControllerDidClose:self];
-        }
-        if ([self.centerViewController respondsToSelector:@selector(drawerControllerDidClose:)]) {
-            [self.centerViewController drawerControllerDidClose:self];
-        }
+    [self.centerViewController viewDidAppear:YES];
+    [self.leftViewController viewDidDisappear:YES];
+    // Complete removing the left view controller from the container
+    [self.leftViewController.view removeFromSuperview];
+    [self.leftViewController removeFromParentViewController];
     
-   
+    // Remove the left view from the view hierarchy
+    [self.leftView removeFromSuperview];
+    
+    [self removeClosingGestureRecognizers];
+    
+    // Keep track that the drawer is closed
+    self.drawerState = ICSDrawerControllerStateClosed;
+    
+    // Notify the child view controllers that the drawer is closed
+    if ([self.leftViewController respondsToSelector:@selector(drawerControllerDidClose:)]) {
+        [self.leftViewController drawerControllerDidClose:self];
+    }
+    if ([self.centerViewController respondsToSelector:@selector(drawerControllerDidClose:)]) {
+        [self.centerViewController drawerControllerDidClose:self];
+    }
+    
+    
 }
 
 - (void)toggle {
-    if (self.drawerState == ICSDrawerControllerStateOpen) {
+    if (self.drawerState == ICSDrawerControllerStateOpen ||
+        self.drawerState == ICSDrawerControllerStateOpening) {
         [self close];
     }
-    else if (self.drawerState == ICSDrawerControllerStateClosed) {
+    else if (self.drawerState == ICSDrawerControllerStateClosed ||
+             self.drawerState == ICSDrawerControllerStateClosing) {
         [self open];
     }
 }

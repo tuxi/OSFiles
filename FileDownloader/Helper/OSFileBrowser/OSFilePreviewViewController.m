@@ -8,6 +8,7 @@
 
 #import "OSFilePreviewViewController.h"
 #import "NSString+OSFile.h"
+#import "OSFileAttributeItem.h"
 
 @interface OSFilePreviewViewController ()
 
@@ -20,24 +21,23 @@
 
 @implementation OSFilePreviewViewController
 
+@synthesize fileItem = _fileItem;
+
 ////////////////////////////////////////////////////////////////////////
 #pragma mark - initialize
 ////////////////////////////////////////////////////////////////////////
 
-- (instancetype)initWithPath:(NSString *)file {
+- (instancetype)initWithFileItem:(OSFileAttributeItem *)fileItem {
     self = [super init];
     if (self) {
-        _filePath = file;
-        _textView = [[UITextView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        _fileItem = fileItem;
+        _textView = [[UITextView alloc] initWithFrame:self.view.bounds];
         _textView.editable = NO;
         _textView.backgroundColor = [UIColor whiteColor];
         
-        _imageView = [[UIImageView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-        _imageView.contentMode = UIViewContentModeScaleAspectFit;
+        _webView = [[WKWebView alloc] initWithFrame:self.view.bounds];
         
-        _imageView.backgroundColor = [UIColor whiteColor];
-        
-        [self loadFile:file];
+        [self loadFileWithItem:fileItem];
         
     }
     return self;
@@ -46,9 +46,7 @@
 #ifdef __IPHONE_9_0
 - (NSArray<id<UIPreviewActionItem>> *)previewActionItems {
     
-    BOOL isDirectory;
-    BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:self.filePath isDirectory:&isDirectory];
-    if (!fileExists || isDirectory) {
+    if (!self.fileItem || self.fileItem.isDirectory) {
         return nil;
     }
     
@@ -72,23 +70,13 @@
 
 - (void)infoAction {
     
-    NSDictionary *fileAtt = [[NSFileManager defaultManager] attributesOfItemAtPath:self.filePath error:nil];
-    
-    NSMutableString *attstring = @"".mutableCopy;
-    [fileAtt enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-        if ([key isEqualToString:NSFileSize]) {
-            obj = [NSString transformedFileSizeValue:obj];
-        }
-        [attstring appendString:[NSString stringWithFormat:@"%@:%@\n", key, obj]];
-    }];
-    
-    [[[UIAlertView alloc] initWithTitle:@"File info" message:attstring delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil, nil] show];
+    [[[UIAlertView alloc] initWithTitle:@"File info" message:[self.fileItem description] delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil, nil] show];
 }
 
 - (void)shareAction {
-    NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:self.filePath.lastPathComponent];
+    NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:self.fileItem.displayName];
     NSError *error = nil;
-    [[NSFileManager defaultManager] copyItemAtPath:self.filePath toPath:tmpPath error:&error];
+    [[NSFileManager defaultManager] copyItemAtPath:self.fileItem.path toPath:tmpPath error:&error];
     
     if (error) {
         NSLog(@"ERROR: %@", error);
@@ -114,7 +102,26 @@
              @"archive",
              @"gps",
              @"txt",
-             @"md"];
+             @"md",
+             @"podspec",
+             @"h",
+             @"m",
+             @"c",
+             @"cpp",
+             @"lock",
+             @"pbxproj",
+             @"xcworkspacedata",
+             @"xcuserstate",
+             @"json",
+             @"xml",
+             @"pch",
+             @"storyboard",
+             @"xib",
+             @"moc",
+             @"p",
+             @"java",
+             @"py",
+             @"asc"];
 }
 
 + (BOOL)canOpenFile:(NSString *)filePath {
@@ -128,33 +135,44 @@
 }
 
 
-- (void)loadFile:(NSString *)file {
-    if ([file.pathExtension.lowercaseString isEqualToString:@"db"]) {
+- (void)loadFileWithItem:(OSFileAttributeItem *)item {
+    
+    if ([item.fileExtension.lowercaseString isEqualToString:@"db"]) {
         // 可以读取数据库后展示
         [_textView setText:@"db"];
         self.view = _textView;
         
     }
     
-    else if ([file.pathExtension.lowercaseString isEqualToString:@"xcconfig"] ||
-             [file.pathExtension.lowercaseString isEqualToString:@"version"] ||
-             [file.pathExtension.lowercaseString isEqualToString:@"gps"] ||
-             [file.pathExtension.lowercaseString isEqualToString:@"strings"] ||
-             [file.pathExtension.lowercaseString isEqualToString:@"text"] ||
-             [file.pathExtension.lowercaseString isEqualToString:@"md"]) {
-        NSString *d = [NSString stringWithContentsOfFile:file encoding:NSUTF8StringEncoding error:nil];
-        [_textView setText:d];
-        self.view = _textView;
-    }
-    else {
-        NSDictionary *d = [NSDictionary dictionaryWithContentsOfFile:file];
+    else if ([item.fileExtension.lowercaseString isEqualToString:@"plist"] ||
+             [item.fileExtension.lowercaseString isEqualToString:@"archive"]) {
+        NSDictionary *d = [NSDictionary dictionaryWithContentsOfFile:item.path];
         [_textView setText:[d description]];
         self.view = _textView;
     }
+    else {
+        if (@available(iOS 9.0, *)) {
+            NSData *data = [NSData dataWithContentsOfFile:item.path];
+            [_webView loadData:data MIMEType:self.fileItem.mimeType characterEncodingName:@"UTF-8" baseURL:[NSURL fileURLWithPath:item.parentDirectoryPath]];
+             self.view = _webView;
+            _textView = nil;
+        } else {
+            NSString *d = [NSString stringWithContentsOfFile:item.path encoding:NSUTF8StringEncoding error:nil];
+            [_textView setText:d];
+            self.view = _textView;
+            _webView = nil;
+        }
+    }
     
-    self.title = file.lastPathComponent;
+    self.title = item.displayName;
 }
 
 @end
 
+@implementation OSPreviewViewController
 
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
+}
+
+@end

@@ -7,15 +7,24 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <QuickLook/QuickLook.h>
+#import <WebKit/WebKit.h>
+
+@class OSFileAttributeItem;
+
+@interface OSPreviewViewController : QLPreviewController
+
+@end
 
 @interface OSFilePreviewViewController : UIViewController {
     UITextView *_textView;
-    UIImageView *_imageView;
+    WKWebView *_webView;
+    OSFileAttributeItem *_fileItem;
 }
 
-@property (nonatomic, copy) NSString *filePath;
+@property (nonatomic, copy, readonly) OSFileAttributeItem *fileItem;
 
-- (instancetype)initWithPath:(NSString *)file;
+- (instancetype)initWithFileItem:(OSFileAttributeItem *)fileItem;
 + (BOOL)canOpenFile:(NSString *)filePath;
 
 @end

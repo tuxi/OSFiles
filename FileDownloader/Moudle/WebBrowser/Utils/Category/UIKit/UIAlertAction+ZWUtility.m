@@ -15,7 +15,7 @@ static NSString *const CancelString = @"取消";
 
 + (UIAlertAction *)actionCopyLinkWithURL:(NSURL *)linkURL{
     UIAlertAction *copyAction = [UIAlertAction actionWithTitle:@"拷贝链接" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
-        UIPasteboard *pasteBoard = [UIPasteboard generalPasteboard];
+        UIPasteboard *pasteBoard = [[ApplicationHelper helper] pasteboard];
         pasteBoard.URL = linkURL;
         [[BrowserVC navigationController].view showHUDAtBottomWithMessage:@"拷贝成功"];
     }];

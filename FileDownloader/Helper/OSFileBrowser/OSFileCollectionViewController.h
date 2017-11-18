@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <QuickLook/QuickLook.h>
+#import "OSFilePreviewViewController.h"
 
 FOUNDATION_EXPORT NSNotificationName const OSFileCollectionViewControllerOptionFileCompletionNotification;
 FOUNDATION_EXPORT NSNotificationName const OSFileCollectionViewControllerOptionSelectedFileForCopyNotification;
@@ -43,7 +43,7 @@ typedef NS_ENUM(NSInteger, OSFileCollectionViewControllerMode) {
 
 @end
 
-@interface OSFileCollectionViewController : UIViewController <QLPreviewControllerDataSource>
+@interface OSFileCollectionViewController : UIViewController <QLPreviewControllerDataSource, QLPreviewControllerDelegate>
 
 @property (nonatomic, strong) NSArray<OSFileAttributeItem *> *files;
 @property (nonatomic, assign) BOOL hideDisplayFiles;

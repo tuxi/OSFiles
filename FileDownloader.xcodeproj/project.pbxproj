@@ -24,8 +24,6 @@
 		1845A6451FB6F5730000E39A /* RMPhoneFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A6431FB6F5730000E39A /* RMPhoneFormat.m */; };
 		1845A6461FB6F5730000E39A /* RMPhoneFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A6431FB6F5730000E39A /* RMPhoneFormat.m */; };
 		1845A6471FB6F6C30000E39A /* OSItemProviderHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A6391FB6F3750000E39A /* OSItemProviderHelper.m */; };
-		1845A64A1FB6F7770000E39A /* OSMimeTypeMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A6491FB6F7770000E39A /* OSMimeTypeMap.m */; };
-		1845A64B1FB6F7770000E39A /* OSMimeTypeMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A6491FB6F7770000E39A /* OSMimeTypeMap.m */; };
 		1845A65F1FB71C7E0000E39A /* AppGroupManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A65E1FB71C7E0000E39A /* AppGroupManager.m */; };
 		1845A6601FB71C7E0000E39A /* AppGroupManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A65E1FB71C7E0000E39A /* AppGroupManager.m */; };
 		184DA3F31FB843C0009F29B0 /* OSXMLDocumentItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 184DA3F21FB843C0009F29B0 /* OSXMLDocumentItem.m */; };
@@ -352,6 +350,8 @@
 		18ADEFF41F9E4B460024BA40 /* Socket@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 18ADECA21F9E2C450024BA40 /* Socket@2x.png */; };
 		18C565141FB0197B00699F41 /* YCXMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C565111FB0197B00699F41 /* YCXMenu.m */; };
 		18C565151FB0197B00699F41 /* YCXMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C565131FB0197B00699F41 /* YCXMenuItem.m */; };
+		18DD4F771FC0792F002C6E27 /* OSMimeTypeMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 18DD4F751FC0792E002C6E27 /* OSMimeTypeMap.m */; };
+		18DD4F781FC0798E002C6E27 /* OSMimeTypeMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 18DD4F751FC0792E002C6E27 /* OSMimeTypeMap.m */; };
 		18E8932A1FB5DFED00727EF1 /* DirectoryWatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E8930E1FB5DFED00727EF1 /* DirectoryWatcher.m */; };
 		18E8932B1FB5DFED00727EF1 /* NSDate+ESUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E893101FB5DFED00727EF1 /* NSDate+ESUtilities.m */; };
 		18E8932D1FB5DFED00727EF1 /* NSString+OSFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E893141FB5DFED00727EF1 /* NSString+OSFile.m */; };
@@ -508,8 +508,6 @@
 		1845A6401FB6F4FA0000E39A /* OSPhoneUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSPhoneUtils.m; sourceTree = "<group>"; };
 		1845A6431FB6F5730000E39A /* RMPhoneFormat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMPhoneFormat.m; sourceTree = "<group>"; };
 		1845A6441FB6F5730000E39A /* RMPhoneFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMPhoneFormat.h; sourceTree = "<group>"; };
-		1845A6481FB6F7770000E39A /* OSMimeTypeMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSMimeTypeMap.h; sourceTree = "<group>"; };
-		1845A6491FB6F7770000E39A /* OSMimeTypeMap.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSMimeTypeMap.m; sourceTree = "<group>"; };
 		1845A65D1FB71C7E0000E39A /* AppGroupManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppGroupManager.h; sourceTree = "<group>"; };
 		1845A65E1FB71C7E0000E39A /* AppGroupManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppGroupManager.m; sourceTree = "<group>"; };
 		184DA3F11FB843C0009F29B0 /* OSXMLDocumentItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSXMLDocumentItem.h; sourceTree = "<group>"; };
@@ -971,6 +969,8 @@
 		18DCFC401F263D8F00AC21CA /* OSFileDownloaderDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSFileDownloaderDelegate.m; sourceTree = "<group>"; };
 		18DCFC411F263D8F00AC21CA /* OSFileDownloaderManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSFileDownloaderManager.h; sourceTree = "<group>"; };
 		18DCFC421F263D8F00AC21CA /* OSFileDownloaderManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSFileDownloaderManager.m; sourceTree = "<group>"; };
+		18DD4F751FC0792E002C6E27 /* OSMimeTypeMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSMimeTypeMap.m; sourceTree = "<group>"; };
+		18DD4F761FC0792E002C6E27 /* OSMimeTypeMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSMimeTypeMap.h; sourceTree = "<group>"; };
 		18E8930D1FB5DFED00727EF1 /* DirectoryWatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryWatcher.h; sourceTree = "<group>"; };
 		18E8930E1FB5DFED00727EF1 /* DirectoryWatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DirectoryWatcher.m; sourceTree = "<group>"; };
 		18E8930F1FB5DFED00727EF1 /* NSDate+ESUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+ESUtilities.h"; sourceTree = "<group>"; };
@@ -1248,8 +1248,6 @@
 				185A8EAC1FA42ED3006077CE /* AutoTimer.m */,
 				18566F8D1FA8ADA000EB5416 /* ApplicationHelper.h */,
 				18566F8E1FA8ADA000EB5416 /* ApplicationHelper.m */,
-				1845A6481FB6F7770000E39A /* OSMimeTypeMap.h */,
-				1845A6491FB6F7770000E39A /* OSMimeTypeMap.m */,
 				1845A65D1FB71C7E0000E39A /* AppGroupManager.h */,
 				1845A65E1FB71C7E0000E39A /* AppGroupManager.m */,
 				184DA3F11FB843C0009F29B0 /* OSXMLDocumentItem.h */,
@@ -2266,6 +2264,8 @@
 		18E8930C1FB5DFED00727EF1 /* OSFileBrowser */ = {
 			isa = PBXGroup;
 			children = (
+				18DD4F761FC0792E002C6E27 /* OSMimeTypeMap.h */,
+				18DD4F751FC0792E002C6E27 /* OSMimeTypeMap.m */,
 				18E8930D1FB5DFED00727EF1 /* DirectoryWatcher.h */,
 				18E8930E1FB5DFED00727EF1 /* DirectoryWatcher.m */,
 				18E8930F1FB5DFED00727EF1 /* NSDate+ESUtilities.h */,
@@ -2697,7 +2697,6 @@
 				18EF90D81FB733E70016B969 /* NSString+OSFile.m in Sources */,
 				18EF90F01FB7468E0016B969 /* OSFileCollectionViewCell.m in Sources */,
 				1845A63A1FB6F3750000E39A /* OSItemProviderHelper.m in Sources */,
-				1845A64B1FB6F7770000E39A /* OSMimeTypeMap.m in Sources */,
 				1845A6421FB6F4FA0000E39A /* OSPhoneUtils.m in Sources */,
 				18EF90F31FB7468E0016B969 /* OSFilePreviewViewController.m in Sources */,
 				18EF90F51FB7468E0016B969 /* UIImageView+XYExtension.m in Sources */,
@@ -2708,6 +2707,7 @@
 				18EF90EF1FB746820016B969 /* OSFileBottomHUD.m in Sources */,
 				18EF90EA1FB7467B0016B969 /* DirectoryWatcher.m in Sources */,
 				18EF90EE1FB746820016B969 /* OSFileAttributeItem.m in Sources */,
+				18DD4F781FC0798E002C6E27 /* OSMimeTypeMap.m in Sources */,
 				18EF90F21FB7468E0016B969 /* OSFileCollectionViewFlowLayout.m in Sources */,
 				18EF90ED1FB746820016B969 /* OSFile.m in Sources */,
 				18EF90EB1FB7467B0016B969 /* NSDate+ESUtilities.m in Sources */,
@@ -2720,7 +2720,6 @@
 			files = (
 				1855DF6F1FA38BC8001CCAE8 /* NSObject+IvarList.m in Sources */,
 				18C565151FB0197B00699F41 /* YCXMenuItem.m in Sources */,
-				1845A64A1FB6F7770000E39A /* OSMimeTypeMap.m in Sources */,
 				18ADEF3E1F9E4A860024BA40 /* XYImageViewer.m in Sources */,
 				18ADEEFA1F9E4A3D0024BA40 /* BrowserWebView.m in Sources */,
 				18ADEF231F9E4A860024BA40 /* OSFileDownloaderDelegate.m in Sources */,
@@ -2803,6 +2802,7 @@
 				18ADEF4D1F9E4A860024BA40 /* OSAuthenticatorHelper.m in Sources */,
 				18ADEF151F9E4A530024BA40 /* ZWSQLiteManager.m in Sources */,
 				18ADEF041F9E4A3D0024BA40 /* NSData+ZWUtility.m in Sources */,
+				18DD4F771FC0792F002C6E27 /* OSMimeTypeMap.m in Sources */,
 				18ADEEFB1F9E4A3D0024BA40 /* ErrorPageHelper.m in Sources */,
 				18ADEF031F9E4A3D0024BA40 /* NSCharacterSet+ZWUtility.m in Sources */,
 				18ADEF4E1F9E4A860024BA40 /* OSLoaclNotificationHelper.m in Sources */,

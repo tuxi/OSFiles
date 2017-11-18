@@ -287,7 +287,9 @@
         _titleLabel = label;
         label.translatesAutoresizingMaskIntoConstraints = NO;
         if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_8_4) {
-            [label setFont:[UIFont monospacedDigitSystemFontOfSize:13.0 weight:UIFontWeightRegular]];
+            if (@available(iOS 8.2, *)) {
+                [label setFont:[UIFont monospacedDigitSystemFontOfSize:13.0 weight:UIFontWeightRegular]];
+            }
         } else {
             [label setFont:[UIFont systemFontOfSize:13.0]];
         }
@@ -303,7 +305,9 @@
         _subTitleLabel = label;
         label.translatesAutoresizingMaskIntoConstraints = NO;
         if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_8_4) {
-            [label setFont:[UIFont monospacedDigitSystemFontOfSize:11.0 weight:UIFontWeightRegular]];
+            if (@available(iOS 9.0, *)) {
+                [label setFont:[UIFont monospacedDigitSystemFontOfSize:11.0 weight:UIFontWeightRegular]];
+            }
         } else {
             [label setFont:[UIFont systemFontOfSize:11.0]];
         }

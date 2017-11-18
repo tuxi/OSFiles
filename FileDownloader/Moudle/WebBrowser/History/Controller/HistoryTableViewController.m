@@ -118,7 +118,7 @@ static NSString *const kHistoryTableViewContentSize = @"contentSize";
 }
 
 - (void)copyToPasteBoardWithString:(NSString *)str isURL:(BOOL)isURL{
-    UIPasteboard *pasteBoard = [UIPasteboard generalPasteboard];
+    UIPasteboard *pasteBoard = [[ApplicationHelper helper] pasteboard];
     BOOL isSuccess = YES;
     if (isURL) {
         NSURL *url = [NSURL URLWithString:str];

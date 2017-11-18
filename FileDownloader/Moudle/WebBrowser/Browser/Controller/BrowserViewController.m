@@ -518,7 +518,7 @@ static NSString *const kBrowserViewControllerAddBookmarkFailure = @"添加书签
         if ([url isErrorPageURL]) {
             url = [url originalURLFromErrorURL];
         }
-        UIPasteboard *pasteBoard = [UIPasteboard generalPasteboard];
+        UIPasteboard *pasteBoard = [[ApplicationHelper helper] pasteboard];
         pasteBoard.URL = url;
         success = YES;
     }

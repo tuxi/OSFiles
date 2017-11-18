@@ -12,7 +12,6 @@
 #import "DirectoryWatcher.h"
 #import "OSFileManager.h"
 #import "OSFileAttributeItem.h"
-#import "OSFilePreviewViewController.h"
 #import "UIScrollView+NoDataExtend.h"
 #import "OSFileBottomHUD.h"
 #import "NSString+OSFile.h"
@@ -210,10 +209,6 @@ static const CGFloat windowHeight = 49.0;
 }
 
 - (void)setupViews {
-    self.navigationItem.title = @"文件浏览";
-    if (self.rootDirectoryItem) {
-        self.navigationItem.title = self.rootDirectoryItem.displayName;
-    }
     self.view.backgroundColor = [UIColor colorWithWhite:0.8 alpha:1.0];
     
     [self.view addSubview:self.collectionView];
@@ -293,6 +288,25 @@ static const CGFloat windowHeight = 49.0;
 #pragma mark *** NavigationBar ***
 
 - (void)setupNavigationBar {
+    self.navigationItem.title = @"文件浏览";
+    if (@available(iOS 11.0, *)) {
+        if (!self.directoryArray.count) {
+            // 导航大标题, 上滑到顶部时动态切换大小标题样式 (导航栏高度UINavigationBar = 44/96)
+            self.navigationController.navigationBar.prefersLargeTitles = YES;
+            // 自动模式,依赖于上一个item的设置; 上一个item设置为自动并且当前导航栏prefersLargeTitles=YES,则显示大标题样式;
+            self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeAutomatic;
+            // prefersLargeTitles=YES,滚动到顶部时,当前总是显示大标题样式
+            //        self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeAlways;
+            // prefersLargeTitles=YES,滚动到顶部时,当前也总不会显示大标题样式
+            //        self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeNever;
+        }
+        
+        
+    }
+    if (self.rootDirectoryItem) {
+        self.navigationItem.title = self.rootDirectoryItem.displayName;
+    }
+    
     // 如果数组中只有下载文件夹和iTunes文件夹，就不能显示编辑
     BOOL displayEdit = YES;
     if (self.directoryArray) {
@@ -592,6 +606,10 @@ static const CGFloat windowHeight = 49.0;
         self.indexPath = indexPath;
         UIViewController *vc = [self previewControllerByIndexPath:indexPath];
         [self showDetailController:vc atIndexPath:indexPath];
+        if ([vc isKindOfClass:[OSPreviewViewController class]]) {
+            OSPreviewViewController *pvc = (OSPreviewViewController *)vc;
+            pvc.currentPreviewItemIndex = indexPath.item;
+        }
     }
 }
 
@@ -695,11 +713,12 @@ static const CGFloat windowHeight = 49.0;
                 
             }
             else if ([OSFilePreviewViewController canOpenFile:newItem.path]) {
-                vc = [[OSFilePreviewViewController alloc] initWithPath:newItem.path];
+                vc = [[OSFilePreviewViewController alloc] initWithFileItem:newItem];
             }
-            else if ([QLPreviewController canPreviewItem:[NSURL fileURLWithPath:newItem.path]]) {
-                QLPreviewController *preview= [[QLPreviewController alloc] init];
+            else if ([OSPreviewViewController canPreviewItem:[NSURL fileURLWithPath:newItem.path]]) {
+                OSPreviewViewController *preview= [[OSPreviewViewController alloc] init];
                 preview.dataSource = self;
+                preview.delegate = self;
                 vc = preview;
             }
             else {
@@ -747,11 +766,11 @@ static const CGFloat windowHeight = 49.0;
 }
 
 - (NSInteger)numberOfPreviewItemsInPreviewController:(QLPreviewController *)controller {
-    return 1;
+    return self.files.count;
 }
 
 - (id <QLPreviewItem>)previewController:(QLPreviewController *)controller previewItemAtIndex:(NSInteger) index {
-    NSString *newPath = self.files[self.indexPath.row].path;
+    NSString *newPath = self.files[index].path;
     
     return [NSURL fileURLWithPath:newPath];
 }

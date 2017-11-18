@@ -10,6 +10,7 @@
 #import "NSString+OSFile.h"
 #include <sys/stat.h>
 #import "NSDate+ESUtilities.h"
+#import "OSMimeTypeMap.h"
 
 @implementation OSFile
 @synthesize isDirectory                 = _isDirectory;
@@ -59,6 +60,7 @@
 //@synthesize icon                        = _icon;
 @synthesize targetFile                  = _targetFile;
 @synthesize hideDisplayFiles            = _hideDisplayFiles;
+@synthesize mimeType                    = _mimeType;
 
 + (instancetype)fileWithPath:(NSString *)filePath {
     return [self fileWithPath:filePath error:NULL];
@@ -222,6 +224,9 @@
         _fileExtension = [_fileExtension substringWithRange:NSRangeFromString(@"?")];
     }
     _parentDirectoryPath = [[NSString alloc] initWithString: [_path stringByDeletingLastPathComponent]];
+    if (_fileExtension.length) {
+        _mimeType = [OSMimeTypeMap mimeTypeForExtension:_fileExtension];
+    }
 }
 
 - (void)getFileType
@@ -246,6 +251,7 @@
     {
         _type = [[NSString alloc] initWithString: [_attributes objectForKey: NSFileType]];
     }
+    
 }
 
 - (void)getOwnership

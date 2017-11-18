@@ -255,9 +255,28 @@ static void initializeMapping()
                       // add it first so it will be the default for ExtensionFromMimeType
                       mimeToExtension[@"text/plain"] = @"txt"; extensionToMime[@"txt"] = @"text/plain";
                       mimeToExtension[@"text/plain"] = @"asc"; extensionToMime[@"asc"] = @"text/plain";
-                      mimeToExtension[@"text/plain"] = @"text"; extensionToMime[@"text"] = @"text/plain";
                       mimeToExtension[@"text/plain"] = @"diff"; extensionToMime[@"diff"] = @"text/plain";
-                      mimeToExtension[@"text/plain"] = @"po"; extensionToMime[@"po"] = @"text/plain";     // reserve "pot" for vnd.ms-powerpoint
+                      mimeToExtension[@"text/plain"] = @"po"; extensionToMime[@"po"] = @"text/plain";
+                      
+                      mimeToExtension[@"text/plain"] = @"plist"; extensionToMime[@"plist"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"strings"; extensionToMime[@"strings"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"xcconfig"; extensionToMime[@"xcconfig"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"version"; extensionToMime[@"version"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"archive"; extensionToMime[@"archive"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"gps"; extensionToMime[@"gps"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"md"; extensionToMime[@"md"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"podspec"; extensionToMime[@"podspec"] = @"text/plain";
+                      mimeToExtension[@"text/x-csrc"] = @"m"; extensionToMime[@"m"] = @"text/x-csrc";
+                      mimeToExtension[@"text/plain"] = @"lock"; extensionToMime[@"lock"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"pbxproj"; extensionToMime[@"pbxproj"] = @"text/plain";
+                       mimeToExtension[@"text/plain"] = @"xcworkspacedata"; extensionToMime[@"xcworkspacedata"] = @"text/plain";
+                       mimeToExtension[@"text/plain"] = @"xcuserstate"; extensionToMime[@"xcuserstate"] = @"text/plain";
+                       mimeToExtension[@"text/json"] = @"json"; extensionToMime[@"json"] = @"text/json";
+                      mimeToExtension[@"text/plain"] = @"pch"; extensionToMime[@"pch"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"pch"; extensionToMime[@"pch"] = @"text/plain";
+                      mimeToExtension[@"text/xml"] = @"storyboard"; extensionToMime[@"storyboard"] = @"text/xml";
+                      mimeToExtension[@"text/xml"] = @"xib"; extensionToMime[@"xib"] = @"text/xml";
+                      // reserve "pot" for vnd.ms-powerpoint
                       mimeToExtension[@"text/richtext"] = @"rtx"; extensionToMime[@"rtx"] = @"text/richtext";
                       mimeToExtension[@"text/rtf"] = @"rtf"; extensionToMime[@"rtf"] = @"text/rtf";
                       mimeToExtension[@"text/texmacs"] = @"ts"; extensionToMime[@"ts"] = @"text/texmacs";
