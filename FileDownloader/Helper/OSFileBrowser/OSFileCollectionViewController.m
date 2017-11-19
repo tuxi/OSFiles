@@ -1474,8 +1474,9 @@ __weak id _fileOperationDelegate;
         contentInset.right = 20.0;
         _collectionView.contentInset = contentInset;
         flowLayout.lineMultiplier = 1.19;
-        UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
-        if (orientation == UIInterfaceOrientationLandscapeLeft || orientation == UIInterfaceOrientationLandscapeRight) {
+        
+        UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
+        if (orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight) {
             flowLayout.lineItemCount = 5;
         }
         else {
@@ -1483,6 +1484,7 @@ __weak id _fileOperationDelegate;
         }
     }
 }
+
 
 @end
 

@@ -24,11 +24,32 @@
 @property (nonatomic, strong) UILabel *subTitleLabel;
 @property (nonatomic, strong) UIButton *optionBtn;
 @property (nonatomic, copy) NSString *renameNewName;
-@property (nonatomic, strong) NSArray *constraints;
 
 @end
 
-@implementation OSFileCollectionViewCell
+@implementation OSFileCollectionViewCell {
+    /////////// constraints ///////////
+    __weak NSLayoutConstraint *_iconViewTop;
+    __weak NSLayoutConstraint *_iconViewBottom;
+    __weak NSLayoutConstraint *_iconViewLeft;
+    __weak NSLayoutConstraint *_iconViewWidth;
+    __weak NSLayoutConstraint *_iconViewHeight;
+    __weak NSLayoutConstraint *_iconViewRight;
+    
+    __weak NSLayoutConstraint *_titleLabelTop;
+    __weak NSLayoutConstraint *_titleLabelLeft;
+    __weak NSLayoutConstraint *_titleLabelRight;
+    
+    __weak NSLayoutConstraint *_subTitleLabelBottom;
+    __weak NSLayoutConstraint *_subTitleLabelLeft;
+    __weak NSLayoutConstraint *_subTitleLabelRight;
+    
+    __weak NSLayoutConstraint *_optionBtnCenterY;
+    __weak NSLayoutConstraint *_optionBtnRight;
+    __weak NSLayoutConstraint *_optionBtnWidth;
+    __weak NSLayoutConstraint *_optionBtnBottom;
+    /////////// constraints ///////////
+}
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
@@ -237,53 +258,179 @@
 
 - (void)makeConstraints {
     
-    if (_constraints.count) {
-        [NSLayoutConstraint deactivateConstraints:_constraints];
-    }
+    // 添加通用布局
+    NSLayoutConstraint *iconViewTop = [NSLayoutConstraint constraintWithItem:self.iconView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1.0 constant:10.0];
+    _iconViewTop = iconViewTop;
     
-    NSDictionary *viewDict = @{@"iconView": self.iconView, @"titleLabel": self.titleLabel, @"subTitleLabel": self.subTitleLabel, @"optionBtn": self.optionBtn};
-    if ([OSFileCollectionViewFlowLayout collectionLayoutStyle] == YES) {
-        self.titleLabel.numberOfLines = 1;
-        NSMutableArray *constraints = @[
-                                 [NSLayoutConstraint constraintWithItem:self.iconView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1.0 constant:10.0],
-                                 [NSLayoutConstraint constraintWithItem:self.iconView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-10.0],
-                                 [NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1.0 constant:6.0],
-                                 
-                                 
-                                 [NSLayoutConstraint constraintWithItem:self.subTitleLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-6.0],
-                                 [NSLayoutConstraint constraintWithItem:self.subTitleLabel attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.titleLabel attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0],
-                                 [NSLayoutConstraint constraintWithItem:self.iconView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.iconView attribute:NSLayoutAttributeHeight multiplier:1.0 constant:6.0],
-                                 [NSLayoutConstraint constraintWithItem:self.optionBtn attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0.0]
-                                 ].mutableCopy;
-        [constraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"|-(==10.0)-[iconView]-(==10.0)-[titleLabel]-(10.0)-[optionBtn(==25.0)]-(10.0)-|" options:kNilOptions metrics:nil views:viewDict]];
-        _constraints = constraints;
-    }
-    else {
-        self.titleLabel.numberOfLines = 2;
-        
+    NSLayoutConstraint *iconViewLeft = [NSLayoutConstraint constraintWithItem:self.iconView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10.0];
+    _iconViewLeft = iconViewLeft;
     
-        NSMutableArray *constraints = @[
-                                        [NSLayoutConstraint constraintWithItem:self.iconView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.iconView attribute:NSLayoutAttributeWidth multiplier:1.0 constant:0.0],
-                                         [NSLayoutConstraint constraintWithItem:self.optionBtn attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0.0],
-                                         [NSLayoutConstraint constraintWithItem:self.optionBtn attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0],
-                                         [NSLayoutConstraint constraintWithItem:self.optionBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:25.0],
-                                        [NSLayoutConstraint constraintWithItem:self.subTitleLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-3.0]].mutableCopy;
-        NSArray *array = @[[NSLayoutConstraint constraintsWithVisualFormat:@"|-(==30.0)-[iconView]-(==30.0)-|" options:NSLayoutFormatAlignAllCenterY metrics:nil views:viewDict],
-                           [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(==10.0)-[iconView]-(==20.0)-[titleLabel]" options:kNilOptions metrics:nil views:viewDict],
-                           [NSLayoutConstraint constraintsWithVisualFormat:@"|-3-[titleLabel]-3-|" options:kNilOptions metrics:nil views:viewDict],
-                           [NSLayoutConstraint constraintsWithVisualFormat:@"|-3-[subTitleLabel]-3-[optionBtn]|" options:kNilOptions metrics:nil views:viewDict]];
-        
-        [constraints addObjectsFromArray:[array valueForKeyPath:@"@unionOfArrays.self"]];
-        _constraints = constraints;
-        
-    }
-    [NSLayoutConstraint activateConstraints:_constraints];
     
-//    [self.contentView setNeedsDisplay];
+    NSLayoutConstraint *subTitleLabelBottom = [NSLayoutConstraint constraintWithItem:self.subTitleLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-6.0];
+    _subTitleLabelBottom = subTitleLabelBottom;
+    NSLayoutConstraint *subTitleLabelLeft = [NSLayoutConstraint constraintWithItem:self.subTitleLabel attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.titleLabel attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0];
+    _subTitleLabelLeft = subTitleLabelLeft;
+    NSLayoutConstraint *subTitleLabelRight = [NSLayoutConstraint constraintWithItem:self.subTitleLabel attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.titleLabel attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0.0];
+    _subTitleLabelRight = subTitleLabelRight;
+    
+    NSLayoutConstraint *optionBtnRight = [NSLayoutConstraint constraintWithItem:self.optionBtn attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-10.0];
+    _optionBtnRight = optionBtnRight;
+    NSLayoutConstraint *optionBtnWidth = [NSLayoutConstraint constraintWithItem:self.optionBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:25.0];
+    _optionBtnWidth = optionBtnWidth;
+    
+    NSArray *constraints = @[
+                             iconViewTop, iconViewLeft,
+                             subTitleLabelBottom, subTitleLabelLeft,
+                             subTitleLabelRight, optionBtnRight, optionBtnWidth];
+    [NSLayoutConstraint activateConstraints:constraints];
+    
+    // 根据style更新布局
+    [self invalidateConstraints];
+    
 }
 
 - (void)invalidateConstraints {
-    [self makeConstraints];
+    
+    NSMutableArray *deactivateConstraints = @[].mutableCopy;
+    NSMutableArray *activateConstraints = @[].mutableCopy;
+    if ([OSFileCollectionViewFlowLayout collectionLayoutStyle] == YES) {
+        self.titleLabel.numberOfLines = 1;
+        
+        _iconViewLeft.constant = 10.0;
+        _iconViewTop.constant = 10.0;
+        _subTitleLabelBottom.constant = -6.0;
+        _subTitleLabelLeft.constant = 0.0;
+        _optionBtnRight.constant = -10.0;
+        _optionBtnWidth.constant = 25.0;
+        
+        if (_optionBtnBottom) {
+            [deactivateConstraints addObject:_optionBtnBottom];
+        }
+        if (_iconViewRight) {
+            [deactivateConstraints addObject:_iconViewRight];
+        }
+        
+        if (_iconViewBottom) {
+            [NSLayoutConstraint deactivateConstraints:@[_iconViewBottom]];
+        }
+        NSLayoutConstraint *iconViewBottom = [NSLayoutConstraint constraintWithItem:self.iconView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-10.0];
+        _iconViewBottom = iconViewBottom;
+        [activateConstraints addObject:iconViewBottom];
+        
+        
+        NSLayoutConstraint *iconViewWidth = [NSLayoutConstraint constraintWithItem:self.iconView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.iconView attribute:NSLayoutAttributeHeight multiplier:1.0 constant:6.0];
+        _iconViewWidth = iconViewWidth;
+        [activateConstraints addObject:iconViewWidth];
+        
+        if (_iconViewHeight) {
+            [deactivateConstraints addObject:_iconViewHeight];
+        }
+        if (_titleLabelTop) {
+            [NSLayoutConstraint deactivateConstraints:@[_titleLabelTop]];
+        }
+        NSLayoutConstraint *titleLabelTop = [NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1.0 constant:6.0];
+        _titleLabelTop = titleLabelTop;
+        [activateConstraints addObject:titleLabelTop];
+        
+        if (_titleLabelLeft) {
+            [NSLayoutConstraint deactivateConstraints:@[_titleLabelLeft]];
+        }
+        NSLayoutConstraint *titleLabelLeft = [NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.iconView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:10.0];
+        _titleLabelLeft = titleLabelLeft;
+        [activateConstraints addObject:titleLabelLeft];
+        
+        
+        if (_titleLabelRight) {
+            [NSLayoutConstraint deactivateConstraints:@[_titleLabelRight]];
+        }
+        NSLayoutConstraint *titleLabelRight = [NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.optionBtn attribute:NSLayoutAttributeLeading multiplier:1.0 constant:-10.0];
+        _titleLabelRight = titleLabelRight;
+        [activateConstraints addObject:titleLabelRight];
+        
+        if (!_optionBtnCenterY) {
+            NSLayoutConstraint *optionBtnCenterY = [NSLayoutConstraint constraintWithItem:self.optionBtn attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0.0];
+            _optionBtnCenterY = optionBtnCenterY;
+            [activateConstraints addObject:optionBtnCenterY];
+        }
+        _optionBtnCenterY.constant = 0.0;
+    }
+    
+    else {
+        
+        self.titleLabel.numberOfLines = 2;
+        
+        _iconViewTop.constant = 10.0;
+        _iconViewLeft.constant = 30.0;
+        _subTitleLabelBottom.constant = -3.0;
+        _subTitleLabelLeft.constant = 0.0;
+        _optionBtnRight.constant = 0.0;// ok
+        _optionBtnWidth.constant = 25.0; // OK
+        
+        if (_optionBtnCenterY) {
+            [deactivateConstraints addObject:_optionBtnCenterY];
+        }
+        
+        if (_iconViewBottom) {
+            [NSLayoutConstraint deactivateConstraints:@[_iconViewBottom]];
+        }
+        NSLayoutConstraint *iconViewBottom = [NSLayoutConstraint constraintWithItem:self.iconView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.titleLabel attribute:NSLayoutAttributeTop multiplier:1.0 constant:-20.0];
+        _iconViewBottom = iconViewBottom;
+        [activateConstraints addObject:iconViewBottom];
+        
+        
+        if (!_iconViewHeight) {
+            NSLayoutConstraint *iconViewHeight = [NSLayoutConstraint constraintWithItem:self.iconView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.iconView attribute:NSLayoutAttributeWidth multiplier:1.0 constant:0.0];
+            _iconViewHeight = iconViewHeight;
+            [activateConstraints addObject:iconViewHeight];
+        }
+        _iconViewHeight.constant = 0.0;
+        
+        if (_iconViewWidth) {
+            [deactivateConstraints addObject:_iconViewWidth];
+        }
+        if (!_iconViewRight) {
+            NSLayoutConstraint *iconViewRight = [NSLayoutConstraint constraintWithItem:self.iconView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-30.0];
+            _iconViewRight = iconViewRight;
+            [activateConstraints addObject:iconViewRight];
+        }
+        _iconViewRight.constant = -30.0;
+        
+        if (_titleLabelTop) {
+            [NSLayoutConstraint deactivateConstraints:@[_titleLabelTop]];
+        }
+        
+        
+        if (_titleLabelLeft) {
+            [NSLayoutConstraint deactivateConstraints:@[_titleLabelLeft]];
+        }
+        NSLayoutConstraint *titleLabelLeft = [NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeLeading multiplier:1.0 constant:3.0];
+        _titleLabelLeft = titleLabelLeft;
+        [activateConstraints addObject:titleLabelLeft];
+        
+        if (_titleLabelRight) {
+            [NSLayoutConstraint deactivateConstraints:@[_titleLabelRight]];
+        }
+        NSLayoutConstraint *titleLabelRight = [NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-3.0];
+        _titleLabelRight = titleLabelRight;
+        [activateConstraints addObject:titleLabelRight];
+        
+        if (!_optionBtnBottom) {
+            NSLayoutConstraint *optionBtnBottom = [NSLayoutConstraint constraintWithItem:self.optionBtn attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0];
+            _optionBtnBottom = optionBtnBottom;
+            [activateConstraints addObject:optionBtnBottom];
+        }
+        _optionBtnBottom.constant = 0.0; // OK
+        
+        
+    }
+    if (deactivateConstraints.count) {
+        [NSLayoutConstraint deactivateConstraints:deactivateConstraints];
+    }
+    
+    if (activateConstraints.count) {
+        [NSLayoutConstraint activateConstraints:activateConstraints];
+    }
+    
 }
 
 - (UIButton *)optionBtn {
@@ -312,10 +459,8 @@
         label.lineBreakMode = NSLineBreakByTruncatingTail;
         _titleLabel = label;
         label.translatesAutoresizingMaskIntoConstraints = NO;
-        if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_8_4) {
-            if (@available(iOS 8.2, *)) {
-                [label setFont:[UIFont monospacedDigitSystemFontOfSize:13.0 weight:UIFontWeightRegular]];
-            }
+        if (@available(iOS 9.0, *)) {
+            [label setFont:[UIFont monospacedDigitSystemFontOfSize:13.0 weight:UIFontWeightRegular]];
         } else {
             [label setFont:[UIFont systemFontOfSize:13.0]];
         }
