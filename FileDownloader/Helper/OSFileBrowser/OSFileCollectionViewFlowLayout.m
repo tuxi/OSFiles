@@ -14,7 +14,10 @@ typedef NS_ENUM(NSUInteger, OSLineDimensionType) {
     OSLineDimensionTypeExtension
 };
 
+NSNotificationName const OSFileCollectionLayoutStyleDidChangeNotification = @"OSFileCollectionLayoutStyleDidChangeNotification";
+
 static OSLineDimensionType const OSLineDimensionTypeDefault = OSLineDimensionTypeSize;
+static NSString * const OSFileCollectionViewFlowLayoutNumItemsOnLineKey = @"OSFileCollectionViewFlowLayoutNumItemsOnLineKey";
 
 static CGFloat const OSLineSizeDefault = 0;
 static CGFloat const OSLineMutliplierDefault = 1;
@@ -117,7 +120,7 @@ static CGFloat const OSLineExtensionDefault = 0;
     switch (self.scrollDirection) {
         case UICollectionViewScrollDirectionHorizontal:
             size.width = self.numberOfLines * self.calculatedItemSize.width;
-            // Add spacings
+            // 添加间距
             if (self.numberOfLines > 0) {
                 size.width += (self.numberOfLines - 1) * self.lineSpacing;
             }
@@ -128,7 +131,7 @@ static CGFloat const OSLineExtensionDefault = 0;
         case UICollectionViewScrollDirectionVertical:
             size.width = [self constrainedCollectionViewDimension];
             size.height = self.numberOfLines * self.calculatedItemSize.height;
-            // Add spacings
+            // 添加间距
             if (self.numberOfLines > 0) {
                 size.height += (self.numberOfLines - 1) * self.lineSpacing;
             }
@@ -404,8 +407,9 @@ static CGFloat const OSLineExtensionDefault = 0;
             break;
     }
     
+    // 添加头部高度和间距值
     if (indexPath.section == 0) {
-        frame.origin.y += self.headerSize.height + 20.0;
+        frame.origin.y += self.headerSize.height + self.lineSpacing;
     }
     
     attrs.frame = frame;
@@ -553,6 +557,21 @@ static CGFloat const OSLineExtensionDefault = 0;
     }
     
     return [NSString stringWithFormat:@"<%@: %p; scrollDirection = %@; lineDimension = %@; lineItemCount = %llu; itemSpacing = %.3lf; lineSpacing = %.3lf; sectionsStartOnNewLine = %@>", NSStringFromClass([self class]), self, (self.scrollDirection == UICollectionViewScrollDirectionVertical ? @"Vertical" : @"Horizontal"), lineDimension, (unsigned long long) self.lineItemCount, self.itemSpacing, self.lineSpacing, (self.sectionsStartOnNewLine ? @"YES" : @"NO")];
+}
+
+
++ (NSNumber *)singleItemOnLine {
+    NSNumber *res = [[NSUserDefaults standardUserDefaults] objectForKey:OSFileCollectionViewFlowLayoutNumItemsOnLineKey];
+    return res;
+}
+
++ (void)setSingleItemOnLine:(NSNumber *)singleItemOnLine {
+    if ([[self singleItemOnLine] isEqual:singleItemOnLine]) {
+        return;
+    }
+    [[NSUserDefaults standardUserDefaults] setObject:singleItemOnLine forKey:OSFileCollectionViewFlowLayoutNumItemsOnLineKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    [[NSNotificationCenter defaultCenter] postNotificationName:OSFileCollectionLayoutStyleDidChangeNotification object:nil userInfo:@{@"OSFileCollectionLayoutStyle": [singleItemOnLine isEqual:@(YES)] ? @(OSFileCollectionLayoutStyleSingleItemOnLine): @(OSFileCollectionLayoutStyleMultipleItemOnLine)}];
 }
 
 @end

@@ -17,6 +17,7 @@
     if (self = [super initWithPath:filePath hideDisplayFiles:hideDisplayFiles error:error]) {
         _path = filePath;
         self.status = OSFileAttributeItemStatusDefault;
+        self.needReLoyoutItem = NO;
     }
     return self;
 }
@@ -40,6 +41,9 @@
 - (UIImage *)icon {
     if ([self.path isEqualToString:[NSString getICloudCacheFolder]]) {
         return [UIImage OSFileBrowserImageNamed:@"table-folder-icloud"];
+    }
+    else if ([self.path isEqualToString:[NSString getDocumentPath]]) {
+        return [UIImage OSFileBrowserImageNamed:@"table-folder-itunes-files-sharing"];
     }
     return [super icon];
 }

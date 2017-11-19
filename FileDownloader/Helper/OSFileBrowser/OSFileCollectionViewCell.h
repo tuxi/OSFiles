@@ -24,5 +24,8 @@
 @property (nonatomic, strong) OSFileAttributeItem *fileModel;
 @property (nonatomic, weak) id<OSFileCollectionViewCellDelegate> delegate;
 
+/// 重新布局
+- (void)invalidateConstraints;
+
 @end
 

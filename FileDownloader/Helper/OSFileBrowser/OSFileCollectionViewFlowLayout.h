@@ -8,6 +8,13 @@
 
 @import UIKit;
 
+FOUNDATION_EXPORT NSNotificationName const OSFileCollectionLayoutStyleDidChangeNotification;
+
+typedef NS_ENUM(NSInteger, OSFileCollectionLayoutStyle) {
+    OSFileCollectionLayoutStyleMultipleItemOnLine, // 一行可以有多个item
+    OSFileCollectionLayoutStyleSingleItemOnLine, // 一行只有一个item
+};
+
 @interface OSFileCollectionViewFlowLayout : UICollectionViewFlowLayout
 
 @property (nonatomic, assign) IBInspectable UICollectionViewScrollDirection scrollDirection;
@@ -28,6 +35,9 @@
 /// 设置collectionView 头部的尺寸，自定义UICollectionViewFlowLayout后，设置headerReferenceSize无效，并且导致不走代理方法
 /// 头部视图的尺寸，当为{0,0}时没有头部视图, 不需要再headerReferenceSize了
 @property (nonatomic, assign) IBInspectable CGSize headerSize;
+
+/// 记录每行是否只有单个item，用来布局cell的，这是控制全局collectionView cell的显示
+@property (nonatomic, strong, class) NSNumber *singleItemOnLine;
 
 @end
 

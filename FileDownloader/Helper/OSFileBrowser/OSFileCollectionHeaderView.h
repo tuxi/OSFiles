@@ -7,9 +7,23 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "OSFileCollectionViewFlowLayout.h"
 
 FOUNDATION_EXPORT NSString * const OSFileCollectionHeaderViewDefaultIdentifier;
 
+@class OSFileCollectionHeaderView, OSFileCollectionViewFlowLayout;
+
+@protocol OSFileCollectionHeaderViewDelegate <NSObject>
+
+@optional
+- (void)fileCollectionHeaderView:(OSFileCollectionHeaderView *)headerView
+                   reLayoutStyle:(OSFileCollectionLayoutStyle)style;
+
+@end
+
 @interface OSFileCollectionHeaderView : UICollectionReusableView
+
+@property (nonatomic, weak) id<OSFileCollectionHeaderViewDelegate> delegate;
+
 
 @end

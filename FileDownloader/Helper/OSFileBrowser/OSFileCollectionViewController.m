@@ -41,7 +41,7 @@ static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
 static const CGFloat windowHeight = 49.0;
 
 #ifdef __IPHONE_9_0
-@interface OSFileCollectionViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIViewControllerPreviewingDelegate, NoDataPlaceholderDelegate, OSFileCollectionViewCellDelegate, OSFileBottomHUDDelegate>
+@interface OSFileCollectionViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIViewControllerPreviewingDelegate, NoDataPlaceholderDelegate, OSFileCollectionViewCellDelegate, OSFileBottomHUDDelegate, OSFileCollectionHeaderViewDelegate>
 #else
 @interface OSFileCollectionViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NoDataPlaceholderDelegate, OSFileCollectionViewCellDelegate, OSFileBottomHUDDelegate>
 #endif
@@ -113,9 +113,10 @@ static const CGFloat windowHeight = 49.0;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rotateToInterfaceOrientation) name:UIDeviceOrientationDidChangeNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(optionFileCompletion:) name:OSFileCollectionViewControllerOptionFileCompletionNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(collectionReLayoutStyle) name:OSFileCollectionLayoutStyleDidChangeNotification object:nil];
     
     [self setupNavigationBar];
-    
+
 }
 
 /// 初始化需要监听的目录
@@ -155,7 +156,6 @@ static const CGFloat windowHeight = 49.0;
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self setupViews];
-    
     __weak typeof(self) weakSelf = self;
     [self reloadFilesWithCallBack:^{
         [weakSelf showBottomTip];
@@ -631,15 +631,15 @@ static const CGFloat windowHeight = 49.0;
     
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
         OSFileCollectionHeaderView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:OSFileCollectionHeaderViewDefaultIdentifier forIndexPath:indexPath];
-        headerView.backgroundColor = [UIColor blueColor];
+        headerView.delegate = self;
         return headerView;
     }
     
     return nil;
 }
-////////////////////////////////////////////////////////////////////////
-#pragma mark -
-////////////////////////////////////////////////////////////////////////
+
+
+#pragma mark *** Show detail controller ***
 
 - (void)showDetailController:(UIViewController *)viewController parentPath:(NSString *)parentPath {
     if (!viewController) {
@@ -822,9 +822,17 @@ static const CGFloat windowHeight = 49.0;
 
 - (void)makeCollectionViewConstr {
     
-    NSDictionary *views = NSDictionaryOfVariableBindings(_collectionView);
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_collectionView]|" options:0 metrics:nil views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_collectionView]|" options:0 metrics:nil views:views]];
+    if (@available(iOS 11.0, *)) {
+        NSLayoutConstraint *top = [self.collectionView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor];
+        NSLayoutConstraint *left = [self.collectionView.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor];
+        NSLayoutConstraint *right = [self.collectionView.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor];
+        NSLayoutConstraint *bottom = [self.collectionView.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor];
+        [NSLayoutConstraint activateConstraints:@[top, left, right, bottom]];
+    } else {
+        NSDictionary *views = NSDictionaryOfVariableBindings(_collectionView);
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_collectionView]|" options:0 metrics:nil views:views]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_collectionView]|" options:0 metrics:nil views:views]];
+    }
 }
 
 #pragma mark *** Setter getter ***
@@ -863,15 +871,8 @@ static const CGFloat windowHeight = 49.0;
         _flowLayout = layout;
         layout.itemSpacing = 20.0;
         layout.lineSpacing = 20.0;
-        layout.lineSize = 30.0;
-        UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
-        if (orientation == UIInterfaceOrientationLandscapeLeft || orientation == UIInterfaceOrientationLandscapeRight) {
-            layout.lineItemCount = 5;
-        }
-        else {
-            layout.lineItemCount = 3;
-        }
-        layout.lineMultiplier = 1.19;
+        
+        [self updateCollectionViewFlowLayout:_flowLayout];
         layout.scrollDirection = UICollectionViewScrollDirectionVertical;
         layout.sectionsStartOnNewLine = NO;
         layout.headerSize = CGSizeMake(self.view.bounds.size.width, 44.0);
@@ -890,7 +891,17 @@ static const CGFloat windowHeight = 49.0;
         [collectionView registerClass:[OSFileCollectionHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:OSFileCollectionHeaderViewDefaultIdentifier];
         _collectionView = collectionView;
         _collectionView.translatesAutoresizingMaskIntoConstraints = NO;
-        _collectionView.contentInset = UIEdgeInsetsMake(0, 20, 20, 20);
+        if (![OSFileCollectionViewFlowLayout singleItemOnLine] || ![[OSFileCollectionViewFlowLayout singleItemOnLine] isEqual:@(YES)]) {
+            UIEdgeInsets inset = _collectionView.contentInset;
+            inset.left = 20.0;
+            inset.right = 20.0;
+            inset.bottom = 20.0;
+            _collectionView.contentInset = inset;
+        }
+        else {
+          _collectionView.contentInset = UIEdgeInsetsMake(0, 0, 20.0, 0);
+        }
+       
     }
     return _collectionView;
 }
@@ -1213,6 +1224,25 @@ static const CGFloat windowHeight = 49.0;
     [self reloadFiles];
 }
 
+#pragma mark *** OSFileCollectionHeaderViewDelegate ***
+
+- (void)collectionReLayoutStyle {
+    
+    [self updateCollectionViewFlowLayout:_flowLayout];
+    [self.files enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(OSFileAttributeItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        obj.needReLoyoutItem = YES;
+    }];
+    [self.collectionView.visibleCells enumerateObjectsUsingBlock:^(__kindof OSFileCollectionViewCell * _Nonnull cell, NSUInteger idx, BOOL * _Nonnull stop) {
+        [cell invalidateConstraints];
+        [UIView animateWithDuration:0.18 animations:^{
+            [cell.contentView layoutIfNeeded];
+        }];
+    }];
+    
+    [self.flowLayout invalidateLayout];
+}
+
+
 #pragma mark *** File operation ***
 
 /// copy 文件
@@ -1421,15 +1451,34 @@ __weak id _fileOperationDelegate;
 #pragma mark -
 ////////////////////////////////////////////////////////////////////////
 - (void)rotateToInterfaceOrientation {
-    UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
-    if (orientation == UIInterfaceOrientationLandscapeLeft || orientation == UIInterfaceOrientationLandscapeRight) {
-        self.flowLayout.lineItemCount = 5;
-    }
-    else {
-        self.flowLayout.lineItemCount = 3;
-    }
+    [self updateCollectionViewFlowLayout:self.flowLayout];
     /// 屏幕旋转时重新布局item
     [self.collectionView.collectionViewLayout invalidateLayout];
+}
+
+- (void)updateCollectionViewFlowLayout:(OSFileCollectionViewFlowLayout *)flowLayout {
+    if ([OSFileCollectionViewFlowLayout singleItemOnLine] && [[OSFileCollectionViewFlowLayout singleItemOnLine] isEqual:@(YES)]) {
+        flowLayout.lineItemCount = 1;
+        flowLayout.lineMultiplier = 0.12;
+        UIEdgeInsets contentInset = self.collectionView.contentInset;
+        contentInset.left = 0.0;
+        contentInset.right = 0.0;
+        _collectionView.contentInset = contentInset;
+    }
+    else {
+        UIEdgeInsets contentInset = self.collectionView.contentInset;
+        contentInset.left = 20.0;
+        contentInset.right = 20.0;
+        _collectionView.contentInset = contentInset;
+        flowLayout.lineMultiplier = 1.19;
+        UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+        if (orientation == UIInterfaceOrientationLandscapeLeft || orientation == UIInterfaceOrientationLandscapeRight) {
+            flowLayout.lineItemCount = 5;
+        }
+        else {
+            flowLayout.lineItemCount = 3;
+        }
+    }
 }
 
 @end
