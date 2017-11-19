@@ -22,11 +22,13 @@
 #import "OSFileCollectionHeaderView.h"
 
 #define dispatch_main_safe_async(block)\
-if ([NSThread isMainThread]) {\
-block();\
-} else {\
-dispatch_async(dispatch_get_main_queue(), block);\
+    if ([NSThread isMainThread]) {\
+        block();\
+    } else {\
+    dispatch_async(dispatch_get_main_queue(), block);\
 }
+
+#define kFileViewerGlobleColor [UIColor colorWithRed:36/255.0 green:41/255.0 blue:46/255.0 alpha:1.0]
 
 NSNotificationName const OSFileCollectionViewControllerOptionFileCompletionNotification = @"OptionFileCompletionNotification";
 NSNotificationName const OSFileCollectionViewControllerOptionSelectedFileForCopyNotification = @"OptionSelectedFileForCopyNotification";
@@ -857,7 +859,7 @@ static const CGFloat windowHeight = 49.0;
                                                               [[OSFileBottomHUDItem alloc] initWithTitle:@"文件夹" image:nil],
                                                               ] toView:self.view];
         _bottomHUD.delegate = self;
-        _bottomHUD.backgroundColor = [UIColor colorWithRed:36/255.0 green:41/255.0 blue:46/255.0 alpha:1.0];
+        _bottomHUD.backgroundColor = kFileViewerGlobleColor;
     }
     return _bottomHUD;
 }
@@ -869,9 +871,6 @@ static const CGFloat windowHeight = 49.0;
         
         OSFileCollectionViewFlowLayout *layout = [OSFileCollectionViewFlowLayout new];
         _flowLayout = layout;
-        layout.itemSpacing = 20.0;
-        layout.lineSpacing = 20.0;
-        
         [self updateCollectionViewFlowLayout:_flowLayout];
         layout.scrollDirection = UICollectionViewScrollDirectionVertical;
         layout.sectionsStartOnNewLine = NO;
@@ -891,7 +890,7 @@ static const CGFloat windowHeight = 49.0;
         [collectionView registerClass:[OSFileCollectionHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:OSFileCollectionHeaderViewDefaultIdentifier];
         _collectionView = collectionView;
         _collectionView.translatesAutoresizingMaskIntoConstraints = NO;
-        if (![OSFileCollectionViewFlowLayout singleItemOnLine] || ![[OSFileCollectionViewFlowLayout singleItemOnLine] isEqual:@(YES)]) {
+        if ([OSFileCollectionViewFlowLayout collectionLayoutStyle] == NO) {
             UIEdgeInsets inset = _collectionView.contentInset;
             inset.left = 20.0;
             inset.right = 20.0;
@@ -915,7 +914,7 @@ static const CGFloat windowHeight = 49.0;
         bottomTipButton.translatesAutoresizingMaskIntoConstraints = NO;
         [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|[bottomTipButton]|" options:kNilOptions metrics:nil views:@{@"bottomTipButton": bottomTipButton}]];
         [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[bottomTipButton(==49.0)]|" options:kNilOptions metrics:nil views:@{@"bottomTipButton": bottomTipButton}]];
-        _bottomTipButton.backgroundColor = [UIColor colorWithRed:78/255.0 green:93/255.0 blue:115/255.0 alpha:1.0];
+        _bottomTipButton.backgroundColor = kFileViewerGlobleColor;
         [bottomTipButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         bottomTipButton.titleLabel.numberOfLines = 3;
         bottomTipButton.titleLabel.adjustsFontSizeToFitWidth = YES;
@@ -1234,8 +1233,8 @@ static const CGFloat windowHeight = 49.0;
     }];
     [self.collectionView.visibleCells enumerateObjectsUsingBlock:^(__kindof OSFileCollectionViewCell * _Nonnull cell, NSUInteger idx, BOOL * _Nonnull stop) {
         [cell invalidateConstraints];
-        [UIView animateWithDuration:0.18 animations:^{
-            [cell.contentView layoutIfNeeded];
+        [UIView animateWithDuration:0.1 animations:^{
+            [cell layoutIfNeeded];
         }];
     }];
     
@@ -1457,7 +1456,9 @@ __weak id _fileOperationDelegate;
 }
 
 - (void)updateCollectionViewFlowLayout:(OSFileCollectionViewFlowLayout *)flowLayout {
-    if ([OSFileCollectionViewFlowLayout singleItemOnLine] && [[OSFileCollectionViewFlowLayout singleItemOnLine] isEqual:@(YES)]) {
+    if ([OSFileCollectionViewFlowLayout collectionLayoutStyle] == YES) {
+        flowLayout.itemSpacing = 10.0;
+        flowLayout.lineSpacing = 10.0;
         flowLayout.lineItemCount = 1;
         flowLayout.lineMultiplier = 0.12;
         UIEdgeInsets contentInset = self.collectionView.contentInset;
@@ -1466,6 +1467,8 @@ __weak id _fileOperationDelegate;
         _collectionView.contentInset = contentInset;
     }
     else {
+        flowLayout.itemSpacing = 20.0;
+        flowLayout.lineSpacing = 20.0;
         UIEdgeInsets contentInset = self.collectionView.contentInset;
         contentInset.left = 20.0;
         contentInset.right = 20.0;

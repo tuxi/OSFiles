@@ -35,7 +35,12 @@
     [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
     [[UINavigationBar appearance] setBarTintColor:kGlobalColor];
     [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor whiteColor]}];
+    if (@available(iOS 11.0, *)) {
+        [[UINavigationBar appearance] setLargeTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor whiteColor]}];
+    }
     [[UINavigationBar appearance] setShadowImage:[UIImage new]];
+    
+    self.view.backgroundColor = kGlobalColor;
     
     // 为了显示浏览器中超出父控件的子控件
     for (UIView *view in self.view.subviews) {

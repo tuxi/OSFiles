@@ -37,7 +37,7 @@ typedef NS_ENUM(NSInteger, OSFileCollectionLayoutStyle) {
 @property (nonatomic, assign) IBInspectable CGSize headerSize;
 
 /// 记录每行是否只有单个item，用来布局cell的，这是控制全局collectionView cell的显示
-@property (nonatomic, strong, class) NSNumber *singleItemOnLine;
+@property (nonatomic, assign, class) OSFileCollectionLayoutStyle collectionLayoutStyle;
 
 @end
 

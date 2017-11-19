@@ -560,18 +560,21 @@ static CGFloat const OSLineExtensionDefault = 0;
 }
 
 
-+ (NSNumber *)singleItemOnLine {
++ (OSFileCollectionLayoutStyle)collectionLayoutStyle {
     NSNumber *res = [[NSUserDefaults standardUserDefaults] objectForKey:OSFileCollectionViewFlowLayoutNumItemsOnLineKey];
-    return res;
+    if (!res) {
+        return OSFileCollectionLayoutStyleMultipleItemOnLine;
+    }
+    return (OSFileCollectionLayoutStyle)[res integerValue];
 }
 
-+ (void)setSingleItemOnLine:(NSNumber *)singleItemOnLine {
-    if ([[self singleItemOnLine] isEqual:singleItemOnLine]) {
++ (void)setCollectionLayoutStyle:(OSFileCollectionLayoutStyle)collectionLayoutStyle {
+    if ([self collectionLayoutStyle] == collectionLayoutStyle) {
         return;
     }
-    [[NSUserDefaults standardUserDefaults] setObject:singleItemOnLine forKey:OSFileCollectionViewFlowLayoutNumItemsOnLineKey];
+    [[NSUserDefaults standardUserDefaults] setObject:@(collectionLayoutStyle) forKey:OSFileCollectionViewFlowLayoutNumItemsOnLineKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    [[NSNotificationCenter defaultCenter] postNotificationName:OSFileCollectionLayoutStyleDidChangeNotification object:nil userInfo:@{@"OSFileCollectionLayoutStyle": [singleItemOnLine isEqual:@(YES)] ? @(OSFileCollectionLayoutStyleSingleItemOnLine): @(OSFileCollectionLayoutStyleMultipleItemOnLine)}];
+    [[NSNotificationCenter defaultCenter] postNotificationName:OSFileCollectionLayoutStyleDidChangeNotification object:nil userInfo:@{@"OSFileCollectionLayoutStyle": @(collectionLayoutStyle)}];
 }
 
 @end

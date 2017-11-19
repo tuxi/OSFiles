@@ -242,7 +242,7 @@
     }
     
     NSDictionary *viewDict = @{@"iconView": self.iconView, @"titleLabel": self.titleLabel, @"subTitleLabel": self.subTitleLabel, @"optionBtn": self.optionBtn};
-    if ([OSFileCollectionViewFlowLayout singleItemOnLine] && [[OSFileCollectionViewFlowLayout singleItemOnLine] isEqual:@(YES)]) {
+    if ([OSFileCollectionViewFlowLayout collectionLayoutStyle] == YES) {
         self.titleLabel.numberOfLines = 1;
         NSMutableArray *constraints = @[
                                  [NSLayoutConstraint constraintWithItem:self.iconView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1.0 constant:10.0],
