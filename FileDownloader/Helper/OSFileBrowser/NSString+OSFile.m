@@ -242,6 +242,17 @@
     return localFolderPath;
 }
 
++ (NSString *)getICloudCacheFolder {
+    NSString *cacheFolder = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
+    NSString *localFolderPath = [cacheFolder stringByAppendingPathComponent:@"OSFilesICloudDrive"];
+    BOOL isDirectory, isExist;
+    isExist = [[NSFileManager defaultManager] fileExistsAtPath:localFolderPath isDirectory:&isDirectory];
+    if (!isExist || !isDirectory) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:localFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    return localFolderPath;
+}
+
 
 + (NSString *)getRootPath {
     return rootPath;

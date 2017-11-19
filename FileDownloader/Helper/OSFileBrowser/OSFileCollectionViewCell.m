@@ -84,7 +84,7 @@
     /// 根据文件类型显示
     self.titleLabel.text = fileModel.displayName;
     if (fileModel.isDirectory) {
-        self.iconView.image = [UIImage OSFileBrowserImageNamed:@"table-folder"];
+        self.iconView.image = fileModel.icon;
         self.subTitleLabel.text = [NSString stringWithFormat:@"%ld个文件", fileModel.numberOfSubFiles];
     }
     else {
@@ -98,14 +98,8 @@
                 
             }];
         }
-        else if (fileModel.isArchive) {
-            self.iconView.image = [UIImage OSFileBrowserImageNamed:@"table-fileicon-archive"];
-        }
-        else if (fileModel.isWindows) {
-            self.iconView.image = [UIImage OSFileBrowserImageNamed:@"table-foder-windows-smb"];
-        }
         else {
-            self.iconView.image = [UIImage OSFileBrowserImageNamed:@"table-fileicon-c-source"];
+            self.iconView.image = fileModel.icon;
         }
     }
     

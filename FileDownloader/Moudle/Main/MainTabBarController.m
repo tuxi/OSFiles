@@ -22,21 +22,20 @@
 
 @end
 
-
 @implementation MainTabBarController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-//    [self addChildVC:[BrowserViewController sharedInstance] imageNamed:@"TabBrowser" title:@"浏览器" navClass:[BaseNavigationViewController class]];
-    
     [self addChildVC:[[OSFileCollectionViewController alloc] initWithDirectoryArray:@[
+                                                                                      [NSString getICloudCacheFolder],
                                                                                       [NSString getDownloadDisplayFolderPath],
                                                                                       [NSString getDocumentPath],
                                                                                       [AppGroupManager getAPPGroupSharePath]
                                                                                       ]] imageNamed:@"TabFiles" title:@"我的文件"];
     [self addChildVC:[DownloadsViewController new] imageNamed:@"TabDownloads" title:@"缓存"];
     [self addChildVC:[OSSettingViewController new] imageNamed:@"TabMore" title:@"更多"];
+    [self addChildVC:[UIViewController new] imageNamed:nil title:nil];
     [SmileAuthenticator sharedInstance].delegate = self;
     self.view.backgroundColor = [UIColor whiteColor];
 

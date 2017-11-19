@@ -46,6 +46,8 @@ OSFileType;
 + (NSString *)getDocumentPath;
 + (NSString *)getLibraryPath;
 + (NSString *)getCachesPath;
+/// iCloud文件临时保存的目录
++ (NSString *)getICloudCacheFolder;
 
 - (OSFileType)os_fileType;
 

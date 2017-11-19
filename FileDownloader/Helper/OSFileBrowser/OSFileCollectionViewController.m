@@ -19,6 +19,7 @@
 #import "UIImage+XYImage.h"
 #import "MBProgressHUD+BBHUD.h"
 #import "ICSDrawerController.h"
+#import "OSFileCollectionHeaderView.h"
 
 #define dispatch_main_safe_async(block)\
 if ([NSThread isMainThread]) {\
@@ -626,7 +627,16 @@ static const CGFloat windowHeight = 49.0;
     }
 }
 
-
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    
+    if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
+        OSFileCollectionHeaderView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:OSFileCollectionHeaderViewDefaultIdentifier forIndexPath:indexPath];
+        headerView.backgroundColor = [UIColor blueColor];
+        return headerView;
+    }
+    
+    return nil;
+}
 ////////////////////////////////////////////////////////////////////////
 #pragma mark -
 ////////////////////////////////////////////////////////////////////////
@@ -864,7 +874,7 @@ static const CGFloat windowHeight = 49.0;
         layout.lineMultiplier = 1.19;
         layout.scrollDirection = UICollectionViewScrollDirectionVertical;
         layout.sectionsStartOnNewLine = NO;
-        
+        layout.headerSize = CGSizeMake(self.view.bounds.size.width, 44.0);
     }
     return _flowLayout;
 }
@@ -877,9 +887,10 @@ static const CGFloat windowHeight = 49.0;
         collectionView.delegate = self;
         collectionView.backgroundColor = [UIColor colorWithWhite:0.92 alpha:1.0];
         [collectionView registerClass:[OSFileCollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier];
+        [collectionView registerClass:[OSFileCollectionHeaderView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:OSFileCollectionHeaderViewDefaultIdentifier];
         _collectionView = collectionView;
         _collectionView.translatesAutoresizingMaskIntoConstraints = NO;
-        _collectionView.contentInset = UIEdgeInsetsMake(20, 20, 20, 20);
+        _collectionView.contentInset = UIEdgeInsetsMake(0, 20, 20, 20);
     }
     return _collectionView;
 }
@@ -1098,7 +1109,7 @@ static const CGFloat windowHeight = 49.0;
         }
         if (!desDirectors.count) {
             desDirectors = @[
-                             [NSString getRootPath],
+                             [NSString getICloudCacheFolder],
                              [NSString getDocumentPath]];
         }
         OSFileCollectionViewController *vc = [[OSFileCollectionViewController alloc] initWithDirectoryArray:desDirectors controllerMode:mode];
@@ -1376,6 +1387,9 @@ __weak id _fileOperationDelegate;
     NSString *string = nil;
     if ([self.rootDirectoryItem isDownloadBrowser]) {
         string = @"缓存完成的文件在这显示";
+    }
+    else if ([self.rootDirectoryItem isICloudDrive]) {
+        string = @"将文件移动到此处，即可从iPhone、iPad、Mac访问";
     }
     else {
         string = @"没有文件";

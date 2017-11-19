@@ -53,7 +53,7 @@
     return vc;
 }
 
-- (BOOL)shouldAutorotate{
+- (BOOL)shouldAutorotate {
     UIViewController *vc = [self getTopViewController];
     return vc.shouldAutorotate;
 }

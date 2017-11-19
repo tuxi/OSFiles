@@ -9,6 +9,7 @@
 #import "OSFileAttributeItem.h"
 #import "NSString+OSFile.h"
 #import "AppGroupManager.h"
+#import "UIImage+XYImage.h"
 
 @implementation OSFileAttributeItem
 
@@ -30,7 +31,17 @@
     else if ([self.path isEqualToString:[AppGroupManager getAPPGroupSharePath]]) {
         return @"分享";
     }
+    else if ([self.path isEqualToString:[NSString getICloudCacheFolder]]) {
+        return @"iCloud Drive";
+    }
     return [super displayName];
+}
+
+- (UIImage *)icon {
+    if ([self.path isEqualToString:[NSString getICloudCacheFolder]]) {
+        return [UIImage OSFileBrowserImageNamed:@"table-folder-icloud"];
+    }
+    return [super icon];
 }
 
 - (BOOL)isRootDirectory {
@@ -40,11 +51,21 @@
     else if ([self.path isEqualToString:[NSString getRootPath]]) {
         return YES;
     }
+    else if ([self.path isEqualToString:[AppGroupManager getAPPGroupSharePath]]) {
+        return YES;
+    }
+    else if ([self.path isEqualToString:[NSString getICloudCacheFolder]]) {
+        return YES;
+    }
     return _isRootDirectory;
 }
 
 - (BOOL)isDownloadBrowser {
     return [self.path isEqualToString:[NSString getDownloadDisplayFolderPath]];
+}
+
+- (BOOL)isICloudDrive {
+    return [self.path isEqualToString:[NSString getICloudCacheFolder]];
 }
 
 @end

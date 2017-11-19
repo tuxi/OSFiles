@@ -11,6 +11,7 @@
 #include <sys/stat.h>
 #import "NSDate+ESUtilities.h"
 #import "OSMimeTypeMap.h"
+#import "UIImage+XYImage.h"
 
 @implementation OSFile
 @synthesize isDirectory                 = _isDirectory;
@@ -57,7 +58,7 @@
 @synthesize humanReadablePermissions    = _humanReadablePermissions;
 @synthesize creationDate                = _creationDate;
 @synthesize modificationDate            = _modificationDate;
-//@synthesize icon                        = _icon;
+@synthesize icon                        = _icon;
 @synthesize targetFile                  = _targetFile;
 @synthesize hideDisplayFiles            = _hideDisplayFiles;
 @synthesize mimeType                    = _mimeType;
@@ -191,7 +192,7 @@
     
     [self getSubTypes];
     [self sortedSubFiles];
-    //        [self getIcon];
+    [self getIcon];
     return YES;
 }
 
@@ -490,335 +491,29 @@
     }
 }
 
-- (UIImage *)iconByAddingEmblemsToImage: (UIImage *)baseIcon
-{
-    CGRect       frame;
-    CGContextRef context;
-    UIImage    * emblem;
-    UIImage    * finalIcon;
-    OSFile     * infos;
-    
-    if([[UIScreen mainScreen] scale] == 2)
-    {
-        UIGraphicsBeginImageContext(CGSizeMake(64, 64));
-    }
-    else
-    {
-        UIGraphicsBeginImageContext(CGSizeMake(32, 32));
-    }
-    
-    infos   = (_isSymbolicLink) ? _targetFile : self;
-    context = UIGraphicsGetCurrentContext();
-    
-    if([[UIScreen mainScreen] scale] == 2)
-    {
-        frame = CGRectMake(32, -64, 32, 32);
-    }
-    else
-    {
-        frame = CGRectMake(16, -32, 16, 16);
-    }
-    
-    CGContextScaleCTM(context, 1, -1);
-    
-    if([[UIScreen mainScreen] scale] == 2)
-    {
-        CGContextDrawImage(context, CGRectMake(0, -64, 64, 64), baseIcon.CGImage);
-    }
-    else
-    {
-        CGContextDrawImage(context, CGRectMake(0, -32, 32, 32), baseIcon.CGImage);
-    }
-    
-    if
-        (
-         infos.isDirectory &&
-         ([infos.filename isEqualToString: @"AppStore.app"]
-          || [infos.filename isEqualToString: @"Calculator.app"]
-          || [infos.filename isEqualToString: @"Maps.app"]
-          || [infos.filename isEqualToString: @"MobileAddressBook.app"]
-          || [infos.filename isEqualToString: @"MobileCal.app"]
-          || [infos.filename isEqualToString: @"MobileMail.app"]
-          || [infos.filename isEqualToString: @"MobileNotes.app"]
-          || [infos.filename isEqualToString: @"MobileMusicPlayer.app"]
-          || [infos.filename isEqualToString: @"MobileSafari.app"]
-          || [infos.filename isEqualToString: @"MobileSlideShow.app"]
-          || [infos.filename isEqualToString: @"MobileSMS.app"]
-          || [infos.filename isEqualToString: @"MobileStore.app"]
-          || [infos.filename isEqualToString: @"MobileTimer.app"]
-          || [infos.filename isEqualToString: @"MobileNotes.app"]
-          || [infos.filename isEqualToString: @"Preferences.app"]
-          || [infos.filename isEqualToString: @"Stocks.app"]
-          || [infos.filename isEqualToString: @"VoiceMemos.app"]
-          || [infos.filename isEqualToString: @"Stocks.app"]
-          || [infos.filename isEqualToString: @"Weather.app"]
-          || [infos.filename isEqualToString: @"Web.app"]
-          || [infos.filename isEqualToString: @"YouTube.app"])
-        )
-    {
-        emblem = [UIImage imageNamed: [NSString stringWithFormat: @"App-%@.png", infos.filename]];
-        
-        if([[UIScreen mainScreen] scale] == 2)
-        {
-            CGContextDrawImage(context, CGRectMake(8, -64, 48, 48), emblem.CGImage);
-        }
-        else
-        {
-            CGContextDrawImage(context, CGRectMake(4, -32, 24, 24), emblem.CGImage);
-        }
-    }
-    else if
-        (
-         infos.isDirectory &&
-         ([infos.filename isEqualToString: @"AddressBook"]
-          || [infos.filename isEqualToString: @"Applications"]
-          || [infos.filename isEqualToString: @"Application Support"]
-          || [infos.filename isEqualToString: @"Audio"]
-          || [infos.filename isEqualToString: @"Cache"]
-          || [infos.filename isEqualToString: @"Caches"]
-          || [infos.filename isEqualToString: @"CoreServices"]
-          || [infos.filename isEqualToString: @"Daemons"]
-          || [infos.filename isEqualToString: @"DCIM"]
-          || [infos.filename isEqualToString: @"Developer"]
-          || [infos.filename isEqualToString: @"Documents"]
-          || [infos.filename isEqualToString: @"Extensions"]
-          || [infos.filename isEqualToString: @"Fonts"]
-          || [infos.filename isEqualToString: @"Frameworks"]
-          || [infos.filename isEqualToString: @"Filesystems"]
-          || [infos.filename isEqualToString: @"Internet Plug-Ins"]
-          || [infos.filename isEqualToString: @"Keyboard"]
-          || [infos.filename isEqualToString: @"LaunchAgents"]
-          || [infos.filename isEqualToString: @"LaunchDaemons"]
-          || [infos.filename isEqualToString: @"Library"]
-          || [infos.filename isEqualToString: @"Mail"]
-          || [infos.filename isEqualToString: @"Managed Preferences"]
-          || [infos.filename isEqualToString: @"MobileDevice"]
-          || [infos.filename isEqualToString: @"Media"]
-          || [infos.filename isEqualToString: @"Photos"]
-          || [infos.filename isEqualToString: @"PlugIns"]
-          || [infos.filename isEqualToString: @"Plugins"]
-          || [infos.filename isEqualToString: @"Plug-Ins"]
-          || [infos.filename isEqualToString: @"Printers"]
-          || [infos.filename isEqualToString: @"PrivateFrameworks"]
-          || [infos.filename isEqualToString: @"preferences"]
-          || [infos.filename isEqualToString: @"Preferences"]
-          || [infos.filename isEqualToString: @"ProvisioningProfiles"]
-          || [infos.filename isEqualToString: @"Ringtones"]
-          || [infos.filename isEqualToString: @"ServiceAgents"]
-          || [infos.filename isEqualToString: @"System"]
-          || [infos.filename isEqualToString: @"SystemConfiguration"]
-          || [infos.filename isEqualToString: @"Thumbs"]
-          || [infos.filename isEqualToString: @"Updates"]
-          || [infos.filename isEqualToString: @"Tools"]
-          || [infos.filename isEqualToString: @"tmp"]
-          || [infos.filename isEqualToString: @"Wallpaper"])
-        )
-    {
-        emblem = [UIImage imageNamed: [NSString stringWithFormat: @"Directory-%@.png", [infos.filename capitalizedString]]];
-        
-        if([[UIScreen mainScreen] scale] == 2)
-        {
-            CGContextDrawImage(context, CGRectMake(8, -64, 48, 48), emblem.CGImage);
-        }
-        else
-        {
-            CGContextDrawImage(context, CGRectMake(4, -32, 24, 24), emblem.CGImage);
-        }
-    }
-    else if(infos.isImage)
-    {
-        emblem = [UIImage imageNamed: @"File-Image.png"];
-        
-        if([[UIScreen mainScreen] scale] == 2)
-        {
-            CGContextDrawImage(context, CGRectMake(8, -64, 48, 48), emblem.CGImage);
-        }
-        else
-        {
-            CGContextDrawImage(context, CGRectMake(4, -32, 24, 24), emblem.CGImage);
-        }
-    }
-    else if(infos.isAudio == YES)
-    {
-        emblem = [UIImage imageNamed: @"File-Audio.png"];
-        
-        if([[UIScreen mainScreen] scale] == 2)
-        {
-            CGContextDrawImage(context, CGRectMake(8, -64, 48, 48), emblem.CGImage);
-        }
-        else
-        {
-            CGContextDrawImage(context, CGRectMake(4, -32, 24, 24), emblem.CGImage);
-        }
-    }
-    else if
-        (
-         infos.isRegularFile &&
-         ([[infos.fileExtension lowercaseString] isEqualToString: @"script"]
-          || [[infos.fileExtension lowercaseString] isEqualToString: @"sh"]
-          || [[infos.fileExtension lowercaseString] isEqualToString: @"bash"]
-          || [[infos.fileExtension lowercaseString] isEqualToString: @"tcsh"]
-          || [[infos.fileExtension lowercaseString] isEqualToString: @"zsc"]
-          || [[infos.fileExtension lowercaseString] isEqualToString: @"csh"])
-        )
-    {
-        emblem = [UIImage imageNamed: @"File-Script.png"];
-        
-        if([[UIScreen mainScreen] scale] == 2)
-        {
-            CGContextDrawImage(context, CGRectMake(8, -64, 48, 48), emblem.CGImage);
-        }
-        else
-        {
-            CGContextDrawImage(context, CGRectMake(4, -32, 24, 24), emblem.CGImage);
-        }
-    }
-    else if
-        (
-         infos.isRegularFile &&
-         ([[infos.fileExtension lowercaseString] isEqualToString: @"ttf"]
-          || [[infos.fileExtension lowercaseString] isEqualToString: @"otf"])
-        )
-    {
-        emblem = [UIImage imageNamed: @"File-Fonts.png"];
-        
-        if([[UIScreen mainScreen] scale] == 2)
-        {
-            CGContextDrawImage(context, CGRectMake(8, -64, 48, 48), emblem.CGImage);
-        }
-        else
-        {
-            CGContextDrawImage(context, CGRectMake(4, -32, 24, 24), emblem.CGImage);
-        }
-    }
-    else if(infos.isRegularFile && [[infos.fileExtension lowercaseString] isEqualToString: @"plist"])
-    {
-        emblem = [UIImage imageNamed: @"File-Preferences.png"];
-        
-        if([[UIScreen mainScreen] scale] == 2)
-        {
-            CGContextDrawImage(context, CGRectMake(8, -64, 48, 48), emblem.CGImage);
-        }
-        else
-        {
-            CGContextDrawImage(context, CGRectMake(4, -32, 24, 24), emblem.CGImage);
-        }
-    }
-    else if
-        (
-         infos.isDirectory &&
-         ([[infos.fileExtension lowercaseString] isEqualToString: @"kext"]
-          || [[infos.fileExtension lowercaseString] isEqualToString: @"plugin"])
-        )
-    {
-        emblem = [UIImage imageNamed: @"Directory-Plugins.png"];
-        
-        if([[UIScreen mainScreen] scale] == 2)
-        {
-            CGContextDrawImage(context, CGRectMake(8, -64, 48, 48), emblem.CGImage);
-        }
-        else
-        {
-            CGContextDrawImage(context, CGRectMake(4, -32, 24, 24), emblem.CGImage);
-        }
-    }
-    else if(infos.isDirectory && [[infos.fileExtension lowercaseString] isEqualToString: @"app"])
-    {
-        emblem = [UIImage imageNamed: @"Directory-Applications.png"];
-        
-        if([[UIScreen mainScreen] scale] == 2)
-        {
-            CGContextDrawImage(context, CGRectMake(8, -64, 48, 48), emblem.CGImage);
-        }
-        else
-        {
-            CGContextDrawImage(context, CGRectMake(4, -32, 24, 24), emblem.CGImage);
-        }
-    }
-    else if(infos.isDirectory && [[infos.fileExtension lowercaseString] isEqualToString: @"framework"])
-    {
-        emblem = [UIImage imageNamed: @"Directory-Frameworks.png"];
-        
-        if([[UIScreen mainScreen] scale] == 2)
-        {
-            CGContextDrawImage(context, CGRectMake(8, -64, 48, 48), emblem.CGImage);
-        }
-        else
-        {
-            CGContextDrawImage(context, CGRectMake(4, -32, 24, 24), emblem.CGImage);
-        }
-    }
-    else if(infos.isDirectory && [[infos.fileExtension lowercaseString] isEqualToString: @"bundle"])
-    {
-        emblem = [UIImage imageNamed: @"Directory-Bundles.png"];
-        
-        if([[UIScreen mainScreen] scale] == 2)
-        {
-            CGContextDrawImage(context, CGRectMake(8, -64, 48, 48), emblem.CGImage);
-        }
-        else
-        {
-            CGContextDrawImage(context, CGRectMake(4, -32, 24, 24), emblem.CGImage);
-        }
-    }
-    
-    if(_isSymbolicLink == YES)
-    {
-        emblem = [UIImage imageNamed: @"Emblem-SymLink.png"];
-        
-        CGContextDrawImage(context, frame, emblem.CGImage);
-        
-        if([[UIScreen mainScreen] scale] == 2)
-        {
-            frame.origin.x = -32;
-        }
-        else
-        {
-            frame.origin.x = -16;
-        }
-    }
-    
-    if(infos.isReadable == NO)
-    {
-        emblem = [UIImage imageNamed: @"Emblem-Unreadable.png"];
-        
-        CGContextDrawImage(context, frame, emblem.CGImage);
-    }
-    
-    finalIcon = UIGraphicsGetImageFromCurrentImageContext();
-    
-    UIGraphicsEndImageContext();
-    
-    return finalIcon;
-}
 
-//- (void)getIcon {
-//    OSFile  * infos;
-//    UIImage * baseIcon;
-//    
-//    infos = (_isSymbolicLink) ? _targetFile : self;
-//    
-//    if(infos.isDirectory == YES) {
-//        baseIcon = [UIImage imageNamed: @"Directory.png"];
-//    }
-//    else if(infos.isExecutable == YES) {
-//        baseIcon = [UIImage imageNamed: @"Executable.png"];
-//    }
-//    else if(infos.isSocket == YES) {
-//        baseIcon = [UIImage imageNamed: @"Socket.png"];
-//    }
-//    else if(infos.isCharacterSpecial == YES) {
-//        baseIcon = [UIImage imageNamed: @"Device-Character.png"];
-//    }
-//    else if(infos.isBlockSpecial == YES) {
-//        baseIcon = [UIImage imageNamed: @"Device-Block.png"];
-//    }
-//    else {
-//        baseIcon = [UIImage imageNamed: @"File.png"];
-//    }
-//    
-//    _icon = [self iconByAddingEmblemsToImage: baseIcon];
-//}
+
+- (void)getIcon {
+    OSFile  * infos;
+    UIImage * baseIcon;
+    
+    infos = (_isSymbolicLink) ? _targetFile : self;
+    
+    if(infos.isDirectory == YES) {
+        baseIcon = [UIImage OSFileBrowserImageNamed:@"table-folder.png"];
+    }
+    else if (infos.isArchive) {
+        baseIcon = [UIImage OSFileBrowserImageNamed:@"table-fileicon-archive"];
+    }
+    else if (infos.isWindows) {
+        baseIcon = [UIImage OSFileBrowserImageNamed:@"table-foder-windows-smb"];
+    }
+    else {
+        baseIcon = [UIImage OSFileBrowserImageNamed:@"table-fileicon-c-source"];
+    }
+    
+    _icon = baseIcon;
+}
 
 
 - (NSString *)description {

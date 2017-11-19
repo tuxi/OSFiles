@@ -312,7 +312,7 @@ typedef NS_ENUM(NSUInteger, ICSDrawerControllerState)
 #pragma mark Opening animation
 - (void)animateOpening
 {
-    NSParameterAssert(self.drawerState == ICSDrawerControllerStateOpening);
+//    NSParameterAssert(self.drawerState == ICSDrawerControllerStateOpening);
     NSParameterAssert(self.leftView);
     NSParameterAssert(self.centerView);
     
@@ -339,7 +339,7 @@ typedef NS_ENUM(NSUInteger, ICSDrawerControllerState)
 #pragma mark Closing animation
 - (void)animateClosing
 {
-    NSParameterAssert(self.drawerState == ICSDrawerControllerStateClosing);
+//    NSParameterAssert(self.drawerState == ICSDrawerControllerStateClosing);
     NSParameterAssert(self.leftView);
     NSParameterAssert(self.centerView);
     
@@ -368,7 +368,7 @@ typedef NS_ENUM(NSUInteger, ICSDrawerControllerState)
 
 - (void)open
 {
-    NSParameterAssert(self.drawerState == ICSDrawerControllerStateClosed);
+//    NSParameterAssert(self.drawerState == ICSDrawerControllerStateClosed);
 
     [self willOpen];
     
@@ -452,7 +452,7 @@ typedef NS_ENUM(NSUInteger, ICSDrawerControllerState)
 
 - (void)willClose
 {
-    NSParameterAssert(self.drawerState == ICSDrawerControllerStateOpen);
+//    NSParameterAssert(self.drawerState == ICSDrawerControllerStateOpen);
     NSParameterAssert(self.leftViewController);
     NSParameterAssert(self.centerViewController);
     [self.centerViewController viewWillAppear:YES];
@@ -519,7 +519,7 @@ typedef NS_ENUM(NSUInteger, ICSDrawerControllerState)
 
 - (void)reloadCenterViewControllerUsingBlock:(void (^)(void))reloadBlock
 {
-    NSParameterAssert(self.drawerState == ICSDrawerControllerStateOpen);
+//    NSParameterAssert(self.drawerState == ICSDrawerControllerStateOpen);
     NSParameterAssert(self.centerViewController);
     
     [self willClose];
@@ -543,7 +543,7 @@ typedef NS_ENUM(NSUInteger, ICSDrawerControllerState)
 
 - (void)replaceCenterViewControllerWithViewController:(UIViewController<ICSDrawerControllerChild, ICSDrawerControllerPresenting> *)viewController
 {
-    NSParameterAssert(self.drawerState == ICSDrawerControllerStateOpen);
+//    NSParameterAssert(self.drawerState == ICSDrawerControllerStateOpen);
     NSParameterAssert(viewController);
     NSParameterAssert(self.centerView);
     NSParameterAssert(self.centerViewController);

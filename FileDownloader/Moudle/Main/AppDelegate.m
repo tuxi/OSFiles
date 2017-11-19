@@ -106,6 +106,7 @@ static NSString * const UserAgent = @"Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 li
     [[ApplicationHelper helper] configureDrawerViewController];
     self.window.rootViewController = [ApplicationHelper helper].drawerViewController;
     [self.window makeKeyAndVisible];
+    [[ApplicationHelper helper].drawerViewController open];
     [ExceptionUtils configExceptionHandler];
     
     /// 注册本地通知

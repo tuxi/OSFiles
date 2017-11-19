@@ -17,6 +17,7 @@
 @property (nonatomic, assign) IBInspectable CGFloat itemSpacing;
 /// 行间距
 @property (nonatomic, assign) IBInspectable CGFloat lineSpacing;
+/// 是否从新的一行开始
 @property (nonatomic, assign) IBInspectable BOOL sectionsStartOnNewLine;
 /// 行的宽高，默认设置此属性后，宽和高度相同
 @property (nonatomic, assign) IBInspectable CGFloat lineSize;
@@ -24,6 +25,9 @@
 @property (nonatomic, assign) IBInspectable CGFloat lineMultiplier;
 /// 设置行高的约束：高度=lineSize+lineExtension，和lineMultiplier只会是最后一个设置的有效
 @property (nonatomic, assign) IBInspectable CGFloat lineExtension;
+/// 设置collectionView 头部的尺寸，自定义UICollectionViewFlowLayout后，设置headerReferenceSize无效，并且导致不走代理方法
+/// 头部视图的尺寸，当为{0,0}时没有头部视图, 不需要再headerReferenceSize了
+@property (nonatomic, assign) IBInspectable CGSize headerSize;
 
 @end
 

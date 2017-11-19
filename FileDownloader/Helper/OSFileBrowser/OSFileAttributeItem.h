@@ -25,6 +25,7 @@ typedef NS_ENUM(NSInteger, OSFileAttributeItemStatus) {
 @property (nonatomic, assign) BOOL isRootDirectory;
 
 - (BOOL)isDownloadBrowser;
+- (BOOL)isICloudDrive;
 
 @end
 

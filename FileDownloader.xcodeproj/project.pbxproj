@@ -32,6 +32,8 @@
 		1855DF6F1FA38BC8001CCAE8 /* NSObject+IvarList.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF6E1FA38BC8001CCAE8 /* NSObject+IvarList.m */; };
 		1855DF981FA3A8FB001CCAE8 /* OSFileDownloaderConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 1855DF971FA3A8FB001CCAE8 /* OSFileDownloaderConfiguration.m */; };
 		18566F8F1FA8ADA000EB5416 /* ApplicationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 18566F8E1FA8ADA000EB5416 /* ApplicationHelper.m */; };
+		185A7F5F1FC18A5500D66AC3 /* OSFileCollectionHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 185A7F5E1FC18A5500D66AC3 /* OSFileCollectionHeaderView.m */; };
+		185A7F601FC18AC300D66AC3 /* OSFileCollectionHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 185A7F5E1FC18A5500D66AC3 /* OSFileCollectionHeaderView.m */; };
 		185A8EAE1FA42ED4006077CE /* AutoTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = 185A8EAC1FA42ED3006077CE /* AutoTimer.m */; };
 		185A8EB11FA43416006077CE /* NSString+MD5.m in Sources */ = {isa = PBXBuildFile; fileRef = 185A8EAF1FA43416006077CE /* NSString+MD5.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		1873ED251FBB3C1800D4CA59 /* MBProgressHUD+BBHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 1873ED241FBB3C1800D4CA59 /* MBProgressHUD+BBHUD.m */; };
@@ -537,6 +539,8 @@
 		1855DF971FA3A8FB001CCAE8 /* OSFileDownloaderConfiguration.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSFileDownloaderConfiguration.m; sourceTree = "<group>"; };
 		18566F8D1FA8ADA000EB5416 /* ApplicationHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ApplicationHelper.h; sourceTree = "<group>"; };
 		18566F8E1FA8ADA000EB5416 /* ApplicationHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ApplicationHelper.m; sourceTree = "<group>"; };
+		185A7F5D1FC18A5500D66AC3 /* OSFileCollectionHeaderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSFileCollectionHeaderView.h; sourceTree = "<group>"; };
+		185A7F5E1FC18A5500D66AC3 /* OSFileCollectionHeaderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSFileCollectionHeaderView.m; sourceTree = "<group>"; };
 		185A8EAC1FA42ED3006077CE /* AutoTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AutoTimer.m; sourceTree = "<group>"; };
 		185A8EAD1FA42ED3006077CE /* AutoTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoTimer.h; sourceTree = "<group>"; };
 		185A8EAF1FA43416006077CE /* NSString+MD5.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MD5.m"; sourceTree = "<group>"; };
@@ -2295,6 +2299,8 @@
 				18E893291FB5DFED00727EF1 /* UIViewController+XYExtensions.m */,
 				1873ED231FBB3C1800D4CA59 /* MBProgressHUD+BBHUD.h */,
 				1873ED241FBB3C1800D4CA59 /* MBProgressHUD+BBHUD.m */,
+				185A7F5D1FC18A5500D66AC3 /* OSFileCollectionHeaderView.h */,
+				185A7F5E1FC18A5500D66AC3 /* OSFileCollectionHeaderView.m */,
 			);
 			path = OSFileBrowser;
 			sourceTree = "<group>";
@@ -2702,6 +2708,7 @@
 				1845A63A1FB6F3750000E39A /* OSItemProviderHelper.m in Sources */,
 				1845A6421FB6F4FA0000E39A /* OSPhoneUtils.m in Sources */,
 				18EF90F31FB7468E0016B969 /* OSFilePreviewViewController.m in Sources */,
+				185A7F601FC18AC300D66AC3 /* OSFileCollectionHeaderView.m in Sources */,
 				18EF90F51FB7468E0016B969 /* UIImageView+XYExtension.m in Sources */,
 				1845A6601FB71C7E0000E39A /* AppGroupManager.m in Sources */,
 				1845A63D1FB6F4A40000E39A /* OSPhoneNumberModel.m in Sources */,
@@ -2772,6 +2779,7 @@
 				18ADEEF91F9E4A3D0024BA40 /* BrowserContainerView.m in Sources */,
 				18ADEEF41F9E4A2E0024BA40 /* TabManager.m in Sources */,
 				18ADEF381F9E4A860024BA40 /* OSProgressView.m in Sources */,
+				185A7F5F1FC18A5500D66AC3 /* OSFileCollectionHeaderView.m in Sources */,
 				18ADEEEA1F9E4A2E0024BA40 /* CharacterSelectView.m in Sources */,
 				18ADEF401F9E4A860024BA40 /* UIColor+iOS7.m in Sources */,
 				1873ED251FBB3C1800D4CA59 /* MBProgressHUD+BBHUD.m in Sources */,
