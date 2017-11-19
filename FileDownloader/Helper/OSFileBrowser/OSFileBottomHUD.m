@@ -167,6 +167,7 @@
 
 - (void)showHUDWithFrame:(CGRect)frame completion:(void (^)(OSFileBottomHUD *))completion {
     [UIView animateWithDuration:0.2 animations:^{
+        self.hidden = NO;
         self.xy_parentWindow.hidden = NO;
         CGRect hudFrame = self.xy_parentWindow.frame;
         if (CGRectIsEmpty(frame)) {
@@ -192,6 +193,7 @@
         self.xy_parentWindow.frame =  frame;
     } completion:^(BOOL finished) {
         self.xy_parentWindow.hidden = YES;
+        self.hidden = YES;
         if (completion) {
             completion(self);
         }
@@ -213,6 +215,14 @@
 - (void)setItemImage:(UIImage *)image index:(NSInteger)index state:(UIControlState)state {
     NSAssert(index < self.items.count, @"index 必须在items的范围内");
     [self.items[index] setImage:image state:state];
+}
+
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    UIView *touchView = [super hitTest:point withEvent:event];
+    if (CGRectContainsPoint(self.frame, point) && [touchView isKindOfClass:[UIButton class]]) {
+        return touchView;
+    }
+    return nil;
 }
 
 @end
@@ -352,7 +362,10 @@
     return textSize;
 }
 
-
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    UIView *touchView = [super hitTest:point withEvent:event];
+    return touchView;
+}
 
 @end
 

@@ -53,7 +53,6 @@ static const CGFloat windowHeight = 49.0;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPress;
 @property (nonatomic, copy) void (^longPressCallBack)(NSIndexPath *indexPath);
-@property (nonatomic, strong) NSIndexPath *indexPath;
 @property (nonatomic, strong) NSOperationQueue *loadFileQueue;
 @property (nonatomic, strong) OSFileManager *fileManager;
 @property (nonatomic, strong) NSArray<NSString *> *directoryArray;
@@ -547,8 +546,11 @@ static const CGFloat windowHeight = 49.0;
     // 需要将location在self.view上的坐标转换到tableView上，才能从tableView上获取到当前indexPath
     CGPoint targetLocation = [self.view convertPoint:location toView:self.collectionView];
     NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:targetLocation];
-    _indexPath = indexPath;
     UIViewController *vc = [self previewControllerByIndexPath:indexPath];
+    if ([vc isKindOfClass:[OSPreviewViewController class]]) {
+        OSPreviewViewController *pvc = (OSPreviewViewController *)vc;
+        pvc.currentPreviewItemIndex = indexPath.row;
+    }
     // 预览区域大小(可不设置)
     vc.preferredContentSize = CGSizeMake(0, 320);
     return vc;
@@ -603,7 +605,6 @@ static const CGFloat windowHeight = 49.0;
             [collectionView selectItemAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionNone];
         });
     } else {
-        self.indexPath = indexPath;
         UIViewController *vc = [self previewControllerByIndexPath:indexPath];
         [self showDetailController:vc atIndexPath:indexPath];
         if ([vc isKindOfClass:[OSPreviewViewController class]]) {
@@ -835,10 +836,10 @@ static const CGFloat windowHeight = 49.0;
                                                               [[OSFileBottomHUDItem alloc] initWithTitle:@"复制" image:nil],
                                                               [[OSFileBottomHUDItem alloc] initWithTitle:@"移动" image:nil],
                                                               [[OSFileBottomHUDItem alloc] initWithTitle:@"删除" image:nil],
-                                                              [[OSFileBottomHUDItem alloc] initWithTitle:@"新建文件夹" image:nil],
+                                                              [[OSFileBottomHUDItem alloc] initWithTitle:@"文件夹" image:nil],
                                                               ] toView:self.view];
         _bottomHUD.delegate = self;
-        _bottomHUD.backgroundColor = [UIColor colorWithRed:78/255.0 green:93/255.0 blue:115/255.0 alpha:1.0];
+        _bottomHUD.backgroundColor = [UIColor colorWithRed:36/255.0 green:41/255.0 blue:46/255.0 alpha:1.0];
     }
     return _bottomHUD;
 }
@@ -853,7 +854,13 @@ static const CGFloat windowHeight = 49.0;
         layout.itemSpacing = 20.0;
         layout.lineSpacing = 20.0;
         layout.lineSize = 30.0;
-        layout.lineItemCount = 3;
+        UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+        if (orientation == UIInterfaceOrientationLandscapeLeft || orientation == UIInterfaceOrientationLandscapeRight) {
+            layout.lineItemCount = 5;
+        }
+        else {
+            layout.lineItemCount = 3;
+        }
         layout.lineMultiplier = 1.19;
         layout.scrollDirection = UICollectionViewScrollDirectionVertical;
         layout.sectionsStartOnNewLine = NO;
@@ -1400,6 +1407,13 @@ __weak id _fileOperationDelegate;
 #pragma mark -
 ////////////////////////////////////////////////////////////////////////
 - (void)rotateToInterfaceOrientation {
+    UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+    if (orientation == UIInterfaceOrientationLandscapeLeft || orientation == UIInterfaceOrientationLandscapeRight) {
+        self.flowLayout.lineItemCount = 5;
+    }
+    else {
+        self.flowLayout.lineItemCount = 3;
+    }
     /// 屏幕旋转时重新布局item
     [self.collectionView.collectionViewLayout invalidateLayout];
 }

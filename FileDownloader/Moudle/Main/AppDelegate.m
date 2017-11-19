@@ -91,7 +91,7 @@ static NSString * const UserAgent = @"Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 li
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
-    [ApplicationHelper helper];
+    [[ApplicationHelper helper] addNotBackUpiCloud];;
     [DDLog addLogger:[DDTTYLogger sharedInstance]];
     [DDLog addLogger:[DDASLLogger sharedInstance]];
     DDLogDebug(@"Home Path : %@", HomePath);

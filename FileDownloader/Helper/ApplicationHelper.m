@@ -121,4 +121,28 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+////////////////////////////////////////////////////////////////////////
+#pragma mark -
+////////////////////////////////////////////////////////////////////////
+
+/// 屏蔽ios文件不备份到icloud
+- (void)addNotBackUpiCloud {
+    NSArray *documentPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
+    NSString *docPath = [documentPaths objectAtIndex:0];
+    [self addSkipBackupAttributeToItemAtURL:docPath];
+}
+
+- (BOOL)addSkipBackupAttributeToItemAtURL:(NSString *)filePathString {
+    NSURL *url = [NSURL fileURLWithPath:filePathString];
+    assert([[NSFileManager defaultManager] fileExistsAtPath:[url path]]);
+    
+    NSError *error = nil;
+    BOOL success = [url setResourceValue:[NSNumber numberWithBool: YES]
+                                  forKey: NSURLIsExcludedFromBackupKey error: &error];
+    if(!success){
+        NSLog(@"Error excluding %@ from backup %@", [url lastPathComponent], error);
+    }
+    return success;
+}
+
 @end

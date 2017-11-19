@@ -2386,6 +2386,9 @@
 							com.apple.GameCenter = {
 								enabled = 0;
 							};
+							com.apple.iCloud = {
+								enabled = 1;
+							};
 						};
 					};
 				};

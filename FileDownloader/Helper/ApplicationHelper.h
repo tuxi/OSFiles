@@ -18,4 +18,7 @@
 
 - (void)configureDrawerViewController;
 
+/// 屏蔽ios文件不备份到icloud
+- (void)addNotBackUpiCloud;
+
 @end
