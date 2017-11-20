@@ -16,6 +16,7 @@
 		182797EA1FC00A28005905EE /* FXTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 182797E31FC00A28005905EE /* FXTabBar.m */; };
 		182797EB1FC00A28005905EE /* FXTabBarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 182797E61FC00A28005905EE /* FXTabBarItem.m */; };
 		182797EC1FC00A28005905EE /* UITabBarController+FXCustomTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 182797E81FC00A28005905EE /* UITabBarController+FXCustomTabBar.m */; };
+		183C468E1FC2F97F00B5657E /* UIViewController+OSStatusBarStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 183C468D1FC2F97F00B5657E /* UIViewController+OSStatusBarStyle.m */; };
 		1845A63A1FB6F3750000E39A /* OSItemProviderHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A6391FB6F3750000E39A /* OSItemProviderHelper.m */; };
 		1845A63D1FB6F4A40000E39A /* OSPhoneNumberModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A63C1FB6F4A40000E39A /* OSPhoneNumberModel.m */; };
 		1845A63E1FB6F4A80000E39A /* OSPhoneNumberModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A63C1FB6F4A40000E39A /* OSPhoneNumberModel.m */; };
@@ -502,6 +503,8 @@
 		18300FC71EED38820035D6EE /* FFCircularProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFCircularProgressView.m; sourceTree = "<group>"; };
 		18300FC81EED38820035D6EE /* UIColor+iOS7.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+iOS7.h"; sourceTree = "<group>"; };
 		18300FC91EED38820035D6EE /* UIColor+iOS7.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+iOS7.m"; sourceTree = "<group>"; };
+		183C468C1FC2F97F00B5657E /* UIViewController+OSStatusBarStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+OSStatusBarStyle.h"; sourceTree = "<group>"; };
+		183C468D1FC2F97F00B5657E /* UIViewController+OSStatusBarStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+OSStatusBarStyle.m"; sourceTree = "<group>"; };
 		1845A6381FB6F3750000E39A /* OSItemProviderHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSItemProviderHelper.h; sourceTree = "<group>"; };
 		1845A6391FB6F3750000E39A /* OSItemProviderHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSItemProviderHelper.m; sourceTree = "<group>"; };
 		1845A63B1FB6F4A40000E39A /* OSPhoneNumberModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSPhoneNumberModel.h; sourceTree = "<group>"; };
@@ -1429,6 +1432,8 @@
 				184F75001FA75D9500C2590D /* NSString+OSDrawingAdditions.m */,
 				D017FF101FA89B16004B65CF /* UITextField+OSRangeExtension.h */,
 				D017FF111FA89B16004B65CF /* UITextField+OSRangeExtension.m */,
+				183C468C1FC2F97F00B5657E /* UIViewController+OSStatusBarStyle.h */,
+				183C468D1FC2F97F00B5657E /* UIViewController+OSStatusBarStyle.m */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -2730,6 +2735,7 @@
 			files = (
 				1855DF6F1FA38BC8001CCAE8 /* NSObject+IvarList.m in Sources */,
 				18C565151FB0197B00699F41 /* YCXMenuItem.m in Sources */,
+				183C468E1FC2F97F00B5657E /* UIViewController+OSStatusBarStyle.m in Sources */,
 				18ADEF3E1F9E4A860024BA40 /* XYImageViewer.m in Sources */,
 				18ADEEFA1F9E4A3D0024BA40 /* BrowserWebView.m in Sources */,
 				18ADEF231F9E4A860024BA40 /* OSFileDownloaderDelegate.m in Sources */,
