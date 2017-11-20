@@ -141,7 +141,11 @@
 ////////////////////////////////////////////////////////////////////////
 
 - (void)optionBtnClick:(UIButton *)btn {
-    UIAlertController *alVc = [UIAlertController alertControllerWithTitle:self.fileModel.displayName message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertControllerStyle alertStyle = UIAlertControllerStyleActionSheet;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        alertStyle = alertStyle;
+    }
+    UIAlertController *alVc = [UIAlertController alertControllerWithTitle:self.fileModel.displayName message:nil preferredStyle:alertStyle];
     UIAlertAction *renameAction = [UIAlertAction actionWithTitle:@"重命名" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         [self renameFile];
     }];

@@ -18,14 +18,13 @@
 #import "UIViewController+XYExtensions.h"
 #import "UIImage+XYImage.h"
 #import "MBProgressHUD+BBHUD.h"
-#import "ICSDrawerController.h"
 #import "OSFileCollectionHeaderView.h"
 
 #define dispatch_main_safe_async(block)\
-    if ([NSThread isMainThread]) {\
-        block();\
-    } else {\
-    dispatch_async(dispatch_get_main_queue(), block);\
+if ([NSThread isMainThread]) {\
+block();\
+} else {\
+dispatch_async(dispatch_get_main_queue(), block);\
 }
 
 #define kFileViewerGlobleColor [UIColor colorWithRed:36/255.0 green:41/255.0 blue:46/255.0 alpha:1.0]
@@ -118,7 +117,7 @@ static const CGFloat windowHeight = 49.0;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(collectionReLayoutStyle) name:OSFileCollectionLayoutStyleDidChangeNotification object:nil];
     
     [self setupNavigationBar];
-
+    
 }
 
 /// 初始化需要监听的目录
@@ -647,15 +646,15 @@ static const CGFloat windowHeight = 49.0;
     if (!viewController) {
         return;
     }
-//    if ([viewController isKindOfClass:[OSFileCollectionViewController class]]) {
-//        OSFileCollectionViewController *vc = (OSFileCollectionViewController *)viewController;
-//        [self.navigationController showViewController:vc sender:self];
-//    }
-//    else {
-//
-//        viewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:self action:@selector(backButtonClick)];
-//        [self.navigationController showViewController:viewController sender:self];
-//    }
+    //    if ([viewController isKindOfClass:[OSFileCollectionViewController class]]) {
+    //        OSFileCollectionViewController *vc = (OSFileCollectionViewController *)viewController;
+    //        [self.navigationController showViewController:vc sender:self];
+    //    }
+    //    else {
+    //
+    //        viewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:self action:@selector(backButtonClick)];
+    //        [self.navigationController showViewController:viewController sender:self];
+    //    }
     [self.navigationController showViewController:viewController sender:self];
 }
 
@@ -693,10 +692,10 @@ static const CGFloat windowHeight = 49.0;
         }
         
     }
-    else if ([rootViewController isKindOfClass:NSClassFromString(@"ICSDrawerController")]) {
-        ICSDrawerController *vc = (ICSDrawerController *)rootViewController;
-        [self backButtonClickWithRootViewController:vc.ics_visibleViewController];
-    }
+    //    else if ([rootViewController isKindOfClass:NSClassFromString(@"ICSDrawerController")]) {
+    //        ICSDrawerController *vc = (ICSDrawerController *)rootViewController;
+    //        [self backButtonClickWithRootViewController:vc.ics_visibleViewController];
+    //    }
 }
 
 - (UIViewController *)previewControllerWithFilePath:(NSString *)filePath {
@@ -898,9 +897,9 @@ static const CGFloat windowHeight = 49.0;
             _collectionView.contentInset = inset;
         }
         else {
-          _collectionView.contentInset = UIEdgeInsetsMake(0, 0, 20.0, 0);
+            _collectionView.contentInset = UIEdgeInsetsMake(0, 0, 20.0, 0);
         }
-       
+        
     }
     return _collectionView;
 }
@@ -1233,7 +1232,7 @@ static const CGFloat windowHeight = 49.0;
     }];
     [self.collectionView.visibleCells enumerateObjectsUsingBlock:^(__kindof OSFileCollectionViewCell * _Nonnull cell, NSUInteger idx, BOOL * _Nonnull stop) {
         [cell invalidateConstraints];
-        [UIView animateWithDuration:0.1 animations:^{
+        [UIView animateWithDuration:0.28 animations:^{
             [cell layoutIfNeeded];
         }];
     }];
@@ -1254,10 +1253,10 @@ completionHandler:(void (^)(void))completion {
     
     UIView *view = (UIView *)[UIApplication sharedApplication].delegate.window;
     __weak typeof(&*self) weakSelf = self;
-    [view bb_showProgressHudWithActionCallBack:^(MBProgressHUD *hud) {
-         __strong typeof(&*weakSelf) self = weakSelf;
+    [view bb_showProgressWithActionCallBack:^(MBProgressHUD *hud) {
+        __strong typeof(&*weakSelf) self = weakSelf;
         [self.fileManager cancelAllOperation];
-         hud.label.text = @"已取消";
+        hud.label.text = @"已取消";
         if (completion) {
             completion();
         }
@@ -1477,14 +1476,24 @@ __weak id _fileOperationDelegate;
         
         UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
         if (orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight) {
-            flowLayout.lineItemCount = 5;
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+                flowLayout.lineItemCount = 10;
+            }
+            else {
+                flowLayout.lineItemCount = 5;
+            }
+            
         }
         else {
-            flowLayout.lineItemCount = 3;
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+                flowLayout.lineItemCount = 6;
+            }
+            else {
+                flowLayout.lineItemCount = 3;
+            }
         }
     }
 }
-
 
 @end
 

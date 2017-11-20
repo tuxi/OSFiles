@@ -61,7 +61,11 @@ static NSString * const UserAgent = @"Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 li
 }
 
 - (void)presentPasteboardChangedAlertWithURL:(NSURL *)url{
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"新窗口打开剪切板网址" message:@"您是否需要在新窗口中打开剪切板中的网址？" preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertControllerStyle alertStyle = UIAlertControllerStyleActionSheet;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        alertStyle = alertStyle;
+    }
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"新窗口打开剪切板网址" message:@"您是否需要在新窗口中打开剪切板中的网址？" preferredStyle:alertStyle];
     
     UIAlertAction *openBrowserAction = [UIAlertAction actionWithTitle:@"打开网页" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action){
         NSNotification *notify = [NSNotification notificationWithName:kOpenInNewWindowNotification object:self userInfo:@{@"url": url}];

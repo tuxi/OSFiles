@@ -298,7 +298,11 @@ static NSString *const BaiduSearchPath = @"https://m.baidu.com/s?ie=utf-8&word="
     if (!(linkURL || imageURL)) {
         return;
     }
-    UIAlertController *actionSheetController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertControllerStyle alertStyle = UIAlertControllerStyleActionSheet;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        alertStyle = UIAlertControllerStyleAlert;
+    }
+    UIAlertController *actionSheetController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:alertStyle];
     
     NSString *dialogTitle;
     

@@ -184,7 +184,11 @@
 
 /// 设置解锁页背景图片
 - (void)setUnlockBackgroundImage:(id)obj {
-    UIAlertController *alertC = [UIAlertController alertControllerWithTitle:@"请选择图片来源" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertControllerStyle alertStyle = UIAlertControllerStyleActionSheet;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        alertStyle = UIAlertControllerStyleAlert;
+    }
+    UIAlertController *alertC = [UIAlertController alertControllerWithTitle:@"请选择图片来源" message:nil preferredStyle:alertStyle];
     
     //从照相机拍照
     UIAlertAction *cameraAction = [UIAlertAction actionWithTitle:@"照相机" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {

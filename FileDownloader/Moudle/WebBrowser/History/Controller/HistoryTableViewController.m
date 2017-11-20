@@ -84,8 +84,11 @@ static NSString *const kHistoryTableViewContentSize = @"contentSize";
     }
     
     HistoryItemModel *model = [self.historyDataManager historyModelForRowAtIndexPath:indexPath];
-    
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertControllerStyle alertStyle = UIAlertControllerStyleActionSheet;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        alertStyle = UIAlertControllerStyleAlert;
+    }
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:alertStyle];
     
     UIAlertAction *copyTitleAction = [UIAlertAction actionWithTitle:@"拷贝标题" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
         [self copyToPasteBoardWithString:model.title isURL:NO];
@@ -139,7 +142,11 @@ static NSString *const kHistoryTableViewContentSize = @"contentSize";
 }
 
 - (void)handleClearAllHistory{
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"您确定删除所有历史记录？" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertControllerStyle alertStyle = UIAlertControllerStyleActionSheet;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        alertStyle = UIAlertControllerStyleAlert;
+    }
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"您确定删除所有历史记录？" message:nil preferredStyle:alertStyle];
     
     UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action){
         [self.historyDataManager deleleAllHistoryRecords];

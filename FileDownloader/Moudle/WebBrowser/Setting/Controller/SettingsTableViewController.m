@@ -43,7 +43,11 @@ static NSString *const SettingPlaceholderTableViewCellIdentifier   = @"SettingPl
 
 - (void)handleTableViewSelectAt:(NSInteger)index{
     if (index == 0) {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"您确定清除缓存？" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+        UIAlertControllerStyle alertStyle = UIAlertControllerStyleActionSheet;
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            alertStyle = UIAlertControllerStyleAlert;
+        }
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"您确定清除缓存？" message:nil preferredStyle:alertStyle];
         
         UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action){
             SettingActivityTableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];

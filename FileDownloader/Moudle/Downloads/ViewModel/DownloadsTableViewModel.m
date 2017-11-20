@@ -65,7 +65,11 @@ static NSString * const DownloadCellIdentifierKey = @"DownloadCellIdentifier";
     __weak typeof(tableView) weaktableView = tableView;
     
     void (^alertBlock)(OSRemoteResourceItem *item) = ^(OSRemoteResourceItem *item) {
-        UIAlertController *alVc = [UIAlertController alertControllerWithTitle:item.urlPath message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+        UIAlertControllerStyle alertStyle = UIAlertControllerStyleActionSheet;
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            alertStyle = alertStyle;
+        }
+        UIAlertController *alVc = [UIAlertController alertControllerWithTitle:item.urlPath message:nil preferredStyle:alertStyle];
         
         UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"删除" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
             UIAlertController *alVc = [UIAlertController alertControllerWithTitle:nil message:@"删除后文件将无法恢复" preferredStyle:UIAlertControllerStyleAlert];
