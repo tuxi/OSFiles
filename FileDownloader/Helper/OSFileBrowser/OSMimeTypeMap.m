@@ -11,8 +11,7 @@
 static NSDictionary *mimeToExtensionMap = nil;
 static NSDictionary *extensionToMimeMap = nil;
 
-static void initializeMapping()
-{
+static void initializeMapping() {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^
                   {
@@ -27,6 +26,7 @@ static void initializeMapping()
                       mimeToExtension[@"application/mac-compactpro"] = @"cpt"; extensionToMime[@"cpt"] = @"application/mac-compactpro";
                       mimeToExtension[@"application/mathematica"] = @"nb"; extensionToMime[@"nb"] = @"application/mathematica";
                       mimeToExtension[@"application/msaccess"] = @"mdb"; extensionToMime[@"mdb"] = @"application/msaccess";
+                      
                       mimeToExtension[@"application/oda"] = @"oda"; extensionToMime[@"oda"] = @"application/oda";
                       mimeToExtension[@"application/ogg"] = @"ogg"; extensionToMime[@"ogg"] = @"application/ogg";
                       mimeToExtension[@"application/pdf"] = @"pdf"; extensionToMime[@"pdf"] = @"application/pdf";
@@ -238,6 +238,8 @@ static void initializeMapping()
                       mimeToExtension[@"image/x-xbitmap"] = @"xbm"; extensionToMime[@"xbm"] = @"image/x-xbitmap";
                       mimeToExtension[@"image/x-xpixmap"] = @"xpm"; extensionToMime[@"xpm"] = @"image/x-xpixmap";
                       mimeToExtension[@"image/x-xwindowdump"] = @"xwd"; extensionToMime[@"xwd"] = @"image/x-xwindowdump";
+                      mimeToExtension[@"image/peng"] = @"peng"; extensionToMime[@"peng"] = @"image/peng";
+                      
                       mimeToExtension[@"model/iges"] = @"igs"; extensionToMime[@"igs"] = @"model/iges";
                       mimeToExtension[@"model/iges"] = @"iges"; extensionToMime[@"iges"] = @"model/iges";
                       mimeToExtension[@"model/mesh"] = @"msh"; extensionToMime[@"msh"] = @"model/mesh";
@@ -258,24 +260,46 @@ static void initializeMapping()
                       mimeToExtension[@"text/plain"] = @"diff"; extensionToMime[@"diff"] = @"text/plain";
                       mimeToExtension[@"text/plain"] = @"po"; extensionToMime[@"po"] = @"text/plain";
                       
-                      mimeToExtension[@"text/plain"] = @"plist"; extensionToMime[@"plist"] = @"text/plain";
+                      mimeToExtension[@"text/plist"] = @"plist"; extensionToMime[@"plist"] = @"text/plist";
                       mimeToExtension[@"text/plain"] = @"strings"; extensionToMime[@"strings"] = @"text/plain";
                       mimeToExtension[@"text/plain"] = @"xcconfig"; extensionToMime[@"xcconfig"] = @"text/plain";
                       mimeToExtension[@"text/plain"] = @"version"; extensionToMime[@"version"] = @"text/plain";
-                      mimeToExtension[@"text/plain"] = @"archive"; extensionToMime[@"archive"] = @"text/plain";
+                      mimeToExtension[@"text/plist"] = @"archive"; extensionToMime[@"archive"] = @"text/plist";
                       mimeToExtension[@"text/plain"] = @"gps"; extensionToMime[@"gps"] = @"text/plain";
                       mimeToExtension[@"text/plain"] = @"md"; extensionToMime[@"md"] = @"text/plain";
                       mimeToExtension[@"text/plain"] = @"podspec"; extensionToMime[@"podspec"] = @"text/plain";
                       mimeToExtension[@"text/x-csrc"] = @"m"; extensionToMime[@"m"] = @"text/x-csrc";
                       mimeToExtension[@"text/plain"] = @"lock"; extensionToMime[@"lock"] = @"text/plain";
                       mimeToExtension[@"text/plain"] = @"pbxproj"; extensionToMime[@"pbxproj"] = @"text/plain";
-                       mimeToExtension[@"text/plain"] = @"xcworkspacedata"; extensionToMime[@"xcworkspacedata"] = @"text/plain";
-                       mimeToExtension[@"text/plain"] = @"xcuserstate"; extensionToMime[@"xcuserstate"] = @"text/plain";
-                       mimeToExtension[@"text/json"] = @"json"; extensionToMime[@"json"] = @"text/json";
-                      mimeToExtension[@"text/plain"] = @"pch"; extensionToMime[@"pch"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"xcworkspacedata"; extensionToMime[@"xcworkspacedata"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"xcuserstate"; extensionToMime[@"xcuserstate"] = @"text/plain";
+                      mimeToExtension[@"text/json"] = @"json"; extensionToMime[@"json"] = @"text/json";
                       mimeToExtension[@"text/plain"] = @"pch"; extensionToMime[@"pch"] = @"text/plain";
                       mimeToExtension[@"text/plain"] = @"storyboard"; extensionToMime[@"storyboard"] = @"text/plain";
                       mimeToExtension[@"text/plain"] = @"xib"; extensionToMime[@"xib"] = @"text/plain";
+                      
+                      mimeToExtension[@"text/plain"] = @"bas"; extensionToMime[@"bas"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"pan"; extensionToMime[@"pan"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"cdt"; extensionToMime[@"cdt"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"pkin"; extensionToMime[@"pkin"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"xm"; extensionToMime[@"xm"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"ini"; extensionToMime[@"ini"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"flag"; extensionToMime[@"flag"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"log"; extensionToMime[@"log"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"spd"; extensionToMime[@"spd"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"alt"; extensionToMime[@"alt"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"gd"; extensionToMime[@"gd"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"foot"; extensionToMime[@"foot"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"param"; extensionToMime[@"param"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"hdrf"; extensionToMime[@"hdrf"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"ddt"; extensionToMime[@"ddt"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"shp"; extensionToMime[@"shp"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"pub"; extensionToMime[@"pub"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"date"; extensionToMime[@"date"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"cam"; extensionToMime[@"cam"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"tfd"; extensionToMime[@"tfd"] = @"text/plain";
+                      mimeToExtension[@"text/plain"] = @"hd"; extensionToMime[@"hd"] = @"text/plain";
+                      mimeToExtension[@"text/plan"] = @"db"; extensionToMime[@"db"] = @"text/plan";
                       // reserve "pot" for vnd.ms-powerpoint
                       mimeToExtension[@"text/richtext"] = @"rtx"; extensionToMime[@"rtx"] = @"text/richtext";
                       mimeToExtension[@"text/rtf"] = @"rtf"; extensionToMime[@"rtf"] = @"text/rtf";
@@ -350,8 +374,7 @@ static void initializeMapping()
 
 @implementation OSMimeTypeMap
 
-+ (NSString *)mimeTypeForExtension:(NSString *)extension
-{
++ (NSString *)mimeTypeForExtension:(NSString *)extension {
     if (extension == nil)
         return nil;
     
@@ -360,8 +383,7 @@ static void initializeMapping()
     return extensionToMimeMap[extension];
 }
 
-+ (NSString *)extensionForMimeType:(NSString *)mimeType
-{
++ (NSString *)extensionForMimeType:(NSString *)mimeType {
     if (mimeType == nil)
         return nil;
     
@@ -372,3 +394,5 @@ static void initializeMapping()
 
 
 @end
+
+

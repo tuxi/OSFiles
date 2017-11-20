@@ -121,7 +121,31 @@
              @"p",
              @"java",
              @"py",
-             @"asc"];
+             @"asc",
+             //// 下面为精彩旅图公司支持的扩展
+             @"bas",
+             @"pan",
+             @"cdt",
+             @"pkin",
+             @"xm",
+             @"peng",
+             @"ini",
+             @"flag",
+             @"log",
+             @"spd",
+             @"alt",
+             @"gd",
+             @"foot",
+             @"param",
+             @"hdrf",
+             @"ddt",
+             @"shp",
+             @"pub",
+             @"date",
+             @"cam",
+             @"tfd",
+             @"hd",
+             @"db"];
 }
 
 + (BOOL)canOpenFile:(NSString *)filePath {
@@ -144,18 +168,19 @@
     }
     
     else {
-        if (@available(iOS 9.0, *)) {
-            NSData *data = [NSData dataWithContentsOfFile:item.path];
-            [_webView loadData:data MIMEType:self.fileItem.mimeType characterEncodingName:@"UTF-8" baseURL:[NSURL fileURLWithPath:item.parentDirectoryPath]];
-             self.view = _webView;
-            _textView = nil;
-        } else {
-            if ([item.fileExtension.lowercaseString isEqualToString:@"plist"] ||
-                     [item.fileExtension.lowercaseString isEqualToString:@"archive"]) {
-                NSDictionary *d = [NSDictionary dictionaryWithContentsOfFile:item.path];
-                [_textView setText:[d description]];
-                self.view = _textView;
-                _webView = nil;
+        if ([item.fileExtension.lowercaseString isEqualToString:@"plist"] ||
+            [item.fileExtension.lowercaseString isEqualToString:@"archive"]) {
+            NSDictionary *d = [NSDictionary dictionaryWithContentsOfFile:item.path];
+            [_textView setText:[d description]];
+            self.view = _textView;
+            _webView = nil;
+        }
+        else {
+            if (@available(iOS 9.0, *)) {
+                NSData *data = [NSData dataWithContentsOfFile:item.path];
+                [_webView loadData:data MIMEType:self.fileItem.mimeType characterEncodingName:@"UTF-8" baseURL:[NSURL fileURLWithPath:item.parentDirectoryPath]];
+                self.view = _webView;
+                _textView = nil;
             } else {
                 NSString *d = [NSString stringWithContentsOfFile:item.path encoding:NSUTF8StringEncoding error:nil];
                 [_textView setText:d];
@@ -163,6 +188,7 @@
                 _webView = nil;
             }
         }
+        
     }
     
     self.title = item.displayName;
@@ -177,3 +203,4 @@
 }
 
 @end
+
