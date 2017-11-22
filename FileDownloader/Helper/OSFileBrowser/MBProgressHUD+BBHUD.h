@@ -17,11 +17,12 @@ typedef void(^BBHUDActionCallBack)(MBProgressHUD *hud);
 - (MBProgressHUD *)bb_hud;
 
 /// 显示文本样式的hud, 默认显示在当前控制器view上
+- (void)bb_showMaxTimeMessage:(NSString *)message;
 - (void)bb_showMessage:(NSString *)message;
 - (void)bb_showMessage:(NSString *)message
-             delayTime:(NSInteger)delayTime;
+             delayTime:(CGFloat)delayTime;
 - (void)bb_showMessage:(NSString *)message
-             delayTime:(NSInteger)delayTime
+             delayTime:(CGFloat)delayTime
                 offset:(CGPoint)offset;
 
 #pragma mark *** Activity hud ***
@@ -29,11 +30,11 @@ typedef void(^BBHUDActionCallBack)(MBProgressHUD *hud);
 /// 显示菊花样式的hud
 - (void)bb_showActivity;
 - (void)bb_showActivityMessage:(NSString *)message;
-- (void)bb_showActivityDelayTime:(NSInteger)delayTime;
+- (void)bb_showActivityDelayTime:(CGFloat)delayTime;
 - (void)bb_showActivityMessage:(NSString*)message
-                     delayTime:(NSInteger)delayTime;
+                     delayTime:(CGFloat)delayTime;
 - (void)bb_showActivityMessage:(NSString*)message
-                     delayTime:(NSInteger)delayTime
+                     delayTime:(CGFloat)delayTime
                         offset:(CGPoint)offset;
 
 /// 显示菊花和取消按钮的loading，不会自动隐藏，需要手动调用hide隐藏
@@ -71,34 +72,36 @@ typedef void(^BBHUDActionCallBack)(MBProgressHUD *hud);
 
 #pragma mark *** Text hud ***
 
-/// 显示文本样式的hud, 默认显示在当前控制器view上
+/// 显示文本样式的hud，不会自动隐藏，必须手动调用hide
++ (void)bb_showMaxTimeMessage:(NSString *)message;
+/// 显示文本样式的hud, 默认显示在当前控制器view上， 会自动隐藏，默认为2秒
 + (void)bb_showMessage:(NSString *)message;
 + (void)bb_showMessage:(NSString *)message
-             delayTime:(NSInteger)delayTime;
+             delayTime:(CGFloat)delayTime;
 + (void)bb_showMessage:(NSString *)message
-             delayTime:(NSInteger)delayTime
+             delayTime:(CGFloat)delayTime
               isWindow:(BOOL)isWindow;
 + (void)bb_showMessage:(NSString *)message
-             delayTime:(NSInteger)delayTime
+             delayTime:(CGFloat)delayTime
                 toView:(UIView *)view;
 
 #pragma mark *** Activity hud ***
 
 /// 显示菊花样式的hud
 + (void)bb_showActivity;
-+ (void)bb_showActivityDelayTime:(NSInteger)delayTime;
++ (void)bb_showActivityDelayTime:(CGFloat)delayTime;
 + (void)bb_showActivityToView:(UIView *)view;
-+ (void)bb_showActivityDelayTime:(NSInteger)delayTime
++ (void)bb_showActivityDelayTime:(CGFloat)delayTime
                           toView:(UIView *)view;
 + (void)bb_showActivityMessage:(NSString*)message;
 + (void)bb_showActivityMessage:(NSString*)message
                       isWindow:(BOOL)isWindow
-                     delayTime:(NSInteger)delayTime;
+                     delayTime:(CGFloat)delayTime;
 + (void)bb_showActivityMessage:(NSString*)message
-                     delayTime:(NSInteger)delayTime
+                     delayTime:(CGFloat)delayTime
                         toView:(UIView *)view;
 + (void)bb_showActivityMessage:(NSString*)message
-                     delayTime:(NSInteger)delayTime
+                     delayTime:(CGFloat)delayTime
                         toView:(UIView *)view
                         offset:(CGPoint)offset;
 /// 显示菊花和取消按钮的loading，不会自动隐藏，需要手动调用hide隐藏
@@ -137,7 +140,5 @@ typedef void(^BBHUDActionCallBack)(MBProgressHUD *hud);
 + (void)bb_hideHUD;
 
 @end
-
-
 
 

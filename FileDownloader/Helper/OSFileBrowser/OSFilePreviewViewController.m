@@ -9,7 +9,6 @@
 #import "OSFilePreviewViewController.h"
 #import "NSString+OSFile.h"
 #import "OSFileAttributeItem.h"
-#import "UIViewController+OSStatusBarStyle.h"
 
 @interface OSFilePreviewViewController ()
 
@@ -199,9 +198,8 @@
 
 @implementation OSPreviewViewController
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    self.os_statusBarStyle = UIStatusBarStyleLightContent;
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
 }
 
 @end

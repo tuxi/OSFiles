@@ -19,15 +19,9 @@
 #import "UIImage+XYImage.h"
 #import "MBProgressHUD+BBHUD.h"
 #import "OSFileCollectionHeaderView.h"
+#import "OSFileSearchResultsController.h"
+#import "OSFileBrowserAppearanceConfigs.h"
 
-#define dispatch_main_safe_async(block)\
-if ([NSThread isMainThread]) {\
-block();\
-} else {\
-dispatch_async(dispatch_get_main_queue(), block);\
-}
-
-#define kFileViewerGlobleColor [UIColor colorWithRed:36/255.0 green:41/255.0 blue:46/255.0 alpha:1.0]
 
 NSNotificationName const OSFileCollectionViewControllerOptionFileCompletionNotification = @"OptionFileCompletionNotification";
 NSNotificationName const OSFileCollectionViewControllerOptionSelectedFileForCopyNotification = @"OptionSelectedFileForCopyNotification";
@@ -42,9 +36,9 @@ static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
 static const CGFloat windowHeight = 49.0;
 
 #ifdef __IPHONE_9_0
-@interface OSFileCollectionViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIViewControllerPreviewingDelegate, NoDataPlaceholderDelegate, OSFileCollectionViewCellDelegate, OSFileBottomHUDDelegate, OSFileCollectionHeaderViewDelegate>
+@interface OSFileCollectionViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIViewControllerPreviewingDelegate, NoDataPlaceholderDelegate, OSFileCollectionViewCellDelegate, OSFileBottomHUDDelegate, OSFileCollectionHeaderViewDelegate, UISearchBarDelegate, UISearchControllerDelegate>
 #else
-@interface OSFileCollectionViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NoDataPlaceholderDelegate, OSFileCollectionViewCellDelegate, OSFileBottomHUDDelegate>
+@interface OSFileCollectionViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NoDataPlaceholderDelegate, OSFileCollectionViewCellDelegate, OSFileBottomHUDDelegate, OSFileCollectionHeaderViewDelegate, UISearchBarDelegate, UISearchControllerDelegate>
 #endif
 
 {
@@ -65,6 +59,7 @@ static const CGFloat windowHeight = 49.0;
 @property (nonatomic, weak) UIButton *bottomTipButton;
 @property (nonatomic, strong) OSFileAttributeItem *rootDirectoryItem;
 @property (nonatomic, strong) NSMutableArray<DirectoryWatcher *> *directoryWatcherArray;
+@property (nonatomic, strong) UISearchController *searchController;
 
 @end
 
@@ -117,8 +112,9 @@ static const CGFloat windowHeight = 49.0;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(collectionReLayoutStyle) name:OSFileCollectionLayoutStyleDidChangeNotification object:nil];
     
     [self setupNavigationBar];
-    
+
 }
+
 
 /// 初始化需要监听的目录
 - (void)initWatcherFolder {
@@ -215,6 +211,38 @@ static const CGFloat windowHeight = 49.0;
     [self.view addSubview:self.collectionView];
     [self makeCollectionViewConstr];
     [self setupNodataView];
+    [self setupSearchController];
+}
+
+/// 搜索功能暂时只支持iOS11
+- (void)setupSearchController {
+    
+    if (@available(iOS 11.0, *)) {
+        OSFileSearchResultsController *resultsController = [[OSFileSearchResultsController alloc] initWithCollectionViewLayout:nil];
+        self.searchController = [[UISearchController alloc] initWithSearchResultsController:resultsController];
+        //设置搜索时，背景变暗色
+        self.searchController.dimsBackgroundDuringPresentation = NO;
+        // 设置搜索时，背景变模糊
+        if (@available(iOS 9.1, *)) {
+            self.searchController.obscuresBackgroundDuringPresentation = NO;
+        }
+        resultsController.searchController = self.searchController;
+        self.searchController.searchResultsUpdater = resultsController;
+        self.searchController.searchBar.showsCancelButton = YES;
+        self.searchController.searchBar.delegate = self;
+        self.searchController.delegate = self;
+        self.navigationItem.hidesSearchBarWhenScrolling = YES;
+        self.navigationItem.searchController = self.searchController;
+        self.searchController.searchBar.tintColor = [UIColor whiteColor];
+        self.searchController.searchBar.clipsToBounds = YES;
+        UITextField *searchField = [self.searchController.searchBar valueForKey:@"_searchField"];
+        searchField.textColor = [UIColor whiteColor];
+//        [searchField setValue:[UIColor blackColor] forKeyPath:@"_placeholderLabel.textColor"];
+        [[UIBarButtonItem appearanceWhenContainedInInstancesOfClasses:@[[UISearchBar class]]] setTintColor:[UIColor whiteColor]];
+        [[UIBarButtonItem appearanceWhenContainedInInstancesOfClasses:@[[UISearchBar class]]] setTitle:@"取消"];
+        
+    }
+    
 }
 
 - (void)setupNodataView {
@@ -646,15 +674,15 @@ static const CGFloat windowHeight = 49.0;
     if (!viewController) {
         return;
     }
-    //    if ([viewController isKindOfClass:[OSFileCollectionViewController class]]) {
-    //        OSFileCollectionViewController *vc = (OSFileCollectionViewController *)viewController;
-    //        [self.navigationController showViewController:vc sender:self];
-    //    }
-    //    else {
-    //
-    //        viewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:self action:@selector(backButtonClick)];
-    //        [self.navigationController showViewController:viewController sender:self];
-    //    }
+//    if ([viewController isKindOfClass:[OSFileCollectionViewController class]]) {
+//        OSFileCollectionViewController *vc = (OSFileCollectionViewController *)viewController;
+//        [self.navigationController showViewController:vc sender:self];
+//    }
+//    else {
+//
+//        viewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:self action:@selector(backButtonClick)];
+//        [self.navigationController showViewController:viewController sender:self];
+//    }
     [self.navigationController showViewController:viewController sender:self];
 }
 
@@ -692,10 +720,10 @@ static const CGFloat windowHeight = 49.0;
         }
         
     }
-    //    else if ([rootViewController isKindOfClass:NSClassFromString(@"ICSDrawerController")]) {
-    //        ICSDrawerController *vc = (ICSDrawerController *)rootViewController;
-    //        [self backButtonClickWithRootViewController:vc.ics_visibleViewController];
-    //    }
+//    else if ([rootViewController isKindOfClass:NSClassFromString(@"ICSDrawerController")]) {
+//        ICSDrawerController *vc = (ICSDrawerController *)rootViewController;
+//        [self backButtonClickWithRootViewController:vc.ics_visibleViewController];
+//    }
 }
 
 - (UIViewController *)previewControllerWithFilePath:(NSString *)filePath {
@@ -769,6 +797,32 @@ static const CGFloat windowHeight = 49.0;
     OSFileAttributeItem *newItem = self.files[indexPath.row];
     return [self previewControllerWithFileItem:newItem];
 }
+
+#pragma mark *** UISeacrhControllerDelegate ***
+
+- (void)didPresentSearchController:(UISearchController *)searchController {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.searchController.searchBar becomeFirstResponder];
+        
+        
+        UITextField *searchField = [self.searchController.searchBar valueForKey:@"_searchField"];
+        searchField.textColor = [UIColor whiteColor];
+    });
+}
+
+- (void)willPresentSearchController:(UISearchController *)aSearchController {
+    OSFileSearchResultsController *resultsVc = (OSFileSearchResultsController *)self.searchController.searchResultsController;
+    resultsVc.files = self.files;
+}
+
+////////////////////////////////////////////////////////////////////////
+#pragma mark - UISearchBarDelegate
+////////////////////////////////////////////////////////////////////////
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+    [self.collectionView reloadData];
+    [self dismissViewControllerAnimated:YES completion:NULL];
+}
+
 
 #pragma mark *** QLPreviewControllerDataSource ***
 
@@ -870,7 +924,6 @@ static const CGFloat windowHeight = 49.0;
         
         OSFileCollectionViewFlowLayout *layout = [OSFileCollectionViewFlowLayout new];
         _flowLayout = layout;
-        [self updateCollectionViewFlowLayout:_flowLayout];
         layout.scrollDirection = UICollectionViewScrollDirectionVertical;
         layout.sectionsStartOnNewLine = NO;
         layout.headerSize = CGSizeMake(self.view.bounds.size.width, 44.0);
@@ -897,9 +950,11 @@ static const CGFloat windowHeight = 49.0;
             _collectionView.contentInset = inset;
         }
         else {
-            _collectionView.contentInset = UIEdgeInsetsMake(0, 0, 20.0, 0);
+          _collectionView.contentInset = UIEdgeInsetsMake(0, 0, 20.0, 0);
         }
-        
+         [self updateCollectionViewFlowLayout:_flowLayout];
+        _collectionView.keyboardDismissMode = YES;
+       
     }
     return _collectionView;
 }
@@ -931,6 +986,7 @@ static const CGFloat windowHeight = 49.0;
     }
     return _selectedFiles;
 }
+
 
 
 - (void)addSelectedFile:(OSFileAttributeItem *)item {
@@ -1222,7 +1278,23 @@ static const CGFloat windowHeight = 49.0;
     [self reloadFiles];
 }
 
+- (void)rotateToInterfaceOrientation {
+    [self updateCollectionViewFlowLayout:self.flowLayout];
+    /// 屏幕旋转时重新布局item
+    [self.collectionView.collectionViewLayout invalidateLayout];
+}
+
+
 #pragma mark *** OSFileCollectionHeaderViewDelegate ***
+
+- (void)fileCollectionHeaderView:(OSFileCollectionHeaderView *)headerView clickedSearchButton:(UIButton *)searchButton {
+    
+    if (!self.searchController.active) {
+        // 弹出搜索控制器
+        self.searchController.active = YES;
+    }
+    
+}
 
 - (void)collectionReLayoutStyle {
     
@@ -1232,9 +1304,9 @@ static const CGFloat windowHeight = 49.0;
     }];
     [self.collectionView.visibleCells enumerateObjectsUsingBlock:^(__kindof OSFileCollectionViewCell * _Nonnull cell, NSUInteger idx, BOOL * _Nonnull stop) {
         [cell invalidateConstraints];
-        [UIView animateWithDuration:0.28 animations:^{
+        [UIView animateWithDuration:0.1 delay:0.0 options:UIViewAnimationOptionShowHideTransitionViews animations:^{
             [cell layoutIfNeeded];
-        }];
+        } completion:NULL];
     }];
     
     [self.flowLayout invalidateLayout];
@@ -1254,9 +1326,9 @@ completionHandler:(void (^)(void))completion {
     UIView *view = (UIView *)[UIApplication sharedApplication].delegate.window;
     __weak typeof(&*self) weakSelf = self;
     [view bb_showProgressWithActionCallBack:^(MBProgressHUD *hud) {
-        __strong typeof(&*weakSelf) self = weakSelf;
+         __strong typeof(&*weakSelf) self = weakSelf;
         [self.fileManager cancelAllOperation];
-        hud.label.text = @"已取消";
+         hud.label.text = @"已取消";
         if (completion) {
             completion();
         }
@@ -1448,11 +1520,6 @@ __weak id _fileOperationDelegate;
 ////////////////////////////////////////////////////////////////////////
 #pragma mark -
 ////////////////////////////////////////////////////////////////////////
-- (void)rotateToInterfaceOrientation {
-    [self updateCollectionViewFlowLayout:self.flowLayout];
-    /// 屏幕旋转时重新布局item
-    [self.collectionView.collectionViewLayout invalidateLayout];
-}
 
 - (void)updateCollectionViewFlowLayout:(OSFileCollectionViewFlowLayout *)flowLayout {
     if ([OSFileCollectionViewFlowLayout collectionLayoutStyle] == YES) {
@@ -1473,7 +1540,7 @@ __weak id _fileOperationDelegate;
         contentInset.right = 20.0;
         _collectionView.contentInset = contentInset;
         flowLayout.lineMultiplier = 1.19;
-        
+      
         UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
         if (orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight) {
             if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -1494,6 +1561,7 @@ __weak id _fileOperationDelegate;
         }
     }
 }
+
 
 @end
 

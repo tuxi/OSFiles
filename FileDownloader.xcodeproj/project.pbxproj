@@ -42,6 +42,14 @@
 		188458401FB5EB3A00863317 /* NSObject+InterfaceOrientationExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 1884583F1FB5EB3A00863317 /* NSObject+InterfaceOrientationExtensions.m */; };
 		188458491FB6007600863317 /* OSAboutAppViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 188458481FB6007600863317 /* OSAboutAppViewController.m */; };
 		18A0F19C1FA5DE4F00614E91 /* UIAlertView+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A0F19A1FA5DE4F00614E91 /* UIAlertView+Blocks.m */; };
+		18A900BE1FC5DC1D00EC1532 /* OSFileSearchResultsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A900B61FC5DC1B00EC1532 /* OSFileSearchResultsController.m */; };
+		18A900BF1FC5DC1D00EC1532 /* UIViewController+OSStatusBarStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A900B91FC5DC1C00EC1532 /* UIViewController+OSStatusBarStyle.m */; };
+		18A900C01FC5DC1D00EC1532 /* UIAlertController+AlertExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A900BA1FC5DC1C00EC1532 /* UIAlertController+AlertExtensions.m */; };
+		18A900C11FC5DC1D00EC1532 /* NSString+OSContainsEeachCharacter.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A900BB1FC5DC1C00EC1532 /* NSString+OSContainsEeachCharacter.m */; };
+		18A900C21FC5DC3500EC1532 /* OSFileSearchResultsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A900B61FC5DC1B00EC1532 /* OSFileSearchResultsController.m */; };
+		18A900C31FC5DC4000EC1532 /* UIAlertController+AlertExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A900BA1FC5DC1C00EC1532 /* UIAlertController+AlertExtensions.m */; };
+		18A900C41FC5DC4300EC1532 /* UIViewController+OSStatusBarStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A900B91FC5DC1C00EC1532 /* UIViewController+OSStatusBarStyle.m */; };
+		18A900C51FC5DC4600EC1532 /* NSString+OSContainsEeachCharacter.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A900BB1FC5DC1C00EC1532 /* NSString+OSContainsEeachCharacter.m */; };
 		18ADEEAB1F9E48D30024BA40 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18ADEEAA1F9E48D30024BA40 /* LaunchScreen.storyboard */; };
 		18ADEEAD1F9E48DE0024BA40 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18ADEEAC1F9E48DE0024BA40 /* Main.storyboard */; };
 		18ADEEB21F9E492E0024BA40 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18517BD21EEBC86600B148C8 /* Assets.xcassets */; };
@@ -608,6 +616,15 @@
 		18910A6B1F0D3472002BA292 /* PSPDFUIKitMainThreadGuard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSPDFUIKitMainThreadGuard.m; sourceTree = "<group>"; };
 		18A0F19A1FA5DE4F00614E91 /* UIAlertView+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertView+Blocks.m"; sourceTree = "<group>"; };
 		18A0F19B1FA5DE4F00614E91 /* UIAlertView+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+Blocks.h"; sourceTree = "<group>"; };
+		18A900B51FC5DC1B00EC1532 /* NSString+OSContainsEeachCharacter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+OSContainsEeachCharacter.h"; sourceTree = "<group>"; };
+		18A900B61FC5DC1B00EC1532 /* OSFileSearchResultsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSFileSearchResultsController.m; sourceTree = "<group>"; };
+		18A900B71FC5DC1B00EC1532 /* OSFileBrowserAppearanceConfigs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSFileBrowserAppearanceConfigs.h; sourceTree = "<group>"; };
+		18A900B81FC5DC1B00EC1532 /* UIViewController+OSStatusBarStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+OSStatusBarStyle.h"; sourceTree = "<group>"; };
+		18A900B91FC5DC1C00EC1532 /* UIViewController+OSStatusBarStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+OSStatusBarStyle.m"; sourceTree = "<group>"; };
+		18A900BA1FC5DC1C00EC1532 /* UIAlertController+AlertExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertController+AlertExtensions.m"; sourceTree = "<group>"; };
+		18A900BB1FC5DC1C00EC1532 /* NSString+OSContainsEeachCharacter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+OSContainsEeachCharacter.m"; sourceTree = "<group>"; };
+		18A900BC1FC5DC1C00EC1532 /* OSFileSearchResultsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSFileSearchResultsController.h; sourceTree = "<group>"; };
+		18A900BD1FC5DC1C00EC1532 /* UIAlertController+AlertExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertController+AlertExtensions.h"; sourceTree = "<group>"; };
 		18ADEBEB1F9E1FB00024BA40 /* Warnings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Warnings.h; sourceTree = "<group>"; };
 		18ADEBF11F9E2C450024BA40 /* App-AppStore.app.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "App-AppStore.app.png"; sourceTree = "<group>"; };
 		18ADEBF21F9E2C450024BA40 /* App-AppStore.app@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "App-AppStore.app@2x.png"; sourceTree = "<group>"; };
@@ -2273,6 +2290,15 @@
 		18E8930C1FB5DFED00727EF1 /* OSFileBrowser */ = {
 			isa = PBXGroup;
 			children = (
+				18A900B51FC5DC1B00EC1532 /* NSString+OSContainsEeachCharacter.h */,
+				18A900BB1FC5DC1C00EC1532 /* NSString+OSContainsEeachCharacter.m */,
+				18A900B71FC5DC1B00EC1532 /* OSFileBrowserAppearanceConfigs.h */,
+				18A900BC1FC5DC1C00EC1532 /* OSFileSearchResultsController.h */,
+				18A900B61FC5DC1B00EC1532 /* OSFileSearchResultsController.m */,
+				18A900BD1FC5DC1C00EC1532 /* UIAlertController+AlertExtensions.h */,
+				18A900BA1FC5DC1C00EC1532 /* UIAlertController+AlertExtensions.m */,
+				18A900B81FC5DC1B00EC1532 /* UIViewController+OSStatusBarStyle.h */,
+				18A900B91FC5DC1C00EC1532 /* UIViewController+OSStatusBarStyle.m */,
 				18DD4F761FC0792E002C6E27 /* OSMimeTypeMap.h */,
 				18DD4F751FC0792E002C6E27 /* OSMimeTypeMap.m */,
 				18E8930D1FB5DFED00727EF1 /* DirectoryWatcher.h */,
@@ -2723,9 +2749,13 @@
 				18EF90EA1FB7467B0016B969 /* DirectoryWatcher.m in Sources */,
 				18EF90EE1FB746820016B969 /* OSFileAttributeItem.m in Sources */,
 				18DD4F781FC0798E002C6E27 /* OSMimeTypeMap.m in Sources */,
+				18A900C51FC5DC4600EC1532 /* NSString+OSContainsEeachCharacter.m in Sources */,
+				18A900C31FC5DC4000EC1532 /* UIAlertController+AlertExtensions.m in Sources */,
 				18EF90F21FB7468E0016B969 /* OSFileCollectionViewFlowLayout.m in Sources */,
 				18EF90ED1FB746820016B969 /* OSFile.m in Sources */,
+				18A900C41FC5DC4300EC1532 /* UIViewController+OSStatusBarStyle.m in Sources */,
 				18EF90EB1FB7467B0016B969 /* NSDate+ESUtilities.m in Sources */,
+				18A900C21FC5DC3500EC1532 /* OSFileSearchResultsController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2770,6 +2800,7 @@
 				18ADEEDB1F9E4A100024BA40 /* BrowserViewController.m in Sources */,
 				18ADEF281F9E4A860024BA40 /* DownloadsTableViewModel.m in Sources */,
 				1845A6451FB6F5730000E39A /* RMPhoneFormat.m in Sources */,
+				18A900C11FC5DC1D00EC1532 /* NSString+OSContainsEeachCharacter.m in Sources */,
 				18E893301FB5DFED00727EF1 /* OSFileBottomHUD.m in Sources */,
 				18ADEECF1F9E4A020024BA40 /* OSFileDownloaderSessionPrivateDelegate.m in Sources */,
 				181A65C41FBF30E4005619B0 /* ICSDropShadowView.m in Sources */,
@@ -2831,10 +2862,12 @@
 				18ADEED21F9E4A050024BA40 /* BookmarkEditBaseViewController.m in Sources */,
 				18ADEF221F9E4A860024BA40 /* OSSettingsTableViewSection.m in Sources */,
 				18ADEED01F9E4A020024BA40 /* OSFileDownloadProgress.m in Sources */,
+				18A900BF1FC5DC1D00EC1532 /* UIViewController+OSStatusBarStyle.m in Sources */,
 				18ADEEF81F9E4A2E0024BA40 /* WebViewHistoryItem.m in Sources */,
 				18ADEEDD1F9E4A130024BA40 /* BrowserTopToolBar.m in Sources */,
 				18ADEF471F9E4A860024BA40 /* UIButton+ClickBlock.m in Sources */,
 				18ADEF071F9E4A3D0024BA40 /* NSNumber+ZWUtility.m in Sources */,
+				18A900BE1FC5DC1D00EC1532 /* OSFileSearchResultsController.m in Sources */,
 				18ADEF1D1F9E4A530024BA40 /* ICGVideoTrimmerView.m in Sources */,
 				18ADEF431F9E4A860024BA40 /* NetworkTypeUtils.m in Sources */,
 				18ADEF121F9E4A530024BA40 /* DelegateManager.m in Sources */,
@@ -2858,6 +2891,7 @@
 				1845A6411FB6F4FA0000E39A /* OSPhoneUtils.m in Sources */,
 				18ADEEE21F9E4A180024BA40 /* HistorySQLiteManager.m in Sources */,
 				18ADEF4B1F9E4A860024BA40 /* UIView+Extend.m in Sources */,
+				18A900C01FC5DC1D00EC1532 /* UIAlertController+AlertExtensions.m in Sources */,
 				18ADEF391F9E4A860024BA40 /* UINavigationController+OSProgressBar.m in Sources */,
 				18ADEF2F1F9E4A860024BA40 /* BaseTableViewModel.m in Sources */,
 				18ADEF051F9E4A3D0024BA40 /* NSDate+ZWUtility.m in Sources */,

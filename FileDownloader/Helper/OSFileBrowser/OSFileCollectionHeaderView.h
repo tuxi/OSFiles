@@ -18,6 +18,8 @@ FOUNDATION_EXPORT NSString * const OSFileCollectionHeaderViewDefaultIdentifier;
 @optional
 - (void)fileCollectionHeaderView:(OSFileCollectionHeaderView *)headerView
                    reLayoutStyle:(OSFileCollectionLayoutStyle)style;
+- (void)fileCollectionHeaderView:(OSFileCollectionHeaderView *)headerView
+             clickedSearchButton:(UIButton *)searchButton;
 
 @end
 

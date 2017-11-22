@@ -28,6 +28,9 @@ typedef NS_ENUM(NSInteger, OSFileAttributeItemStatus) {
 /// 那些没有显示的cell并未修改，所以在这里标注下，当修改完成后就设置为NO
 @property (nonatomic, assign) BOOL needReLoyoutItem;
 
+/// 显示带有富文本的文件名称
+@property (nonatomic, copy) NSMutableAttributedString *displayNameAttributedText;
+
 - (BOOL)isDownloadBrowser;
 - (BOOL)isICloudDrive;
 

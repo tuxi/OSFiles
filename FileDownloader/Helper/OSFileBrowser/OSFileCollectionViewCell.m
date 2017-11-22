@@ -104,6 +104,8 @@
     self.optionBtn.hidden = NO;
     [self setStatus:fileModel.status];
     
+    [self.titleLabel setAttributedText:self.fileModel.displayNameAttributedText];
+    
     /// 根据文件类型显示
     self.titleLabel.text = fileModel.displayName;
     if (fileModel.isDirectory) {
@@ -128,7 +130,6 @@
     if ([self.fileModel isRootDirectory]) {
         self.optionBtn.hidden = YES;
     }
-    
     /// 对标记为需要重新布局的视图，刷新
     if (self.fileModel.needReLoyoutItem) {
         [self invalidateConstraints];
@@ -143,7 +144,7 @@
 - (void)optionBtnClick:(UIButton *)btn {
     UIAlertControllerStyle alertStyle = UIAlertControllerStyleActionSheet;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        alertStyle = alertStyle;
+        alertStyle = UIAlertControllerStyleAlert;
     }
     UIAlertController *alVc = [UIAlertController alertControllerWithTitle:self.fileModel.displayName message:nil preferredStyle:alertStyle];
     UIAlertAction *renameAction = [UIAlertAction actionWithTitle:@"重命名" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
@@ -265,10 +266,10 @@
     // 添加通用布局
     NSLayoutConstraint *iconViewTop = [NSLayoutConstraint constraintWithItem:self.iconView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1.0 constant:10.0];
     _iconViewTop = iconViewTop;
-    
+
     NSLayoutConstraint *iconViewLeft = [NSLayoutConstraint constraintWithItem:self.iconView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10.0];
     _iconViewLeft = iconViewLeft;
-    
+
     
     NSLayoutConstraint *subTitleLabelBottom = [NSLayoutConstraint constraintWithItem:self.subTitleLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-6.0];
     _subTitleLabelBottom = subTitleLabelBottom;
@@ -290,16 +291,16 @@
     
     // 根据style更新布局
     [self invalidateConstraints];
-    
+  
 }
 
 - (void)invalidateConstraints {
     
     NSMutableArray *deactivateConstraints = @[].mutableCopy;
-    NSMutableArray *activateConstraints = @[].mutableCopy;
+     NSMutableArray *activateConstraints = @[].mutableCopy;
     if ([OSFileCollectionViewFlowLayout collectionLayoutStyle] == YES) {
         self.titleLabel.numberOfLines = 1;
-        
+
         _iconViewLeft.constant = 10.0;
         _iconViewTop.constant = 10.0;
         _subTitleLabelBottom.constant = -6.0;
@@ -402,7 +403,7 @@
         if (_titleLabelTop) {
             [NSLayoutConstraint deactivateConstraints:@[_titleLabelTop]];
         }
-        
+
         
         if (_titleLabelLeft) {
             [NSLayoutConstraint deactivateConstraints:@[_titleLabelLeft]];
@@ -417,7 +418,7 @@
         NSLayoutConstraint *titleLabelRight = [NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-3.0];
         _titleLabelRight = titleLabelRight;
         [activateConstraints addObject:titleLabelRight];
-        
+
         if (!_optionBtnBottom) {
             NSLayoutConstraint *optionBtnBottom = [NSLayoutConstraint constraintWithItem:self.optionBtn attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0];
             _optionBtnBottom = optionBtnBottom;
@@ -434,7 +435,7 @@
     if (activateConstraints.count) {
         [NSLayoutConstraint activateConstraints:activateConstraints];
     }
-    
+
 }
 
 - (UIButton *)optionBtn {

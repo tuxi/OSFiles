@@ -33,18 +33,17 @@ static const CGFloat BBToastDefaultDuration = 2.0;
 
 + (void)bb_showActivity {
     [self bb_showActivityToView:nil];
-    
 }
 
 + (void)bb_showActivityToView:(UIView *)view {
     [self bb_showActivityDelayTime:0 toView:view];
 }
 
-+ (void)bb_showActivityDelayTime:(NSInteger)delayTime {
++ (void)bb_showActivityDelayTime:(CGFloat)delayTime {
     [self bb_showActivityDelayTime:delayTime toView:nil];
 }
 
-+ (void)bb_showActivityDelayTime:(NSInteger)delayTime
++ (void)bb_showActivityDelayTime:(CGFloat)delayTime
                           toView:(UIView *)view {
     [self bb_showActivityMessage:nil delayTime:delayTime toView:view];
 }
@@ -55,14 +54,14 @@ static const CGFloat BBToastDefaultDuration = 2.0;
 
 + (void)bb_showActivityMessage:(NSString*)message
                       isWindow:(BOOL)isWindow
-                     delayTime:(NSInteger)delayTime {
+                     delayTime:(CGFloat)delayTime {
     [self bb_showActivityMessage:message
                        delayTime:delayTime
                           toView:BB_DEFAULT_TO_VIEW(isWindow)];
 }
 
 + (void)bb_showActivityMessage:(NSString*)message
-                     delayTime:(NSInteger)delayTime
+                     delayTime:(CGFloat)delayTime
                         toView:(UIView *)view {
     [self bb_showActivityMessage:message
                        delayTime:delayTime
@@ -71,14 +70,13 @@ static const CGFloat BBToastDefaultDuration = 2.0;
 }
 
 + (void)bb_showActivityMessage:(NSString*)message
-                     delayTime:(NSInteger)delayTime
+                     delayTime:(CGFloat)delayTime
                         toView:(UIView *)view
                         offset:(CGPoint)offset {
     MBProgressHUD *hud  = [self bb_hudWithMessage:message
                                            toView:view
                                            offset:offset];
     hud.mode = MBProgressHUDModeIndeterminate;
-    hud.label.textColor = [UIColor blackColor];
     hud.square = YES;
     if (delayTime > 0) {
         [hud hideAnimated:YES afterDelay:delayTime];
@@ -175,22 +173,26 @@ static const CGFloat BBToastDefaultDuration = 2.0;
 #pragma mark - Text
 ////////////////////////////////////////////////////////////////////////
 
++ (void)bb_showMaxTimeMessage:(NSString *)message {
+    [self bb_showMessage:message delayTime:NSIntegerMax isWindow:NO];
+}
+
 + (void)bb_showMessage:(NSString *)message {
     [self bb_showMessage:message delayTime:BBToastDefaultDuration isWindow:NO];
 }
 
-+ (void)bb_showMessage:(NSString *)message delayTime:(NSInteger)delayTime {
++ (void)bb_showMessage:(NSString *)message delayTime:(CGFloat)delayTime {
     [self bb_showMessage:message delayTime:delayTime toView:nil];
 }
 
 + (void)bb_showMessage:(NSString *)message
-             delayTime:(NSInteger)delayTime
+             delayTime:(CGFloat)delayTime
                 toView:(UIView *)view {
     [self bb_showMessage:message delayTime:delayTime toView:view offSet:CGPointZero];
 }
 
 + (void)bb_showMessage:(NSString *)message
-             delayTime:(NSInteger)delayTime
+             delayTime:(CGFloat)delayTime
                 toView:(UIView *)view
                 offSet:(CGPoint)offset {
     if (delayTime <= 0.0) {
@@ -198,11 +200,13 @@ static const CGFloat BBToastDefaultDuration = 2.0;
     }
     MBProgressHUD *hud = [self bb_hudWithMessage:message toView:view offset:offset];
     hud.mode = MBProgressHUDModeText;
-    [hud hideAnimated:YES afterDelay:delayTime];
+    if (delayTime != NSIntegerMax) {
+        [hud hideAnimated:YES afterDelay:delayTime];
+    }
 }
 
 + (void)bb_showMessage:(NSString *)message
-             delayTime:(NSInteger)delayTime
+             delayTime:(CGFloat)delayTime
               isWindow:(BOOL)isWindow {
     [self bb_showMessage:message
                delayTime:delayTime
@@ -266,18 +270,22 @@ static const CGFloat BBToastDefaultDuration = 2.0;
 #pragma mark *** Text hud ***
 
 /// 显示文本样式的hud, 默认显示在当前控制器view上
+- (void)bb_showMaxTimeMessage:(NSString *)message {
+    [MBProgressHUD bb_showMaxTimeMessage:message];
+}
+
 - (void)bb_showMessage:(NSString *)message {
     [self bb_showMessage:message delayTime:0];
 }
 - (void)bb_showMessage:(NSString *)message
-             delayTime:(NSInteger)delayTime {
+             delayTime:(CGFloat)delayTime {
     [self bb_showMessage:message
                delayTime:delayTime
                   offset:CGPointZero];
 }
 
 - (void)bb_showMessage:(NSString *)message
-             delayTime:(NSInteger)delayTime
+             delayTime:(CGFloat)delayTime
                 offset:(CGPoint)offset {
     [MBProgressHUD bb_showMessage:message
                         delayTime:delayTime
@@ -295,7 +303,7 @@ static const CGFloat BBToastDefaultDuration = 2.0;
     [self bb_showActivityMessage:message delayTime:0];
 }
 
-- (void)bb_showActivityDelayTime:(NSInteger)delayTime {
+- (void)bb_showActivityDelayTime:(CGFloat)delayTime {
     [self bb_showActivityMessage:nil delayTime:delayTime];
 }
 
@@ -303,12 +311,12 @@ static const CGFloat BBToastDefaultDuration = 2.0;
     [self bb_showActivityMessage:nil actionCallBack:callBack];
 }
 
-- (void)bb_showActivityMessage:(NSString*)message delayTime:(NSInteger)delayTime {
-    [self bb_showMessage:message delayTime:delayTime offset:CGPointZero];
+- (void)bb_showActivityMessage:(NSString*)message delayTime:(CGFloat)delayTime {
+    [self bb_showActivityMessage:message delayTime:delayTime offset:CGPointZero];
 }
 
 - (void)bb_showActivityMessage:(NSString*)message
-                     delayTime:(NSInteger)delayTime
+                     delayTime:(CGFloat)delayTime
                         offset:(CGPoint)offset {
     [MBProgressHUD bb_showActivityMessage:message
                                 delayTime:delayTime

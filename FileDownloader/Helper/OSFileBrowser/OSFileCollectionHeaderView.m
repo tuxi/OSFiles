@@ -56,6 +56,7 @@ NSString * const OSFileCollectionHeaderViewDefaultIdentifier = @"UICollectionReu
         });
         [_searchButton setImage:searchImage forState:UIControlStateNormal];
         _searchButton.translatesAutoresizingMaskIntoConstraints = NO;
+        [_searchButton addTarget:self action:@selector(searchButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _searchButton;
 }
@@ -94,6 +95,12 @@ NSString * const OSFileCollectionHeaderViewDefaultIdentifier = @"UICollectionReu
         [self.delegate fileCollectionHeaderView:self reLayoutStyle:style];
     }
     [sender setUserInteractionEnabled:YES];
+}
+
+- (void)searchButtonClick:(UIButton *)btn {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(fileCollectionHeaderView:clickedSearchButton:)]) {
+        [self.delegate fileCollectionHeaderView:self clickedSearchButton:btn];
+    }
 }
 
 @end
