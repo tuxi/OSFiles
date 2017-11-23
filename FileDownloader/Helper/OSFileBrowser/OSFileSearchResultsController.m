@@ -15,6 +15,7 @@
 #import "OSFileCollectionViewController.h"
 #import "MBProgressHUD+BBHUD.h"
 #import "OSFileBrowserAppearanceConfigs.h"
+#import "UIViewController+XYExtensions.h"
 
 static NSString * const kSearchCellIdentifier = @"OSFileSearchResultsController";
 
@@ -134,7 +135,7 @@ static NSString * const kSearchCellIdentifier = @"OSFileSearchResultsController"
         // 添加属性(粗体)
         [attribute addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:16] range:range];
         // 关键字高亮
-        [attribute addAttribute:NSForegroundColorAttributeName value:kFileViewerGlobleColor range:range];
+        [attribute addAttribute:NSForegroundColorAttributeName value:[UIColor redColor] range:range];
     }
     
     cell.fileModel.displayNameAttributedText = attribute;
@@ -163,11 +164,11 @@ static NSString * const kSearchCellIdentifier = @"OSFileSearchResultsController"
 }
 
 - (NSInteger)numberOfPreviewItemsInPreviewController:(QLPreviewController *)controller {
-    return self.files.count;
+    return self.arrayOfSeachResults.count;
 }
 
 - (id <QLPreviewItem>)previewController:(QLPreviewController *)controller previewItemAtIndex:(NSInteger) index {
-    NSString *newPath = self.files[index].path;
+    NSString *newPath = self.arrayOfSeachResults[index].path;
     
     return [NSURL fileURLWithPath:newPath];
 }
@@ -182,10 +183,10 @@ static NSString * const kSearchCellIdentifier = @"OSFileSearchResultsController"
 #pragma mark -
 ////////////////////////////////////////////////////////////////////////
 - (UIViewController *)previewControllerByIndexPath:(NSIndexPath *)indexPath {
-    if (!indexPath || !self.files.count) {
+    if (!indexPath || !self.arrayOfSeachResults.count) {
         return nil;
     }
-    OSFileAttributeItem *newItem = self.files[indexPath.row];
+    OSFileAttributeItem *newItem = self.arrayOfSeachResults[indexPath.row];
     return [self previewControllerWithFileItem:newItem];
 }
 
@@ -228,7 +229,7 @@ static NSString * const kSearchCellIdentifier = @"OSFileSearchResultsController"
 }
 
 - (void)showDetailController:(UIViewController *)viewController atIndexPath:(NSIndexPath *)indexPath {
-    NSString *newPath = self.files[indexPath.row].path;
+    NSString *newPath = self.arrayOfSeachResults[indexPath.row].path;
     if (!newPath.length) {
         return;
     }
@@ -236,7 +237,7 @@ static NSString * const kSearchCellIdentifier = @"OSFileSearchResultsController"
 }
 
 - (void)backButtonClick {
-    [self dismissViewControllerAnimated:YES completion:^{
+    [[UIViewController xy_topViewController] dismissViewControllerAnimated:YES completion:^{
         
     }];
 }
