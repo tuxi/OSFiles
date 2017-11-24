@@ -27,6 +27,16 @@ static const CGFloat BBToastDefaultDuration = 2.0;
 
 @implementation MBProgressHUD (BBHUD)
 
++ (void)load {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        CGFloat wid = MIN([UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
+        [[MBProgressHUD appearance] setMinSize:CGSizeMake(wid*0.5, 0.0)];
+        [[MBProgressHUD appearance] setMargin:10.0];
+    });
+}
+
+
 ////////////////////////////////////////////////////////////////////////
 #pragma mark - Activity
 ////////////////////////////////////////////////////////////////////////
