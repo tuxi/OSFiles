@@ -275,7 +275,7 @@ static NSString * const kSearchCellIdentifier = @"OSFileSearchResultsController"
         flowLayout.lineMultiplier = 1.19;
         
         UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
-        if (orientation == UIDeviceOrientationPortrait || orientation == UIDeviceOrientationPortraitUpsideDown) {
+        if (orientation == UIDeviceOrientationPortrait) {
             if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
                 flowLayout.lineItemCount = 6;
             }
@@ -284,7 +284,7 @@ static NSString * const kSearchCellIdentifier = @"OSFileSearchResultsController"
             }
             
         }
-        else {
+        else if (orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight) {
             if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
                 flowLayout.lineItemCount = 10;
             }
