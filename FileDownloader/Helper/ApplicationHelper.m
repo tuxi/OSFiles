@@ -41,7 +41,7 @@
 
 @end
 
-@interface ApplicationHelper () <ICSDrawerControllerDelegate>
+@interface ApplicationHelper () <ICSDrawerControllerDelegate, UITabBarControllerDelegate>
 
 @end
 
@@ -103,7 +103,9 @@
 - (void)configureDrawerViewController {
     BrowserViewController *bvc = [BrowserViewController sharedInstance];
     MainNavigationController *nav = [[MainNavigationController alloc] initWithRootViewController:bvc];
-    self.drawerViewController  = [[ICSDrawerController alloc] initWithLeftViewController:[MainTabBarController new]
+    MainTabBarController *tabBarController = [MainTabBarController new];
+    tabBarController.delegate = self;
+    self.drawerViewController  = [[ICSDrawerController alloc] initWithLeftViewController:tabBarController
                                                                      centerViewController:nav];
     self.drawerViewController.delegate = self;
 }
@@ -120,6 +122,19 @@
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
+
+////////////////////////////////////////////////////////////////////////
+#pragma mark - UITabBarControllerDelegate
+////////////////////////////////////////////////////////////////////////
+- (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
+    
+    if ([viewController.title isEqualToString:@"个人中心"]) {
+        
+    }
+    
+    return  YES;
+}
+
 
 ////////////////////////////////////////////////////////////////////////
 #pragma mark -

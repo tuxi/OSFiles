@@ -275,21 +275,21 @@ static NSString * const kSearchCellIdentifier = @"OSFileSearchResultsController"
         flowLayout.lineMultiplier = 1.19;
         
         UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
-        if (orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight) {
-            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-                flowLayout.lineItemCount = 10;
-            }
-            else {
-                flowLayout.lineItemCount = 5;
-            }
-            
-        }
-        else {
+        if (orientation == UIDeviceOrientationPortrait || orientation == UIDeviceOrientationPortraitUpsideDown) {
             if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
                 flowLayout.lineItemCount = 6;
             }
             else {
                 flowLayout.lineItemCount = 3;
+            }
+            
+        }
+        else {
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+                flowLayout.lineItemCount = 10;
+            }
+            else {
+                flowLayout.lineItemCount = 5;
             }
         }
     }

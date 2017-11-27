@@ -38,7 +38,6 @@
     [self addChildVC:[UIViewController new] imageNamed:nil title:nil];
     [SmileAuthenticator sharedInstance].delegate = self;
     self.view.backgroundColor = [UIColor whiteColor];
-
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -64,6 +63,7 @@
     nav.tabBarItem.title = title;
     [self addChildViewController:nav];
 }
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
