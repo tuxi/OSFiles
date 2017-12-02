@@ -1306,7 +1306,7 @@ static const CGFloat windowHeight = 49.0;
     }];
     [self.collectionView.visibleCells enumerateObjectsUsingBlock:^(__kindof OSFileCollectionViewCell * _Nonnull cell, NSUInteger idx, BOOL * _Nonnull stop) {
         [cell invalidateConstraints];
-        [UIView animateWithDuration:0.1 delay:0.0 options:UIViewAnimationOptionShowHideTransitionViews animations:^{
+        [UIView animateWithDuration:0.1 delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
             [cell layoutIfNeeded];
         } completion:NULL];
     }];

@@ -270,20 +270,29 @@
     BOOL isSuccess = NO;
     if (self.fileModel.alreadyMarked) {
         isSuccess = [self.fileModel cancelMarkup];
+        if (isSuccess) {
+            [MBProgressHUD bb_showMessage:@"取消标记成功"];
+        }
+        else {
+            [MBProgressHUD bb_showMessage:@"取消标记失败"];
+        }
     }
     else {
         isSuccess = [self.fileModel markup];
+        if (isSuccess) {
+            [MBProgressHUD bb_showMessage:@"标记成功"];
+        }
+        else {
+            [MBProgressHUD bb_showMessage:@"标记失败"];
+        }
     }
     if (isSuccess) {
-        [MBProgressHUD bb_showMessage:@"标记成功"];
         if (self.delegate && [self.delegate respondsToSelector:@selector(fileCollectionViewCell:didMarkupFile:)]) {
             [self.delegate fileCollectionViewCell:self didMarkupFile:self.fileModel];
         }
     }
-    else {
-        [MBProgressHUD bb_showMessage:@"标记失败"];
-    }
 }
+
 
 ////////////////////////////////////////////////////////////////////////
 #pragma mark -
