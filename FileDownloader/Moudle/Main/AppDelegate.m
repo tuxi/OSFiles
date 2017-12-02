@@ -70,7 +70,9 @@ static NSString * const UserAgent = @"Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 li
     UIAlertAction *openBrowserAction = [UIAlertAction actionWithTitle:@"打开网页" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action){
         NSNotification *notify = [NSNotification notificationWithName:kOpenInNewWindowNotification object:self userInfo:@{@"url": url}];
         [Notifier postNotification:notify];
-        [UIViewController xy_tabBarController].selectedIndex = 0;
+        if (![[UIViewController xy_topViewController] isKindOfClass:[BrowserViewController class]]) {
+            [[UIViewController xy_topViewController].navigationController showViewController:[BrowserViewController sharedInstance] sender:[UIViewController xy_topViewController]];
+        }
     }];
     UIAlertAction *downloadFileAction = [UIAlertAction actionWithTitle:@"缓存" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action){
         

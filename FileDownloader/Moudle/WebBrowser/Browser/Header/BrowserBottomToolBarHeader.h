@@ -10,7 +10,7 @@
 #define BrowserBottomToolBarHeader_h
 
 typedef NS_ENUM(NSInteger, BottomToolBarButtonTag) {
-    BottomToolBarPlaceholderTag,
+    BottomToolBarExitBrowserTag,
     BottomToolBarBackButtonTag,
     BottomToolBarForwardButtonTag,
     BottomToolBarRefreshOrStopButtonTag,

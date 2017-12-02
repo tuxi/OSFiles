@@ -12,8 +12,6 @@
 
 @interface BrowserViewController : BaseViewController<UIScrollViewDelegate>
 
-@property (nonatomic, strong) BrowserBottomToolBar *bottomToolBar;
-
 + (instancetype)sharedInstance;
 
 - (void)findInPageDidUpdateCurrentResult:(NSInteger)currentResult;

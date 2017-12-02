@@ -9,10 +9,8 @@
 #import "MainTabBarController.h"
 #import "MainNavigationController.h"
 #import "OSSettingViewController.h"
-//#import "FilesViewController.h"
 #import "DownloadsViewController.h"
 #import "SmileAuthenticator.h"
-#import "BrowserViewController.h"
 #import "BaseNavigationViewController.h"
 #import "OSFileCollectionViewController.h"
 #import "OSFileDownloaderConfiguration.h"
@@ -26,16 +24,22 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    [self addChildVC:[[OSFileCollectionViewController alloc] initWithDirectoryArray:@[
-                                                                                      [NSString getICloudCacheFolder],
-                                                                                      [NSString getDownloadDisplayFolderPath],
-                                                                                      [NSString getDocumentPath],
-                                                                                      [AppGroupManager getAPPGroupSharePath]
-                                                                                      ]] imageNamed:@"TabFiles" title:@"我的文件"];
+    OSFileCollectionViewController *fileBrowserVc = [[OSFileCollectionViewController alloc] initWithDirectoryArray:@[
+                                                                     [NSString getICloudCacheFolder],
+                                                                     [NSString getDownloadDisplayFolderPath],
+                                                                     [NSString getDocumentPath],
+                                                                     [AppGroupManager getAPPGroupSharePath]
+                                                                     ]];
+    OSFileCollectionViewController *starBrowserVc = [[OSFileCollectionViewController alloc] initWithDirectoryArray:@[
+                                                                                                                     [NSString getICloudCacheFolder],
+                                                                                                                     [NSString getDownloadDisplayFolderPath],
+                                                                                                                     [NSString getDocumentPath],
+                                                                                                                     [AppGroupManager getAPPGroupSharePath]
+                                                                                                                     ]];
+    [self addChildVC:fileBrowserVc imageNamed:@"TabFiles" title:@"我的文件"];
     [self addChildVC:[DownloadsViewController new] imageNamed:@"TabDownloads" title:@"缓存"];
+    [self addChildVC:starBrowserVc imageNamed:@"TabStar" title:@"标记"];
     [self addChildVC:[OSSettingViewController new] imageNamed:@"TabMore" title:@"更多"];
-    [self addChildVC:[UIViewController new] imageNamed:nil title:nil];
     [SmileAuthenticator sharedInstance].delegate = self;
     self.view.backgroundColor = [UIColor whiteColor];
 }

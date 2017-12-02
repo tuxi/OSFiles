@@ -38,8 +38,8 @@
 - (void)initializeView{
     self.backgroundColor = [UIColor whiteColor];
     self.clipsToBounds = NO;
-    UIBarButtonItem *placeholderItem = [self createBottomToolBarButtonWithImage:nil tag:BottomToolBarPlaceholderTag];
-    [placeholderItem setEnabled:NO];
+    
+    UIBarButtonItem *exitBrowser = [self createBottomToolBarButtonWithTitle:@"退出" tag:BottomToolBarExitBrowserTag];
     
     UIBarButtonItem *backItem = [self createBottomToolBarButtonWithImage:TOOLBAR_BUTTON_BACK_HILIGHT_STRING tag:BottomToolBarBackButtonTag];
     self.backItem = backItem;
@@ -57,25 +57,23 @@
     
     UIBarButtonItem *settingItem = [self createBottomToolBarButtonWithImage:TOOLBAR_BUTTON_MORE_STRING tag:BottomToolBarMoreButtonTag];
 
+    
+    
     UIBarButtonItem *flexibleItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     
-    [self setItems:@[flexibleItem,placeholderItem, flexibleItem,refreshOrStopItem,flexibleItem,multiWindowItem,flexibleItem,backItem,flexibleItem,forwardItem,flexibleItem,settingItem,flexibleItem] animated:NO];
-    
-    self.switchPageButton = ({
-        UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
-        btn.translatesAutoresizingMaskIntoConstraints = NO;
-        [self addSubview:btn];
-        [btn setBackgroundImage:[UIImage imageNamed:@"browser_dragger"] forState:UIControlStateNormal];
-        [btn addTarget:self action:@selector(switchPageButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:btn attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeading multiplier:1.0 constant:-60]];
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:btn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:120.0]];
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:btn attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0.0]];
-        btn;
-    });
+    [self setItems:@[flexibleItem,exitBrowser, flexibleItem,refreshOrStopItem,flexibleItem,multiWindowItem,flexibleItem,backItem,flexibleItem,forwardItem,flexibleItem,settingItem,flexibleItem] animated:NO];
 }
 
 - (UIBarButtonItem *)createBottomToolBarButtonWithImage:(NSString *)imageName tag:(NSInteger)tag{
     UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:imageName] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(handleBottomToolBarButtonClicked:)];
+    item.tag = tag;
+    item.width = self.width / 5.0f;
+    
+    return item;
+}
+
+- (UIBarButtonItem *)createBottomToolBarButtonWithTitle:(NSString *)title tag:(NSInteger)tag{
+    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain target:self action:@selector(handleBottomToolBarButtonClicked:)];
     item.tag = tag;
     item.width = self.width / 5.0f;
     
@@ -171,25 +169,6 @@
     else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
-}
-
-- (void)switchPageButtonClick:(UIButton *)btn {
-    if (self.switchPageButtonActionBlock) {
-        self.switchPageButtonActionBlock(btn);
-    }
-}
-
-- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
-    BOOL res = [super pointInside:point withEvent:event];
-    if (CGRectContainsPoint(self.switchPageButton.frame, point)) {
-        res = YES;
-    }
-    return res;
-}
-
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
-    UIView *touchView = [super hitTest:point withEvent:event];
-    return touchView;
 }
 
 

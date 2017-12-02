@@ -9,6 +9,7 @@
 #import "MainNavigationController.h"
 #import <Aspects.h>
 #import "OSFilePreviewViewController.h"
+#import "BrowserViewController.h"
 
 @interface MainNavigationController () <UINavigationControllerDelegate> {
     BOOL _pushing;
@@ -76,7 +77,7 @@
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated {
     
-    if ([viewController isKindOfClass:[OSFilePreviewViewController class]] || [viewController isKindOfClass:[OSPreviewViewController class]]) {
+    if ([viewController isKindOfClass:[OSFilePreviewViewController class]] || [viewController isKindOfClass:[OSPreviewViewController class]] || [viewController isKindOfClass:[BrowserViewController class]]) {
         viewController.hidesBottomBarWhenPushed = YES;
     }
     
@@ -98,6 +99,7 @@
 
     [super pushViewController:viewController animated:animated];
 }
+
 
 - (void)setDelegate:(id<UINavigationControllerDelegate>)delegate {
     [super setDelegate:delegate];
@@ -122,7 +124,6 @@
         }
         else {
             //为delegate动态添加 navigationController:didShowViewController:animated:
-            //不知道有没有这方面的库可以用，只能自己写
             Class class = [delegate class];
             
             swizzleMethod(class, @selector(navigationController:didShowViewController:animated:), @selector(navigationController:didShowViewController:animated:));

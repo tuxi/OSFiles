@@ -13,7 +13,5 @@
 @interface BrowserBottomToolBar : UIToolbar
 
 @property (nonatomic, weak) id<BrowserBottomToolBarButtonClickedDelegate> browserButtonDelegate;
-@property (nonatomic, copy) void (^switchPageButtonActionBlock)(UIButton *btn);
-@property (nonatomic, strong) UIButton *switchPageButton;
 
 @end

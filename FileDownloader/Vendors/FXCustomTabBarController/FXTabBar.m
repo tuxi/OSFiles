@@ -134,9 +134,6 @@
                 [tabBarItem addTarget:self action:@selector(userClickedItem:) forControlEvents:UIControlEventTouchUpInside];
                 [temp addObject:tabBarItem];
                 [self addSubview:tabBarItem];
-                if (idx == tabbarItems.count-1) {
-                    tabBarItem.userInteractionEnabled = NO;
-                }
                 idx++;
             }
         }

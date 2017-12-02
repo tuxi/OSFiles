@@ -15,6 +15,8 @@
 #import "UIViewController+OSAlertExtension.h"
 #import "OSFileDownloaderManager.h"
 #import "OSAboutAppViewController.h"
+#import "DownloadsViewController.h"
+#import "BrowserViewController.h"
 
 @interface OSSettingViewController () <UITableViewDelegate, UITableViewDataSource, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
@@ -62,6 +64,7 @@
     [self.sectionItems addObject:[self section_1]];
     [self.sectionItems addObject:[self section_2]];
     [self.sectionItems addObject:[self section_3]];
+    [self.sectionItems addObject:[self section_4]];
     [self.settingTableView reloadData];
 }
 
@@ -105,6 +108,15 @@
 }
 
 - (OSSettingsTableViewSection *)section_3 {
+    NSArray *items = @[
+                       [OSSettingsMenuItem normalCellForSel:@selector(browserWebPage) target:self title:@"浏览器" iconName:@"TabBrowser"],
+                       [OSSettingsMenuItem normalCellForSel:@selector(cacheFile) target:self title:@"缓存" iconName:@"TabDownloads"]
+                       ];
+    OSSettingsTableViewSection *section = [[OSSettingsTableViewSection alloc] initWithItem:items headerTitle:@"扩展" footerText:nil];
+    return section;
+}
+
+- (OSSettingsTableViewSection *)section_4 {
     NSArray *items = @[
                        [OSSettingsMenuItem normalCellForSel:@selector(aboutApp) target:self title:@"关于" iconName:nil]
                               ];
@@ -287,6 +299,17 @@
 - (void)aboutApp {
     OSAboutAppViewController *vc = [OSAboutAppViewController new];
     [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (void)cacheFile {
+    DownloadsViewController *vc = [DownloadsViewController new];
+    [self.navigationController showViewController:vc sender:self];
+    
+}
+
+- (void)browserWebPage {
+    BrowserViewController *bvc = [BrowserViewController sharedInstance];
+    [self.navigationController showViewController:bvc sender:self];
 }
 
 #pragma mark - UIImagePickerControllerDelegate

@@ -44,6 +44,7 @@ static NSString *const kBrowserViewControllerAddBookmarkFailure = @"添加书签
 @property (nonatomic, weak) id<BrowserBottomToolBarButtonClickedDelegate> browserButtonDelegate;
 @property (nonatomic, strong) FindInPageBar *findInPageBar;
 @property (nonatomic, weak) NSLayoutConstraint *findInPageBarbottomLayoutConstaint;
+@property (nonatomic, strong) BrowserBottomToolBar *bottomToolBar;
 
 @end
 
@@ -91,12 +92,12 @@ static NSString *const kBrowserViewControllerAddBookmarkFailure = @"添加书签
     [self applyInterfaceOrientation:UIDeviceOrientationPortrait interfaceOrientationDidChangeBlock:^(InterfaceOrientation orientation) {
         [self recoverToolBar];
     }];
-    [self.navigationController setNavigationBarHidden:YES];
+//    [self.navigationController setNavigationBarHidden:YES];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    [self.navigationController setNavigationBarHidden:NO];
+//    [self.navigationController setNavigationBarHidden:NO];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -174,10 +175,6 @@ static NSString *const kBrowserViewControllerAddBookmarkFailure = @"添加书签
     self.bottomToolBar = ({
         BrowserBottomToolBar *toolBar = [[BrowserBottomToolBar alloc] initWithFrame:CGRectMake(0, self.view.height - BOTTOM_TOOL_BAR_HEIGHT, self.view.width, BOTTOM_TOOL_BAR_HEIGHT)];
         [self.view addSubview:toolBar];
-        toolBar.switchPageButtonActionBlock = ^(UIButton *btn) {
-            [[ApplicationHelper helper].drawerViewController toggle];
-                
-        };
         toolBar.translatesAutoresizingMaskIntoConstraints = NO;
         
         if (@available(iOS 11.0, *)) {
@@ -340,6 +337,11 @@ static NSString *const kBrowserViewControllerAddBookmarkFailure = @"添加书签
     if ([self.browserButtonDelegate respondsToSelector:@selector(browserBottomToolBarButtonClickedWithTag:)]) {
         [self.browserButtonDelegate browserBottomToolBarButtonClickedWithTag:tag];
     }
+    
+    if (tag == BottomToolBarExitBrowserTag) {
+        [self.navigationController popToRootViewControllerAnimated:YES];
+    }
+    
     if (tag == BottomToolBarMoreButtonTag) {
         // weak self_ must not nil
         WEAK_REF(self)
@@ -642,7 +644,7 @@ static NSString *const kBrowserViewControllerAddBookmarkFailure = @"添加书签
 
 #pragma mark - Dealloc Method
 
-- (void)dealloc{
+- (void)dealloc {
     [Notifier removeObserver:self];
 }
 
