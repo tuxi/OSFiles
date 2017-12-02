@@ -189,11 +189,17 @@ static const CGFloat windowHeight = 49.0;
     if (self.mode == OSFileCollectionViewControllerModeEdit) {
         [self rightBarButtonClick];
     }
+
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     [self bottomTipButton].hidden = YES;
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [self reloadCollectionData];
 }
 
 - (void)setDisplayMarkupFiles:(BOOL)displayMarkupFiles {
@@ -1308,10 +1314,12 @@ static const CGFloat windowHeight = 49.0;
         [cell invalidateConstraints];
         [UIView animateWithDuration:0.1 delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^{
             [cell layoutIfNeeded];
-        } completion:NULL];
+        } completion:^(BOOL finished) {
+//            [self reloadCollectionData];
+        }];
     }];
-    
     [self.flowLayout invalidateLayout];
+    [self reloadCollectionData];
 }
 
 - (void)markupFileCompletion {
