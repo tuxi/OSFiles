@@ -12,6 +12,12 @@
 #import "NSDate+ESUtilities.h"
 #import "OSMimeTypeMap.h"
 #import "UIImage+XYImage.h"
+#import "AppGroupManager.h"
+
+static NSString * const AppGroupPrefixString = @"/private/var/mobile/Containers/Shared/AppGroup/";
+static NSString * const AppSandBoxPrefixString = @"/var/mobile/Containers/Data/Application/";
+static NSNotificationName OSFileDidMarkupedNotification = @"OSFileDidMarkupedNotification";
+static NSNotificationName OSFileDidCancelMarkupedNotification = @"OSFileDidCancelMarkupedNotification";
 
 @implementation OSFile
 @synthesize isDirectory                 = _isDirectory;
@@ -62,6 +68,7 @@
 @synthesize targetFile                  = _targetFile;
 @synthesize hideDisplayFiles            = _hideDisplayFiles;
 @synthesize mimeType                    = _mimeType;
+@synthesize alreadyMarked               = _alreadyMarked;
 
 + (instancetype)fileWithPath:(NSString *)filePath {
     return [self fileWithPath:filePath error:NULL];
@@ -89,10 +96,20 @@
         _hideDisplayFiles = hideDisplayFiles;
         _path        = [filePath copy];
         _fileManager = [NSFileManager defaultManager];
-        [self reloadFileWithError:error];
+        if (![self reloadFileWithError:error]) {
+            return nil;
+        }
+        else {
+            [self registerMotification];
+        }
     }
     
     return self;
+}
+
+- (void)registerMotification {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMarkupState:) name:OSFileDidMarkupedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMarkupState:) name:OSFileDidCancelMarkupedNotification object:nil];
 }
 
 - (BOOL)reloadFile {
@@ -127,7 +144,7 @@
     [self getSize];
     [self getDates];
     [self getFileSystemAttributes];
-    
+    _alreadyMarked = [self isAlreadyMarked];
     NSArray *(^processFileBlock)(NSString *path) = ^(NSString *path) {
         /*
          系统中某些文件没有权限加载
@@ -515,6 +532,163 @@
     _icon = baseIcon;
 }
 
+////////////////////////////////////////////////////////////////////////
+#pragma mark - 文件标记
+////////////////////////////////////////////////////////////////////////
+
+/// 是否已标记
+- (BOOL)isAlreadyMarked {
+    NSArray *array = [self.class markupFilePathsWithNeedReload:NO];
+    if (!array.count) {
+        return NO;
+    }
+    NSUInteger foundIdx = [array indexOfObjectPassingTest:^BOOL(NSString *  _Nonnull markupPath, NSUInteger idx, BOOL * _Nonnull stop) {
+        BOOL res = [markupPath isEqualToString:self.path];
+        if (res) {
+            *stop = YES;
+        }
+        return res;
+    }];
+    return foundIdx != NSNotFound;
+}
+
+static NSMutableArray *_markupFiles;
+
+- (BOOL)markup {
+    BOOL res = [self.class addMarkupWithFile:self];
+    if (res) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:OSFileDidMarkupedNotification object:self.path];
+    }
+    return res;
+}
+
+- (BOOL)cancelMarkup {
+    BOOL res = [self.class removeMarkupWithFile:self];
+    if (res) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:OSFileDidCancelMarkupedNotification object:self.path];
+    }
+    return res;
+}
+
+/// 添加一个文件进行标记
++ (BOOL)addMarkupWithFile:(OSFile *)file {
+    if (!file.path) {
+        return NO;
+    }
+    
+    _markupFiles = [self markupFilePathsWithNeedReload:YES].mutableCopy;
+    
+    if (!_markupFiles) {
+        _markupFiles = @[file.path].mutableCopy;
+    }
+    else {
+        NSUInteger foundIdx = [_markupFiles indexOfObjectPassingTest:^BOOL(NSString *  _Nonnull markupPath, NSUInteger idx, BOOL * _Nonnull stop) {
+            BOOL res = [markupPath isEqualToString:file.path];
+            if (res) {
+                *stop = YES;
+            }
+            return res;
+        }];
+        if (foundIdx != NSNotFound) {
+            [_markupFiles removeObjectAtIndex:foundIdx];
+        }
+        [_markupFiles insertObject:file.path atIndex:0];
+    }
+    
+    NSString *markPath = [NSString getMarkupCachePath];
+    
+    BOOL res = [_markupFiles writeToFile:markPath atomically:YES];
+    file->_alreadyMarked = res;
+    return res;
+}
+
+/// 添加一个文件进行标记
++ (BOOL)removeMarkupWithFile:(OSFile *)file {
+    if (!file.path) {
+        return NO;
+    }
+    
+    _markupFiles = [self markupFilePathsWithNeedReload:YES].mutableCopy;
+    
+    if (!_markupFiles) {
+        file->_alreadyMarked = NO;
+    }
+    else {
+        NSIndexSet *set = [_markupFiles indexesOfObjectsPassingTest:^BOOL(NSString *  _Nonnull markupPath, NSUInteger idx, BOOL * _Nonnull stop) {
+            return [markupPath isEqualToString:file.path];
+        }];
+        if (set) {
+            [_markupFiles removeObjectsAtIndexes:set];
+        }
+    }
+    
+    NSString *markPath = [NSString getMarkupCachePath];
+    
+    BOOL res = [_markupFiles writeToFile:markPath atomically:YES];
+    if (res) {
+        file->_alreadyMarked = NO;
+    }
+    return res;
+}
+
+/// 获取标记的文件列表
+/// @param reload 是否重新读取本地存储的标记文件，如果是NO就直接从内存中读取记录
++ (NSArray<NSString *> *)markupFilePathsWithNeedReload:(BOOL)reload {
+    dispatch_block_t getMarkupFiles = ^ {
+        NSString *markPath = [NSString getMarkupCachePath];
+        NSMutableArray *markFiles = [[NSMutableArray alloc] initWithContentsOfFile:markPath];
+        [markFiles enumerateObjectsUsingBlock:^(NSString *  _Nonnull markupPath, NSUInteger idx, BOOL * _Nonnull stop) {
+            // 文件路径更新
+            if ([self isInAppGroupWithPath:markupPath]) {
+                NSString *str1 = [markupPath componentsSeparatedByString:AppGroupPrefixString].lastObject;
+                NSRange range = [str1 rangeOfString:@"/"];
+                NSString *lastFilePath = [str1 substringFromIndex:range.location];
+                
+                NSString *str2 = [[AppGroupManager getAPPGroupHomePath] componentsSeparatedByString:AppGroupPrefixString].lastObject;
+                NSString *needReplaceStr = [str2 componentsSeparatedByString:@"/"].firstObject;
+                
+                markupPath = [NSString stringWithFormat:@"%@%@%@", AppGroupPrefixString, needReplaceStr, lastFilePath];
+            }
+            else {
+                NSString *str1 = [markupPath componentsSeparatedByString:AppSandBoxPrefixString].lastObject;
+                NSRange range = [str1 rangeOfString:@"/"];
+                NSString *lastFilePath = [str1 substringFromIndex:range.location];
+
+                NSString *str2 = [NSHomeDirectory() componentsSeparatedByString:AppSandBoxPrefixString].lastObject;
+                NSString *needReplaceStr = [str2 componentsSeparatedByString:@"/"].firstObject;
+
+                markupPath = [NSString stringWithFormat:@"%@%@%@", AppSandBoxPrefixString, needReplaceStr, lastFilePath];
+            }
+            [markFiles replaceObjectAtIndex:idx withObject:markupPath];
+            
+        }];
+        _markupFiles = markFiles;
+    };
+    
+    if (reload) {
+        getMarkupFiles();
+    }
+    else {
+        if (!_markupFiles) {
+            getMarkupFiles();
+        }
+    }
+    
+    return _markupFiles ?: @[];
+}
+
++ (NSArray<OSFile *> *)markupFilesWithNeedReload:(BOOL)reload {
+    NSArray *array = [self markupFilePathsWithNeedReload:reload];
+    NSMutableArray *files = @[].mutableCopy;
+    [array enumerateObjectsUsingBlock:^(NSString *  _Nonnull path, NSUInteger idx, BOOL * _Nonnull stop) {
+        OSFile *file = [OSFile fileWithPath:path error:nil];
+        if (file) {
+            [files addObject:file];
+        }
+    }];
+    return files;
+}
+
 
 - (NSString *)description {
     NSMutableString *attstring = @"".mutableCopy;
@@ -538,6 +712,43 @@
         [attstring appendString:[NSString stringWithFormat:@"\n\n%@: %@\n", NSStringFromSelector(@selector(path)), self.path]];
     }
     return attstring;
+}
+
++ (BOOL)isInAppGroupWithPath:(NSString *)path {
+    if ([path hasPrefix:AppGroupPrefixString]) {
+        return YES;
+    }
+    return NO;
+}
+
++ (BOOL)isInAppSandBoxWithPath:(NSString *)path {
+    if ([path hasPrefix:AppSandBoxPrefixString]) {
+        return YES;
+    }
+    return NO;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)updateMarkupState:(NSNotification *)note {
+    
+    NSString *path = note.object;
+    if (![path isKindOfClass:[NSString class]]) {
+        return;
+    }
+    
+    if (![path isEqualToString:self.path]) {
+        return;
+    }
+    
+    if ([note.name isEqualToString:OSFileDidMarkupedNotification]) {
+        _alreadyMarked = YES;
+    }
+    else if ([note.name isEqualToString:OSFileDidCancelMarkupedNotification]) {
+        _alreadyMarked = NO;
+    }
 }
 
 @end

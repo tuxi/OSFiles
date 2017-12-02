@@ -24,6 +24,7 @@
 @property (nonatomic, strong) UILabel *subTitleLabel;
 @property (nonatomic, strong) UIButton *optionBtn;
 @property (nonatomic, copy) NSString *renameNewName;
+@property (nonatomic, strong) UIImageView *starImageView;
 
 @end
 
@@ -67,7 +68,8 @@
     [self.contentView addSubview:self.titleLabel];
     [self.contentView addSubview:self.subTitleLabel];
     [self.contentView addSubview:self.optionBtn];
-    
+    [self.iconView addSubview:self.starImageView];
+    self.iconView.clipsToBounds = NO;
     [self makeConstraints];
     
 }
@@ -106,8 +108,10 @@
     
     [self.titleLabel setAttributedText:self.fileModel.displayNameAttributedText];
     
-    /// 根据文件类型显示
     self.titleLabel.text = fileModel.displayName;
+    self.starImageView.hidden = !fileModel.alreadyMarked;
+    
+    /// 根据文件类型显示
     if (fileModel.isDirectory) {
         self.iconView.image = fileModel.icon;
         self.subTitleLabel.text = [NSString stringWithFormat:@"%ld个文件", fileModel.numberOfSubFiles];
@@ -159,6 +163,10 @@
     UIAlertAction *copyAction = [UIAlertAction actionWithTitle:@"复制" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         [self copyFile];
     }];
+    NSString *markupString = self.fileModel.alreadyMarked ? @"取消标记" : @"标记";
+    UIAlertAction *marupAction = [UIAlertAction actionWithTitle:markupString style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        [self markupFile];
+    }];
     UIAlertAction *infoAction = [UIAlertAction actionWithTitle:@"详情" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         [self infoAction];
     }];
@@ -167,6 +175,7 @@
     [alVc addAction:deleteAction];
     [alVc addAction:shareAction];
     [alVc addAction:copyAction];
+    [alVc addAction:marupAction];
     [alVc addAction:infoAction];
     [alVc addAction:cancelAction];
     [[UIViewController xy_topViewController] presentViewController:alVc animated:YES completion:nil];
@@ -257,6 +266,25 @@
     }
 }
 
+- (void)markupFile {
+    BOOL isSuccess = NO;
+    if (self.fileModel.alreadyMarked) {
+        isSuccess = [self.fileModel cancelMarkup];
+    }
+    else {
+        isSuccess = [self.fileModel markup];
+    }
+    if (isSuccess) {
+        [MBProgressHUD bb_showMessage:@"标记成功"];
+        if (self.delegate && [self.delegate respondsToSelector:@selector(fileCollectionViewCell:didMarkupFile:)]) {
+            [self.delegate fileCollectionViewCell:self didMarkupFile:self.fileModel];
+        }
+    }
+    else {
+        [MBProgressHUD bb_showMessage:@"标记失败"];
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////
 #pragma mark -
 ////////////////////////////////////////////////////////////////////////
@@ -283,10 +311,15 @@
     NSLayoutConstraint *optionBtnWidth = [NSLayoutConstraint constraintWithItem:self.optionBtn attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:25.0];
     _optionBtnWidth = optionBtnWidth;
     
+    NSLayoutConstraint *starImageViewLeft = [NSLayoutConstraint constraintWithItem:self.starImageView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.iconView attribute:NSLayoutAttributeLeading multiplier:1.0 constant:-3.0];
+    NSLayoutConstraint *starImageViewTop = [NSLayoutConstraint constraintWithItem:self.starImageView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.iconView attribute:NSLayoutAttributeTop multiplier:1.0 constant:-3.0];
+    NSLayoutConstraint *starImageViewWidth = [NSLayoutConstraint constraintWithItem:self.starImageView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:15.0];
+     NSLayoutConstraint *starImageViewHeight = [NSLayoutConstraint constraintWithItem:self.starImageView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:15.0];
+    
     NSArray *constraints = @[
                              iconViewTop, iconViewLeft,
                              subTitleLabelBottom, subTitleLabelLeft,
-                             subTitleLabelRight, optionBtnRight, optionBtnWidth];
+                             subTitleLabelRight, optionBtnRight, optionBtnWidth, starImageViewLeft, starImageViewTop, starImageViewWidth, starImageViewHeight];
     [NSLayoutConstraint activateConstraints:constraints];
     
     // 根据style更新布局
@@ -492,5 +525,16 @@
     }
     return _subTitleLabel;
 }
+
+- (UIImageView *)starImageView {
+    if (!_starImageView) {
+        UIImageView *imageView = [UIImageView new];
+        imageView.image = [UIImage OSFileBrowserImageNamed:@"favorites-badge"];
+        imageView.translatesAutoresizingMaskIntoConstraints = NO;
+        _starImageView = imageView;
+    }
+    return _starImageView;
+}
+
 @end
 

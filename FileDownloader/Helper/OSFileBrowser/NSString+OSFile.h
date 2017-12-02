@@ -18,6 +18,8 @@ typedef enum {
 }
 OSFileType;
 
+@class OSFile;
+
 @interface NSString (OSFile)
 
 + (NSString *)transformedFileSizeValue:(NSNumber *)value;
@@ -50,6 +52,9 @@ OSFileType;
 + (NSString *)getICloudCacheFolder;
 
 - (OSFileType)os_fileType;
+
++ (NSString *)getMarkupCachePath;
++ (NSString *)getOSFileBrowserCachePath;
 
 @end
 

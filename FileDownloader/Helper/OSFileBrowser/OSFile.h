@@ -73,6 +73,7 @@ OSFileFlags;
     OSFile        * _targetFile;
     BOOL            _hideDisplayFiles;
     NSString      * _mimeType;
+    BOOL           _alreadyMarked;
 @private
     
     id __OSFile_Reserved[ 5 ] __attribute__((unused));
@@ -128,6 +129,7 @@ OSFileFlags;
 @property (atomic, readwrite) NSArray     * subFiles;
 @property (atomic, readonly) BOOL          hideDisplayFiles;
 @property (atomic, readonly) NSString    * mimeType;
+@property (atomic, readonly) BOOL          alreadyMarked;
 
 /// 初始化方法，根据文件路径创建一个OSFile对象
 /// @param filePath 文件完整路径
@@ -150,6 +152,14 @@ OSFileFlags;
 /// @param error 返回错误信息
 /// @return 如果当前文件不存在了，会返回NO
 - (BOOL)reloadFileWithPath:(NSString *)filePath error:(NSError *__autoreleasing *)error;
+/// 文件标记
+- (BOOL)markup;
+/// 取消文件标记
+- (BOOL)cancelMarkup;
+/// 获取标记的文件列表
+/// @param reload 是否重新读取本地存储的标记文件，如果是NO就直接从内存中读取记录
++ (NSArray<NSString *> *)markupFilePathsWithNeedReload:(BOOL)reload;
++ (NSArray<OSFile *> *)markupFilesWithNeedReload:(BOOL)reload;
 
 @end
 

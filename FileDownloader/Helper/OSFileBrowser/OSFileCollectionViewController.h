@@ -49,6 +49,8 @@ typedef NS_ENUM(NSInteger, OSFileCollectionViewControllerMode) {
 @property (nonatomic, assign) BOOL hideDisplayFiles;
 /// 用于操作文件的全局代理，对整个类有效
 @property (nonatomic, class) id<OSFileCollectionViewControllerFileOptionDelegate> fileOperationDelegate;
+/// 当前控制器是否用于展示标记
+@property (nonatomic, assign) BOOL displayMarkupFiles;
 
 /// 通过文件目录路径，读取里面所有的文件并展示
 - (instancetype)initWithRootDirectory:(NSString *)path;

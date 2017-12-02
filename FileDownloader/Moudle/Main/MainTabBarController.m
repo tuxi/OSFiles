@@ -15,6 +15,7 @@
 #import "OSFileCollectionViewController.h"
 #import "OSFileDownloaderConfiguration.h"
 #import "AppGroupManager.h"
+#import "OSFile.h"
 
 @interface MainTabBarController () <SmileAuthenticatorDelegate>
 
@@ -30,12 +31,11 @@
                                                                      [NSString getDocumentPath],
                                                                      [AppGroupManager getAPPGroupSharePath]
                                                                      ]];
-    OSFileCollectionViewController *starBrowserVc = [[OSFileCollectionViewController alloc] initWithDirectoryArray:@[
-                                                                                                                     [NSString getICloudCacheFolder],
-                                                                                                                     [NSString getDownloadDisplayFolderPath],
-                                                                                                                     [NSString getDocumentPath],
-                                                                                                                     [AppGroupManager getAPPGroupSharePath]
-                                                                                                                     ]];
+    
+    NSArray *marupFiles = [OSFile markupFilePathsWithNeedReload:YES];
+    OSFileCollectionViewController *starBrowserVc = [[OSFileCollectionViewController alloc] initWithDirectoryArray:marupFiles
+                                                                                                                     ];
+    starBrowserVc.displayMarkupFiles = YES;
     [self addChildVC:fileBrowserVc imageNamed:@"TabFiles" title:@"我的文件"];
     [self addChildVC:[DownloadsViewController new] imageNamed:@"TabDownloads" title:@"缓存"];
     [self addChildVC:starBrowserVc imageNamed:@"TabStar" title:@"标记"];

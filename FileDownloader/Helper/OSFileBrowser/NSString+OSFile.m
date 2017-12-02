@@ -7,6 +7,7 @@
 //
 
 #import "NSString+OSFile.h"
+#import "OSFile.h"
 
 #ifdef __clang__
 #pragma clang diagnostic ignored "-Wformat-nonliteral"
@@ -377,4 +378,21 @@
     return state;
 }
 
+
++ (NSString *)getOSFileBrowserCachePath {
+    NSString *cachePath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
+    NSString *fullPath = [cachePath stringByAppendingPathComponent:@"OSFileBrowserCache"];
+    BOOL isExist, isDirectory;
+    isExist = [[NSFileManager defaultManager] fileExistsAtPath:fullPath isDirectory:&isDirectory];
+    if (!isExist || !isDirectory) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:fullPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    return fullPath;
+}
+
++ (NSString *)getMarkupCachePath {
+    NSString *cache = [self getOSFileBrowserCachePath];
+    NSString *markup = [cache stringByAppendingPathComponent:@"markup.plist"];
+    return markup;
+}
 @end

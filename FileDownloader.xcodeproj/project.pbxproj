@@ -51,6 +51,7 @@
 		18A900C41FC5DC4300EC1532 /* UIViewController+OSStatusBarStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A900B91FC5DC1C00EC1532 /* UIViewController+OSStatusBarStyle.m */; };
 		18A900C51FC5DC4600EC1532 /* NSString+OSContainsEeachCharacter.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A900BB1FC5DC1C00EC1532 /* NSString+OSContainsEeachCharacter.m */; };
 		18AD123F1FD266AC000D0957 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18AD123E1FD266AC000D0957 /* Assets.xcassets */; };
+		18AD12421FD27D1C000D0957 /* UIScrollView+RollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AD12401FD27D1B000D0957 /* UIScrollView+RollView.m */; };
 		18ADEEAB1F9E48D30024BA40 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18ADEEAA1F9E48D30024BA40 /* LaunchScreen.storyboard */; };
 		18ADEEAD1F9E48DE0024BA40 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18ADEEAC1F9E48DE0024BA40 /* Main.storyboard */; };
 		18ADEEB31F9E49590024BA40 /* BookmarkEditTextFieldTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18ADED711F9E408A0024BA40 /* BookmarkEditTextFieldTableViewCell.xib */; };
@@ -625,6 +626,8 @@
 		18A900BC1FC5DC1C00EC1532 /* OSFileSearchResultsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSFileSearchResultsController.h; sourceTree = "<group>"; };
 		18A900BD1FC5DC1C00EC1532 /* UIAlertController+AlertExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertController+AlertExtensions.h"; sourceTree = "<group>"; };
 		18AD123E1FD266AC000D0957 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		18AD12401FD27D1B000D0957 /* UIScrollView+RollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+RollView.m"; sourceTree = "<group>"; };
+		18AD12411FD27D1C000D0957 /* UIScrollView+RollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+RollView.h"; sourceTree = "<group>"; };
 		18ADEBEB1F9E1FB00024BA40 /* Warnings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Warnings.h; sourceTree = "<group>"; };
 		18ADEBF11F9E2C450024BA40 /* App-AppStore.app.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "App-AppStore.app.png"; sourceTree = "<group>"; };
 		18ADEBF21F9E2C450024BA40 /* App-AppStore.app@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "App-AppStore.app@2x.png"; sourceTree = "<group>"; };
@@ -2290,6 +2293,8 @@
 		18E8930C1FB5DFED00727EF1 /* OSFileBrowser */ = {
 			isa = PBXGroup;
 			children = (
+				18AD12411FD27D1C000D0957 /* UIScrollView+RollView.h */,
+				18AD12401FD27D1B000D0957 /* UIScrollView+RollView.m */,
 				18A900B51FC5DC1B00EC1532 /* NSString+OSContainsEeachCharacter.h */,
 				18A900BB1FC5DC1C00EC1532 /* NSString+OSContainsEeachCharacter.m */,
 				18A900B71FC5DC1B00EC1532 /* OSFileBrowserAppearanceConfigs.h */,
@@ -2867,6 +2872,7 @@
 				18ADEEDD1F9E4A130024BA40 /* BrowserTopToolBar.m in Sources */,
 				18ADEF471F9E4A860024BA40 /* UIButton+ClickBlock.m in Sources */,
 				18ADEF071F9E4A3D0024BA40 /* NSNumber+ZWUtility.m in Sources */,
+				18AD12421FD27D1C000D0957 /* UIScrollView+RollView.m in Sources */,
 				18A900BE1FC5DC1D00EC1532 /* OSFileSearchResultsController.m in Sources */,
 				18ADEF1D1F9E4A530024BA40 /* ICGVideoTrimmerView.m in Sources */,
 				18ADEF431F9E4A860024BA40 /* NetworkTypeUtils.m in Sources */,

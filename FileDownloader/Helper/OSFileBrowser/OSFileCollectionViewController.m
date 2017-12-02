@@ -21,11 +21,12 @@
 #import "OSFileCollectionHeaderView.h"
 #import "OSFileSearchResultsController.h"
 #import "OSFileBrowserAppearanceConfigs.h"
-
+#import "UIScrollView+RollView.h"
 
 NSNotificationName const OSFileCollectionViewControllerOptionFileCompletionNotification = @"OptionFileCompletionNotification";
 NSNotificationName const OSFileCollectionViewControllerOptionSelectedFileForCopyNotification = @"OptionSelectedFileForCopyNotification";
 NSNotificationName const OSFileCollectionViewControllerOptionSelectedFileForMoveNotification = @"OptionSelectedFileForMoveNotification";
+NSNotificationName const OSFileCollectionViewControllerDidMarkupFileNotification = @"OSFileCollectionViewControllerDidMarkupFileNotification";
 
 typedef NS_ENUM(NSInteger, OSFileLoadType) {
     OSFileLoadTypeCurrentDirectory,
@@ -36,7 +37,7 @@ static NSString * const reuseIdentifier = @"OSFileCollectionViewCell";
 static const CGFloat windowHeight = 49.0;
 
 #ifdef __IPHONE_9_0
-@interface OSFileCollectionViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIViewControllerPreviewingDelegate, NoDataPlaceholderDelegate, OSFileCollectionViewCellDelegate, OSFileBottomHUDDelegate, OSFileCollectionHeaderViewDelegate, UISearchBarDelegate, UISearchControllerDelegate>
+@interface OSFileCollectionViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIViewControllerPreviewingDelegate, NoDataPlaceholderDelegate, OSFileCollectionViewCellDelegate, OSFileBottomHUDDelegate, OSFileCollectionHeaderViewDelegate, UISearchBarDelegate, UISearchControllerDelegate, XYRollViewScrollDelegate>
 #else
 @interface OSFileCollectionViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, NoDataPlaceholderDelegate, OSFileCollectionViewCellDelegate, OSFileBottomHUDDelegate, OSFileCollectionHeaderViewDelegate, UISearchBarDelegate, UISearchControllerDelegate>
 #endif
@@ -47,8 +48,6 @@ static const CGFloat windowHeight = 49.0;
 
 @property (nonatomic, strong) OSFileCollectionViewFlowLayout *flowLayout;
 @property (nonatomic, strong) UICollectionView *collectionView;
-@property (nonatomic, strong) UILongPressGestureRecognizer *longPress;
-@property (nonatomic, copy) void (^longPressCallBack)(NSIndexPath *indexPath);
 @property (nonatomic, strong) NSOperationQueue *loadFileQueue;
 @property (nonatomic, strong) OSFileManager *fileManager;
 @property (nonatomic, strong) NSArray<NSString *> *directoryArray;
@@ -107,12 +106,12 @@ static const CGFloat windowHeight = 49.0;
     
     [self initWatcherFolder];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rotateToInterfaceOrientation) name:UIDeviceOrientationDidChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rotateToInterfaceOrientation) name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(optionFileCompletion:) name:OSFileCollectionViewControllerOptionFileCompletionNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(collectionReLayoutStyle) name:OSFileCollectionLayoutStyleDidChangeNotification object:nil];
     
     [self setupNavigationBar];
-
+    
 }
 
 
@@ -157,6 +156,10 @@ static const CGFloat windowHeight = 49.0;
     [self reloadFilesWithCallBack:^{
         [weakSelf showBottomTip];
     }];
+    
+    self.collectionView.rollingDelegate = self;
+    self.collectionView.autoRollCellSpeed = 20;
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -191,6 +194,16 @@ static const CGFloat windowHeight = 49.0;
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     [self bottomTipButton].hidden = YES;
+}
+
+- (void)setDisplayMarkupFiles:(BOOL)displayMarkupFiles {
+    _displayMarkupFiles = displayMarkupFiles;
+    if (displayMarkupFiles) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(markupFileCompletion) name:OSFileCollectionViewControllerDidMarkupFileNotification object:nil];
+    }
+    else {
+       [[NSNotificationCenter defaultCenter] removeObserver:self name:OSFileCollectionViewControllerDidMarkupFileNotification object:nil];
+    }
 }
 
 - (void)dealloc {
@@ -233,14 +246,6 @@ static const CGFloat windowHeight = 49.0;
         self.searchController.delegate = self;
         self.navigationItem.hidesSearchBarWhenScrolling = YES;
         self.navigationItem.searchController = self.searchController;
-        self.searchController.searchBar.tintColor = [UIColor whiteColor];
-        self.searchController.searchBar.clipsToBounds = YES;
-        UITextField *searchField = [self.searchController.searchBar valueForKey:@"_searchField"];
-        searchField.textColor = [UIColor whiteColor];
-//        [searchField setValue:[UIColor blackColor] forKeyPath:@"_placeholderLabel.textColor"];
-        [[UIBarButtonItem appearanceWhenContainedInInstancesOfClasses:@[[UISearchBar class]]] setTintColor:[UIColor whiteColor]];
-        [[UIBarButtonItem appearanceWhenContainedInInstancesOfClasses:@[[UISearchBar class]]] setTitle:@"取消"];
-        
     }
     
 }
@@ -338,7 +343,7 @@ static const CGFloat windowHeight = 49.0;
     
     // 如果数组中只有下载文件夹和iTunes文件夹，就不能显示编辑
     BOOL displayEdit = YES;
-    if (self.directoryArray) {
+    if (self.directoryArray && !self.displayMarkupFiles) {
         NSIndexSet *set = [self.files indexesOfObjectsPassingTest:^BOOL(OSFileAttributeItem * _Nonnull item, NSUInteger idx, BOOL * _Nonnull stop) {
             return [item isRootDirectory];
         }];
@@ -469,7 +474,7 @@ static const CGFloat windowHeight = 49.0;
             NSError *error = nil;
             OSFileAttributeItem *model = [OSFileAttributeItem fileWithPath:fullPath hideDisplayFiles:_hideDisplayFiles error:&error];
             if (model) {
-                model.isRootDirectory = YES;
+                model.isRootDirectory = !self.displayMarkupFiles;
                 if (self.mode == OSFileCollectionViewControllerModeEdit) {
                     model.status = OSFileAttributeItemStatusEdit;
                 }
@@ -561,11 +566,7 @@ static const CGFloat windowHeight = 49.0;
             // 支持3D Touch
             if ([self respondsToSelector:@selector(registerForPreviewingWithDelegate:sourceView:)]) {
                 [self registerForPreviewingWithDelegate:self sourceView:self.view];
-                self.longPress.enabled = NO;
             }
-        } else {
-            // 不支持3D Touch
-            self.longPress.enabled = YES;
         }
     }
 }
@@ -674,15 +675,15 @@ static const CGFloat windowHeight = 49.0;
     if (!viewController) {
         return;
     }
-//    if ([viewController isKindOfClass:[OSFileCollectionViewController class]]) {
-//        OSFileCollectionViewController *vc = (OSFileCollectionViewController *)viewController;
-//        [self.navigationController showViewController:vc sender:self];
-//    }
-//    else {
-//
-//        viewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:self action:@selector(backButtonClick)];
-//        [self.navigationController showViewController:viewController sender:self];
-//    }
+    //    if ([viewController isKindOfClass:[OSFileCollectionViewController class]]) {
+    //        OSFileCollectionViewController *vc = (OSFileCollectionViewController *)viewController;
+    //        [self.navigationController showViewController:vc sender:self];
+    //    }
+    //    else {
+    //
+    //        viewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:self action:@selector(backButtonClick)];
+    //        [self.navigationController showViewController:viewController sender:self];
+    //    }
     [self.navigationController showViewController:viewController sender:self];
 }
 
@@ -720,10 +721,10 @@ static const CGFloat windowHeight = 49.0;
         }
         
     }
-//    else if ([rootViewController isKindOfClass:NSClassFromString(@"ICSDrawerController")]) {
-//        ICSDrawerController *vc = (ICSDrawerController *)rootViewController;
-//        [self backButtonClickWithRootViewController:vc.ics_visibleViewController];
-//    }
+    //    else if ([rootViewController isKindOfClass:NSClassFromString(@"ICSDrawerController")]) {
+    //        ICSDrawerController *vc = (ICSDrawerController *)rootViewController;
+    //        [self backButtonClickWithRootViewController:vc.ics_visibleViewController];
+    //    }
 }
 
 - (UIViewController *)previewControllerWithFilePath:(NSString *)filePath {
@@ -803,11 +804,8 @@ static const CGFloat windowHeight = 49.0;
 - (void)didPresentSearchController:(UISearchController *)searchController {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.searchController.searchBar becomeFirstResponder];
-        
-        
-        UITextField *searchField = [self.searchController.searchBar valueForKey:@"_searchField"];
-        searchField.textColor = [UIColor whiteColor];
     });
+    
 }
 
 - (void)willPresentSearchController:(UISearchController *)aSearchController {
@@ -847,30 +845,24 @@ static const CGFloat windowHeight = 49.0;
     return self.view.frame;
 }
 
-#pragma mark *** Actions ***
+#pragma mark *** XYRollViewScrollDelegate ***
 
-- (UILongPressGestureRecognizer *)longPress {
-    
-    if (!_longPress) {
-        _longPress = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(showPeek:)];
-        [self.view addGestureRecognizer:_longPress];
-    }
-    return _longPress;
+- (BOOL)rollView:(UIScrollView *)scrollView shouldNeedExchangeDataSourceFromIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
+    return NO;
 }
 
-- (void)showPeek:(UILongPressGestureRecognizer *)longPress {
-    if (longPress.state == UIGestureRecognizerStateBegan) {
-        CGPoint point = [longPress locationInView:self.collectionView];
-        NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:point];
-        
-        if (self.longPressCallBack) {
-            self.longPressCallBack(indexPath);
-        }
-        
-        self.longPress.enabled = NO;
-        UIViewController *vc = [self previewControllerByIndexPath:indexPath];
-        [self showDetailController:vc atIndexPath:indexPath];
-    }
+- (void)rollView:(UIScrollView *)scrollView didRollingWithBeginIndexPath:(NSIndexPath *)beginRollIndexPath lastRollIndexPath:(NSIndexPath *)lastRollIndexPath fingerIndexPath:(NSIndexPath *)fingerIndexPath {
+    
+}
+
+- (void)rollView:(UIScrollView *)scrollView stopRollingWithBeginIndexPath:(NSIndexPath *)beginRollIndexPath lastRollIndexPath:(NSIndexPath *)lastRollIndexPath fingerIndexPath:(NSIndexPath *)fingerIndexPath waitingDuration:(NSTimeInterval)waitingDuration {
+    
+    
+}
+
+- (void)rollView:(UIScrollView *)scrollView didRollingWithBeginIndexPath:(NSIndexPath *)beginRollIndexPath inSameIndexPath:(NSIndexPath *)fingerIndexPath waitingDuration:(NSTimeInterval)waitingDuration {
+    
+    [self.view bb_showMessage:@(waitingDuration).stringValue];
 }
 
 #pragma mark *** Layout ***
@@ -950,11 +942,11 @@ static const CGFloat windowHeight = 49.0;
             _collectionView.contentInset = inset;
         }
         else {
-          _collectionView.contentInset = UIEdgeInsetsMake(0, 0, 20.0, 0);
+            _collectionView.contentInset = UIEdgeInsetsMake(0, 0, 20.0, 0);
         }
-         [self updateCollectionViewFlowLayout:_flowLayout];
+        [self updateCollectionViewFlowLayout:_flowLayout];
         _collectionView.keyboardDismissMode = YES;
-       
+        
     }
     return _collectionView;
 }
@@ -1270,6 +1262,12 @@ static const CGFloat windowHeight = 49.0;
     [self reloadCollectionData];
 }
 
+- (void)fileCollectionViewCell:(OSFileCollectionViewCell *)cell didMarkupFile:(OSFileAttributeItem *)fileModel {
+    [[NSNotificationCenter defaultCenter] postNotificationName:OSFileCollectionViewControllerDidMarkupFileNotification object:fileModel.path];
+    
+    [self reloadCollectionData];
+}
+
 #pragma mark *** Notification ***
 /// 文件操作文件，比如复制、移动文件完成
 - (void)optionFileCompletion:(NSNotification *)notification {
@@ -1300,7 +1298,6 @@ static const CGFloat windowHeight = 49.0;
     }
 }
 
-
 - (void)collectionReLayoutStyle {
     
     [self updateCollectionViewFlowLayout:_flowLayout];
@@ -1317,6 +1314,14 @@ static const CGFloat windowHeight = 49.0;
     [self.flowLayout invalidateLayout];
 }
 
+- (void)markupFileCompletion {
+    self.directoryArray = [OSFile markupFilePathsWithNeedReload:NO];
+    [self reloadFilesWithCallBack:^{
+        
+    }];
+    
+}
+
 
 #pragma mark *** File operation ***
 
@@ -1331,9 +1336,9 @@ completionHandler:(void (^)(void))completion {
     UIView *view = (UIView *)[UIApplication sharedApplication].delegate.window;
     __weak typeof(&*self) weakSelf = self;
     [view bb_showProgressWithActionCallBack:^(MBProgressHUD *hud) {
-         __strong typeof(&*weakSelf) self = weakSelf;
+        __strong typeof(&*weakSelf) self = weakSelf;
         [self.fileManager cancelAllOperation];
-         hud.label.text = @"已取消";
+        hud.label.text = @"已取消";
         if (completion) {
             completion();
         }
@@ -1429,7 +1434,7 @@ completionHandler:(void (^)(void))completion {
     
 }
 
-#pragma mark *** _fileOperationDelegate ***
+#pragma mark *** FileOperationDelegate ***
 __weak id _fileOperationDelegate;
 
 + (id<OSFileCollectionViewControllerFileOptionDelegate>)fileOperationDelegate {
@@ -1447,7 +1452,8 @@ __weak id _fileOperationDelegate;
 }
 
 - (CGPoint)contentOffsetForNoDataPlaceholder:(UIScrollView *)scrollView {
-    if ([UIDevice currentDevice].orientation == UIDeviceOrientationPortrait) {
+    UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+    if (UIInterfaceOrientationIsPortrait(orientation)) {
         return CGPointMake(0, 120.0);
     }
     return CGPointMake(0, 80.0);
@@ -1545,23 +1551,23 @@ __weak id _fileOperationDelegate;
         contentInset.right = 20.0;
         _collectionView.contentInset = contentInset;
         flowLayout.lineMultiplier = 1.19;
-      
-        UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
-        if (orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight) {
-            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-                flowLayout.lineItemCount = 10;
-            }
-            else {
-                flowLayout.lineItemCount = 5;
-            }
-            
-        }
-        else {
+        
+        UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+        if (UIInterfaceOrientationIsPortrait(orientation)) {
             if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
                 flowLayout.lineItemCount = 6;
             }
             else {
                 flowLayout.lineItemCount = 3;
+            }
+            
+        }
+        else {
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+                flowLayout.lineItemCount = 10;
+            }
+            else {
+                flowLayout.lineItemCount = 5;
             }
         }
     }
