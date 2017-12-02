@@ -8,6 +8,7 @@
 
 #import "MainNavigationController.h"
 #import <Aspects.h>
+#import "OSFilePreviewViewController.h"
 
 @interface MainNavigationController () <UINavigationControllerDelegate> {
     BOOL _pushing;
@@ -75,9 +76,9 @@
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated {
     
-//    if (self.childViewControllers.count == 1) {
-//        viewController.hidesBottomBarWhenPushed = YES;
-//    }
+    if ([viewController isKindOfClass:[OSFilePreviewViewController class]] || [viewController isKindOfClass:[OSPreviewViewController class]]) {
+        viewController.hidesBottomBarWhenPushed = YES;
+    }
     
     // 防止子控制器重复push
     //这个地方有个问题，initWithRootViewController会触发pushViewController
