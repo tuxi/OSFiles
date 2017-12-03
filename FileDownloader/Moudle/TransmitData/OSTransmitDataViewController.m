@@ -142,12 +142,14 @@
         NSLog(@"开启监听的端口为：%zd", port);
         self.connectionIpAddressLabel.text = [NSString stringWithFormat:@"http://%@", ipString];
         self.navigationItem.rightBarButtonItem.title = @"关闭";
+        [MBProgressHUD bb_showMessage:@"无线传输已开启" delayTime:1.0];
     }
     else {
         self.noConnectionView.hidden = NO;
         self.connectionView.hidden = YES;
         self.noConnectionTitleLabel.text = @"无线传输已关闭，你可以点击[开启]使用无线传输.";
         self.navigationItem.rightBarButtonItem.title = @"开启";
+        [MBProgressHUD bb_showMessage:@"无线传输已关闭" delayTime:1.0];
     }
 }
 
