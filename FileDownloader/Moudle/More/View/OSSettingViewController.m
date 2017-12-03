@@ -46,6 +46,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self loadSectionItems];
+    [self.navigationController setNavigationBarHidden:NO];
     
 }
 
@@ -110,7 +111,7 @@
 
 - (OSSettingsTableViewSection *)section_3 {
     NSArray *items = @[
-                       [OSSettingsMenuItem normalCellForSel:@selector(browserWebPage) target:self title:@"浏览器" iconName:@"TabBrowser"],
+                       [OSSettingsMenuItem normalCellForSel:@selector(openBrowserWebPage) target:self title:@"浏览器" iconName:@"TabBrowser"],
                        [OSSettingsMenuItem normalCellForSel:@selector(openDownloadPage) target:self title:@"缓存" iconName:@"TabDownloads"]
                        ];
     OSSettingsTableViewSection *section = [[OSSettingsTableViewSection alloc] initWithItem:items headerTitle:@"扩展" footerText:nil];
@@ -308,7 +309,7 @@
     
 }
 
-- (void)browserWebPage {
+- (void)openBrowserWebPage {
     BrowserViewController *bvc = [BrowserViewController sharedInstance];
     [self.navigationController showViewController:bvc sender:self];
 }

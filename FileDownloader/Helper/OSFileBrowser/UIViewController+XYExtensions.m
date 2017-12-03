@@ -7,6 +7,7 @@
 //
 
 #import "UIViewController+XYExtensions.h"
+#import "ICSDrawerController.h"
 
 @implementation UIViewController (XYExtensions)
 
@@ -17,6 +18,12 @@
     while (resultVC.presentedViewController) {
         resultVC = [self _topViewController:resultVC.presentedViewController];
     }
+    
+    if ([resultVC isKindOfClass:[ICSDrawerController class]]) {
+        ICSDrawerController *vc = (ICSDrawerController *)resultVC;
+        resultVC = [self _topViewController:vc.ics_visibleViewController];
+    }
+    
     return resultVC;
 }
 
@@ -33,6 +40,11 @@
 
 + (UINavigationController *)xy_currentNavigationController {
     UIViewController *rootViewController = (UINavigationController *)[UIApplication sharedApplication].delegate.window.rootViewController;
+    if ([rootViewController isKindOfClass:[ICSDrawerController class]]) {
+        ICSDrawerController *vc = (ICSDrawerController *)rootViewController;
+        rootViewController = vc.ics_visibleViewController;
+    }
+    
     if ([rootViewController isKindOfClass:[UINavigationController class]]) {
         UINavigationController *nac = (UINavigationController *)rootViewController;
         return nac;

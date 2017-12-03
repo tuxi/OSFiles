@@ -21,7 +21,7 @@ NSNotificationName const NetworkTypeChangeNotification = @"NetworkTypeChangeNoti
 }
 
 + (void)judgeNetworkType:(void (^)(NetworkType type))networkType {
-    __block __weak AFNetworkReachabilityManager * manager = [AFNetworkReachabilityManager sharedManager];
+    AFNetworkReachabilityManager * manager = [AFNetworkReachabilityManager sharedManager];
     
     [manager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
         NetworkType type = NetworkTypeUnknown;

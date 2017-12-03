@@ -109,18 +109,32 @@
 }
 
 - (void)startWebServer {
-    // 开启
-    if ([self.webServer start]) {
-        [self updateViewsByInvalid:NO];
-    } else {
-        // 当已经处于开启状态时，再调用start会返回NO，所以这里先关闭再重新开启
-        [self stopWevServer];
-        if ([self.webServer start]) {
-            [self updateViewsByInvalid:NO];
-        } else {
-            [self updateViewsByInvalid:YES];
+    switch ([NetworkTypeUtils networkType]) {
+        case NetworkTypeWWAN:
+        case NetworkTypeNotReachable:
+        case NetworkTypeUnknown: {
+           [MBProgressHUD bb_showMessage:@"请确保手机和电脑处于同一WiFi下，否则无法开启无线传输"];
+            break;
         }
+        case NetworkTypeWIFI: {
+            // 开启
+            if ([self.webServer start]) {
+                [self updateViewsByInvalid:NO];
+            } else {
+                // 当已经处于开启状态时，再调用start会返回NO，所以这里先关闭再重新开启
+                [self stopWevServer];
+                if ([self.webServer start]) {
+                    [self updateViewsByInvalid:NO];
+                } else {
+                    [self updateViewsByInvalid:YES];
+                }
+            }
+            break;
+        }
+        default:
+            break;
     }
+    
 }
 
 - (void)stopWevServer {
@@ -140,7 +154,7 @@
         NSLog(@"ip地址为：%@", ipString);
         NSUInteger port = self.webServer.port;
         NSLog(@"开启监听的端口为：%zd", port);
-        self.connectionIpAddressLabel.text = [NSString stringWithFormat:@"http://%@", ipString];
+        self.connectionIpAddressLabel.text = [NSString stringWithFormat:@"http://%@:%lu", ipString, port];
         self.navigationItem.rightBarButtonItem.title = @"关闭";
         [MBProgressHUD bb_showMessage:@"无线传输已开启" delayTime:1.0];
     }

@@ -340,7 +340,7 @@ static const CGFloat windowHeight = 49.0;
 #pragma mark *** NavigationBar ***
 
 - (void)setupNavigationBar {
-    self.navigationItem.title = @"文件浏览";
+//    self.navigationItem.title = @"文件浏览";
     if (@available(iOS 11.0, *)) {
         if (!self.directoryArray.count) {
             // 导航大标题, 上滑到顶部时动态切换大小标题样式 (导航栏高度UINavigationBar = 44/96)

@@ -398,6 +398,8 @@
 		7C3B9B8363EE5A43DE03F256 /* libPods-FileManagerShareExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 950E19EAA123C77002296D25 /* libPods-FileManagerShareExtension.a */; };
 		88C9037378C7FDA243F02BF2 /* libPods-FileDownloader.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A5107F0693D00542CC3FA456 /* libPods-FileDownloader.a */; };
 		D017FF121FA89B16004B65CF /* UITextField+OSRangeExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = D017FF111FA89B16004B65CF /* UITextField+OSRangeExtension.m */; };
+		D23006D31FD44F670074B3C5 /* ICSDrawerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 181A65C01FBF30E4005619B0 /* ICSDrawerController.m */; };
+		D23006D41FD44F670074B3C5 /* ICSDropShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 181A65C21FBF30E4005619B0 /* ICSDropShadowView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2711,13 +2713,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-FileDownloader-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		AFA303447BCFCBBC8357910A /* [CP] Check Pods Manifest.lock */ = {
@@ -2726,13 +2731,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-FileManagerShareExtension-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		C1CF91637E26F80D394B2D90 /* [CP] Embed Pods Frameworks */ = {
@@ -2760,6 +2768,7 @@
 				18EF90F41FB7468E0016B969 /* UIImage+XYImage.m in Sources */,
 				18EF90F11FB7468E0016B969 /* OSFileCollectionViewController.m in Sources */,
 				18EF90F61FB7468E0016B969 /* UIViewController+XYExtensions.m in Sources */,
+				D23006D41FD44F670074B3C5 /* ICSDropShadowView.m in Sources */,
 				1801ED881FB6B162005DBDE2 /* ShareViewController.m in Sources */,
 				18EF90D81FB733E70016B969 /* NSString+OSFile.m in Sources */,
 				18EF90F01FB7468E0016B969 /* OSFileCollectionViewCell.m in Sources */,
@@ -2779,6 +2788,7 @@
 				18A900C51FC5DC4600EC1532 /* NSString+OSContainsEeachCharacter.m in Sources */,
 				18A900C31FC5DC4000EC1532 /* UIAlertController+AlertExtensions.m in Sources */,
 				18EF90F21FB7468E0016B969 /* OSFileCollectionViewFlowLayout.m in Sources */,
+				D23006D31FD44F670074B3C5 /* ICSDrawerController.m in Sources */,
 				18EF90ED1FB746820016B969 /* OSFile.m in Sources */,
 				18A900C41FC5DC4300EC1532 /* UIViewController+OSStatusBarStyle.m in Sources */,
 				18EF90EB1FB7467B0016B969 /* NSDate+ESUtilities.m in Sources */,

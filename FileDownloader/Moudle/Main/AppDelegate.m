@@ -27,7 +27,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AudioToolbox/AudioToolbox.h>
 #import "AppGroupManager.h"
-//#import "OSTransmitDataViewController.h"
+#import "OSSettingViewController.h"
 
 static NSString * const UserAgent = @"Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 like Mac OS X) AppleWebKit/602.1.38 (KHTML, like Gecko) Version/10.0 Mobile/14A300 Safari/602.1";
 
@@ -72,13 +72,14 @@ static NSString * const UserAgent = @"Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 li
         NSNotification *notify = [NSNotification notificationWithName:kOpenInNewWindowNotification object:self userInfo:@{@"url": url}];
         [Notifier postNotification:notify];
         if (![[UIViewController xy_topViewController] isKindOfClass:[BrowserViewController class]]) {
-            [[UIViewController xy_topViewController].navigationController showViewController:[BrowserViewController sharedInstance] sender:[UIViewController xy_topViewController]];
+            [UIViewController xy_tabBarController].selectedIndex = 3;
+            [(OSSettingViewController *)[UIViewController xy_tabBarController].selectedViewController openBrowserWebPage];
         }
     }];
     UIAlertAction *downloadFileAction = [UIAlertAction actionWithTitle:@"缓存" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action){
-        
+        [UIViewController xy_tabBarController].selectedIndex = 3;
+        [(OSSettingViewController *)[UIViewController xy_tabBarController].selectedViewController openDownloadPage];
         [[OSFileDownloaderManager sharedInstance] start:url.path];
-        [UIViewController xy_tabBarController].selectedIndex = 1;
     }];
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
     

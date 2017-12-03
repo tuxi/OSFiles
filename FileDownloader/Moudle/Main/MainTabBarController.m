@@ -79,7 +79,7 @@
     nav.tabBarItem.image = [[UIImage imageNamed:name] xy_changeImageColorWithColor:[UIColor whiteColor]];
     UIImage *selectedImage = [UIImage imageNamed:[name stringByAppendingString:@"Filled"]];
     nav.tabBarItem.selectedImage = [selectedImage xy_changeImageColorWithColor:ColorRedGreenBlue(110, 206, 250)];
-    nav.tabBarItem.title = title;
+    vc.title = title;
     [self addChildViewController:nav];
 }
 

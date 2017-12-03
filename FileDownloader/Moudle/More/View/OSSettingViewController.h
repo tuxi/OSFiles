@@ -11,5 +11,6 @@
 @interface OSSettingViewController : UIViewController
 
 - (void)openDownloadPage;
+- (void)openBrowserWebPage;
 
 @end

@@ -14,7 +14,7 @@
 #import "MainTabBarController.h"
 #import "ZWUtility.h"
 #import "MainNavigationController.h"
-
+#import "OSTransmitDataViewController.h"
 
 @interface ApplicationHelper () <ICSDrawerControllerDelegate, UITabBarControllerDelegate>
 
@@ -61,7 +61,10 @@
             [[OSFileDownloaderManager sharedInstance] autoDownloadFailure];
             break;
         }
-        case NetworkTypeWWAN: {
+        case NetworkTypeWWAN:
+        case NetworkTypeNotReachable:
+        case NetworkTypeUnknown: {
+            [[OSTransmitDataViewController sharedInstance] stopWevServer];
             [[OSFileDownloaderManager sharedInstance] failureAllDownloadTask];
             break;
         }

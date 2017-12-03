@@ -120,7 +120,7 @@
         UIViewController *vc = nil;
         if (showNavigation) {
             OSUnlockViewController *settingVc = [OSUnlockViewController new];
-            vc = [[[[self currentNavigationController] class] alloc] initWithRootViewController:settingVc];;
+            vc = [[[[UIViewController xy_currentNavigationController] class] alloc] initWithRootViewController:settingVc];;
         }
         else {
             vc = [OSUnlockViewController new];
@@ -135,18 +135,6 @@
 -(void)presentAuthViewControllerAnimated:(BOOL)animated {
     [self presentAuthViewControllerAnimated:animated showNavigation:NO];
     
-}
-
-- (UINavigationController *)currentNavigationController {
-    UIViewController *rootVc = [UIApplication sharedApplication].delegate.window.rootViewController;
-    if ([rootVc isKindOfClass:[UINavigationController class]]) {
-        return (UINavigationController *)rootVc;
-    }
-    if ([rootVc isKindOfClass:[UITabBarController class]]) {
-        UITabBarController *tabVc = (UITabBarController *)rootVc;
-        return (UINavigationController *)tabVc.selectedViewController;
-    }
-    return nil;
 }
 
 -(void)authViewControllerDidDismissed{

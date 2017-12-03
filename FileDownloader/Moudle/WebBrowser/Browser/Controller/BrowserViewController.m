@@ -26,6 +26,7 @@
 #import "YCXMenu.h"
 #import "NSObject+InterfaceOrientationExtensions.h"
 #import "OSXMLDocumentItem.h"
+#import "SearchViewController.h"
 
 static NSString *const kBrowserViewControllerAddBookmarkSuccess = @"添加书签成功";
 static NSString *const kBrowserViewControllerAddBookmarkFailure = @"添加书签失败";
@@ -92,12 +93,15 @@ static NSString *const kBrowserViewControllerAddBookmarkFailure = @"添加书签
     [self applyInterfaceOrientation:UIDeviceOrientationPortrait interfaceOrientationDidChangeBlock:^(InterfaceOrientation orientation) {
         [self recoverToolBar];
     }];
-//    [self.navigationController setNavigationBarHidden:YES];
+    [self.navigationController setNavigationBarHidden:YES];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-//    [self.navigationController setNavigationBarHidden:NO];
+    UIViewController *topVc = [UIViewController xy_topViewController];
+    if (![topVc isKindOfClass:[SearchViewController class]]) {
+        [self.navigationController setNavigationBarHidden:NO];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
