@@ -271,19 +271,19 @@
     if (self.fileModel.alreadyMarked) {
         isSuccess = [self.fileModel cancelMarkup];
         if (isSuccess) {
-            [MBProgressHUD bb_showMessage:@"取消标记成功"];
+            [MBProgressHUD bb_showMessage:@"取消标记成功" delayTime:0.8];
         }
         else {
-            [MBProgressHUD bb_showMessage:@"取消标记失败"];
+            [MBProgressHUD bb_showMessage:@"取消标记失败" delayTime:0.8];
         }
     }
     else {
         isSuccess = [self.fileModel markup];
         if (isSuccess) {
-            [MBProgressHUD bb_showMessage:@"标记成功"];
+            [MBProgressHUD bb_showMessage:@"标记成功" delayTime:0.8];
         }
         else {
-            [MBProgressHUD bb_showMessage:@"标记失败"];
+            [MBProgressHUD bb_showMessage:@"标记失败" delayTime:0.8];
         }
     }
     if (isSuccess) {
