@@ -45,9 +45,9 @@
     self.connectionViewImageView.image = [[UIImage imageNamed:@"WiFi_2"] xy_changeImageColorWithColor:blueColor];
     self.connectionIpAddressLabel.textColor = blueColor;
     
-    // 默认开启
-    [self startWebServer];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"关闭" style:UIBarButtonItemStylePlain target:self action:@selector(rightBarButtonItemAction:)];
+    // 默认关闭
+//    [self startWebServer];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"开启" style:UIBarButtonItemStylePlain target:self action:@selector(rightBarButtonItemAction:)];
 }
 
 //- (void)viewDidDisappear:(BOOL)animated {
@@ -146,7 +146,7 @@
     else {
         self.noConnectionView.hidden = NO;
         self.connectionView.hidden = YES;
-        self.noConnectionTitleLabel.text = @"无线传输已关闭";
+        self.noConnectionTitleLabel.text = @"无线传输已关闭，你可以点击[开启]使用无线传输.";
         self.navigationItem.rightBarButtonItem.title = @"开启";
     }
 }
