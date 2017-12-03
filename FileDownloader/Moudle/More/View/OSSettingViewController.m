@@ -40,6 +40,7 @@
     [self.view addConstraints:[constraints valueForKeyPath:@"@unionOfArrays.self"]];
     
     self.navigationItem.title = @"设置";
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -110,7 +111,7 @@
 - (OSSettingsTableViewSection *)section_3 {
     NSArray *items = @[
                        [OSSettingsMenuItem normalCellForSel:@selector(browserWebPage) target:self title:@"浏览器" iconName:@"TabBrowser"],
-                       [OSSettingsMenuItem normalCellForSel:@selector(cacheFile) target:self title:@"缓存" iconName:@"TabDownloads"]
+                       [OSSettingsMenuItem normalCellForSel:@selector(openDownloadPage) target:self title:@"缓存" iconName:@"TabDownloads"]
                        ];
     OSSettingsTableViewSection *section = [[OSSettingsTableViewSection alloc] initWithItem:items headerTitle:@"扩展" footerText:nil];
     return section;
@@ -301,7 +302,7 @@
     [self.navigationController pushViewController:vc animated:YES];
 }
 
-- (void)cacheFile {
+- (void)openDownloadPage {
     DownloadsViewController *vc = [DownloadsViewController new];
     [self.navigationController showViewController:vc sender:self];
     

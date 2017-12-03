@@ -16,6 +16,7 @@
 #import "OSFileDownloaderConfiguration.h"
 #import "AppGroupManager.h"
 #import "OSFile.h"
+#import "OSTransmitDataViewController.h"
 
 @interface MainTabBarController () <SmileAuthenticatorDelegate>
 
@@ -25,23 +26,37 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    OSFileCollectionViewController *fileBrowserVc = [[OSFileCollectionViewController alloc] initWithDirectoryArray:@[
-                                                                     [NSString getICloudCacheFolder],
-                                                                     [NSString getDownloadDisplayFolderPath],
-                                                                     [NSString getDocumentPath],
-                                                                     [AppGroupManager getAPPGroupSharePath]
-                                                                     ]];
+    NSArray *fileBrowserArray = @[
+#if DEBUG
+                                  [NSString getICloudCacheFolder],
+#endif
+                                  [NSString getDownloadDisplayFolderPath],
+                                  [NSString getDocumentPath],
+                                  [AppGroupManager getAPPGroupSharePath]
+                                  ];
+    OSFileCollectionViewController *fileBrowserVc = [[OSFileCollectionViewController alloc] initWithDirectoryArray:fileBrowserArray];
     
     NSArray *marupFiles = [OSFile markupFilePathsWithNeedReload:YES];
     OSFileCollectionViewController *starBrowserVc = [[OSFileCollectionViewController alloc] initWithDirectoryArray:marupFiles
                                                                                                                      ];
     starBrowserVc.displayMarkupFiles = YES;
-    [self addChildVC:fileBrowserVc imageNamed:@"TabFiles" title:@"我的文件"];
-    [self addChildVC:[DownloadsViewController new] imageNamed:@"TabDownloads" title:@"缓存"];
-    [self addChildVC:starBrowserVc imageNamed:@"TabStar" title:@"标记"];
-    [self addChildVC:[OSSettingViewController new] imageNamed:@"TabMore" title:@"更多"];
+    [self addChildVC:fileBrowserVc imageNamed:@"TabFolders" title:@"我的文件"];
+    [self addChildVC:[OSTransmitDataViewController sharedInstance] imageNamed:@"TabWiFi2" title:@"传输"];
+    [self addChildVC:starBrowserVc imageNamed:@"TabMark" title:@"标记"];
+    OSSettingViewController *settingVc = [OSSettingViewController new];
+    [self addChildVC:settingVc imageNamed:@"TabMore" title:@"更多"];
     [SmileAuthenticator sharedInstance].delegate = self;
     self.view.backgroundColor = [UIColor whiteColor];
+    
+    __weak typeof(&*settingVc) weakSettingVc = settingVc;
+    __weak typeof(&*self) weakSelf = self;
+    [[NSNotificationCenter defaultCenter] addObserverForName:OSFileCollectionViewControllerNeedOpenDownloadPageNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+        __strong typeof(&*weakSelf) self = weakSelf;
+        __strong typeof(&*weakSettingVc) settingVc = weakSettingVc;
+        self.selectedViewController = settingVc.navigationController;
+        [settingVc openDownloadPage];
+        
+    }];
 }
 
 - (void)viewDidAppear:(BOOL)animated {

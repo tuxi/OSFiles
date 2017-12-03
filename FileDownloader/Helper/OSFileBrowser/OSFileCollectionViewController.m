@@ -27,6 +27,7 @@ NSNotificationName const OSFileCollectionViewControllerOptionFileCompletionNotif
 NSNotificationName const OSFileCollectionViewControllerOptionSelectedFileForCopyNotification = @"OptionSelectedFileForCopyNotification";
 NSNotificationName const OSFileCollectionViewControllerOptionSelectedFileForMoveNotification = @"OptionSelectedFileForMoveNotification";
 NSNotificationName const OSFileCollectionViewControllerDidMarkupFileNotification = @"OSFileCollectionViewControllerDidMarkupFileNotification";
+NSNotificationName const OSFileCollectionViewControllerNeedOpenDownloadPageNotification = @"OSFileCollectionViewControllerNeedOpenDownloadPageNotification";
 
 typedef NS_ENUM(NSInteger, OSFileLoadType) {
     OSFileLoadTypeCurrentDirectory,
@@ -1186,7 +1187,9 @@ static const CGFloat windowHeight = 49.0;
         }
         if (!desDirectors.count) {
             desDirectors = @[
+#if DEBUG
                              [NSString getICloudCacheFolder],
+#endif
                              [NSString getDocumentPath]];
         }
         OSFileCollectionViewController *vc = [[OSFileCollectionViewController alloc] initWithDirectoryArray:desDirectors controllerMode:mode];
@@ -1510,8 +1513,8 @@ __weak id _fileOperationDelegate;
 
 - (void)noDataPlaceholder:(UIScrollView *)scrollView didClickReloadButton:(UIButton *)button {
     if ([self.rootDirectoryItem isDownloadBrowser]) {
-        self.tabBarController.selectedIndex = 1;
-        self.navigationController.viewControllers = @[self.navigationController.viewControllers.firstObject];
+        [[NSNotificationCenter defaultCenter] postNotificationName:OSFileCollectionViewControllerNeedOpenDownloadPageNotification object:nil];
+//        self.navigationController.viewControllers = @[self.navigationController.viewControllers.firstObject];
     }
 }
 

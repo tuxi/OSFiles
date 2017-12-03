@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13526" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13524"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="OSTransmitDataViewController">
+            <connections>
+                <outlet property="connectionIpAddressLabel" destination="BmM-N6-TkG" id="X9I-bq-fVj"/>
+                <outlet property="connectionTitleLabel" destination="ZE0-Y5-g3S" id="hCL-Ja-54O"/>
+                <outlet property="connectionView" destination="q5p-3h-p0E" id="hZm-Ab-WNk"/>
+                <outlet property="connectionViewImageView" destination="eJt-CS-SPF" id="Yhp-pL-ezR"/>
+                <outlet property="noConnectionTitleLabel" destination="gn6-en-66d" id="YPD-4L-tXR"/>
+                <outlet property="noConnectionView" destination="s7t-aJ-mXE" id="ZPb-ic-6Ur"/>
+                <outlet property="view" destination="iN0-l3-epB" id="1Hv-nM-l1g"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s7t-aJ-mXE" userLabel="noConnectionView">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="无线传输不可用" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gn6-en-66d" userLabel="noConnectionTitleLabel">
+                            <rect key="frame" x="0.0" y="324.5" width="375" height="18"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <constraints>
+                        <constraint firstItem="gn6-en-66d" firstAttribute="leading" secondItem="s7t-aJ-mXE" secondAttribute="leading" id="7R2-uZ-zhT"/>
+                        <constraint firstAttribute="trailing" secondItem="gn6-en-66d" secondAttribute="trailing" id="Bhn-dj-SWY"/>
+                        <constraint firstItem="gn6-en-66d" firstAttribute="centerY" secondItem="s7t-aJ-mXE" secondAttribute="centerY" id="NJv-7W-ZPM"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="q5p-3h-p0E" userLabel="connectionView">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <subviews>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="WiFi_2" translatesAutoresizingMaskIntoConstraints="NO" id="eJt-CS-SPF" userLabel="imageView">
+                            <rect key="frame" x="147" y="216.5" width="80" height="60"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="60" id="cXc-LA-iUy"/>
+                                <constraint firstAttribute="width" constant="80" id="reT-4z-dI3"/>
+                            </constraints>
+                        </imageView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="无线传输已关闭" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZE0-Y5-g3S" userLabel="connectionTitleLabel">
+                            <rect key="frame" x="0.0" y="336.5" width="375" height="18"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="http://192.168.199.123" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BmM-N6-TkG" userLabel="connectionIpAddressLabel">
+                            <rect key="frame" x="0.0" y="384.5" width="375" height="18"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                            <color key="textColor" red="0.19215686269999999" green="0.80000000000000004" blue="0.66666666669999997" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="离开此页面并不会停止传输，为确保安全，离开此页面或App进入后台时，您可以点击[关闭]传输." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QoO-wV-rAE" userLabel="connectionSubTitleLabel">
+                            <rect key="frame" x="10" y="551" width="355" height="36"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="ZE0-Y5-g3S" firstAttribute="leading" secondItem="q5p-3h-p0E" secondAttribute="leading" id="0AM-IF-sxO"/>
+                        <constraint firstItem="BmM-N6-TkG" firstAttribute="centerX" secondItem="q5p-3h-p0E" secondAttribute="centerX" id="3oV-aZ-FYX"/>
+                        <constraint firstItem="QoO-wV-rAE" firstAttribute="leading" secondItem="q5p-3h-p0E" secondAttribute="leading" constant="10" id="51i-WI-LVi"/>
+                        <constraint firstItem="BmM-N6-TkG" firstAttribute="leading" secondItem="q5p-3h-p0E" secondAttribute="leading" id="DoJ-pj-m23"/>
+                        <constraint firstItem="BmM-N6-TkG" firstAttribute="top" secondItem="ZE0-Y5-g3S" secondAttribute="bottom" constant="30" id="Dpq-ye-V0D"/>
+                        <constraint firstAttribute="trailing" secondItem="ZE0-Y5-g3S" secondAttribute="trailing" id="M13-Id-Oye"/>
+                        <constraint firstItem="BmM-N6-TkG" firstAttribute="centerY" secondItem="q5p-3h-p0E" secondAttribute="centerY" constant="60" id="Th9-r3-ODz"/>
+                        <constraint firstAttribute="bottom" secondItem="QoO-wV-rAE" secondAttribute="bottom" constant="80" id="UaL-XY-J15"/>
+                        <constraint firstAttribute="trailing" secondItem="QoO-wV-rAE" secondAttribute="trailing" constant="10" id="abQ-Oc-WXn"/>
+                        <constraint firstItem="ZE0-Y5-g3S" firstAttribute="top" secondItem="eJt-CS-SPF" secondAttribute="bottom" constant="60" id="d2S-0j-kYk"/>
+                        <constraint firstAttribute="trailing" secondItem="BmM-N6-TkG" secondAttribute="trailing" id="tfW-Av-xcf"/>
+                        <constraint firstItem="eJt-CS-SPF" firstAttribute="centerX" secondItem="q5p-3h-p0E" secondAttribute="centerX" id="vCs-6X-ZMs"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="s7t-aJ-mXE" secondAttribute="bottom" id="5sq-24-cuT"/>
+                <constraint firstAttribute="trailing" secondItem="s7t-aJ-mXE" secondAttribute="trailing" id="HeP-hT-oKH"/>
+                <constraint firstAttribute="trailing" secondItem="q5p-3h-p0E" secondAttribute="trailing" id="fcH-KP-abU"/>
+                <constraint firstItem="q5p-3h-p0E" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="l4v-03-Wqo"/>
+                <constraint firstItem="q5p-3h-p0E" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="nAV-To-HPX"/>
+                <constraint firstItem="s7t-aJ-mXE" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="qUd-S4-7Xc"/>
+                <constraint firstItem="s7t-aJ-mXE" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="xaG-lj-fHm"/>
+                <constraint firstAttribute="bottom" secondItem="q5p-3h-p0E" secondAttribute="bottom" id="yL0-JU-jNN"/>
+            </constraints>
+            <point key="canvasLocation" x="33.5" y="54.5"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="WiFi_2" width="180" height="128"/>
+    </resources>
+</document>

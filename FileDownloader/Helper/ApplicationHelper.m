@@ -80,8 +80,8 @@
     MainNavigationController *nav = [[MainNavigationController alloc] initWithRootViewController:bvc];
     MainTabBarController *tabBarController = [MainTabBarController new];
     tabBarController.delegate = self;
-    self.drawerViewController  = [[ICSDrawerController alloc] initWithLeftViewController:tabBarController
-                                                                     centerViewController:nav];
+    self.drawerViewController  = [[ICSDrawerController alloc] initWithLeftViewController:nav
+                                                                     centerViewController:tabBarController];
     self.drawerViewController.delegate = self;
 }
 
@@ -90,7 +90,7 @@
 ////////////////////////////////////////////////////////////////////////
 
 - (CGFloat)drawerDepthOfDrawerController:(ICSDrawerController *)drawerController {
-    return [UIScreen mainScreen].bounds.size.width;
+    return [UIScreen mainScreen].bounds.size.width * 0.8;
 }
 
 

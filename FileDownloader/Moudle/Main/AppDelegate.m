@@ -27,6 +27,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AudioToolbox/AudioToolbox.h>
 #import "AppGroupManager.h"
+//#import "OSTransmitDataViewController.h"
 
 static NSString * const UserAgent = @"Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 like Mac OS X) AppleWebKit/602.1.38 (KHTML, like Gecko) Version/10.0 Mobile/14A300 Safari/602.1";
 
@@ -87,7 +88,7 @@ static NSString * const UserAgent = @"Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 li
     [self.window.rootViewController presentViewController:alert animated:YES completion:nil];
 }
 
-- (void)applicationStartPrepare{
+- (void)applicationStartPrepare {
     [self setAudioPlayInBackgroundMode];
     [[KeyboardHelper sharedInstance] startObserving];
     [[MenuHelper sharedInstance] setItems];
@@ -112,7 +113,7 @@ static NSString * const UserAgent = @"Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 li
     [[ApplicationHelper helper] configureDrawerViewController];
     self.window.rootViewController = [ApplicationHelper helper].drawerViewController;
     [self.window makeKeyAndVisible];
-    [[ApplicationHelper helper].drawerViewController open];
+//    [[ApplicationHelper helper].drawerViewController open];
     [ExceptionUtils configExceptionHandler];
     
     /// 注册本地通知
@@ -181,7 +182,7 @@ static NSString * const UserAgent = @"Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 li
     // 图标上的数字减1
     application.applicationIconBadgeNumber -= 1;
     [[OSAuthenticatorHelper sharedInstance] applicationWillResignActiveWithShowCoverImageView];
-    
+//    [[OSTransmitDataViewController sharedInstance] stopWevServer];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
@@ -189,7 +190,9 @@ static NSString * const UserAgent = @"Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 li
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     [[OSAuthenticatorHelper sharedInstance] applicationDidBecomeActiveWithRemoveCoverImageView];
-    
+//    if ([[UIViewController xy_topViewController] isEqual:[OSTransmitDataViewController sharedInstance]]) {
+//        [[OSTransmitDataViewController sharedInstance] startWebServer];
+//    }
     UIPasteboard *pasteboard = [ApplicationHelper helper].pasteboard;
     
     if (self.pasteboardChangeCount != pasteboard.changeCount) {

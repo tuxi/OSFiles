@@ -2,11 +2,11 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "TabMoreFilled@1x.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
+      "filename" : "tab_bar_icon_wifi@2x.png",
       "scale" : "2x"
     },
     {

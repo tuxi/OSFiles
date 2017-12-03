@@ -16,6 +16,9 @@
 		182797EA1FC00A28005905EE /* FXTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 182797E31FC00A28005905EE /* FXTabBar.m */; };
 		182797EB1FC00A28005905EE /* FXTabBarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 182797E61FC00A28005905EE /* FXTabBarItem.m */; };
 		182797EC1FC00A28005905EE /* UITabBarController+FXCustomTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 182797E81FC00A28005905EE /* UITabBarController+FXCustomTabBar.m */; };
+		183C313C1FD397AA00611989 /* OSTransmitDataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 183C313B1FD397AA00611989 /* OSTransmitDataViewController.m */; };
+		183C313E1FD39D6800611989 /* OSTransmitDataViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 183C313D1FD39D6800611989 /* OSTransmitDataViewController.xib */; };
+		183C31411FD3A3C200611989 /* SJXCSMIPHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 183C313F1FD3A3C200611989 /* SJXCSMIPHelper.m */; };
 		183C468E1FC2F97F00B5657E /* UIViewController+OSStatusBarStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 183C468D1FC2F97F00B5657E /* UIViewController+OSStatusBarStyle.m */; };
 		1845A63A1FB6F3750000E39A /* OSItemProviderHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A6391FB6F3750000E39A /* OSItemProviderHelper.m */; };
 		1845A63D1FB6F4A40000E39A /* OSPhoneNumberModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1845A63C1FB6F4A40000E39A /* OSPhoneNumberModel.m */; };
@@ -512,6 +515,11 @@
 		18300FC71EED38820035D6EE /* FFCircularProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FFCircularProgressView.m; sourceTree = "<group>"; };
 		18300FC81EED38820035D6EE /* UIColor+iOS7.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+iOS7.h"; sourceTree = "<group>"; };
 		18300FC91EED38820035D6EE /* UIColor+iOS7.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+iOS7.m"; sourceTree = "<group>"; };
+		183C313A1FD397AA00611989 /* OSTransmitDataViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSTransmitDataViewController.h; sourceTree = "<group>"; };
+		183C313B1FD397AA00611989 /* OSTransmitDataViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSTransmitDataViewController.m; sourceTree = "<group>"; };
+		183C313D1FD39D6800611989 /* OSTransmitDataViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OSTransmitDataViewController.xib; sourceTree = "<group>"; };
+		183C313F1FD3A3C200611989 /* SJXCSMIPHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SJXCSMIPHelper.m; sourceTree = "<group>"; };
+		183C31401FD3A3C200611989 /* SJXCSMIPHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SJXCSMIPHelper.h; sourceTree = "<group>"; };
 		183C468C1FC2F97F00B5657E /* UIViewController+OSStatusBarStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+OSStatusBarStyle.h"; sourceTree = "<group>"; };
 		183C468D1FC2F97F00B5657E /* UIViewController+OSStatusBarStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+OSStatusBarStyle.m"; sourceTree = "<group>"; };
 		1845A6381FB6F3750000E39A /* OSItemProviderHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSItemProviderHelper.h; sourceTree = "<group>"; };
@@ -1198,6 +1206,16 @@
 			path = FFCircularProgressView;
 			sourceTree = "<group>";
 		};
+		183C30BA1FD38D8D00611989 /* TransmitData */ = {
+			isa = PBXGroup;
+			children = (
+				183C313A1FD397AA00611989 /* OSTransmitDataViewController.h */,
+				183C313B1FD397AA00611989 /* OSTransmitDataViewController.m */,
+				183C313D1FD39D6800611989 /* OSTransmitDataViewController.xib */,
+			);
+			path = TransmitData;
+			sourceTree = "<group>";
+		};
 		18517BBA1EEBC86600B148C8 = {
 			isa = PBXGroup;
 			children = (
@@ -1250,6 +1268,8 @@
 		18517BE91EEBCB2C00B148C8 /* Helper */ = {
 			isa = PBXGroup;
 			children = (
+				183C31401FD3A3C200611989 /* SJXCSMIPHelper.h */,
+				183C313F1FD3A3C200611989 /* SJXCSMIPHelper.m */,
 				1845A6441FB6F5730000E39A /* RMPhoneFormat.h */,
 				1845A6431FB6F5730000E39A /* RMPhoneFormat.m */,
 				18E8930C1FB5DFED00727EF1 /* OSFileBrowser */,
@@ -1286,6 +1306,7 @@
 		18517BEB1EEBCB2C00B148C8 /* Moudle */ = {
 			isa = PBXGroup;
 			children = (
+				183C30BA1FD38D8D00611989 /* TransmitData */,
 				18ADED5D1F9E408A0024BA40 /* WebBrowser */,
 				18878A821EF03907005C0185 /* VideoCut */,
 				18517BF81EEBD14B00B148C8 /* More */,
@@ -2527,6 +2548,7 @@
 				18ADEFF11F9E4B460024BA40 /* Protected.png in Resources */,
 				18ADEFE61F9E4B410024BA40 /* File-Fonts@2x.png in Resources */,
 				18ADEF661F9E4B410024BA40 /* App-MobileMail.app.png in Resources */,
+				183C313E1FD39D6800611989 /* OSTransmitDataViewController.xib in Resources */,
 				18ADEFB11F9E4B410024BA40 /* Directory-Library@2x.png in Resources */,
 				18ADEFE41F9E4B410024BA40 /* File-Audio@2x.png in Resources */,
 				18ADEF9B1F9E4B410024BA40 /* Directory-Developer.png in Resources */,
@@ -2910,6 +2932,7 @@
 				18ADEF081F9E4A3D0024BA40 /* NSString+ZWUtility.m in Sources */,
 				18E8932E1FB5DFED00727EF1 /* OSFile.m in Sources */,
 				18ADEED31F9E4A050024BA40 /* BookmarkItemEditViewController.m in Sources */,
+				183C313C1FD397AA00611989 /* OSTransmitDataViewController.m in Sources */,
 				18ADEEC91F9E49FB0024BA40 /* BaseResponseModel.m in Sources */,
 				18ADEF0F1F9E4A4A0024BA40 /* BaseNavigationViewController.m in Sources */,
 				18ADEF111F9E4A4A0024BA40 /* BaseViewController.m in Sources */,
@@ -2948,6 +2971,7 @@
 				18ADEEE71F9E4A1F0024BA40 /* CardMainBottomView.m in Sources */,
 				1845A65F1FB71C7E0000E39A /* AppGroupManager.m in Sources */,
 				18ADEEE81F9E4A1F0024BA40 /* CardMainView.m in Sources */,
+				183C31411FD3A3C200611989 /* SJXCSMIPHelper.m in Sources */,
 				18ADEED41F9E4A050024BA40 /* BookmarkTableViewController.m in Sources */,
 				18ADEF1F1F9E4A860024BA40 /* OSSettingsTableViewCell.m in Sources */,
 				18E8932B1FB5DFED00727EF1 /* NSDate+ESUtilities.m in Sources */,

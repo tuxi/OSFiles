@@ -10,4 +10,6 @@
 
 @interface OSSettingViewController : UIViewController
 
+- (void)openDownloadPage;
+
 @end
