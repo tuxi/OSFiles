@@ -400,6 +400,7 @@
 		D017FF121FA89B16004B65CF /* UITextField+OSRangeExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = D017FF111FA89B16004B65CF /* UITextField+OSRangeExtension.m */; };
 		D23006D31FD44F670074B3C5 /* ICSDrawerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 181A65C01FBF30E4005619B0 /* ICSDrawerController.m */; };
 		D23006D41FD44F670074B3C5 /* ICSDropShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 181A65C21FBF30E4005619B0 /* ICSDropShadowView.m */; };
+		D23006D61FD45B330074B3C5 /* SampleResource.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D23006D51FD45B330074B3C5 /* SampleResource.bundle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1041,6 +1042,7 @@
 		A5107F0693D00542CC3FA456 /* libPods-FileDownloader.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FileDownloader.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D017FF101FA89B16004B65CF /* UITextField+OSRangeExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UITextField+OSRangeExtension.h"; sourceTree = "<group>"; };
 		D017FF111FA89B16004B65CF /* UITextField+OSRangeExtension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UITextField+OSRangeExtension.m"; sourceTree = "<group>"; };
+		D23006D51FD45B330074B3C5 /* SampleResource.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SampleResource.bundle; sourceTree = "<group>"; };
 		FAEFFFFF9AB15F258CAC9CC7 /* Pods-FileDownloader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FileDownloader.release.xcconfig"; path = "Pods/Target Support Files/Pods-FileDownloader/Pods-FileDownloader.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1346,6 +1348,7 @@
 		18517BF41EEBCB2C00B148C8 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				D23006D51FD45B330074B3C5 /* SampleResource.bundle */,
 				18ADEBF01F9E2C450024BA40 /* Icons */,
 			);
 			path = Resource;
@@ -2530,6 +2533,7 @@
 				18ADEEB51F9E49590024BA40 /* BookmarkSectionTableViewCell.xib in Resources */,
 				18ADEFC91F9E4B410024BA40 /* Directory-Ringtones.png in Resources */,
 				18ADEFC71F9E4B410024BA40 /* Directory-Provisioningprofiles.png in Resources */,
+				D23006D61FD45B330074B3C5 /* SampleResource.bundle in Resources */,
 				18ADEF891F9E4B410024BA40 /* Directory-Application Support@2x.png in Resources */,
 				18ADEF8D1F9E4B410024BA40 /* Directory-Audio.png in Resources */,
 				18ADEF741F9E4B410024BA40 /* App-MobileTimer.app.png in Resources */,
@@ -3201,7 +3205,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -3236,7 +3240,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

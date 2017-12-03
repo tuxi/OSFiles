@@ -199,6 +199,7 @@ typedef NS_ENUM(NSUInteger, ICSDrawerControllerState)
 
 - (void)panGestureRecognized:(UIPanGestureRecognizer *)panGestureRecognizer
 {
+    return;
     NSParameterAssert(self.leftView);
     NSParameterAssert(self.centerView);
     

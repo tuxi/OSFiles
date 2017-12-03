@@ -40,6 +40,7 @@
         [self addNotification];
         [self commonInit];
         [AppGroupManager defaultManager];
+        [self migrationSampleFiles];
     }
     return self;
 }
@@ -136,6 +137,22 @@
         NSLog(@"Error excluding %@ from backup %@", [url lastPathComponent], error);
     }
     return success;
+}
+
+- (void)migrationSampleFiles {
+    NSNumber *num = [[NSUserDefaults standardUserDefaults] objectForKey:@"migrationSampleFiles"];
+    if (!num || num.boolValue == NO) {
+        
+        NSString *sampleResourceBundlePath = [[NSBundle mainBundle] pathForResource:@"SampleResource" ofType:@"bundle"];
+        NSArray *fileNames = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:sampleResourceBundlePath error:nil];
+        [fileNames enumerateObjectsUsingBlock:^(NSString *  _Nonnull name, NSUInteger idx, BOOL * _Nonnull stop) {
+            NSString *fullPath = [sampleResourceBundlePath stringByAppendingPathComponent:name];
+            NSString *newPath = [[NSString getDocumentPath] stringByAppendingPathComponent:name];
+            [[NSFileManager defaultManager] copyItemAtPath:fullPath toPath:newPath error:nil];
+        }];
+        [[NSUserDefaults standardUserDefaults] setObject:@(YES) forKey:@"migrationSampleFiles"];
+        
+    }
 }
 
 @end
