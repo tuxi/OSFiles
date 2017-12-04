@@ -25,13 +25,19 @@ static const CGFloat BBToastDefaultDuration = 2.0;
 
 @end
 
+@interface MBProgressHUD ()
+
+@property (nonatomic, strong) NSArray *paddingConstraints;
+
+@end
+
 @implementation MBProgressHUD (BBHUD)
 
 + (void)load {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         CGFloat wid = MIN([UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
-        [[MBProgressHUD appearance] setMinSize:CGSizeMake(wid*0.5, 0.0)];
+        [[MBProgressHUD appearance] setMinSize:CGSizeMake(wid*0.35, 0.0)];
         [[MBProgressHUD appearance] setMargin:10.0];
     });
 }
@@ -134,7 +140,7 @@ static const CGFloat BBToastDefaultDuration = 2.0;
     hud.mode = mode;
     view = BB_HUD_NULL_VIEW(view);
     view.bb_hudCancelOption = callBack;
-    [hud.button setTitle:@"Cancel" forState:UIControlStateNormal];
+    [hud.button setTitle:@"取消" forState:UIControlStateNormal];
     [hud.button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [hud.button addTarget:view
                    action:@selector(bb_cancelOperationAction:)
@@ -250,15 +256,22 @@ static const CGFloat BBToastDefaultDuration = 2.0;
     // 修改样式，否则等待框背景色将为半透明
     hud.bezelView.style = MBProgressHUDBackgroundStyleSolidColor;
     // 设置等待框背景色为黑色
-    hud.bezelView.backgroundColor = [UIColor blackColor];
+    hud.bezelView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.88];
     hud.removeFromSuperViewOnHide = YES;
     // 设置菊花框为白色
-    [UIActivityIndicatorView appearanceWhenContainedIn:[MBProgressHUD class], nil].color = [UIColor whiteColor];
+    if (@available(iOS 9.0, *)) {
+        [UIActivityIndicatorView appearanceWhenContainedInInstancesOfClasses:@[[MBProgressHUD class]]].color = [UIColor whiteColor];
+    } else {
+        [UIActivityIndicatorView appearanceWhenContainedIn:[MBProgressHUD class], nil].color = [UIColor whiteColor];
+    }
+    
     [view addSubview:hud];
     hud.label.font = [UIFont systemFontOfSize:15.0f];
-    // 设置间距为10.f
-    hud.margin = 10.0f;
-    // 方形
+    hud.label.numberOfLines = 0;
+    // 设置间距为20.f
+    hud.margin = 20.0;
+    hud.buttonPadding = 20.0;
+    // 正方形，就是宽高是否相同
     hud.square = NO;
     // 设置内部控件的颜色，包括button的文本颜色，边框颜色，label的文本颜色等
     hud.contentColor = [UIColor whiteColor];
@@ -267,6 +280,45 @@ static const CGFloat BBToastDefaultDuration = 2.0;
     hud.label.text = message;
     return hud;
 }
+
+- (void)setButtonPadding:(CGFloat)buttonPadding {
+    if (buttonPadding != self.buttonPadding) {
+        objc_setAssociatedObject(self, @selector(buttonPadding), @(buttonPadding), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        [self setNeedsUpdateConstraints];
+    }
+}
+
+- (CGFloat)buttonPadding {
+    NSNumber *paddingNum = objc_getAssociatedObject(self, _cmd);
+    if (!paddingNum) {
+        paddingNum = @(4.0);
+    }
+    return [paddingNum floatValue];
+}
+
+/// 修改子控件之间间距的方法，重写以修改
+- (void)updatePaddingConstraints {
+    //    NSMutableArray *subviews = [NSMutableArray arrayWithObjects:self.topSpacer, self.label, self.detailsLabel, self.button, self.bottomSpacer, nil];
+    
+    // Set padding dynamically, depending on whether the view is visible or not
+    __block BOOL hasVisibleAncestors = NO;
+    [self.paddingConstraints enumerateObjectsUsingBlock:^(NSLayoutConstraint *padding, NSUInteger idx, BOOL *stop) {
+        UIView *firstView = (UIView *)padding.firstItem;
+        UIView *secondView = (UIView *)padding.secondItem;
+        BOOL firstVisible = !firstView.hidden && !CGSizeEqualToSize(firstView.intrinsicContentSize, CGSizeZero);
+        BOOL secondVisible = !secondView.hidden && !CGSizeEqualToSize(secondView.intrinsicContentSize, CGSizeZero);
+        // Set if both views are visible or if there's a visible view on top that doesn't have padding
+        // added relative to the current view yet
+        padding.constant = (firstVisible && (secondVisible || hasVisibleAncestors)) ? 4.f : 0.f;
+        if (padding.constant) {
+            if ([firstView isEqual:self.button] || [secondView isEqual:self.button]) {
+                padding.constant = self.buttonPadding;
+            }
+        }
+        hasVisibleAncestors |= secondVisible;
+    }];
+}
+
 
 @end
 

@@ -20,10 +20,10 @@ typedef void(^BBHUDActionCallBack)(MBProgressHUD *hud);
 - (void)bb_showMaxTimeMessage:(NSString *)message;
 - (void)bb_showMessage:(NSString *)message;
 - (void)bb_showMessage:(NSString *)message
-             delayTime:(CGFloat)delayTime;
+delayTime:(CGFloat)delayTime;
 - (void)bb_showMessage:(NSString *)message
-             delayTime:(CGFloat)delayTime
-                offset:(CGPoint)offset;
+delayTime:(CGFloat)delayTime
+offset:(CGPoint)offset;
 
 #pragma mark *** Activity hud ***
 
@@ -32,10 +32,10 @@ typedef void(^BBHUDActionCallBack)(MBProgressHUD *hud);
 - (void)bb_showActivityMessage:(NSString *)message;
 - (void)bb_showActivityDelayTime:(CGFloat)delayTime;
 - (void)bb_showActivityMessage:(NSString*)message
-                     delayTime:(CGFloat)delayTime;
+delayTime:(CGFloat)delayTime;
 - (void)bb_showActivityMessage:(NSString*)message
-                     delayTime:(CGFloat)delayTime
-                        offset:(CGPoint)offset;
+delayTime:(CGFloat)delayTime
+offset:(CGPoint)offset;
 
 /// 显示菊花和取消按钮的loading，不会自动隐藏，需要手动调用hide隐藏
 - (void)bb_showActivityWithActionCallBack:(BBHUDActionCallBack)callBack;
@@ -43,10 +43,10 @@ typedef void(^BBHUDActionCallBack)(MBProgressHUD *hud);
 /// @param message 菊花下面显示的文本
 /// @param callBack 触发取消按钮的回调
 - (void)bb_showActivityMessage:(NSString *)message
-                actionCallBack:(BBHUDActionCallBack)callBack;
+actionCallBack:(BBHUDActionCallBack)callBack;
 - (void)bb_showProgressWithActionCallBack:(BBHUDActionCallBack)callBack;
 - (void)bb_showProgressMessage:(NSString *)message
-                actionCallBack:(BBHUDActionCallBack)callBack;
+actionCallBack:(BBHUDActionCallBack)callBack;
 
 #pragma mark *** Custom hud ***
 
@@ -54,21 +54,24 @@ typedef void(^BBHUDActionCallBack)(MBProgressHUD *hud);
 /// @param image hud上显示的图片
 /// @param message hud上显示的文本
 - (void)bb_showCustomImage:(UIImage *)image
-                   message:(NSString *)message;
+message:(NSString *)message;
 - (void)bb_showCustomImage:(UIImage *)image
-                   message:(NSString *)message
-                    offset:(CGPoint)offset;
+message:(NSString *)message
+offset:(CGPoint)offset;
 
 #pragma mark *** Hide hud ***
 
 - (void)bb_hideHUD;
 - (void)bb_hideHUDWithMessage:(NSString *)message
-                    hideAfter:(NSTimeInterval)afterSecond;
+hideAfter:(NSTimeInterval)afterSecond;
 - (void)bb_hideHUDWithAfter:(NSTimeInterval)afterSecond;
 
 @end
 
 @interface MBProgressHUD (BBHUD)
+
+/// button 距离边距控件的顶部和底部间距值
+@property (nonatomic) CGFloat buttonPadding;
 
 #pragma mark *** Text hud ***
 
@@ -140,5 +143,6 @@ typedef void(^BBHUDActionCallBack)(MBProgressHUD *hud);
 + (void)bb_hideHUD;
 
 @end
+
 
 
