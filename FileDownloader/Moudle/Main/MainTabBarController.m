@@ -34,10 +34,11 @@
                                   [NSString getDocumentPath],
                                   [AppGroupManager getAPPGroupSharePath]
                                   ];
-    OSFileCollectionViewController *fileBrowserVc = [[OSFileCollectionViewController alloc] initWithDirectoryArray:fileBrowserArray];
+    OSFileCollectionViewController *fileBrowserVc = [[OSFileCollectionViewController alloc] initWithFilePathArray:fileBrowserArray];
+    fileBrowserVc.rootDirectory = YES;
     
     NSArray *marupFiles = [OSFile markupFilePathsWithNeedReload:YES];
-    OSFileCollectionViewController *starBrowserVc = [[OSFileCollectionViewController alloc] initWithDirectoryArray:marupFiles
+    OSFileCollectionViewController *starBrowserVc = [[OSFileCollectionViewController alloc] initWithFilePathArray:marupFiles
                                                                                                                      ];
     starBrowserVc.displayMarkupFiles = YES;
     [self addChildVC:fileBrowserVc imageNamed:@"TabFolders" title:@"我的文件"];

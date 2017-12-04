@@ -13,6 +13,8 @@
 #import "OSMimeTypeMap.h"
 #import "UIImage+XYImage.h"
 #import "AppGroupManager.h"
+#import "OSFileHelper.h"
+#import "OSFileBrowserAppearanceConfigs.h"
 
 static NSString * const AppGroupPrefixString = @"/private/var/mobile/Containers/Shared/AppGroup/";
 static NSString * const AppSandBoxPrefixString = @"/var/mobile/Containers/Data/Application/";
@@ -69,6 +71,7 @@ static NSNotificationName OSFileDidCancelMarkupedNotification = @"OSFileDidCance
 @synthesize hideDisplayFiles            = _hideDisplayFiles;
 @synthesize mimeType                    = _mimeType;
 @synthesize alreadyMarked               = _alreadyMarked;
+@synthesize pathOfSubFiles              = _pathOfSubFiles;
 
 + (instancetype)fileWithPath:(NSString *)filePath {
     return [self fileWithPath:filePath error:NULL];
@@ -172,9 +175,9 @@ static NSNotificationName OSFileDidCancelMarkupedNotification = @"OSFileDidCance
     };
     
     if(_isDirectory == YES) {
-        _subFiles = [_fileManager contentsOfDirectoryAtPath: _path error: &e];
+        _nameOfSubFiles = [_fileManager contentsOfDirectoryAtPath: _path error: &e];
         if (e) {
-            _subFiles = processFileBlock(_path);
+            _nameOfSubFiles = processFileBlock(_path);
             if (error) {
                 *error = e;
             }
@@ -208,16 +211,28 @@ static NSNotificationName OSFileDidCancelMarkupedNotification = @"OSFileDidCance
     }
     
     [self getSubTypes];
-    [self sortedSubFiles];
+    [self getPathOfSubFiles];
     [self getIcon];
     return YES;
 }
 
-- (void)removeHideFiles {
-    if (!self.subFiles.count) {
+- (void)getPathOfSubFiles {
+    if (!_nameOfSubFiles.count) {
         return;
     }
-    NSMutableArray *tempFiles = [self.subFiles mutableCopy];
+    NSMutableArray *tempPaths = @[].mutableCopy;
+    [self.nameOfSubFiles enumerateObjectsUsingBlock:^(NSString *  _Nonnull name, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSString *path = [self.path stringByAppendingPathComponent:name];
+        [tempPaths addObject:path];
+    }];
+    _pathOfSubFiles = tempPaths.copy;
+}
+
+- (void)removeHideFiles {
+    if (!self.nameOfSubFiles.count) {
+        return;
+    }
+    NSMutableArray *tempFiles = [self.nameOfSubFiles mutableCopy];
     NSIndexSet *indexSet = [tempFiles indexesOfObjectsPassingTest:^BOOL(NSString * _Nonnull fileName, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([fileName isKindOfClass:[NSString class]]) {
             return [fileName hasPrefix:@"."];
@@ -225,11 +240,11 @@ static NSNotificationName OSFileDidCancelMarkupedNotification = @"OSFileDidCance
         return NO;
     }];
     [tempFiles removeObjectsAtIndexes:indexSet];
-    _subFiles = tempFiles.copy;
+    _nameOfSubFiles = tempFiles.copy;
 }
 
 - (NSUInteger)numberOfSubFiles {
-    return _subFiles.count;
+    return _nameOfSubFiles.count;
 }
 
 #pragma mark *** Private methods ***
@@ -408,22 +423,6 @@ static NSNotificationName OSFileDidCancelMarkupedNotification = @"OSFileDidCance
     _HFSTypeCode      = ([_attributes objectForKey: NSFileHFSTypeCode]      == nil) ? 0 : (NSUInteger)[[_attributes objectForKey: NSFileHFSTypeCode]      integerValue];
 }
 
-- (void)sortedSubFiles {
-    _subFiles =  [_subFiles sortedArrayWithOptions:NSSortConcurrent usingComparator:^NSComparisonResult(NSString* file1, NSString* file2) {
-        NSString *newPath1 = [self.path stringByAppendingPathComponent:file1];
-        NSString *newPath2 = [self.path stringByAppendingPathComponent:file2];
-        
-        BOOL isDirectory1, isDirectory2;
-        [[NSFileManager defaultManager] fileExistsAtPath:newPath1 isDirectory:&isDirectory1];
-        [[NSFileManager defaultManager] fileExistsAtPath:newPath2 isDirectory:&isDirectory2];
-        
-        if (isDirectory1 && !isDirectory2) {
-            return NSOrderedAscending;
-        }
-        
-        return  NSOrderedDescending;
-    }];
-}
 
 - (void)getSubTypes {
     OSFile * infos;
