@@ -549,6 +549,20 @@ static NSString * const OSFileDownloadOperationsKey = @"downloadItems";
     
 }
 
+- (NSArray<OSRemoteResourceItem *> *)downloadingItems {
+    if (!self.downloadItems.count) {
+        return nil;
+    }
+    NSMutableArray *downloadingItems = [NSMutableArray array];
+    [self.downloadItems enumerateObjectsUsingBlock:^(OSRemoteResourceItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (obj.status == OSFileDownloadStatusDownloading || obj.status == OSFileDownloadStatusWaiting) {
+            [downloadingItems addObject:obj];
+        }
+    }];
+    return downloadingItems;
+    
+}
+
 - (NSArray<OSRemoteResourceItem *> *)downloadFailureItems {
     return [self getDownloadItemsWithStatus:OSFileDownloadStatusFailure];
 }

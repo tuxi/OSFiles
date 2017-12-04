@@ -185,6 +185,12 @@ static NSString * const UserAgent = @"Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 li
     [[OSAuthenticatorHelper sharedInstance] applicationWillResignActiveWithShowCoverImageView];
 //    [[OSTransmitDataViewController sharedInstance] stopWevServer];
     [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    NSInteger sleepTime = 5;
+    if ([OSFileDownloaderManager sharedInstance].downloadingItems.count) {
+        sleepTime = NSIntegerMax; // sleepTime = 5;
+    }
+    [self startBackgroundTask:application sleepTime:sleepTime];
 }
 
 
@@ -207,10 +213,19 @@ static NSString * const UserAgent = @"Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 li
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
+    
+}
+
+// 当一个 iOS 应用被送到后台,它的主线程会被暂停。你用 NSThread 的 detachNewThreadSelector:toTar get:withObject:类方法创建的线程也被挂起了。
+// 如果你想在后台完成一个长期任务,就必须调用 UIApplication 的 beginBackgroundTaskWithExpirationHandler:实例方法,来向 iOS 借点时间。
+// 默认情况下，如果在这个期限内,长期任务没有被完成,iOS 将终止程序。
+- (void)startBackgroundTask:(UIApplication *)application sleepTime:(NSInteger)times {
+    
     _bgTask = [application beginBackgroundTaskWithExpirationHandler:^{
-        
+        // 当应用程序留给后台的时间快要到结束时（应用程序留给后台执行的时间是有限的）， 这个Block块将被执行
+        // 我们需要在次Block块中执行一些清理工作。
+        // 如果清理工作失败了，那么将导致程序挂掉
         // 10分钟后执行这里，应该进行一些清理工作，如断开和服务器的连接等
-        // stopped or ending the task outright.
         [application endBackgroundTask:_bgTask];
         _bgTask = UIBackgroundTaskInvalid;
     }];
@@ -222,14 +237,14 @@ static NSString * const UserAgent = @"Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 li
         // Do the work associated with the task, preferably in chunks.
         NSTimeInterval timeRemain = 0;
         do {
-            [NSThread sleepForTimeInterval:5];
+            [NSThread sleepForTimeInterval:times];
             if (_bgTask != UIBackgroundTaskInvalid) {
                 timeRemain = [application backgroundTimeRemaining];
                 NSLog(@"Time remaining: %f",timeRemain);
             }
-        } while(_bgTask!= UIBackgroundTaskInvalid && timeRemain > 0);
-        // 如果改为timeRemain > 5*60,表示后台运行5分钟
-        // done!
+        } while(_bgTask!= UIBackgroundTaskInvalid && timeRemain > 165);
+        // 如果改为timeRemain > 165,表示后台运行165秒
+        // 后台任务完成，执行清理工作
         // 如果没到10分钟，也可以主动关闭后台任务，但这需要在主线程中执行，否则会出错
         dispatch_async(dispatch_get_main_queue(), ^{
             if (_bgTask != UIBackgroundTaskInvalid) {
@@ -241,6 +256,7 @@ static NSString * const UserAgent = @"Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 li
         });
     });
 }
+
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     // 如果没到10分钟又打开了app,结束后台任务
     if (_bgTask != UIBackgroundTaskInvalid) {
