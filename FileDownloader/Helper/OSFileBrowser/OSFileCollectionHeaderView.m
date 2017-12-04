@@ -92,7 +92,6 @@ NSString * const OSFileCollectionHeaderViewDefaultIdentifier = @"UICollectionReu
 - (UISegmentedControl *)sortControl {
     if (!_sortControl) {
         _sortControl = [[UISegmentedControl alloc] initWithItems:@[@"按A-Z的顺序排序", @"最新优先"]];
-        _sortControl.selectedSegmentIndex = 0;
         _sortControl.tintColor = [UIColor whiteColor];//[UIColor colorWithRed:0.0/255.0 green:105.0/255.0 blue:210.0/255.0 alpha:1.0];
         _sortControl.translatesAutoresizingMaskIntoConstraints = NO;
         [_sortControl setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor blackColor]} forState:UIControlStateSelected];
@@ -111,9 +110,13 @@ NSString * const OSFileCollectionHeaderViewDefaultIdentifier = @"UICollectionReu
 #pragma mark - Notification
 ////////////////////////////////////////////////////////////////////////
 - (void)sortTypeChangeNotification:(NSNotification *)notification {
-    if (_sortControl.selectedSegmentIndex != [OSFileBrowserAppearanceConfigs fileSortType]) {
+//    if (_sortControl.selectedSegmentIndex != [OSFileBrowserAppearanceConfigs fileSortType]) {
         _sortControl.selectedSegmentIndex = [OSFileBrowserAppearanceConfigs fileSortType];
-    }
+        
+        if (self.delegate && [self.delegate respondsToSelector:@selector(fileCollectionHeaderView:didSelectedSortChanged:currentSortType:)]) {
+            [self.delegate fileCollectionHeaderView:self didSelectedSortChanged:self.sortControl currentSortType:self.sortControl.selectedSegmentIndex];
+        }
+//    }
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -138,9 +141,7 @@ NSString * const OSFileCollectionHeaderViewDefaultIdentifier = @"UICollectionReu
 
 - (void)selectedSortChanged:(UISegmentedControl *)sortControl {
     [OSFileBrowserAppearanceConfigs setFileSortType:sortControl.selectedSegmentIndex];
-    if (self.delegate && [self.delegate respondsToSelector:@selector(fileCollectionHeaderView:didSelectedSortChanged:currentSortType:)]) {
-        [self.delegate fileCollectionHeaderView:self didSelectedSortChanged:sortControl currentSortType:sortControl.selectedSegmentIndex];
-    }
+    
 }
 
 - (void)dealloc {

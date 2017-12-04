@@ -52,14 +52,16 @@ typedef NS_ENUM(NSInteger, OSFileCollectionViewControllerMode) {
 @property (nonatomic, class) id<OSFileCollectionViewControllerFileOptionDelegate> fileOperationDelegate;
 /// 当前控制器是否用于展示标记
 @property (nonatomic, assign) BOOL displayMarkupFiles;
+/// 是否是根目录，根目录下文件不可以编辑
+@property (nonatomic, assign, getter=isRootDirectory) BOOL rootDirectory;
 
 /// 通过文件目录路径，读取里面所有的文件并展示
-- (instancetype)initWithRootDirectory:(NSString *)path;
+- (instancetype)initWithDirectory:(NSString *)path;
 /// 通过文件目录路径，读取里面所有的文件并展示, 传入当前控制器的模式
-- (instancetype)initWithRootDirectory:(NSString *)path controllerMode:(OSFileCollectionViewControllerMode)mode;
+- (instancetype)initWithDirectory:(NSString *)path controllerMode:(OSFileCollectionViewControllerMode)mode;
 /// 展示指定的文件目录
-- (instancetype)initWithDirectoryArray:(NSArray *)directoryArray;
-- (instancetype)initWithDirectoryArray:(NSArray *)directoryArray controllerMode:(OSFileCollectionViewControllerMode)mode;;
+- (instancetype)initWithFilePathArray:(NSArray *)directoryArray;
+- (instancetype)initWithFilePathArray:(NSArray *)directoryArray controllerMode:(OSFileCollectionViewControllerMode)mode;;
 
 /// 拷贝文件到指定目录
 - (void)copyFiles:(NSArray<OSFileAttributeItem *> *)fileItems

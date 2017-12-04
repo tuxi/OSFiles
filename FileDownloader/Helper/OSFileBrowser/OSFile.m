@@ -13,6 +13,8 @@
 #import "OSMimeTypeMap.h"
 #import "UIImage+XYImage.h"
 #import "AppGroupManager.h"
+#import "OSFileHelper.h"
+#import "OSFileBrowserAppearanceConfigs.h"
 
 static NSString * const AppGroupPrefixString = @"/private/var/mobile/Containers/Shared/AppGroup/";
 static NSString * const AppSandBoxPrefixString = @"/var/mobile/Containers/Data/Application/";
@@ -69,6 +71,7 @@ static NSNotificationName OSFileDidCancelMarkupedNotification = @"OSFileDidCance
 @synthesize hideDisplayFiles            = _hideDisplayFiles;
 @synthesize mimeType                    = _mimeType;
 @synthesize alreadyMarked               = _alreadyMarked;
+@synthesize pathOfSubFiles              = _pathOfSubFiles;
 
 + (instancetype)fileWithPath:(NSString *)filePath {
     return [self fileWithPath:filePath error:NULL];
@@ -172,9 +175,9 @@ static NSNotificationName OSFileDidCancelMarkupedNotification = @"OSFileDidCance
     };
     
     if(_isDirectory == YES) {
-        _subFiles = [_fileManager contentsOfDirectoryAtPath: _path error: &e];
+        _nameOfSubFiles = [_fileManager contentsOfDirectoryAtPath: _path error: &e];
         if (e) {
-            _subFiles = processFileBlock(_path);
+            _nameOfSubFiles = processFileBlock(_path);
             if (error) {
                 *error = e;
             }
@@ -208,17 +211,28 @@ static NSNotificationName OSFileDidCancelMarkupedNotification = @"OSFileDidCance
     }
     
     [self getSubTypes];
-//    [self sortedSubFiles];
-    [self sortArray:self.subFiles];
+    [self getPathOfSubFiles];
     [self getIcon];
     return YES;
 }
 
-- (void)removeHideFiles {
-    if (!self.subFiles.count) {
+- (void)getPathOfSubFiles {
+    if (!_nameOfSubFiles.count) {
         return;
     }
-    NSMutableArray *tempFiles = [self.subFiles mutableCopy];
+    NSMutableArray *tempPaths = @[].mutableCopy;
+    [self.nameOfSubFiles enumerateObjectsUsingBlock:^(NSString *  _Nonnull name, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSString *path = [self.path stringByAppendingPathComponent:name];
+        [tempPaths addObject:path];
+    }];
+    _pathOfSubFiles = tempPaths.copy;
+}
+
+- (void)removeHideFiles {
+    if (!self.nameOfSubFiles.count) {
+        return;
+    }
+    NSMutableArray *tempFiles = [self.nameOfSubFiles mutableCopy];
     NSIndexSet *indexSet = [tempFiles indexesOfObjectsPassingTest:^BOOL(NSString * _Nonnull fileName, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([fileName isKindOfClass:[NSString class]]) {
             return [fileName hasPrefix:@"."];
@@ -226,11 +240,11 @@ static NSNotificationName OSFileDidCancelMarkupedNotification = @"OSFileDidCance
         return NO;
     }];
     [tempFiles removeObjectsAtIndexes:indexSet];
-    _subFiles = tempFiles.copy;
+    _nameOfSubFiles = tempFiles.copy;
 }
 
 - (NSUInteger)numberOfSubFiles {
-    return _subFiles.count;
+    return _nameOfSubFiles.count;
 }
 
 #pragma mark *** Private methods ***
@@ -407,89 +421,6 @@ static NSNotificationName OSFileDidCancelMarkupedNotification = @"OSFileDidCance
     _systemFileNumber = ([_attributes objectForKey: NSFileSystemFileNumber] == nil) ? 0 : (NSUInteger)[[_attributes objectForKey: NSFileSystemFileNumber] integerValue];
     _HFSCreatorCode   = ([_attributes objectForKey: NSFileHFSCreatorCode]   == nil) ? 0 : (NSUInteger)[[_attributes objectForKey: NSFileHFSCreatorCode]   integerValue];
     _HFSTypeCode      = ([_attributes objectForKey: NSFileHFSTypeCode]      == nil) ? 0 : (NSUInteger)[[_attributes objectForKey: NSFileHFSTypeCode]      integerValue];
-}
-
-- (void)sortedSubFiles {
-    _subFiles =  [_subFiles sortedArrayWithOptions:NSSortConcurrent usingComparator:^NSComparisonResult(NSString* file1, NSString* file2) {
-        NSString *newPath1 = [self.path stringByAppendingPathComponent:file1];
-        NSString *newPath2 = [self.path stringByAppendingPathComponent:file2];
-        
-        BOOL isDirectory1, isDirectory2;
-        [[NSFileManager defaultManager] fileExistsAtPath:newPath1 isDirectory:&isDirectory1];
-        [[NSFileManager defaultManager] fileExistsAtPath:newPath2 isDirectory:&isDirectory2];
-        
-        if (isDirectory1 && !isDirectory2) {
-            return NSOrderedAscending;
-        }
-        
-        return  NSOrderedDescending;
-    }];
-}
-
-- (NSArray *)sortArray:(NSArray *)toSortArray {
-    //将传入数组转换为可变数组
-    NSMutableArray *needSortArray = [NSMutableArray arrayWithArray:toSortArray];
-    //存储对应字母开头的所有数据的数组
-    NSMutableArray *classifiedArray = [[NSMutableArray alloc] init];
-    
-    for(int i='A';i<='Z';i++){
-        NSMutableArray *rulesArray = [[NSMutableArray alloc] init];
-        NSString *indexString = [NSString stringWithFormat:@"%c",i];
-        for(int j = 0; j < needSortArray.count; j++){
-            NSString *name = [needSortArray objectAtIndex:j];
-            
-            if([[self toPinyin: name] isEqualToString:indexString]){
-                //把model.name首字母相同的放到同一个数组里面
-                [rulesArray addObject:name];
-                [needSortArray removeObject:name];
-                j--;
-            }
-        }
-        if (rulesArray.count !=0) {
-            [classifiedArray addObject:rulesArray];
-        }
-        
-        if (needSortArray.count == 0) {
-            break;
-        }
-    }
-    
-    // 剩下的就是非字母开头数据，加在classifiedArray的后面
-    if (needSortArray.count !=0) {
-        [classifiedArray addObject:needSortArray];
-    }
-    
-    //最后再分别对每个数组排序
-    NSMutableArray *sortCompleteArray = [NSMutableArray array];
-    for (NSArray *tempArray in classifiedArray) {
-        NSArray *sortedElement = [tempArray sortedArrayUsingFunction:displayNameSort context:NULL];
-        [sortCompleteArray addObject:sortedElement];
-    }
-    //sortCompleteArray就是最后排好序的二维数组了
-    return sortCompleteArray;
-}
-
-NSInteger displayNameSort(id file1, id file2, void *context) {
-    NSString *f1, *f2;
-    f1 = (NSString *)file1;
-    f2 = (NSString *)file2;
-    return  [file1 localizedCompare:file2];
-}
-
-
-- (NSString *)toPinyin:(NSString *)str {
-    NSMutableString *ms = [[NSMutableString alloc]initWithString:str];
-    if (CFStringTransform((__bridge CFMutableStringRef)ms, 0,kCFStringTransformMandarinLatin, NO)) {
-    }
-    // 去除拼音的音调
-    if (CFStringTransform((__bridge CFMutableStringRef)ms, 0,kCFStringTransformStripDiacritics, NO)) {
-        if (str.length) {
-            NSString *bigStr = [ms uppercaseString];
-            NSString *cha = [bigStr substringToIndex:1];
-            return cha;
-        }
-    }
-    return str;
 }
 
 

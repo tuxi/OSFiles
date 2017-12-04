@@ -74,6 +74,7 @@ OSFileFlags;
     BOOL            _hideDisplayFiles;
     NSString      * _mimeType;
     BOOL           _alreadyMarked;
+    NSArray<NSString *> * _pathOfSubFiles;
 @private
     
     id __OSFile_Reserved[ 5 ] __attribute__((unused));
@@ -126,7 +127,8 @@ OSFileFlags;
 @property (atomic, readonly) NSDate      * modificationDate;
 @property (atomic, readonly) UIImage     * icon;
 @property (atomic, readonly) OSFile      * targetFile;
-@property (atomic, readwrite) NSArray     * subFiles;
+@property (atomic, readwrite) NSArray<NSString *> * nameOfSubFiles;
+@property (atomic, readonly) NSArray<NSString *> * pathOfSubFiles;
 @property (atomic, readonly) BOOL          hideDisplayFiles;
 @property (atomic, readonly) NSString    * mimeType;
 @property (atomic, readonly) BOOL          alreadyMarked;
