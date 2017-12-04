@@ -22,6 +22,7 @@
 #import "OSFileSearchResultsController.h"
 #import "OSFileBrowserAppearanceConfigs.h"
 #import "UIScrollView+RollView.h"
+#import "OSFileHelper.h"
 
 NSNotificationName const OSFileCollectionViewControllerOptionFileCompletionNotification = @"OptionFileCompletionNotification";
 NSNotificationName const OSFileCollectionViewControllerOptionSelectedFileForCopyNotification = @"OptionSelectedFileForCopyNotification";
@@ -57,7 +58,7 @@ static const CGFloat windowHeight = 49.0;
 @property (nonatomic, strong) OSFileBottomHUD *bottomHUD;
 @property (nonatomic, assign) OSFileCollectionViewControllerMode mode;
 @property (nonatomic, weak) UIButton *bottomTipButton;
-@property (nonatomic, strong) OSFileAttributeItem *rootDirectoryItem;
+@property (nonatomic, strong) OSFileAttributeItem *parentDirectoryItem;
 @property (nonatomic, strong) NSMutableArray<DirectoryWatcher *> *directoryWatcherArray;
 @property (nonatomic, strong) UISearchController *searchController;
 
@@ -67,34 +68,39 @@ static const CGFloat windowHeight = 49.0;
 
 #pragma mark *** Initializer ***
 
-- (instancetype)initWithRootDirectory:(NSString *)path {
-    return [self initWithRootDirectory:path controllerMode:OSFileCollectionViewControllerModeDefault];
+- (instancetype)initWithDirectory:(NSString *)path {
+    return [self initWithDirectory:path controllerMode:OSFileCollectionViewControllerModeDefault];
 }
 
-- (instancetype)initWithRootDirectory:(NSString *)path controllerMode:(OSFileCollectionViewControllerMode)mode {
+- (instancetype)initWithDirectory:(NSString *)path controllerMode:(OSFileCollectionViewControllerMode)mode {
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         self.fileLoadType = OSFileLoadTypeSubDirectory;
         self.mode = mode;
         _hideDisplayFiles = YES;
-        self.rootDirectoryItem = [OSFileAttributeItem fileWithPath:path hideDisplayFiles:_hideDisplayFiles error:nil];
+        self.parentDirectoryItem = [OSFileAttributeItem fileWithPath:path hideDisplayFiles:_hideDisplayFiles error:nil];
         [self commonInit];
         
     }
     return self;
 }
 
-- (instancetype)initWithDirectoryArray:(NSArray *)directoryArray {
-    return [self initWithDirectoryArray:directoryArray controllerMode:OSFileCollectionViewControllerModeDefault];
+- (instancetype)initWithFilePathArray:(NSArray *)directoryArray {
+    return [self initWithFilePathArray:directoryArray controllerMode:OSFileCollectionViewControllerModeDefault];
 }
 
-- (instancetype)initWithDirectoryArray:(NSArray *)directoryArray controllerMode:(OSFileCollectionViewControllerMode)mode {
+- (instancetype)initWithFilePathArray:(NSArray *)directoryArray controllerMode:(OSFileCollectionViewControllerMode)mode {
+    return [self initWithFilePathArray:directoryArray parentItem:nil controllerMode:mode];
+}
+
+- (instancetype)initWithFilePathArray:(NSArray *)directoryArray parentItem:(OSFileAttributeItem *)parentItem controllerMode:(OSFileCollectionViewControllerMode)mode {
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         self.fileLoadType = OSFileLoadTypeCurrentDirectory;
         self.mode = mode;
         _hideDisplayFiles = YES;
         self.directoryArray = directoryArray;
+        self.parentDirectoryItem = parentItem;
         [self commonInit];
     }
     return self;
@@ -111,7 +117,6 @@ static const CGFloat windowHeight = 49.0;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(optionFileCompletion:) name:OSFileCollectionViewControllerOptionFileCompletionNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(collectionReLayoutStyle) name:OSFileCollectionLayoutStyleDidChangeNotification object:nil];
     
-    [self setupNavigationBar];
     
 }
 
@@ -121,12 +126,12 @@ static const CGFloat windowHeight = 49.0;
     __weak typeof(self) weakSelf = self;
     NSMutableArray *needWatchPathArray = [NSMutableArray array];
     
-    if (self.rootDirectoryItem.path.length) {
-        [needWatchPathArray addObject:self.rootDirectoryItem.path];
+    if (self.parentDirectoryItem.path.length) {
+        [needWatchPathArray addObject:self.parentDirectoryItem.path];
     }
     
     NSString *documentPath = [NSString getDocumentPath];
-    if (![self.rootDirectoryItem.path isEqualToString:documentPath]) {
+    if (![self.parentDirectoryItem.path isEqualToString:documentPath]) {
         [needWatchPathArray addObject:documentPath];
     }
     
@@ -153,6 +158,7 @@ static const CGFloat windowHeight = 49.0;
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [self setupViews];
+    
     __weak typeof(self) weakSelf = self;
     [self reloadFilesWithCallBack:^{
         [weakSelf showBottomTip];
@@ -169,7 +175,7 @@ static const CGFloat windowHeight = 49.0;
     
     if ((self.mode == OSFileCollectionViewControllerModeCopy ||
          self.mode == OSFileCollectionViewControllerModeMove) &&
-        self.rootDirectoryItem) {
+        self.parentDirectoryItem) {
         [self bottomTipButton].hidden = NO;
     }
     else {
@@ -237,6 +243,7 @@ static const CGFloat windowHeight = 49.0;
     [self makeCollectionViewConstr];
     [self setupNodataView];
     [self setupSearchController];
+    [self setupNavigationBar];
 }
 
 /// 搜索功能暂时只支持iOS11
@@ -284,7 +291,7 @@ static const CGFloat windowHeight = 49.0;
         
     };
     
-    if ([self.rootDirectoryItem isDownloadBrowser]) {
+    if ([self.parentDirectoryItem isDownloadBrowser]) {
         self.collectionView.noDataDetailTextLabelBlock = ^(UILabel * _Nonnull detailTextLabel) {
             NSAttributedString *string = [weakSelf noDataDetailLabelAttributedString];
             if (!string.length) {
@@ -340,9 +347,16 @@ static const CGFloat windowHeight = 49.0;
 #pragma mark *** NavigationBar ***
 
 - (void)setupNavigationBar {
-//    self.navigationItem.title = @"文件浏览";
-    if (@available(iOS 11.0, *)) {
-        if (!self.directoryArray.count) {
+    
+    if (self.parentDirectoryItem) {
+        self.navigationItem.title = self.parentDirectoryItem.displayName;
+    }
+    else {
+        self.navigationItem.title = @"文件浏览";
+    }
+    
+    if (!self.isRootDirectory) {
+        if (@available(iOS 11.0, *)) {
             // 导航大标题, 上滑到顶部时动态切换大小标题样式 (导航栏高度UINavigationBar = 44/96)
             self.navigationController.navigationBar.prefersLargeTitles = YES;
             // 自动模式,依赖于上一个item的设置; 上一个item设置为自动并且当前导航栏prefersLargeTitles=YES,则显示大标题样式;
@@ -355,19 +369,11 @@ static const CGFloat windowHeight = 49.0;
         
         
     }
-    if (self.rootDirectoryItem) {
-        self.navigationItem.title = self.rootDirectoryItem.displayName;
-    }
     
     // 如果数组中只有下载文件夹和iTunes文件夹，就不能显示编辑
     BOOL displayEdit = YES;
-    if (self.directoryArray && !self.displayMarkupFiles) {
-        NSIndexSet *set = [self.files indexesOfObjectsPassingTest:^BOOL(OSFileAttributeItem * _Nonnull item, NSUInteger idx, BOOL * _Nonnull stop) {
-            return [item isRootDirectory];
-        }];
-        if (set.count == self.directoryArray.count) {
-            displayEdit = NO;
-        }
+    if (self.isRootDirectory) {
+        displayEdit = NO;
         if ( self.mode == OSFileCollectionViewControllerModeCopy ||
             self.mode == OSFileCollectionViewControllerModeMove) {
             displayEdit = YES;
@@ -499,6 +505,8 @@ static const CGFloat windowHeight = 49.0;
                 [array addObject:model];
             }
         }];
+        
+        array = [self sortFilesWithArray:array];
         if (completion) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 completion(array);
@@ -514,7 +522,7 @@ static const CGFloat windowHeight = 49.0;
     [_loadFileQueue cancelAllOperations];
     [_loadFileQueue addOperationWithBlock:^{
         NSMutableArray *array = @[].mutableCopy;
-        [directoryItem.subFiles enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [directoryItem.nameOfSubFiles enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             NSString *fullPath = [directoryItem.path stringByAppendingPathComponent:obj];
             NSError *error = nil;
             OSFileAttributeItem *model = [OSFileAttributeItem fileWithPath:fullPath hideDisplayFiles:_hideDisplayFiles error:&error];
@@ -525,8 +533,9 @@ static const CGFloat windowHeight = 49.0;
                 
                 [array addObject:model];
             }
-            
         }];
+        
+        array = [self sortFilesWithArray:array];
         
         if (completion) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -534,6 +543,23 @@ static const CGFloat windowHeight = 49.0;
             });
         }
     }];
+}
+
+- (NSMutableArray<OSFileAttributeItem *> *)sortFilesWithArray:(NSArray<OSFileAttributeItem *> *)array {
+    OSFileBrowserSortType sortType = [OSFileBrowserAppearanceConfigs fileSortType];
+    switch (sortType) {
+        case OSFileBrowserSortTypeOrderA_To_Z: {
+            array = [OSFileHelper sortByPinYinWithArray:array].mutableCopy;
+            break;
+        }
+        case OSFileBrowserSortTypeOrderLatestTime: {
+            array = [OSFileHelper sortByCreateDateWithArray:array].mutableCopy;
+            break;
+        }
+        default:
+            break;
+    }
+    return (NSMutableArray *)array;
 }
 
 - (void)reloadFiles {
@@ -560,8 +586,8 @@ static const CGFloat windowHeight = 49.0;
         }
         case OSFileLoadTypeSubDirectory: {
             NSError *error = nil;
-            [self.rootDirectoryItem reloadFileWithError:&error];
-            [self loadFileWithDirectoryItem:self.rootDirectoryItem completion:reloadCallBack];
+            [self.parentDirectoryItem reloadFileWithError:&error];
+            [self loadFileWithDirectoryItem:self.parentDirectoryItem completion:reloadCallBack];
             break;
         }
         default:
@@ -763,7 +789,8 @@ static const CGFloat windowHeight = 49.0;
                     self.mode == OSFileCollectionViewControllerModeMove) {
                     mode = self.mode;
                 }
-                vc = [[OSFileCollectionViewController alloc] initWithRootDirectory:newItem.path controllerMode:mode];
+                vc = [[OSFileCollectionViewController alloc] initWithFilePathArray:newItem.pathOfSubFiles parentItem:newItem controllerMode:mode];
+                
                 if (self.mode == OSFileCollectionViewControllerModeCopy ||
                     self.mode == OSFileCollectionViewControllerModeMove) {
                     OSFileCollectionViewController *viewController = (OSFileCollectionViewController *)vc;
@@ -1015,7 +1042,7 @@ static const CGFloat windowHeight = 49.0;
 - (void)showBottomTip {
     if ((self.mode != OSFileCollectionViewControllerModeCopy &&
          self.mode != OSFileCollectionViewControllerModeMove) ||
-        !self.rootDirectoryItem) {
+        !self.parentDirectoryItem) {
         _bottomTipButton.hidden = YES;
         return;
     }
@@ -1025,7 +1052,7 @@ static const CGFloat windowHeight = 49.0;
     if (self.mode == OSFileCollectionViewControllerModeMove) {
         string = @"移动";
     }
-    [_bottomTipButton setTitle:[NSString stringWithFormat:@"【%@到(%@)目录】", string, self.rootDirectoryItem.displayName] forState:UIControlStateNormal];
+    [_bottomTipButton setTitle:[NSString stringWithFormat:@"【%@到(%@)目录】", string, self.parentDirectoryItem.displayName] forState:UIControlStateNormal];
     /// 检测已选择的文件是否在当前文件中，如果在就提示用户
     NSMutableArray *containFileArray = @[].mutableCopy;
     if (self.files) {
@@ -1056,7 +1083,7 @@ static const CGFloat windowHeight = 49.0;
 /// 将选择的文件拷贝到目标目录中
 - (void)chooseCompletion {
     __weak typeof(&*self) weakSelf = self;
-    [self copyFiles:self.selectedFiles toRootDirectory:self.rootDirectoryItem.path completionHandler:^(void) {
+    [self copyFiles:self.selectedFiles toRootDirectory:self.parentDirectoryItem.path completionHandler:^(void) {
         __strong typeof(&*weakSelf) self = weakSelf;
         [self.selectedFiles removeAllObjects];
         [[NSNotificationCenter defaultCenter] postNotificationName:OSFileCollectionViewControllerOptionFileCompletionNotification object:nil userInfo:@{@"OSFileCollectionViewControllerMode": @(weakSelf.mode)}];
@@ -1129,7 +1156,7 @@ static const CGFloat windowHeight = 49.0;
             return;
         }
         
-        NSString *currentDirectory = self.rootDirectoryItem.path;
+        NSString *currentDirectory = self.parentDirectoryItem.path;
         NSString *newPath = [currentDirectory stringByAppendingPathComponent:_newFolderName];
         BOOL res = [[NSFileManager defaultManager] fileExistsAtPath:newPath];
         if (res) {
@@ -1192,7 +1219,7 @@ static const CGFloat windowHeight = 49.0;
 #endif
                              [NSString getDocumentPath]];
         }
-        OSFileCollectionViewController *vc = [[OSFileCollectionViewController alloc] initWithDirectoryArray:desDirectors controllerMode:mode];
+        OSFileCollectionViewController *vc = [[OSFileCollectionViewController alloc] initWithFilePathArray:desDirectors controllerMode:mode];
         UINavigationController *nac = [[[self.navigationController class] alloc] initWithRootViewController:vc];
         vc.selectedFiles = self.selectedFiles.mutableCopy;
         [self showDetailViewController:nac sender:self];
@@ -1319,6 +1346,14 @@ static const CGFloat windowHeight = 49.0;
             
         }];
     }
+}
+
+- (void)fileCollectionHeaderView:(OSFileCollectionHeaderView *)headerView
+          didSelectedSortChanged:(UISegmentedControl *)sortControl
+                 currentSortType:(OSFileBrowserSortType)sortType {
+    
+    self.files = [self sortFilesWithArray:self.files];
+    [self reloadCollectionData];
 }
 
 - (void)collectionReLayoutStyle {
@@ -1512,7 +1547,7 @@ __weak id _fileOperationDelegate;
 }
 
 - (void)noDataPlaceholder:(UIScrollView *)scrollView didClickReloadButton:(UIButton *)button {
-    if ([self.rootDirectoryItem isDownloadBrowser]) {
+    if ([self.parentDirectoryItem isDownloadBrowser]) {
         [[NSNotificationCenter defaultCenter] postNotificationName:OSFileCollectionViewControllerNeedOpenDownloadPageNotification object:nil];
 //        self.navigationController.viewControllers = @[self.navigationController.viewControllers.firstObject];
     }
@@ -1521,10 +1556,10 @@ __weak id _fileOperationDelegate;
 
 - (NSAttributedString *)noDataTextLabelAttributedString {
     NSString *string = nil;
-    if ([self.rootDirectoryItem isDownloadBrowser]) {
+    if ([self.parentDirectoryItem isDownloadBrowser]) {
         string = @"缓存完成的文件在这显示";
     }
-    else if ([self.rootDirectoryItem isICloudDrive]) {
+    else if ([self.parentDirectoryItem isICloudDrive]) {
         string = @"将文件移动到此处，即可从iPhone、iPad、Mac访问";
     }
     else {

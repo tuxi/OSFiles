@@ -398,9 +398,13 @@
 		7C3B9B8363EE5A43DE03F256 /* libPods-FileManagerShareExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 950E19EAA123C77002296D25 /* libPods-FileManagerShareExtension.a */; };
 		88C9037378C7FDA243F02BF2 /* libPods-FileDownloader.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A5107F0693D00542CC3FA456 /* libPods-FileDownloader.a */; };
 		D017FF121FA89B16004B65CF /* UITextField+OSRangeExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = D017FF111FA89B16004B65CF /* UITextField+OSRangeExtension.m */; };
+		D0A814E21FD5493700F3E49A /* OSFileBrowserAppearanceConfigs.m in Sources */ = {isa = PBXBuildFile; fileRef = D0A814E11FD5493700F3E49A /* OSFileBrowserAppearanceConfigs.m */; };
+		D0A814E31FD5493700F3E49A /* OSFileBrowserAppearanceConfigs.m in Sources */ = {isa = PBXBuildFile; fileRef = D0A814E11FD5493700F3E49A /* OSFileBrowserAppearanceConfigs.m */; };
 		D23006D31FD44F670074B3C5 /* ICSDrawerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 181A65C01FBF30E4005619B0 /* ICSDrawerController.m */; };
 		D23006D41FD44F670074B3C5 /* ICSDropShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 181A65C21FBF30E4005619B0 /* ICSDropShadowView.m */; };
 		D23006D61FD45B330074B3C5 /* SampleResource.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D23006D51FD45B330074B3C5 /* SampleResource.bundle */; };
+		D2C6BE1D1FD5777200911E6D /* OSFileHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = D2C6BE1C1FD5777200911E6D /* OSFileHelper.m */; };
+		D2C6BE1E1FD5777200911E6D /* OSFileHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = D2C6BE1C1FD5777200911E6D /* OSFileHelper.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1042,7 +1046,10 @@
 		A5107F0693D00542CC3FA456 /* libPods-FileDownloader.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FileDownloader.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D017FF101FA89B16004B65CF /* UITextField+OSRangeExtension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UITextField+OSRangeExtension.h"; sourceTree = "<group>"; };
 		D017FF111FA89B16004B65CF /* UITextField+OSRangeExtension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UITextField+OSRangeExtension.m"; sourceTree = "<group>"; };
+		D0A814E11FD5493700F3E49A /* OSFileBrowserAppearanceConfigs.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSFileBrowserAppearanceConfigs.m; sourceTree = "<group>"; };
 		D23006D51FD45B330074B3C5 /* SampleResource.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SampleResource.bundle; sourceTree = "<group>"; };
+		D2C6BE1B1FD5777200911E6D /* OSFileHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSFileHelper.h; sourceTree = "<group>"; };
+		D2C6BE1C1FD5777200911E6D /* OSFileHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSFileHelper.m; sourceTree = "<group>"; };
 		FAEFFFFF9AB15F258CAC9CC7 /* Pods-FileDownloader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FileDownloader.release.xcconfig"; path = "Pods/Target Support Files/Pods-FileDownloader/Pods-FileDownloader.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -2324,6 +2331,7 @@
 				18A900B51FC5DC1B00EC1532 /* NSString+OSContainsEeachCharacter.h */,
 				18A900BB1FC5DC1C00EC1532 /* NSString+OSContainsEeachCharacter.m */,
 				18A900B71FC5DC1B00EC1532 /* OSFileBrowserAppearanceConfigs.h */,
+				D0A814E11FD5493700F3E49A /* OSFileBrowserAppearanceConfigs.m */,
 				18A900BC1FC5DC1C00EC1532 /* OSFileSearchResultsController.h */,
 				18A900B61FC5DC1B00EC1532 /* OSFileSearchResultsController.m */,
 				18A900BD1FC5DC1C00EC1532 /* UIAlertController+AlertExtensions.h */,
@@ -2363,6 +2371,8 @@
 				1873ED241FBB3C1800D4CA59 /* MBProgressHUD+BBHUD.m */,
 				185A7F5D1FC18A5500D66AC3 /* OSFileCollectionHeaderView.h */,
 				185A7F5E1FC18A5500D66AC3 /* OSFileCollectionHeaderView.m */,
+				D2C6BE1B1FD5777200911E6D /* OSFileHelper.h */,
+				D2C6BE1C1FD5777200911E6D /* OSFileHelper.m */,
 			);
 			path = OSFileBrowser;
 			sourceTree = "<group>";
@@ -2726,7 +2736,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		AFA303447BCFCBBC8357910A /* [CP] Check Pods Manifest.lock */ = {
@@ -2744,7 +2754,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		C1CF91637E26F80D394B2D90 /* [CP] Embed Pods Frameworks */ = {
@@ -2771,6 +2781,8 @@
 			files = (
 				18EF90F41FB7468E0016B969 /* UIImage+XYImage.m in Sources */,
 				18EF90F11FB7468E0016B969 /* OSFileCollectionViewController.m in Sources */,
+				D0A814E31FD5493700F3E49A /* OSFileBrowserAppearanceConfigs.m in Sources */,
+				D2C6BE1E1FD5777200911E6D /* OSFileHelper.m in Sources */,
 				18EF90F61FB7468E0016B969 /* UIViewController+XYExtensions.m in Sources */,
 				D23006D41FD44F670074B3C5 /* ICSDropShadowView.m in Sources */,
 				1801ED881FB6B162005DBDE2 /* ShareViewController.m in Sources */,
@@ -2844,6 +2856,7 @@
 				18A900C11FC5DC1D00EC1532 /* NSString+OSContainsEeachCharacter.m in Sources */,
 				18E893301FB5DFED00727EF1 /* OSFileBottomHUD.m in Sources */,
 				18ADEECF1F9E4A020024BA40 /* OSFileDownloaderSessionPrivateDelegate.m in Sources */,
+				D0A814E21FD5493700F3E49A /* OSFileBrowserAppearanceConfigs.m in Sources */,
 				181A65C41FBF30E4005619B0 /* ICSDropShadowView.m in Sources */,
 				18ADEF101F9E4A4A0024BA40 /* BaseTableViewController.m in Sources */,
 				18ADEEC61F9E49F70024BA40 /* HTTPManager.m in Sources */,
@@ -2866,6 +2879,7 @@
 				18ADEF0B1F9E4A420024BA40 /* UIAlertAction+ZWUtility.m in Sources */,
 				18ADEEE41F9E4A1D0024BA40 /* CardBrowserFlatLayout.m in Sources */,
 				18ADEF4C1F9E4A860024BA40 /* UITextField+Blocks.m in Sources */,
+				D2C6BE1D1FD5777200911E6D /* OSFileHelper.m in Sources */,
 				18ADEED71F9E4A0C0024BA40 /* BookmarkEditTextFieldTableViewCell.m in Sources */,
 				18A0F19C1FA5DE4F00614E91 /* UIAlertView+Blocks.m in Sources */,
 				18ADEF321F9E4A860024BA40 /* SmileAuthenticator.m in Sources */,
