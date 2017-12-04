@@ -498,7 +498,7 @@ static const CGFloat windowHeight = 49.0;
             NSError *error = nil;
             OSFileAttributeItem *model = [OSFileAttributeItem fileWithPath:fullPath hideDisplayFiles:_hideDisplayFiles error:&error];
             if (model) {
-                model.isRootDirectory = !self.displayMarkupFiles;
+//                model.isRootDirectory = !self.displayMarkupFiles;
                 if (self.mode == OSFileCollectionViewControllerModeEdit) {
                     model.status = OSFileAttributeItemStatusEdit;
                 }
@@ -740,35 +740,12 @@ static const CGFloat windowHeight = 49.0;
 }
 
 - (void)backButtonClick {
-    UIViewController *rootViewController = (UINavigationController *)[UIApplication sharedApplication].delegate.window.rootViewController;
-    [self backButtonClickWithRootViewController:rootViewController];
-}
-
-- (void)backButtonClickWithRootViewController:(UIViewController *)rootViewController {
-    if ([rootViewController isKindOfClass:[UINavigationController class]]) {
-        UINavigationController *nac = (UINavigationController *)rootViewController;
-        if (self.presentedViewController || nac.topViewController.presentedViewController) {
-            [self dismissViewControllerAnimated:YES completion:nil];
-        } else {
-            [self.navigationController popViewControllerAnimated:YES];
-        }
+    UINavigationController *nac = [UIViewController xy_currentNavigationController];
+    if (self.presentedViewController || nac.topViewController.presentedViewController) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    } else {
+        [self.navigationController popViewControllerAnimated:YES];
     }
-    else if ([rootViewController isKindOfClass:[UITabBarController class]]) {
-        UITabBarController *tabc = (UITabBarController *)rootViewController;
-        UINavigationController *nac = tabc.selectedViewController;
-        if ([nac isKindOfClass:[UINavigationController class]]) {
-            if (self.presentedViewController || nac.presentedViewController) {
-                [self dismissViewControllerAnimated:YES completion:nil];
-            } else {
-                [self.navigationController popViewControllerAnimated:YES];
-            }
-        }
-        
-    }
-    //    else if ([rootViewController isKindOfClass:NSClassFromString(@"ICSDrawerController")]) {
-    //        ICSDrawerController *vc = (ICSDrawerController *)rootViewController;
-    //        [self backButtonClickWithRootViewController:vc.ics_visibleViewController];
-    //    }
 }
 
 - (UIViewController *)previewControllerWithFilePath:(NSString *)filePath {
