@@ -208,7 +208,8 @@ static NSNotificationName OSFileDidCancelMarkupedNotification = @"OSFileDidCance
     }
     
     [self getSubTypes];
-    [self sortedSubFiles];
+//    [self sortedSubFiles];
+    [self sortArray:self.subFiles];
     [self getIcon];
     return YES;
 }
@@ -424,6 +425,73 @@ static NSNotificationName OSFileDidCancelMarkupedNotification = @"OSFileDidCance
         return  NSOrderedDescending;
     }];
 }
+
+- (NSArray *)sortArray:(NSArray *)toSortArray {
+    //将传入数组转换为可变数组
+    NSMutableArray *needSortArray = [NSMutableArray arrayWithArray:toSortArray];
+    //存储对应字母开头的所有数据的数组
+    NSMutableArray *classifiedArray = [[NSMutableArray alloc] init];
+    
+    for(int i='A';i<='Z';i++){
+        NSMutableArray *rulesArray = [[NSMutableArray alloc] init];
+        NSString *indexString = [NSString stringWithFormat:@"%c",i];
+        for(int j = 0; j < needSortArray.count; j++){
+            NSString *name = [needSortArray objectAtIndex:j];
+            
+            if([[self toPinyin: name] isEqualToString:indexString]){
+                //把model.name首字母相同的放到同一个数组里面
+                [rulesArray addObject:name];
+                [needSortArray removeObject:name];
+                j--;
+            }
+        }
+        if (rulesArray.count !=0) {
+            [classifiedArray addObject:rulesArray];
+        }
+        
+        if (needSortArray.count == 0) {
+            break;
+        }
+    }
+    
+    // 剩下的就是非字母开头数据，加在classifiedArray的后面
+    if (needSortArray.count !=0) {
+        [classifiedArray addObject:needSortArray];
+    }
+    
+    //最后再分别对每个数组排序
+    NSMutableArray *sortCompleteArray = [NSMutableArray array];
+    for (NSArray *tempArray in classifiedArray) {
+        NSArray *sortedElement = [tempArray sortedArrayUsingFunction:displayNameSort context:NULL];
+        [sortCompleteArray addObject:sortedElement];
+    }
+    //sortCompleteArray就是最后排好序的二维数组了
+    return sortCompleteArray;
+}
+
+NSInteger displayNameSort(id file1, id file2, void *context) {
+    NSString *f1, *f2;
+    f1 = (NSString *)file1;
+    f2 = (NSString *)file2;
+    return  [file1 localizedCompare:file2];
+}
+
+
+- (NSString *)toPinyin:(NSString *)str {
+    NSMutableString *ms = [[NSMutableString alloc]initWithString:str];
+    if (CFStringTransform((__bridge CFMutableStringRef)ms, 0,kCFStringTransformMandarinLatin, NO)) {
+    }
+    // 去除拼音的音调
+    if (CFStringTransform((__bridge CFMutableStringRef)ms, 0,kCFStringTransformStripDiacritics, NO)) {
+        if (str.length) {
+            NSString *bigStr = [ms uppercaseString];
+            NSString *cha = [bigStr substringToIndex:1];
+            return cha;
+        }
+    }
+    return str;
+}
+
 
 - (void)getSubTypes {
     OSFile * infos;
