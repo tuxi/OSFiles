@@ -13,6 +13,7 @@ FOUNDATION_EXPORT NSNotificationName const OSFileCollectionViewControllerOptionF
 FOUNDATION_EXPORT NSNotificationName const OSFileCollectionViewControllerOptionSelectedFileForCopyNotification;
 FOUNDATION_EXPORT NSNotificationName const OSFileCollectionViewControllerOptionSelectedFileForMoveNotification;
 FOUNDATION_EXPORT NSNotificationName const OSFileCollectionViewControllerNeedOpenDownloadPageNotification;
+FOUNDATION_EXPORT NSNotificationName const OSFileCollectionViewControllerDidMarkupFileNotification;
 
 typedef NS_ENUM(NSInteger, OSFileCollectionViewControllerMode) {
     OSFileCollectionViewControllerModeDefault, // 默认模式
@@ -50,8 +51,6 @@ typedef NS_ENUM(NSInteger, OSFileCollectionViewControllerMode) {
 @property (nonatomic, assign) BOOL hideDisplayFiles;
 /// 用于操作文件的全局代理，对整个类有效
 @property (nonatomic, class) id<OSFileCollectionViewControllerFileOptionDelegate> fileOperationDelegate;
-/// 当前控制器是否用于展示标记
-@property (nonatomic, assign) BOOL displayMarkupFiles;
 /// 是否是根目录，根目录下文件不可以编辑
 @property (nonatomic, assign, getter=isRootDirectory) BOOL rootDirectory;
 

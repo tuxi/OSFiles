@@ -17,6 +17,7 @@
 #import "AppGroupManager.h"
 #import "OSFile.h"
 #import "OSTransmitDataViewController.h"
+#import "OSFileMarkViewController.h"
 
 @interface MainTabBarController () <SmileAuthenticatorDelegate>
 
@@ -38,9 +39,8 @@
     fileBrowserVc.rootDirectory = YES;
     
     NSArray *marupFiles = [OSFile markupFilePathsWithNeedReload:YES];
-    OSFileCollectionViewController *starBrowserVc = [[OSFileCollectionViewController alloc] initWithFilePathArray:marupFiles
-                                                                                                                     ];
-    starBrowserVc.displayMarkupFiles = YES;
+    OSFileMarkViewController *starBrowserVc = [[OSFileMarkViewController alloc] initWithFilePathArray:marupFiles
+                                                                                                                ];
     [self addChildVC:fileBrowserVc imageNamed:@"TabFolders" title:@"我的文件"];
     [self addChildVC:[OSTransmitDataViewController sharedInstance] imageNamed:@"TabWiFi2" title:@"传输"];
     [self addChildVC:starBrowserVc imageNamed:@"TabMark" title:@"标记"];

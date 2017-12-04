@@ -61,6 +61,9 @@
     else if ([self.path isEqualToString:[NSString getICloudCacheFolder]]) {
         return YES;
     }
+    else if ([self isDownloadBrowser]) {
+        return YES;
+    }
     return _isRootDirectory;
 }
 

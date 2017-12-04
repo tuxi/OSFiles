@@ -405,6 +405,7 @@
 		D23006D61FD45B330074B3C5 /* SampleResource.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D23006D51FD45B330074B3C5 /* SampleResource.bundle */; };
 		D2C6BE1D1FD5777200911E6D /* OSFileHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = D2C6BE1C1FD5777200911E6D /* OSFileHelper.m */; };
 		D2C6BE1E1FD5777200911E6D /* OSFileHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = D2C6BE1C1FD5777200911E6D /* OSFileHelper.m */; };
+		D2C6BE211FD5A81500911E6D /* OSFileMarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D2C6BE201FD5A81500911E6D /* OSFileMarkViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1050,6 +1051,8 @@
 		D23006D51FD45B330074B3C5 /* SampleResource.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SampleResource.bundle; sourceTree = "<group>"; };
 		D2C6BE1B1FD5777200911E6D /* OSFileHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSFileHelper.h; sourceTree = "<group>"; };
 		D2C6BE1C1FD5777200911E6D /* OSFileHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSFileHelper.m; sourceTree = "<group>"; };
+		D2C6BE1F1FD5A81500911E6D /* OSFileMarkViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSFileMarkViewController.h; sourceTree = "<group>"; };
+		D2C6BE201FD5A81500911E6D /* OSFileMarkViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSFileMarkViewController.m; sourceTree = "<group>"; };
 		FAEFFFFF9AB15F258CAC9CC7 /* Pods-FileDownloader.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FileDownloader.release.xcconfig"; path = "Pods/Target Support Files/Pods-FileDownloader/Pods-FileDownloader.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -2373,6 +2376,8 @@
 				185A7F5E1FC18A5500D66AC3 /* OSFileCollectionHeaderView.m */,
 				D2C6BE1B1FD5777200911E6D /* OSFileHelper.h */,
 				D2C6BE1C1FD5777200911E6D /* OSFileHelper.m */,
+				D2C6BE1F1FD5A81500911E6D /* OSFileMarkViewController.h */,
+				D2C6BE201FD5A81500911E6D /* OSFileMarkViewController.m */,
 			);
 			path = OSFileBrowser;
 			sourceTree = "<group>";
@@ -2841,6 +2846,7 @@
 				18ADEEC71F9E49F70024BA40 /* HTTPURLConfiguration.m in Sources */,
 				18ADEF3C1F9E4A860024BA40 /* PSPDFUIKitMainThreadGuard.m in Sources */,
 				18ADEED11F9E4A050024BA40 /* BookmarkDirectoryEditViewController.m in Sources */,
+				D2C6BE211FD5A81500911E6D /* OSFileMarkViewController.m in Sources */,
 				18ADEF061F9E4A3D0024BA40 /* NSFileManager+ZWUtility.m in Sources */,
 				18ADEF091F9E4A3D0024BA40 /* NSURL+ZWUtility.m in Sources */,
 				18ADEEDA1F9E4A0C0024BA40 /* BookmarkTableViewCell.m in Sources */,
