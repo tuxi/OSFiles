@@ -52,9 +52,9 @@ static const CGFloat windowHeight = 49.0;
 @property (nonatomic, strong) UICollectionView *collectionView;
 @property (nonatomic, strong) NSOperationQueue *loadFileQueue;
 @property (nonatomic, strong) OSFileManager *fileManager;
-@property (nonatomic, strong) NSArray<NSString *> *directoryArray;
 @property (nonatomic, assign) OSFileLoadType fileLoadType;
 @property (nonatomic, strong) NSMutableArray<OSFileAttributeItem *> *selectedFiles;
+@property (nonatomic, strong) NSArray<NSString *> *filePathArray;
 @property (nonatomic, strong) OSFileBottomHUD *bottomHUD;
 @property (nonatomic, assign) OSFileCollectionViewControllerMode mode;
 @property (nonatomic, weak) UIButton *bottomTipButton;
@@ -85,21 +85,21 @@ static const CGFloat windowHeight = 49.0;
     return self;
 }
 
-- (instancetype)initWithFilePathArray:(NSArray *)directoryArray {
-    return [self initWithFilePathArray:directoryArray controllerMode:OSFileCollectionViewControllerModeDefault];
+- (instancetype)initWithFilePathArray:(NSArray *)filePathArray {
+    return [self initWithFilePathArray:filePathArray controllerMode:OSFileCollectionViewControllerModeDefault];
 }
 
-- (instancetype)initWithFilePathArray:(NSArray *)directoryArray controllerMode:(OSFileCollectionViewControllerMode)mode {
-    return [self initWithFilePathArray:directoryArray parentItem:nil controllerMode:mode];
+- (instancetype)initWithFilePathArray:(NSArray *)filePathArray controllerMode:(OSFileCollectionViewControllerMode)mode {
+    return [self initWithFilePathArray:filePathArray parentItem:nil controllerMode:mode];
 }
 
-- (instancetype)initWithFilePathArray:(NSArray *)directoryArray parentItem:(OSFileAttributeItem *)parentItem controllerMode:(OSFileCollectionViewControllerMode)mode {
+- (instancetype)initWithFilePathArray:(NSArray *)filePathArray parentItem:(OSFileAttributeItem *)parentItem controllerMode:(OSFileCollectionViewControllerMode)mode {
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         self.fileLoadType = OSFileLoadTypeCurrentDirectory;
         self.mode = mode;
         _hideDisplayFiles = YES;
-        self.directoryArray = directoryArray;
+        self.filePathArray = filePathArray;
         self.parentDirectoryItem = parentItem;
         [self commonInit];
     }
@@ -135,7 +135,7 @@ static const CGFloat windowHeight = 49.0;
         [needWatchPathArray addObject:documentPath];
     }
     
-    for (NSString *path in self.directoryArray) {
+    for (NSString *path in self.filePathArray) {
         NSUInteger foundIdx = [needWatchPathArray indexOfObjectPassingTest:^BOOL(NSString *  _Nonnull needWatchPath, NSUInteger idx, BOOL * _Nonnull stop) {
             return [path isEqualToString:needWatchPath];
         }];
@@ -214,21 +214,11 @@ static const CGFloat windowHeight = 49.0;
  
 }
 
-- (void)setDisplayMarkupFiles:(BOOL)displayMarkupFiles {
-    _displayMarkupFiles = displayMarkupFiles;
-    if (displayMarkupFiles) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(markupFileCompletion) name:OSFileCollectionViewControllerDidMarkupFileNotification object:nil];
-    }
-    else {
-       [[NSNotificationCenter defaultCenter] removeObserver:self name:OSFileCollectionViewControllerDidMarkupFileNotification object:nil];
-    }
-}
-
 - (void)dealloc {
     self.bottomHUD = nil;
     [_bottomTipButton removeFromSuperview];
     _bottomTipButton = nil;
-    self.directoryArray = nil;
+    self.filePathArray = nil;
     for (DirectoryWatcher *watcher in self.directoryWatcherArray) {
         [watcher invalidate];
     }
@@ -490,15 +480,14 @@ static const CGFloat windowHeight = 49.0;
 
 #pragma mark *** Load file ***
 
-- (void)loadFileWithDirectoryArray:(NSArray<NSString *> *)directoryArray completion:(void (^)(NSArray *fileItems))completion {
+- (void)loadFileWithFilePathArray:(NSArray<NSString *> *)filePathArray completion:(void (^)(NSArray *fileItems))completion {
     [_loadFileQueue cancelAllOperations];
     [_loadFileQueue addOperationWithBlock:^{
         NSMutableArray *array = @[].mutableCopy;
-        [directoryArray enumerateObjectsUsingBlock:^(NSString * _Nonnull fullPath, NSUInteger idx, BOOL * _Nonnull stop) {
+        [filePathArray enumerateObjectsUsingBlock:^(NSString * _Nonnull fullPath, NSUInteger idx, BOOL * _Nonnull stop) {
             NSError *error = nil;
             OSFileAttributeItem *model = [OSFileAttributeItem fileWithPath:fullPath hideDisplayFiles:_hideDisplayFiles error:&error];
             if (model) {
-//                model.isRootDirectory = !self.displayMarkupFiles;
                 if (self.mode == OSFileCollectionViewControllerModeEdit) {
                     model.status = OSFileAttributeItemStatusEdit;
                 }
@@ -581,7 +570,7 @@ static const CGFloat windowHeight = 49.0;
     
     switch (self.fileLoadType) {
         case OSFileLoadTypeCurrentDirectory: {
-            [self loadFileWithDirectoryArray:self.directoryArray completion:reloadCallBack];
+            [self loadFileWithFilePathArray:self.filePathArray completion:reloadCallBack];
             break;
         }
         case OSFileLoadTypeSubDirectory: {
@@ -921,17 +910,25 @@ static const CGFloat windowHeight = 49.0;
 
 - (OSFileBottomHUD *)bottomHUD {
     if (!_bottomHUD) {
-        _bottomHUD = [[OSFileBottomHUD alloc] initWithItems:@[
-                                                              [[OSFileBottomHUDItem alloc] initWithTitle:@"全选" image:nil],
-                                                              [[OSFileBottomHUDItem alloc] initWithTitle:@"复制" image:nil],
-                                                              [[OSFileBottomHUDItem alloc] initWithTitle:@"移动" image:nil],
-                                                              [[OSFileBottomHUDItem alloc] initWithTitle:@"删除" image:nil],
-                                                              [[OSFileBottomHUDItem alloc] initWithTitle:@"文件夹" image:nil],
-                                                              ] toView:self.view];
+        NSMutableArray *items = @[].mutableCopy;
+        for (NSString *title in [self bottomHUDTitles]) {
+            [items addObject:[[OSFileBottomHUDItem alloc] initWithTitle:title image:nil]];
+        }
+        _bottomHUD = [[OSFileBottomHUD alloc] initWithItems:items toView:self.view];
         _bottomHUD.delegate = self;
         _bottomHUD.backgroundColor = kFileViewerGlobleColor;
     }
     return _bottomHUD;
+}
+
+- (NSArray *)bottomHUDTitles {
+    return @[
+             @"全选",
+             @"复制",
+             @"移动",
+             @"删除",
+             @"文件夹"
+             ];
 }
 
 
@@ -1349,14 +1346,6 @@ static const CGFloat windowHeight = 49.0;
     }];
     [self.flowLayout invalidateLayout];
 //    [self reloadCollectionData];
-}
-
-- (void)markupFileCompletion {
-    self.directoryArray = [OSFile markupFilePathsWithNeedReload:NO];
-    [self reloadFilesWithCallBack:^{
-        
-    }];
-    
 }
 
 
