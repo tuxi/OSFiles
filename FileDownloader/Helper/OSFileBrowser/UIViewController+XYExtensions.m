@@ -59,6 +59,12 @@
 
 + (UITabBarController *)xy_tabBarController {
     UIViewController *rootViewController = (UINavigationController *)[UIApplication sharedApplication].delegate.window.rootViewController;
+    
+    if ([rootViewController isKindOfClass:[ICSDrawerController class]]) {
+        ICSDrawerController *vc = (ICSDrawerController *)rootViewController;
+        rootViewController = vc.ics_visibleViewController;
+    }
+    
     if ([rootViewController isKindOfClass:[UITabBarController class]]) {
         UITabBarController *tabc = (UITabBarController *)rootViewController;
         return tabc;
