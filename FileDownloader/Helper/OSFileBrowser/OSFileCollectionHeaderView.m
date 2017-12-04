@@ -15,6 +15,7 @@ NSString * const OSFileCollectionHeaderViewDefaultIdentifier = @"UICollectionReu
 
 @property (nonatomic, strong) UIButton *searchButton;
 @property (nonatomic, strong) UIButton *changeStyleButton;
+@property (nonatomic, strong) UISegmentedControl *sortControl;
 
 @end
 
@@ -24,6 +25,7 @@ NSString * const OSFileCollectionHeaderViewDefaultIdentifier = @"UICollectionReu
     if (self = [super initWithFrame:frame]) {
         self.backgroundColor = [UIColor colorWithRed:31/255.0 green:31/255.0 blue:31/255.0 alpha:1.0];
         [self setupViews];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sortTypeChangeNotification:) name:OSFileBrowserAppearanceConfigsSortTypeDidChangeNotification object:nil];
     }
     return self;
 }
@@ -31,6 +33,8 @@ NSString * const OSFileCollectionHeaderViewDefaultIdentifier = @"UICollectionReu
 - (void)setupViews {
     [self addSubview:self.searchButton];
     [self addSubview:self.changeStyleButton];
+    [self addSubview:self.sortControl];
+    
     CGFloat iconWidth = 26.0;
     NSLayoutConstraint *searchBtnCenterY = [NSLayoutConstraint constraintWithItem:self.searchButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0.0];
      NSLayoutConstraint *searchBtnLeft = [NSLayoutConstraint constraintWithItem:self.searchButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10.0];
@@ -43,6 +47,12 @@ NSString * const OSFileCollectionHeaderViewDefaultIdentifier = @"UICollectionReu
     NSLayoutConstraint *changeStyleBtnWidth = [NSLayoutConstraint constraintWithItem:self.changeStyleButton attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:iconWidth];
     NSLayoutConstraint *changeStyleHeight = [NSLayoutConstraint constraintWithItem:self.changeStyleButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:iconWidth];
     [NSLayoutConstraint activateConstraints:@[changeStyleBtnRight, changeStyleBtnWidth, changeStyleHeight, changeStyleBtnCenterY]];
+    
+    NSLayoutConstraint *sortControlLeft = [NSLayoutConstraint constraintWithItem:self.sortControl attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.searchButton attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:30.0];
+    NSLayoutConstraint *sortControlRight = [NSLayoutConstraint constraintWithItem:self.sortControl attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.changeStyleButton attribute:NSLayoutAttributeLeading multiplier:1.0 constant:-30.0];
+    NSLayoutConstraint *sortControlTop = [NSLayoutConstraint constraintWithItem:self.sortControl attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeTop multiplier:1.0 constant:5.0];
+    NSLayoutConstraint *sortControlBottom = [NSLayoutConstraint constraintWithItem:self.sortControl attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-5.0];
+    [NSLayoutConstraint activateConstraints:@[sortControlLeft, sortControlRight, sortControlTop, sortControlBottom]];
 }
 
 
@@ -79,8 +89,31 @@ NSString * const OSFileCollectionHeaderViewDefaultIdentifier = @"UICollectionReu
     return _changeStyleButton;
 }
 
+- (UISegmentedControl *)sortControl {
+    if (!_sortControl) {
+        _sortControl = [[UISegmentedControl alloc] initWithItems:@[@"按A-Z的顺序排序", @"最新优先"]];
+        _sortControl.selectedSegmentIndex = 0;
+        _sortControl.tintColor = [UIColor whiteColor];//[UIColor colorWithRed:0.0/255.0 green:105.0/255.0 blue:210.0/255.0 alpha:1.0];
+        _sortControl.translatesAutoresizingMaskIntoConstraints = NO;
+        [_sortControl setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor blackColor]} forState:UIControlStateSelected];
+        [_sortControl setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor whiteColor]} forState:UIControlStateNormal];
+        [_sortControl addTarget:self action:@selector(selectedSortChanged:) forControlEvents:UIControlEventValueChanged];
+        _sortControl.selectedSegmentIndex = [OSFileBrowserAppearanceConfigs fileSortType];
+    }
+    return _sortControl;
+}
+
 - (void)updateChangeStyleButton {
     _changeStyleButton.selected = !_changeStyleButton.isSelected;
+}
+
+////////////////////////////////////////////////////////////////////////
+#pragma mark - Notification
+////////////////////////////////////////////////////////////////////////
+- (void)sortTypeChangeNotification:(NSNotification *)notification {
+    if (_sortControl.selectedSegmentIndex != [OSFileBrowserAppearanceConfigs fileSortType]) {
+        _sortControl.selectedSegmentIndex = [OSFileBrowserAppearanceConfigs fileSortType];
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -103,4 +136,14 @@ NSString * const OSFileCollectionHeaderViewDefaultIdentifier = @"UICollectionReu
     }
 }
 
+- (void)selectedSortChanged:(UISegmentedControl *)sortControl {
+    [OSFileBrowserAppearanceConfigs setFileSortType:sortControl.selectedSegmentIndex];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(fileCollectionHeaderView:didSelectedSortChanged:currentSortType:)]) {
+        [self.delegate fileCollectionHeaderView:self didSelectedSortChanged:sortControl currentSortType:sortControl.selectedSegmentIndex];
+    }
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 @end

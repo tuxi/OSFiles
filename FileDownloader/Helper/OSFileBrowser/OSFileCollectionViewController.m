@@ -1321,6 +1321,12 @@ static const CGFloat windowHeight = 49.0;
     }
 }
 
+- (void)fileCollectionHeaderView:(OSFileCollectionHeaderView *)headerView
+          didSelectedSortChanged:(UISegmentedControl *)sortControl
+                 currentSortType:(OSFileBrowserSortType)sortType {
+    [MBProgressHUD bb_showMessage:[sortControl titleForSegmentAtIndex:sortType]];
+}
+
 - (void)collectionReLayoutStyle {
     
     [self updateCollectionViewFlowLayout:_flowLayout];
