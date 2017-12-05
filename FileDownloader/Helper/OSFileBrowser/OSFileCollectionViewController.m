@@ -54,7 +54,7 @@ static const CGFloat windowHeight = 49.0;
 @property (nonatomic, strong) OSFileManager *fileManager;
 @property (nonatomic, assign) OSFileLoadType fileLoadType;
 @property (nonatomic, strong) NSMutableArray<OSFileAttributeItem *> *selectedFiles;
-@property (nonatomic, strong) NSArray<NSString *> *filePathArray;
+@property (nonatomic, strong) NSMutableArray<NSString *> *filePathArray;
 @property (nonatomic, strong) OSFileBottomHUD *bottomHUD;
 @property (nonatomic, assign) OSFileCollectionViewControllerMode mode;
 @property (nonatomic, weak) UIButton *bottomTipButton;
@@ -99,7 +99,7 @@ static const CGFloat windowHeight = 49.0;
         self.fileLoadType = OSFileLoadTypeCurrentDirectory;
         self.mode = mode;
         _hideDisplayFiles = YES;
-        self.filePathArray = filePathArray;
+        self.filePathArray = filePathArray.mutableCopy;
         self.parentDirectoryItem = parentItem;
         [self commonInit];
     }
@@ -1140,14 +1140,29 @@ static const CGFloat windowHeight = 49.0;
         NSError *moveError = nil;
         [[NSFileManager defaultManager] createDirectoryAtPath:newPath withIntermediateDirectories:YES attributes:nil error:&moveError];
         if (!moveError) {
-            // 将选中的文件移动到创建的目录中
-            __weak typeof(&*self) weakSelf = self;
-            [self copyFiles:self.selectedFiles toRootDirectory:newPath completionHandler:^(void) {
-                __strong typeof(&*weakSelf) self = weakSelf;
-                [self.selectedFiles removeAllObjects];
-                [[NSNotificationCenter defaultCenter] postNotificationName:OSFileCollectionViewControllerOptionFileCompletionNotification object:nil userInfo:@{@"OSFileCollectionViewControllerMode": @(weakSelf.mode)}];
-                [self reloadFiles];
-            }];
+            if (self.selectedFiles.count) {
+                // 将选中的文件移动到创建的目录中
+                __weak typeof(&*self) weakSelf = self;
+                [self copyFiles:self.selectedFiles toRootDirectory:newPath completionHandler:^(void) {
+                    __strong typeof(&*weakSelf) self = weakSelf;
+                    [self.selectedFiles removeAllObjects];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:OSFileCollectionViewControllerOptionFileCompletionNotification object:nil userInfo:@{@"OSFileCollectionViewControllerMode": @(weakSelf.mode)}];
+                    [self reloadFiles];
+                }];
+            }
+            else {
+                OSFileAttributeItem *newItem = [OSFileAttributeItem fileWithPath:newPath error:nil];
+                if (newItem) {
+                    NSMutableArray *files = self.files.mutableCopy;
+                    [files addObject:newItem];
+                    self.files = files.copy;
+                    if (self.fileLoadType == OSFileLoadTypeCurrentDirectory) {
+                        [self.filePathArray addObject:newPath];
+                    }
+                    [self reloadCollectionData];
+                }
+            }
+            
         } else {
             NSLog(@"%@", moveError.localizedDescription);
         }
