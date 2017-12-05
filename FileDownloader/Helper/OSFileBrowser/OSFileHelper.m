@@ -76,7 +76,7 @@ NS_INLINE NSInteger displayNameSort(OSFile *file1, OSFile *file2, void *context)
 }
 
 + (NSArray<OSFile *> *)sortByCreateDateWithArray:(NSArray<OSFile *> *)toSortArray {
-    NSSortDescriptor *sorter = [[NSSortDescriptor alloc] initWithKey:@"creationDate" ascending:YES];
+    NSSortDescriptor *sorter = [[NSSortDescriptor alloc] initWithKey:@"creationDate" ascending:NO];
     NSMutableArray *sortDescriptors = [[NSMutableArray alloc] initWithObjects:&sorter count:1];
     NSArray *sortArray = [toSortArray sortedArrayUsingDescriptors:sortDescriptors];
     return sortArray;
