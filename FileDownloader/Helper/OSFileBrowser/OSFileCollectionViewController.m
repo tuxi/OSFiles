@@ -556,7 +556,6 @@ static const CGFloat windowHeight = 49.0;
 }
 
 - (void)reloadFilesWithCallBack:(void (^)(void))callBack {
-    self.files = nil;
     self.collectionView.xy_loading = YES;
     __weak typeof(self) weakSelf = self;
     void (^ reloadCallBack)(NSArray *fileItems) = ^ (NSArray *fileItems){
