@@ -197,7 +197,7 @@ static NSString * const kSearchCellIdentifier = @"OSFileSearchResultsController"
         UIViewController *vc = nil;
         if (fileExists) {
             if (newItem.isDirectory) {
-                vc = [[OSFileCollectionViewController alloc] initWithRootDirectory:newItem.path controllerMode:OSFileCollectionViewControllerModeDefault];
+                vc = [[OSFileCollectionViewController alloc] initWithDirectory:newItem.path controllerMode:OSFileCollectionViewControllerModeDefault];
                 
             }
             else if ([OSFilePreviewViewController canOpenFile:newItem.path]) {

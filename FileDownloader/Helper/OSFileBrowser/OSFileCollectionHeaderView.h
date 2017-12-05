@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "OSFileCollectionViewFlowLayout.h"
+#import "OSFileBrowserAppearanceConfigs.h"
 
 FOUNDATION_EXPORT NSString * const OSFileCollectionHeaderViewDefaultIdentifier;
 
@@ -20,6 +21,8 @@ FOUNDATION_EXPORT NSString * const OSFileCollectionHeaderViewDefaultIdentifier;
                    reLayoutStyle:(OSFileCollectionLayoutStyle)style;
 - (void)fileCollectionHeaderView:(OSFileCollectionHeaderView *)headerView
              clickedSearchButton:(UIButton *)searchButton;
+- (void)fileCollectionHeaderView:(OSFileCollectionHeaderView *)headerView
+          didSelectedSortChanged:(UISegmentedControl *)sortControl currentSortType:(OSFileBrowserSortType)sortType;
 
 @end
 

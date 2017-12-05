@@ -78,7 +78,7 @@ static void suspensionMenuWindow()
             item = [HypotenuseAction actionWithType:UIButtonTypeSystem handler:^(HypotenuseAction * _Nonnull action, SuspensionMenuView * _Nonnull menuView) {
                 
                 OSFileCollectionViewController *vc = [[OSFileCollectionViewController alloc]
-                                                      initWithDirectoryArray:@[                                                                                                            [NSString getRootPath],[NSString getDocumentPath]]
+                                                      initWithFilePathArray:@[                                                                                                            [NSString getRootPath],[NSString getDocumentPath]]
                                                       
                                                       controllerMode:OSFileCollectionViewControllerModeDefault];
                 
