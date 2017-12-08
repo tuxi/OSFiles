@@ -18,21 +18,39 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(markupFileCompletion:) name:OSFileCollectionViewControllerDidMarkupFileNotification object:nil];
 }
 
 - (void)markupFileCompletion:(NSNotification *)notification {
    
-    NSString *filePath = notification.object;
-    if ([filePath isKindOfClass:[NSString class]]) {
-        OSFileAttributeItem *file = [[OSFileAttributeItem alloc] initWithPath:filePath error:nil];
+    OSFileAttributeItem *file = notification.object;
+    if (![file isKindOfClass:[OSFileAttributeItem class]]) {
+        return;
+    }
+    NSDictionary *info = notification.userInfo;
+    BOOL isCancelMark = [info[@"isCancelMark"] boolValue];
+    if (!isCancelMark) {
         if (file) {
             NSMutableArray *array = self.files.mutableCopy;
             [array insertObject:file atIndex:0];
             self.files = array.copy;
-            [self reloadCollectionData];
         }
     }
+    else {
+        NSUInteger foundIdx = [self.files indexOfObjectPassingTest:^BOOL(OSFileAttributeItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            BOOL res = [obj isEqualToFile:file];
+            if (res) {
+                *stop = YES;
+            }
+            return res;
+        }];
+        if (self.files && foundIdx != NSNotFound) {
+            NSMutableArray *files = self.files.mutableCopy;
+            [files removeObjectAtIndex:foundIdx];
+            self.files = files;
+        }
+    }
+    [self reloadCollectionData];
+    
 }
 
 /// 重新父类方法

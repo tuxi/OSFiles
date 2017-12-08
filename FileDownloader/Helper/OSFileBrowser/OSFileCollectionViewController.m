@@ -54,7 +54,7 @@ static const CGFloat windowHeight = 49.0;
 @property (nonatomic, strong) OSFileManager *fileManager;
 @property (nonatomic, assign) OSFileLoadType fileLoadType;
 @property (nonatomic, strong) NSMutableArray<OSFileAttributeItem *> *selectedFiles;
-@property (nonatomic, strong) NSArray<NSString *> *filePathArray;
+@property (nonatomic, strong) NSMutableArray<NSString *> *filePathArray;
 @property (nonatomic, strong) OSFileBottomHUD *bottomHUD;
 @property (nonatomic, assign) OSFileCollectionViewControllerMode mode;
 @property (nonatomic, weak) UIButton *bottomTipButton;
@@ -99,7 +99,7 @@ static const CGFloat windowHeight = 49.0;
         self.fileLoadType = OSFileLoadTypeCurrentDirectory;
         self.mode = mode;
         _hideDisplayFiles = YES;
-        self.filePathArray = filePathArray;
+        self.filePathArray = filePathArray.mutableCopy;
         self.parentDirectoryItem = parentItem;
         [self commonInit];
     }
@@ -116,7 +116,7 @@ static const CGFloat windowHeight = 49.0;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rotateToInterfaceOrientation) name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(optionFileCompletion:) name:OSFileCollectionViewControllerOptionFileCompletionNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(collectionReLayoutStyle) name:OSFileCollectionLayoutStyleDidChangeNotification object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(markupFileCompletion:) name:OSFileCollectionViewControllerDidMarkupFileNotification object:nil];
     
 }
 
@@ -482,16 +482,14 @@ static const CGFloat windowHeight = 49.0;
 
 - (void)loadFileWithFilePathArray:(NSArray<NSString *> *)filePathArray completion:(void (^)(NSArray *fileItems))completion {
     [_loadFileQueue cancelAllOperations];
+    __weak typeof(&*self) weakSelf = self;
     [_loadFileQueue addOperationWithBlock:^{
+        __strong typeof(&*weakSelf) self = weakSelf;
         NSMutableArray *array = @[].mutableCopy;
         [filePathArray enumerateObjectsUsingBlock:^(NSString * _Nonnull fullPath, NSUInteger idx, BOOL * _Nonnull stop) {
-            NSError *error = nil;
-            OSFileAttributeItem *model = [OSFileAttributeItem fileWithPath:fullPath hideDisplayFiles:_hideDisplayFiles error:&error];
-            if (model) {
-                if (self.mode == OSFileCollectionViewControllerModeEdit) {
-                    model.status = OSFileAttributeItemStatusEdit;
-                }
-                [array addObject:model];
+            OSFileAttributeItem *newItem = [self createNewItemWithNewPath:fullPath];
+            if (newItem) {
+                [array addObject:newItem];
             }
         }];
         
@@ -509,18 +507,15 @@ static const CGFloat windowHeight = 49.0;
 
 - (void)loadFileWithDirectoryItem:(OSFileAttributeItem *)directoryItem completion:(void (^)(NSArray *fileItems))completion {
     [_loadFileQueue cancelAllOperations];
+    __weak typeof(&*self) weakSelf = self;
     [_loadFileQueue addOperationWithBlock:^{
+        __strong typeof(&*weakSelf) self = weakSelf;
         NSMutableArray *array = @[].mutableCopy;
         [directoryItem.nameOfSubFiles enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             NSString *fullPath = [directoryItem.path stringByAppendingPathComponent:obj];
-            NSError *error = nil;
-            OSFileAttributeItem *model = [OSFileAttributeItem fileWithPath:fullPath hideDisplayFiles:_hideDisplayFiles error:&error];
-            if (model) {
-                if (self.mode == OSFileCollectionViewControllerModeEdit) {
-                    model.status = OSFileAttributeItemStatusEdit;
-                }
-                
-                [array addObject:model];
+            OSFileAttributeItem *newItem = [self createNewItemWithNewPath:fullPath];
+            if (newItem) {
+                [array addObject:newItem];
             }
         }];
         
@@ -532,6 +527,33 @@ static const CGFloat windowHeight = 49.0;
             });
         }
     }];
+}
+
+/// 根据完整路径创建一个新的OSFileAttributeItem，此方法适用于从本地获取新文件时使用，部分属性还是要使用oldItem中的，比如是否为选中、编辑状态
+- (OSFileAttributeItem *)createNewItemWithNewPath:(NSString *)fullPath {
+    NSUInteger foundOldIdx = [self.files indexOfObjectPassingTest:^BOOL(OSFileAttributeItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        BOOL res = [obj.path isEqualToString:fullPath];
+        if (res) {
+            *stop = YES;
+        }
+        return res;
+    }];
+    OSFileAttributeItem *oldItem = nil;
+    if (self.files && foundOldIdx != NSNotFound) {
+        oldItem = [self.files objectAtIndex:foundOldIdx];
+    }
+    NSError *error = nil;
+    OSFileAttributeItem *newItem = [OSFileAttributeItem fileWithPath:fullPath hideDisplayFiles:_hideDisplayFiles error:&error];
+    if (newItem) {
+        if (self.mode == OSFileCollectionViewControllerModeEdit) {
+            newItem.status = OSFileAttributeItemStatusEdit;
+        }
+        if (oldItem) {
+            newItem.status = oldItem.status;
+            newItem.needReLoyoutItem = oldItem.needReLoyoutItem;
+        }
+    }
+    return newItem;
 }
 
 - (NSMutableArray<OSFileAttributeItem *> *)sortFilesWithArray:(NSArray<OSFileAttributeItem *> *)array {
@@ -556,7 +578,6 @@ static const CGFloat windowHeight = 49.0;
 }
 
 - (void)reloadFilesWithCallBack:(void (^)(void))callBack {
-    self.files = nil;
     self.collectionView.xy_loading = YES;
     __weak typeof(self) weakSelf = self;
     void (^ reloadCallBack)(NSArray *fileItems) = ^ (NSArray *fileItems){
@@ -586,6 +607,12 @@ static const CGFloat windowHeight = 49.0;
 }
 
 - (void)reloadCollectionData {
+    // 获取排好序的文件数组
+    [self.filePathArray removeAllObjects];
+    for (OSFileAttributeItem *item in self.files) {
+        NSParameterAssert(item.path.length);
+        [self.filePathArray addObject:item.path];
+    }
     [self.collectionView reloadData];
     [self setupNavigationBar];
 }
@@ -1140,14 +1167,29 @@ static const CGFloat windowHeight = 49.0;
         NSError *moveError = nil;
         [[NSFileManager defaultManager] createDirectoryAtPath:newPath withIntermediateDirectories:YES attributes:nil error:&moveError];
         if (!moveError) {
-            // 将选中的文件移动到创建的目录中
-            __weak typeof(&*self) weakSelf = self;
-            [self copyFiles:self.selectedFiles toRootDirectory:newPath completionHandler:^(void) {
-                __strong typeof(&*weakSelf) self = weakSelf;
-                [self.selectedFiles removeAllObjects];
-                [[NSNotificationCenter defaultCenter] postNotificationName:OSFileCollectionViewControllerOptionFileCompletionNotification object:nil userInfo:@{@"OSFileCollectionViewControllerMode": @(weakSelf.mode)}];
-                [self reloadFiles];
-            }];
+            if (self.selectedFiles.count) {
+                // 将选中的文件移动到创建的目录中
+                __weak typeof(&*self) weakSelf = self;
+                [self copyFiles:self.selectedFiles toRootDirectory:newPath completionHandler:^(void) {
+                    __strong typeof(&*weakSelf) self = weakSelf;
+                    [self.selectedFiles removeAllObjects];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:OSFileCollectionViewControllerOptionFileCompletionNotification object:nil userInfo:@{@"OSFileCollectionViewControllerMode": @(weakSelf.mode)}];
+                    [self reloadFiles];
+                }];
+            }
+            else {
+                OSFileAttributeItem *newItem = [self createNewItemWithNewPath:newPath];
+                if (newItem) {
+                    NSMutableArray *files = self.files.mutableCopy;
+                    [files addObject:newItem];
+                    self.files = files.copy;
+                    if (self.fileLoadType == OSFileLoadTypeCurrentDirectory) {
+                        [self.filePathArray addObject:newPath];
+                    }
+                    [self reloadCollectionData];
+                }
+            }
+            
         } else {
             NSLog(@"%@", moveError.localizedDescription);
         }
@@ -1216,7 +1258,7 @@ static const CGFloat windowHeight = 49.0;
                 [[[UIAlertView alloc] initWithTitle:@"Remove error" message:nil delegate:nil cancelButtonTitle:@"ok" otherButtonTitles:nil, nil] show];
             }
         }
-        
+        [self.selectedFiles removeAllObjects];
         [self reloadFiles];
         
     }]];
@@ -1260,15 +1302,36 @@ static const CGFloat windowHeight = 49.0;
 
 #pragma mark *** OSFileCollectionViewCellDelegate ***
 
-- (void)fileCollectionViewCell:(OSFileCollectionViewCell *)cell fileAttributeChange:(OSFileAttributeItem *)fileModel {
-    NSUInteger foudIdx = [self.files indexOfObject:fileModel];
-    if (foudIdx != NSNotFound) {
-        OSFileAttributeItem *item = [OSFileAttributeItem fileWithPath:fileModel.path];
-        NSMutableArray *files = self.files.mutableCopy;
-        [files replaceObjectAtIndex:foudIdx withObject:item];
-        self.files = files;
-        [self reloadCollectionData];
+- (void)fileCollectionViewCell:(OSFileCollectionViewCell *)cell fileAttributeChangeWithOldFile:(OSFileAttributeItem *)oldFile newFile:(OSFileAttributeItem *)newFile {
+    NSUInteger foundFileIdxFromFilePathArray = [self.filePathArray indexOfObjectPassingTest:^BOOL(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        BOOL res = [oldFile.path isEqualToString:obj];
+        if (res) {
+            *stop = YES;
+        }
+        return res;
+    }];
+    if (self.filePathArray && foundFileIdxFromFilePathArray != NSNotFound) {
+        [self.filePathArray replaceObjectAtIndex:foundFileIdxFromFilePathArray withObject:newFile.path];
     }
+    NSUInteger foudIdx = [self.files indexOfObjectPassingTest:^BOOL(OSFileAttributeItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        BOOL res = [newFile.path isEqualToString:obj.path];
+        if (res) {
+            *stop = YES;
+        }
+        return res;
+    }];
+    if (self.files && foudIdx != NSNotFound) {
+        OSFileAttributeItem *newItem = [self.files objectAtIndex:foudIdx];
+        NSMutableArray *files = self.files.mutableCopy;
+        [files replaceObjectAtIndex:foudIdx withObject:newItem];
+        self.files = files;
+    }
+    else {
+        NSMutableArray *files = self.files.mutableCopy;
+        [files addObject:newFile];
+        self.files = files;
+    }
+    [self reloadCollectionData];
 }
 
 - (void)fileCollectionViewCell:(OSFileCollectionViewCell *)cell needCopyFile:(OSFileAttributeItem *)fileModel {
@@ -1282,13 +1345,36 @@ static const CGFloat windowHeight = 49.0;
     BOOL res = [[NSFileManager defaultManager] removeItemAtPath:fileModel.path error:&error];
     if (!res || error) {
         [self.view bb_showMessage:[NSString stringWithFormat:@"删除出错%@", error.localizedDescription]];
+        return;
     }
+    NSMutableArray *files = self.files.mutableCopy;
+    [files removeObject:fileModel];
+    self.files = files;
+    NSUInteger foundFileIdxFromFilePathArray = [self.filePathArray indexOfObjectPassingTest:^BOOL(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        BOOL res = [fileModel.path isEqualToString:obj];
+        if (res) {
+            *stop = YES;
+        }
+        return res;
+    }];
+    if (self.filePathArray && foundFileIdxFromFilePathArray != NSNotFound) {
+        [self.filePathArray removeObjectAtIndex:foundFileIdxFromFilePathArray];
+    }
+    [self.parentDirectoryItem reloadFile];
     [self reloadCollectionData];
 }
 
 - (void)fileCollectionViewCell:(OSFileCollectionViewCell *)cell didMarkupFile:(OSFileAttributeItem *)fileModel {
-    [[NSNotificationCenter defaultCenter] postNotificationName:OSFileCollectionViewControllerDidMarkupFileNotification object:fileModel.path];
+    [self didMarkOrCancelMarkFile:fileModel cancelMark:NO];
+}
+
+- (void)fileCollectionViewCell:(OSFileCollectionViewCell *)cell didCancelMarkupFile:(OSFileAttributeItem *)fileModel {
+    [self didMarkOrCancelMarkFile:fileModel cancelMark:YES];
     
+}
+
+- (void)didMarkOrCancelMarkFile:(OSFileAttributeItem *)fileModel cancelMark:(BOOL)isCancelMark {
+    [[NSNotificationCenter defaultCenter] postNotificationName:OSFileCollectionViewControllerDidMarkupFileNotification object:fileModel userInfo:@{@"isCancelMark": @(isCancelMark), @"file": fileModel.mutableCopy}];
     [self reloadCollectionData];
 }
 
@@ -1346,6 +1432,10 @@ static const CGFloat windowHeight = 49.0;
     }];
     [self.flowLayout invalidateLayout];
 //    [self reloadCollectionData];
+}
+
+- (void)markupFileCompletion:(NSNotification *)notification {
+    [self reloadCollectionData];
 }
 
 

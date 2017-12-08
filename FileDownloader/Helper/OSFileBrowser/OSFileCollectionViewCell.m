@@ -16,6 +16,7 @@
 #import "MBProgressHUD+BBHUD.h"
 #import "UIImage+XYImage.h"
 #import "OSFileCollectionViewFlowLayout.h"
+#import "UITextField+XYExtensions.h"
 
 @interface OSFileCollectionViewCell ()
 
@@ -150,7 +151,7 @@
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         alertStyle = UIAlertControllerStyleAlert;
     }
-    UIAlertController *alVc = [UIAlertController alertControllerWithTitle:self.fileModel.displayName message:nil preferredStyle:alertStyle];
+    UIAlertController *alVc = [UIAlertController alertControllerWithTitle:self.fileModel.filename message:nil preferredStyle:alertStyle];
     UIAlertAction *renameAction = [UIAlertAction actionWithTitle:@"重命名" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         [self renameFile];
     }];
@@ -191,8 +192,12 @@
     [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
         NSString *fileName = self.fileModel.filename;
         textField.text = fileName;
-        //        [textField setSelectedRange:NSMakeRange(self.fileModel.filename.length-self.fileModel.fileExtension.length, self.fileModel.fileExtension.length)];
-        textField.placeholder = @"请输入需要修改的名字";
+        if (self.fileModel.fileExtension.length) {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [textField makeOffsetFromBeginning:[fileName rangeOfString:@"." options:NSCaseInsensitiveSearch].location];
+                
+            });
+        }
         [textField addTarget:self action:@selector(alertViewTextFieldtextChange:) forControlEvents:UIControlEventEditingChanged];
     }];
     
@@ -215,12 +220,12 @@
         NSError *moveError = nil;
         [[NSFileManager defaultManager] moveItemAtPath:oldPath toPath:newPath error:&moveError];
         if (!moveError) {
+            OSFileAttributeItem *oldItem = [self.fileModel mutableCopy];
             [newPath updateFileModificationDateForFilePath];
-            [[NSFileManager defaultManager] removeItemAtPath:oldPath error:&moveError];
             NSError *error = nil;
             [self.fileModel reloadFileWithPath:newPath error:&error];
-            if (self.delegate && [self.delegate respondsToSelector:@selector(fileCollectionViewCell:fileAttributeChange:)]) {
-                [self.delegate fileCollectionViewCell:self fileAttributeChange:self.fileModel];
+            if (self.delegate && [self.delegate respondsToSelector:@selector(fileCollectionViewCell:fileAttributeChangeWithOldFile:newFile:)]) {
+                [self.delegate fileCollectionViewCell:self fileAttributeChangeWithOldFile:oldItem newFile:self.fileModel];
             }
         } else {
             NSLog(@"%@", moveError.localizedDescription);
@@ -276,6 +281,11 @@
         else {
             [MBProgressHUD bb_showMessage:@"取消标记失败" delayTime:0.8];
         }
+        if (isSuccess) {
+            if (self.delegate && [self.delegate respondsToSelector:@selector(fileCollectionViewCell:didCancelMarkupFile:)]) {
+                [self.delegate fileCollectionViewCell:self didCancelMarkupFile:self.fileModel];
+            }
+        }
     }
     else {
         isSuccess = [self.fileModel markup];
@@ -285,12 +295,13 @@
         else {
             [MBProgressHUD bb_showMessage:@"标记失败" delayTime:0.8];
         }
-    }
-    if (isSuccess) {
-        if (self.delegate && [self.delegate respondsToSelector:@selector(fileCollectionViewCell:didMarkupFile:)]) {
-            [self.delegate fileCollectionViewCell:self didMarkupFile:self.fileModel];
+        if (isSuccess) {
+            if (self.delegate && [self.delegate respondsToSelector:@selector(fileCollectionViewCell:didMarkupFile:)]) {
+                [self.delegate fileCollectionViewCell:self didMarkupFile:self.fileModel];
+            }
         }
     }
+    
 }
 
 
@@ -303,10 +314,10 @@
     // 添加通用布局
     NSLayoutConstraint *iconViewTop = [NSLayoutConstraint constraintWithItem:self.iconView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1.0 constant:10.0];
     _iconViewTop = iconViewTop;
-
+    
     NSLayoutConstraint *iconViewLeft = [NSLayoutConstraint constraintWithItem:self.iconView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10.0];
     _iconViewLeft = iconViewLeft;
-
+    
     
     NSLayoutConstraint *subTitleLabelBottom = [NSLayoutConstraint constraintWithItem:self.subTitleLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-6.0];
     _subTitleLabelBottom = subTitleLabelBottom;
@@ -323,7 +334,7 @@
     NSLayoutConstraint *starImageViewLeft = [NSLayoutConstraint constraintWithItem:self.starImageView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.iconView attribute:NSLayoutAttributeLeading multiplier:1.0 constant:-3.0];
     NSLayoutConstraint *starImageViewTop = [NSLayoutConstraint constraintWithItem:self.starImageView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.iconView attribute:NSLayoutAttributeTop multiplier:1.0 constant:-3.0];
     NSLayoutConstraint *starImageViewWidth = [NSLayoutConstraint constraintWithItem:self.starImageView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:15.0];
-     NSLayoutConstraint *starImageViewHeight = [NSLayoutConstraint constraintWithItem:self.starImageView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:15.0];
+    NSLayoutConstraint *starImageViewHeight = [NSLayoutConstraint constraintWithItem:self.starImageView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:15.0];
     
     NSArray *constraints = @[
                              iconViewTop, iconViewLeft,
@@ -333,16 +344,16 @@
     
     // 根据style更新布局
     [self invalidateConstraints];
-  
+    
 }
 
 - (void)invalidateConstraints {
     
     NSMutableArray *deactivateConstraints = @[].mutableCopy;
-     NSMutableArray *activateConstraints = @[].mutableCopy;
+    NSMutableArray *activateConstraints = @[].mutableCopy;
     if ([OSFileCollectionViewFlowLayout collectionLayoutStyle] == YES) {
         self.titleLabel.numberOfLines = 1;
-
+        
         _iconViewLeft.constant = 10.0;
         _iconViewTop.constant = 10.0;
         _subTitleLabelBottom.constant = -6.0;
@@ -445,7 +456,7 @@
         if (_titleLabelTop) {
             [NSLayoutConstraint deactivateConstraints:@[_titleLabelTop]];
         }
-
+        
         
         if (_titleLabelLeft) {
             [NSLayoutConstraint deactivateConstraints:@[_titleLabelLeft]];
@@ -460,7 +471,7 @@
         NSLayoutConstraint *titleLabelRight = [NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-3.0];
         _titleLabelRight = titleLabelRight;
         [activateConstraints addObject:titleLabelRight];
-
+        
         if (!_optionBtnBottom) {
             NSLayoutConstraint *optionBtnBottom = [NSLayoutConstraint constraintWithItem:self.optionBtn attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0];
             _optionBtnBottom = optionBtnBottom;
@@ -477,7 +488,7 @@
     if (activateConstraints.count) {
         [NSLayoutConstraint activateConstraints:activateConstraints];
     }
-
+    
 }
 
 - (UIButton *)optionBtn {
