@@ -403,6 +403,9 @@
 		D23006D31FD44F670074B3C5 /* ICSDrawerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 181A65C01FBF30E4005619B0 /* ICSDrawerController.m */; };
 		D23006D41FD44F670074B3C5 /* ICSDropShadowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 181A65C21FBF30E4005619B0 /* ICSDropShadowView.m */; };
 		D23006D61FD45B330074B3C5 /* SampleResource.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D23006D51FD45B330074B3C5 /* SampleResource.bundle */; };
+		D2A0383D1FDABE210051A286 /* UITextField+XYExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = D2A0383C1FDABE200051A286 /* UITextField+XYExtensions.m */; };
+		D2A0383E1FDABE210051A286 /* UITextField+XYExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = D2A0383C1FDABE200051A286 /* UITextField+XYExtensions.m */; };
+		D2A0383F1FDABF150051A286 /* UIScrollView+RollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AD12401FD27D1B000D0957 /* UIScrollView+RollView.m */; };
 		D2C6BE1D1FD5777200911E6D /* OSFileHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = D2C6BE1C1FD5777200911E6D /* OSFileHelper.m */; };
 		D2C6BE1E1FD5777200911E6D /* OSFileHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = D2C6BE1C1FD5777200911E6D /* OSFileHelper.m */; };
 		D2C6BE211FD5A81500911E6D /* OSFileMarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D2C6BE201FD5A81500911E6D /* OSFileMarkViewController.m */; };
@@ -1049,6 +1052,8 @@
 		D017FF111FA89B16004B65CF /* UITextField+OSRangeExtension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UITextField+OSRangeExtension.m"; sourceTree = "<group>"; };
 		D0A814E11FD5493700F3E49A /* OSFileBrowserAppearanceConfigs.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSFileBrowserAppearanceConfigs.m; sourceTree = "<group>"; };
 		D23006D51FD45B330074B3C5 /* SampleResource.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SampleResource.bundle; sourceTree = "<group>"; };
+		D2A038391FDABDFB0051A286 /* UITextField+XYExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITextField+XYExtensions.h"; sourceTree = "<group>"; };
+		D2A0383C1FDABE200051A286 /* UITextField+XYExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextField+XYExtensions.m"; sourceTree = "<group>"; };
 		D2C6BE1B1FD5777200911E6D /* OSFileHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSFileHelper.h; sourceTree = "<group>"; };
 		D2C6BE1C1FD5777200911E6D /* OSFileHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSFileHelper.m; sourceTree = "<group>"; };
 		D2C6BE1F1FD5A81500911E6D /* OSFileMarkViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSFileMarkViewController.h; sourceTree = "<group>"; };
@@ -2329,6 +2334,8 @@
 		18E8930C1FB5DFED00727EF1 /* OSFileBrowser */ = {
 			isa = PBXGroup;
 			children = (
+				D2A038391FDABDFB0051A286 /* UITextField+XYExtensions.h */,
+				D2A0383C1FDABE200051A286 /* UITextField+XYExtensions.m */,
 				18AD12411FD27D1C000D0957 /* UIScrollView+RollView.h */,
 				18AD12401FD27D1B000D0957 /* UIScrollView+RollView.m */,
 				18A900B51FC5DC1B00EC1532 /* NSString+OSContainsEeachCharacter.h */,
@@ -2784,6 +2791,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D2A0383E1FDABE210051A286 /* UITextField+XYExtensions.m in Sources */,
 				18EF90F41FB7468E0016B969 /* UIImage+XYImage.m in Sources */,
 				18EF90F11FB7468E0016B969 /* OSFileCollectionViewController.m in Sources */,
 				D0A814E31FD5493700F3E49A /* OSFileBrowserAppearanceConfigs.m in Sources */,
@@ -2808,6 +2816,7 @@
 				18DD4F781FC0798E002C6E27 /* OSMimeTypeMap.m in Sources */,
 				18A900C51FC5DC4600EC1532 /* NSString+OSContainsEeachCharacter.m in Sources */,
 				18A900C31FC5DC4000EC1532 /* UIAlertController+AlertExtensions.m in Sources */,
+				D2A0383F1FDABF150051A286 /* UIScrollView+RollView.m in Sources */,
 				18EF90F21FB7468E0016B969 /* OSFileCollectionViewFlowLayout.m in Sources */,
 				D23006D31FD44F670074B3C5 /* ICSDrawerController.m in Sources */,
 				18EF90ED1FB746820016B969 /* OSFile.m in Sources */,
@@ -2860,6 +2869,7 @@
 				18ADEF281F9E4A860024BA40 /* DownloadsTableViewModel.m in Sources */,
 				1845A6451FB6F5730000E39A /* RMPhoneFormat.m in Sources */,
 				18A900C11FC5DC1D00EC1532 /* NSString+OSContainsEeachCharacter.m in Sources */,
+				D2A0383D1FDABE210051A286 /* UITextField+XYExtensions.m in Sources */,
 				18E893301FB5DFED00727EF1 /* OSFileBottomHUD.m in Sources */,
 				18ADEECF1F9E4A020024BA40 /* OSFileDownloaderSessionPrivateDelegate.m in Sources */,
 				D0A814E21FD5493700F3E49A /* OSFileBrowserAppearanceConfigs.m in Sources */,

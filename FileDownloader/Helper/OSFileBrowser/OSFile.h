@@ -20,66 +20,10 @@ typedef enum {
 }
 OSFileFlags;
 
-@interface OSFile : NSObject {
-@protected
-    
-    BOOL            _isDirectory;
-    BOOL            _isRegularFile;
-    BOOL            _isSymbolicLink;
-    BOOL            _isSocket;
-    BOOL            _isCharacterSpecial;
-    BOOL            _isBlockSpecial;
-    BOOL            _isUnknown;
-    BOOL            _isImmutable;
-    BOOL            _isAppendOnly;
-    BOOL            _isBusy;
-    BOOL            _extensionIsHidden;
-    BOOL            _isReadable;
-    BOOL            _isWriteable;
-    BOOL            _isExecutable;
-    BOOL            _isImage;
-    BOOL            _isAudio;
-    BOOL            _isVideo;
-    BOOL            _isArchive;
-    BOOL            _isWindows;
-    OSFileFlags     _flags;
-    NSUInteger      _size;
-    NSUInteger      _referenceCount;
-    NSUInteger      _deviceIdentifier;
-    NSUInteger      _ownerID;
-    NSUInteger      _groupID;
-    NSUInteger      _permissions;
-    NSUInteger      _octalPermissions;
-    NSUInteger      _systemNumber;
-    NSUInteger      _systemFileNumber;
-    NSUInteger      _HFSCreatorCode;
-    NSUInteger      _HFSTypeCode;
-    NSUInteger      _numberOfSubFiles;
-    NSString      * _path;
-    NSString      * _filename;
-    NSString      * _displayName;
-    NSString      * _fileExtension;
-    NSString      * _parentDirectoryPath;
-    NSString      * _type;
-    NSString      * _humanReadableSize;
-    NSString      * _owner;
-    NSString      * _group;
-    NSString      * _humanReadablePermissions;
-    NSDate        * _creationDate;
-    NSDate        * _modificationDate;
-    UIImage       * _icon;
-    NSDictionary  * _attributes;
-    NSFileManager * _fileManager;
-    OSFile        * _targetFile;
-    BOOL            _hideDisplayFiles;
-    NSString      * _mimeType;
-    BOOL           _alreadyMarked;
-    NSArray<NSString *> * _pathOfSubFiles;
-@private
-    
-    id __OSFile_Reserved[ 5 ] __attribute__((unused));
+@interface OSFile : NSObject <NSCopying, NSMutableCopying> {
+    @protected
+    NSString *_path;
 }
-
 
 @property (atomic, readonly) BOOL          isDirectory;
 @property (atomic, readonly) BOOL          isRegularFile;
@@ -132,6 +76,7 @@ OSFileFlags;
 @property (atomic, readonly) BOOL          hideDisplayFiles;
 @property (atomic, readonly) NSString    * mimeType;
 @property (atomic, readonly) BOOL          alreadyMarked;
+@property (atomic, readonly) NSDictionary  * attributes;
 
 /// 初始化方法，根据文件路径创建一个OSFile对象
 /// @param filePath 文件完整路径
@@ -143,6 +88,9 @@ OSFileFlags;
 - (instancetype)initWithPath:(NSString *)filePath error:(NSError *__autoreleasing *)error;
 + (instancetype)fileWithPath:(NSString *)filePath;
 + (instancetype)fileWithPath:(NSString *)filePath error:(NSError *__autoreleasing *)error;
+
+- (id)copyWithZone:(NSZone *)zone;
+- (id)mutableCopyWithZone:(NSZone *)zone;
 
 /// 重新加载当前文件文件，对象不会改变，但会重新获取文件的结果，
 /// @param error 返回错误信息
@@ -162,6 +110,8 @@ OSFileFlags;
 /// @param reload 是否重新读取本地存储的标记文件，如果是NO就直接从内存中读取记录
 + (NSArray<NSString *> *)markupFilePathsWithNeedReload:(BOOL)reload;
 + (NSArray<OSFile *> *)markupFilesWithNeedReload:(BOOL)reload;
+
+- (BOOL)isEqualToFile:(OSFile *)file;
 
 @end
 

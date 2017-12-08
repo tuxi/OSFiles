@@ -12,7 +12,6 @@
 #import "NSDate+ESUtilities.h"
 #import "OSMimeTypeMap.h"
 #import "UIImage+XYImage.h"
-#import "AppGroupManager.h"
 #import "OSFileHelper.h"
 #import "OSFileBrowserAppearanceConfigs.h"
 
@@ -21,57 +20,64 @@ static NSString * const AppSandBoxPrefixString = @"/var/mobile/Containers/Data/A
 static NSNotificationName OSFileDidMarkupedNotification = @"OSFileDidMarkupedNotification";
 static NSNotificationName OSFileDidCancelMarkupedNotification = @"OSFileDidCancelMarkupedNotification";
 
+@interface OSFile ()
+
+@property (atomic) BOOL          isDirectory;
+@property (atomic) BOOL          isRegularFile;
+@property (atomic) BOOL          isSymbolicLink;
+@property (atomic) BOOL          isSocket;
+@property (atomic) BOOL          isCharacterSpecial;
+@property (atomic) BOOL          isBlockSpecial;
+@property (atomic) BOOL          isUnknown;
+@property (atomic) BOOL          isImmutable;
+@property (atomic) BOOL          isAppendOnly;
+@property (atomic) BOOL          isBusy;
+@property (atomic) BOOL          extensionIsHidden;
+@property (atomic) BOOL          isReadable;
+@property (atomic) BOOL          isWriteable;
+@property (atomic) BOOL          isExecutable;
+@property (atomic) BOOL          isImage;
+@property (atomic) BOOL          isAudio;
+@property (atomic) BOOL          isVideo;
+@property (atomic) BOOL          isArchive;
+@property (atomic) BOOL          isWindows;
+@property (atomic) OSFileFlags   flags;
+@property (atomic) NSUInteger    size;
+@property (atomic) NSUInteger    referenceCount;
+@property (atomic) NSUInteger    deviceIdentifier;
+@property (atomic) NSUInteger    ownerID;
+@property (atomic) NSUInteger    groupID;
+@property (atomic) NSUInteger    permissions;
+@property (atomic) NSUInteger    octalPermissions;
+@property (atomic) NSUInteger    systemNumber;
+@property (atomic) NSUInteger    systemFileNumber;
+@property (atomic) NSUInteger    HFSCreatorCode;
+@property (atomic) NSUInteger    HFSTypeCode;
+@property (atomic) NSUInteger    numberOfSubFiles;
+@property (atomic) NSString    * path;
+@property (atomic) NSString    * filename;
+@property (atomic) NSString    * displayName;
+@property (atomic) NSString    * fileExtension;
+@property (atomic) NSString    * parentDirectoryPath;
+@property (atomic) NSString    * type;
+@property (atomic) NSString    * owner;
+@property (atomic) NSString    * group;
+@property (atomic) NSString    * humanReadableSize;
+@property (atomic) NSString    * humanReadablePermissions;
+@property (atomic) NSDate      * creationDate;
+@property (atomic) NSDate      * modificationDate;
+@property (atomic) UIImage     * icon;
+@property (atomic) OSFile      * targetFile;
+@property (atomic) NSArray<NSString *> * pathOfSubFiles;
+@property (atomic) BOOL          hideDisplayFiles;
+@property (atomic) NSString    * mimeType;
+@property (atomic) BOOL          alreadyMarked;
+@property (nonatomic) NSFileManager * fileManager;
+@property (atomic) NSDictionary  * attributes;
+
+@end
+
 @implementation OSFile
-@synthesize isDirectory                 = _isDirectory;
-@synthesize isRegularFile               = _isRegularFile;
-@synthesize isSymbolicLink              = _isSymbolicLink;
-@synthesize isSocket                    = _isSocket;
-@synthesize isCharacterSpecial          = _isCharacterSpecial;
-@synthesize isBlockSpecial              = _isBlockSpecial;
-@synthesize isUnknown                   = _isUnknown;
-@synthesize isImmutable                 = _isImmutable;
-@synthesize isAppendOnly                = _isAppendOnly;
-@synthesize isBusy                      = _isBusy;
-@synthesize isImage                     = _isImage;
-@synthesize isAudio                     = _isAudio;
-@synthesize isVideo                     = _isVideo;
-@synthesize isArchive                   = _isArchive;
-@synthesize isWindows                   = _isWindows;
-@synthesize flags                       = _flags;
-@synthesize extensionIsHidden           = _extensionIsHidden;
-@synthesize isReadable                  = _isReadable;
-@synthesize isWriteable                 = _isWriteable;
-@synthesize isExecutable                = _isExecutable;
-@synthesize size                        = _size;
-@synthesize referenceCount              = _referenceCount;
-@synthesize deviceIdentifier            = _deviceIdentifier;
-@synthesize ownerID                     = _ownerID;
-@synthesize groupID                     = _groupID;
-@synthesize permissions                 = _permissions;
-@synthesize octalPermissions            = _octalPermissions;
-@synthesize systemNumber                = _systemNumber;
-@synthesize systemFileNumber            = _systemFileNumber;
-@synthesize HFSCreatorCode              = _HFSCreatorCode;
-@synthesize HFSTypeCode                 = _HFSTypeCode;
-@synthesize numberOfSubFiles            = _numberOfSubFiles;
-@synthesize path                        = _path;
-@synthesize filename                    = _filename;
-@synthesize displayName                 = _displayName;
-@synthesize fileExtension               = _fileExtension;
-@synthesize parentDirectoryPath         = _parentDirectoryPath;
-@synthesize type                        = _type;
-@synthesize owner                       = _owner;
-@synthesize group                       = _group;
-@synthesize humanReadableSize           = _humanReadableSize;
-@synthesize humanReadablePermissions    = _humanReadablePermissions;
-@synthesize creationDate                = _creationDate;
-@synthesize modificationDate            = _modificationDate;
-@synthesize icon                        = _icon;
-@synthesize targetFile                  = _targetFile;
-@synthesize hideDisplayFiles            = _hideDisplayFiles;
-@synthesize mimeType                    = _mimeType;
-@synthesize alreadyMarked               = _alreadyMarked;
-@synthesize pathOfSubFiles              = _pathOfSubFiles;
 
 + (instancetype)fileWithPath:(NSString *)filePath {
     return [self fileWithPath:filePath error:NULL];
@@ -638,17 +644,17 @@ static NSMutableArray *_markupFiles;
         NSMutableArray *markFiles = [[NSMutableArray alloc] initWithContentsOfFile:markPath];
         [markFiles enumerateObjectsUsingBlock:^(NSString *  _Nonnull markupPath, NSUInteger idx, BOOL * _Nonnull stop) {
             // 文件路径更新
-            if ([self isInAppGroupWithPath:markupPath]) {
-                NSString *str1 = [markupPath componentsSeparatedByString:AppGroupPrefixString].lastObject;
-                NSRange range = [str1 rangeOfString:@"/"];
-                NSString *lastFilePath = [str1 substringFromIndex:range.location];
-                
-                NSString *str2 = [[AppGroupManager getAPPGroupHomePath] componentsSeparatedByString:AppGroupPrefixString].lastObject;
-                NSString *needReplaceStr = [str2 componentsSeparatedByString:@"/"].firstObject;
-                
-                markupPath = [NSString stringWithFormat:@"%@%@%@", AppGroupPrefixString, needReplaceStr, lastFilePath];
-            }
-            else {
+//            if ([self isInAppGroupWithPath:markupPath]) {
+//                NSString *str1 = [markupPath componentsSeparatedByString:AppGroupPrefixString].lastObject;
+//                NSRange range = [str1 rangeOfString:@"/"];
+//                NSString *lastFilePath = [str1 substringFromIndex:range.location];
+//
+//                NSString *str2 = [[AppGroupManager getAPPGroupHomePath] componentsSeparatedByString:AppGroupPrefixString].lastObject;
+//                NSString *needReplaceStr = [str2 componentsSeparatedByString:@"/"].firstObject;
+//
+//                markupPath = [NSString stringWithFormat:@"%@%@%@", AppGroupPrefixString, needReplaceStr, lastFilePath];
+//            }
+//            else {
                 NSString *str1 = [markupPath componentsSeparatedByString:AppSandBoxPrefixString].lastObject;
                 NSRange range = [str1 rangeOfString:@"/"];
                 NSString *lastFilePath = [str1 substringFromIndex:range.location];
@@ -657,7 +663,7 @@ static NSMutableArray *_markupFiles;
                 NSString *needReplaceStr = [str2 componentsSeparatedByString:@"/"].firstObject;
 
                 markupPath = [NSString stringWithFormat:@"%@%@%@", AppSandBoxPrefixString, needReplaceStr, lastFilePath];
-            }
+//            }
             [markFiles replaceObjectAtIndex:idx withObject:markupPath];
             
         }];
@@ -748,6 +754,70 @@ static NSMutableArray *_markupFiles;
     else if ([note.name isEqualToString:OSFileDidCancelMarkupedNotification]) {
         _alreadyMarked = NO;
     }
+}
+
+- (id)copyWithZone:(NSZone *)zone {
+    return self;
+}
+
+- (id)mutableCopyWithZone:(NSZone *)zone {
+    OSFile *file = self.class.new;
+    file.isDirectory = self.isDirectory;
+    file.isRegularFile = self.isRegularFile;
+    file.isSymbolicLink = self.isSymbolicLink;
+    file.isSocket = self.isSocket;
+    file.isCharacterSpecial = self.isCharacterSpecial;
+    file.isBlockSpecial = self.isBlockSpecial;
+    file.isUnknown = self.isUnknown;
+    file.isImmutable = self.isImmutable;
+    file.isAppendOnly = self.isAppendOnly;
+    file.isBusy = self.isBusy;
+    file.extensionIsHidden = self.extensionIsHidden;
+    file.isReadable = self.isReadable;
+    file.isWriteable = self.isWriteable;
+    file.isExecutable = self.isExecutable;
+    file.isImage = self.isImage;
+    file.isAudio = self.isAudio;
+    file.isVideo = self.isVideo;
+    file.isArchive = self.isArchive;
+    file.isWindows = self.isWindows;
+    file.flags = self.flags;
+    file.size = self.size;
+    file.referenceCount = self.referenceCount;
+    file.deviceIdentifier = self.deviceIdentifier;
+    file.ownerID = self.ownerID;
+    file.groupID = self.groupID;
+    file.permissions = self.permissions;
+    file.octalPermissions = self.octalPermissions;
+    file.systemNumber = self.systemNumber;
+    file.systemFileNumber = self.systemFileNumber;
+    file.HFSCreatorCode = self.HFSCreatorCode;
+    file.HFSTypeCode = self.HFSTypeCode ;
+    file.numberOfSubFiles = self.numberOfSubFiles;
+    file.path = self.path;
+    file.filename = self.filename;
+    file.displayName = self.displayName;
+    file.fileExtension = self.fileExtension;
+    file.parentDirectoryPath = self.parentDirectoryPath;
+    file.type = self.type;
+    file.owner = self.owner;
+    file.group = self.group;
+    file.humanReadableSize = self.humanReadableSize;
+    file.humanReadablePermissions = self.humanReadablePermissions;
+    file.creationDate = self.creationDate;
+    file.modificationDate = self.modificationDate;
+    file.icon = self.icon;
+    file.targetFile = self.targetFile;
+    file.nameOfSubFiles = self.nameOfSubFiles;
+    file.pathOfSubFiles = self.pathOfSubFiles;
+    file.hideDisplayFiles = self.hideDisplayFiles;
+    file.mimeType = self.mimeType;
+    file.alreadyMarked = self.alreadyMarked;
+    return file;
+}
+
+- (BOOL)isEqualToFile:(OSFile *)file {
+    return [file.path isEqualToString:self.path];
 }
 
 @end
