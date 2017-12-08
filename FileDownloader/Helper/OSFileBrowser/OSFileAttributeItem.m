@@ -75,5 +75,15 @@
     return [self.path isEqualToString:[NSString getICloudCacheFolder]];
 }
 
+- (id)mutableCopyWithZone:(NSZone *)zone {
+    OSFileAttributeItem *file = [super mutableCopyWithZone:zone];
+    file.status = self.status;
+    file.isRootDirectory = self.isRootDirectory;
+    file.needReLoyoutItem = self.needReLoyoutItem;
+    file.displayNameAttributedText = self.displayNameAttributedText;
+    return file;
+}
+
+
 @end
 
