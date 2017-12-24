@@ -4,6 +4,8 @@
 
 文件浏览- 这是一个管理文件、缓存文件、查看文件的工具；
 
+<img src = "https://github.com/alpface/OSFiles/blob/master/FileDownloader/Resource/osfiles1.gif" width = "375" height = "667" alt = "Screenshot1.png"/>
+
 ## 特性:
 - 1.导⼊文件
 - 1.1 您可以iTunes数据线导⼊
