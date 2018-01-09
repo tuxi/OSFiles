@@ -64,7 +64,7 @@
 #pragma mark - Switch tap handling
 
 - (void)updateStateForMenuItemType:(OSSettingsMenuItemDisclosureType)type isSwitchOnValue:(BOOL)isOn {
-    
+    self.menuItem.isSwitchOn = isOn;
 }
 
 
