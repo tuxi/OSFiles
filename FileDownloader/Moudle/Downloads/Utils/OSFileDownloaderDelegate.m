@@ -33,7 +33,7 @@
             fileName = [[localPath componentsSeparatedByString:@"?"].firstObject lastPathComponent];
         }
         
-        NSString *newPath = nil;
+        NSString *newPath = [NSString getDownloadDisplayOtherFolderPath];
         OSFileType fileType = [fileName os_fileType];
         switch (fileType) {
             case OSFileTypeOther: {
