@@ -2,8 +2,8 @@
 //  BaseTableViewModel.m
 //  OSFileDownloader
 //
-//  Created by Ossey on 2017/6/12.
-//  Copyright © 2017年 Ossey. All rights reserved.
+//  Created by alpface on 2017/6/12.
+//  Copyright © 2017年 alpface. All rights reserved.
 //
 
 #import "BaseTableViewModel.h"

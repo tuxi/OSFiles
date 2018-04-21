@@ -3,7 +3,7 @@
 //  FileDownloader
 //
 //  Created by swae on 2017/12/4.
-//  Copyright © 2017年 Ossey. All rights reserved.
+//  Copyright © 2017年 alpface. All rights reserved.
 //
 
 #import "OSFileHelper.h"

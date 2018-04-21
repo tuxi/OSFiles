@@ -3,7 +3,7 @@
 //  FileDownloader
 //
 //  Created by Swae on 2017/11/10.
-//  Copyright © 2017年 Ossey. All rights reserved.
+//  Copyright © 2017年 alpface. All rights reserved.
 //
 
 #import "OSAboutAppViewController.h"
@@ -97,7 +97,7 @@
         [_tableFooterView addSubview:label];
         label.translatesAutoresizingMaskIntoConstraints = NO;
         label.textAlignment = NSTextAlignmentCenter;
-        label.text = @"2017 Ossey Inc.";
+        label.text = @"2017 alpface Inc.";
         if (@available(iOS 8.2, *)) {
             label.font = [UIFont systemFontOfSize:13 weight:1.5];
         } else {

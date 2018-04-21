@@ -57,7 +57,7 @@
 			<key>CFBundleURLIconFile</key>
 			<string>Directory</string>
 			<key>CFBundleURLName</key>
-			<string>com.ossey.filedownloader</string>
+			<string>com.alpface.filedownloader</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>OSFiledownloader</string>

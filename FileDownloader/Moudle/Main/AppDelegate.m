@@ -2,8 +2,8 @@
 //  AppDelegate.m
 //  OSFileDownloader
 //
-//  Created by Ossey on 2017/6/10.
-//  Copyright © 2017年 Ossey. All rights reserved.
+//  Created by alpface on 2017/6/10.
+//  Copyright © 2017年 alpface. All rights reserved.
 //
 
 #import "AppDelegate.h"
@@ -98,7 +98,7 @@ static NSString * const UserAgent = @"Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 li
             }
             
         }
-        [[OSFileDownloaderManager sharedInstance] start:url.path];
+        [[OSFileDownloaderManager sharedInstance] start:url.absoluteString];
     }];
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
     

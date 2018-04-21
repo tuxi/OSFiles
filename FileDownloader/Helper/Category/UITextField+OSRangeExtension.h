@@ -3,7 +3,7 @@
 //  FileDownloader
 //
 //  Created by xiaoyuan on 31/10/2017.
-//  Copyright © 2017 Ossey. All rights reserved.
+//  Copyright © 2017 alpface. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

@@ -2,8 +2,8 @@
 //  MainNavigationController.h
 //  MVVMDemo
 //
-//  Created by Ossey on 17/2/12.
-//  Copyright © 2017年 Ossey. All rights reserved.
+//  Created by alpface on 17/2/12.
+//  Copyright © 2017年 alpface. All rights reserved.
 //
 
 @import UIKit;

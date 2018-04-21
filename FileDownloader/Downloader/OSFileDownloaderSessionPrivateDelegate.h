@@ -2,8 +2,8 @@
 //  OSFileDownloaderSessionPrivateDelegate.h
 //  OSFileDownloader
 //
-//  Created by Ossey on 2017/7/9.
-//  Copyright © 2017年 Ossey. All rights reserved.
+//  Created by alpface on 2017/7/9.
+//  Copyright © 2017年 alpface. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

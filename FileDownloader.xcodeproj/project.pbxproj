@@ -3068,7 +3068,7 @@
 				INFOPLIST_FILE = FileManagerShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.ossey.FileDownloader.FileManagerShareExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alpface.FileDownloader.FileManagerShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -3099,7 +3099,7 @@
 				INFOPLIST_FILE = FileManagerShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.ossey.FileDownloader.FileManagerShareExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alpface.FileDownloader.FileManagerShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -3231,7 +3231,7 @@
 				INFOPLIST_FILE = FileDownloader/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.ossey.FileDownloader;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alpface.FileDownloader;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -3266,7 +3266,7 @@
 				INFOPLIST_FILE = FileDownloader/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.ossey.FileDownloader;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alpface.FileDownloader;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";

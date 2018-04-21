@@ -60,7 +60,7 @@ static NSString * const _ActionKey = @"Action";
     
     
     if (nil == queue) {
-        queue = dispatch_queue_create("com.ossey.AutoTimer.queue", DISPATCH_QUEUE_CONCURRENT);
+        queue = dispatch_queue_create("com.alpface.AutoTimer.queue", DISPATCH_QUEUE_CONCURRENT);
         
     }
     AutoTimer *instace = [AutoTimer sharedInstance];

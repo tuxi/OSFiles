@@ -3,7 +3,7 @@
 //  DownloaderManager
 //
 //  Created by xiaoyuan on 2017/6/5.
-//  Copyright © 2017年 Ossey. All rights reserved.
+//  Copyright © 2017年 alpface. All rights reserved.
 //
 
 #import "OSFileDownloadCell.h"

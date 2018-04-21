@@ -3,7 +3,7 @@
 //  ParseHTMLDemo
 //
 //  Created by Swae on 2017/11/12.
-//  Copyright © 2017年 Ossey. All rights reserved.
+//  Copyright © 2017年 alpface. All rights reserved.
 //
 
 #import "OSXMLDocumentItem.h"
@@ -52,7 +52,7 @@
 
 - (void)commonInit {
     _group = dispatch_group_create();
-    _parseQueue = dispatch_queue_create("com.ossey.OSXMLDocumentItem", DISPATCH_QUEUE_CONCURRENT);
+    _parseQueue = dispatch_queue_create("com.alpface.OSXMLDocumentItem", DISPATCH_QUEUE_CONCURRENT);
     [self parseVideoURLsByURL];
     [self parseVideoURLsByHTMLString];
     [self parseImageURLsByURL];

@@ -2,8 +2,8 @@
 //  OSProgressView.m
 //  ProgressBarDemo
 //
-//  Created by Ossey on 15/08/2017.
-//  Copyright © 2017 Ossey. All rights reserved.
+//  Created by alpface on 15/08/2017.
+//  Copyright © 2017 alpface. All rights reserved.
 //
 
 #import "OSProgressView.h"

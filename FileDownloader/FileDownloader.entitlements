@@ -16,7 +16,7 @@
 	</array>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.com.ossey.Lister.Documents</string>
+		<string>group.com.alpface.files</string>
 	</array>
 </dict>
 </plist>

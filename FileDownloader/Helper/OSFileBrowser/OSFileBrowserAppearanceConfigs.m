@@ -3,7 +3,7 @@
 //  FileDownloader
 //
 //  Created by xiaoyuan on 04/12/2017.
-//  Copyright © 2017 Ossey. All rights reserved.
+//  Copyright © 2017 alpface. All rights reserved.
 //
 
 #import "OSFileBrowserAppearanceConfigs.h"

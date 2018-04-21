@@ -3,7 +3,7 @@
 //  FileDownloader
 //
 //  Created by Swae on 2017/12/3.
-//  Copyright © 2017年 Ossey. All rights reserved.
+//  Copyright © 2017年 alpface. All rights reserved.
 //
 
 #import "OSTransmitDataViewController.h"
@@ -103,7 +103,7 @@
         // 设置展示在网页上的文字
         _webServer.prologue = @"拖动文件到本窗口或者使用 \"上传文件…\" 按钮来上传新文件。";
         // 设置展示在网页上的文字(结尾)
-        _webServer.epilogue = @"文件浏览 by Ossey";
+        _webServer.epilogue = @"文件浏览 by alpface";
     }
     return _webServer;
 }
