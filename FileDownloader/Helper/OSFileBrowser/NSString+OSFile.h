@@ -44,6 +44,8 @@ OSFileType;
 + (NSString *)getDownloadDisplayVideoFolderPath;
 /// 下载文件夹中的其他类型文件目录
 + (NSString *)getDownloadDisplayOtherFolderPath;
+/// 下载文件夹中的压缩类型文件目录
++ (NSString *)getDownloadDisplayArchiveFolderPath;
 + (NSString *)getRootPath;
 + (NSString *)getDocumentPath;
 + (NSString *)getLibraryPath;

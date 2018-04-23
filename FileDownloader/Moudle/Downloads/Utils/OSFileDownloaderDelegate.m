@@ -48,6 +48,10 @@
                 newPath = [[NSString getDownloadDisplayVideoFolderPath] stringByAppendingPathComponent:fileName];
                 break;
             }
+            case OSFileTypeArchive: {
+                newPath = [[NSString getDownloadDisplayArchiveFolderPath] stringByAppendingPathComponent:fileName];
+                break;
+            }
             default:
                 break;
         }

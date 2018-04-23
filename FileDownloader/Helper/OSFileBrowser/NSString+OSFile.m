@@ -232,6 +232,17 @@
     return localFolderPath;
 }
 
++ (NSString *)getDownloadDisplayArchiveFolderPath {
+    NSString *cacheFolder = [self getDownloadDisplayFolderPath];
+    NSString *localFolderPath = [cacheFolder stringByAppendingPathComponent:@"Archive"];
+    BOOL isDirectory, isExist;
+    isExist = [[NSFileManager defaultManager] fileExistsAtPath:localFolderPath isDirectory:&isDirectory];
+    if (!isExist || !isDirectory) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:localFolderPath withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    return localFolderPath;
+}
+
 + (NSString *)getDownloadDisplayOtherFolderPath {
     NSString *cacheFolder = [self getDownloadDisplayFolderPath];
     NSString *localFolderPath = [cacheFolder stringByAppendingPathComponent:@"其他"];
